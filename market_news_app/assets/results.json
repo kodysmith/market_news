@@ -1,39 +1,33 @@
 {
-    "timestamp": "2025-07-03 19:43:13",
+    "timestamp": "2025-07-05 09:48:39",
     "market_sentiment": {
         "indicators": [
             {
                 "name": "S&P 500 Futures",
                 "ticker": "ES=F",
-                "price": "6,324.25",
-                "direction": "UP"
+                "price": "6,283.50",
+                "direction": "DOWN"
             },
             {
                 "name": "Nasdaq 100 Futures",
                 "ticker": "NQ=F",
-                "price": "23,062.50",
-                "direction": "UP"
+                "price": "22,906.75",
+                "direction": "DOWN"
             },
             {
                 "name": "VIX (Fear Index)",
                 "ticker": "^VIX",
-                "price": "16.38",
-                "direction": "DOWN"
-            },
-            {
-                "name": "10-Year Treasury Yield",
-                "ticker": "^TNX",
-                "price": "4.35%",
+                "price": "17.48",
                 "direction": "UP"
             },
             {
                 "name": "US Dollar Index",
                 "ticker": "DX-Y.NYB",
-                "price": "97.18",
-                "direction": "UP"
+                "price": "96.99",
+                "direction": "DOWN"
             }
         ],
-        "sentiment": "NEUTRAL / MIXED SIGNALS \ud83d\ude10"
+        "sentiment": "Leaning BEARISH \ud83d\udc3b"
     },
     "trade_ideas": [
         {
@@ -43,7 +37,7 @@
             "details": "Sell 165.0 Call",
             "cost": 0.8,
             "metric_name": "Prob. of Success",
-            "metric_value": "79.3%",
+            "metric_value": "81.1%",
             "max_profit": 0.8,
             "max_loss": 4.2,
             "risk_reward_ratio": 0.19047619047619047
@@ -55,7 +49,7 @@
             "details": "Sell 7.0 Call",
             "cost": 0.26,
             "metric_name": "Prob. of Success",
-            "metric_value": "75.5%",
+            "metric_value": "76.0%",
             "max_profit": 0.26,
             "max_loss": 4.74,
             "risk_reward_ratio": 0.05485232067510548
@@ -67,7 +61,7 @@
             "details": "Sell 100.0 Call",
             "cost": 1.62,
             "metric_name": "Prob. of Success",
-            "metric_value": "73.4%",
+            "metric_value": "74.8%",
             "max_profit": 1.62,
             "max_loss": 3.38,
             "risk_reward_ratio": 0.4792899408284024
@@ -79,7 +73,7 @@
             "details": "Sell 155.0 Put",
             "cost": 1.25,
             "metric_name": "Prob. of Success",
-            "metric_value": "72.1%",
+            "metric_value": "73.6%",
             "max_profit": 1.25,
             "max_loss": 3.75,
             "risk_reward_ratio": 0.3333333333333333
@@ -91,46 +85,10 @@
             "details": "Sell 165.0 Call",
             "cost": 1.86,
             "metric_name": "Prob. of Success",
-            "metric_value": "71.1%",
+            "metric_value": "71.8%",
             "max_profit": 1.86,
             "max_loss": 3.1399999999999997,
             "risk_reward_ratio": 0.5923566878980893
-        },
-        {
-            "ticker": "INTC",
-            "strategy": "Long Straddle",
-            "expiry": "2025-07-11",
-            "details": "Buy 22.5 Call & 22.5 Put",
-            "cost": -1.06,
-            "metric_name": "Implied Move",
-            "metric_value": "+/- 4.71%"
-        },
-        {
-            "ticker": "INTC",
-            "strategy": "Long Strangle",
-            "expiry": "2025-07-11",
-            "details": "Buy 24.0 Call & 21.0 Put",
-            "cost": -0.23,
-            "metric_name": "Implied Move",
-            "metric_value": "+/- 1.02%"
-        },
-        {
-            "ticker": "INTC",
-            "strategy": "Long Straddle",
-            "expiry": "2025-07-18",
-            "details": "Buy 22.5 Call & 22.5 Put",
-            "cost": -1.55,
-            "metric_name": "Implied Move",
-            "metric_value": "+/- 6.89%"
-        },
-        {
-            "ticker": "INTC",
-            "strategy": "Long Strangle",
-            "expiry": "2025-07-18",
-            "details": "Buy 24.0 Call & 21.0 Put",
-            "cost": -0.52,
-            "metric_name": "Implied Move",
-            "metric_value": "+/- 2.31%"
         },
         {
             "ticker": "F",
@@ -169,40 +127,112 @@
             "metric_value": "+/- 1.10%"
         },
         {
-            "ticker": "WULF",
+            "ticker": "IREN",
             "strategy": "Long Straddle",
             "expiry": "2025-07-11",
-            "details": "Buy 5.5 Call & 5.5 Put",
-            "cost": -0.67,
+            "details": "Buy 16.0 Call & 16.0 Put",
+            "cost": -2.15,
             "metric_name": "Implied Move",
-            "metric_value": "+/- 12.74%"
+            "metric_value": "+/- 12.78%"
         },
         {
-            "ticker": "WULF",
+            "ticker": "IREN",
             "strategy": "Long Strangle",
             "expiry": "2025-07-11",
-            "details": "Buy 6.0 Call & 4.5 Put",
-            "cost": -0.17,
+            "details": "Buy 18.0 Call & 15.0 Put",
+            "cost": -1.03,
             "metric_name": "Implied Move",
-            "metric_value": "+/- 3.23%"
+            "metric_value": "+/- 6.12%"
         },
         {
-            "ticker": "WULF",
+            "ticker": "IREN",
             "strategy": "Long Straddle",
             "expiry": "2025-07-18",
-            "details": "Buy 5.5 Call & 5.5 Put",
-            "cost": -0.9199999999999999,
+            "details": "Buy 17.0 Call & 17.0 Put",
+            "cost": -2.87,
             "metric_name": "Implied Move",
-            "metric_value": "+/- 17.49%"
+            "metric_value": "+/- 17.06%"
         },
         {
-            "ticker": "WULF",
+            "ticker": "IREN",
             "strategy": "Long Strangle",
             "expiry": "2025-07-18",
-            "details": "Buy 6.0 Call & 4.5 Put",
-            "cost": -0.31,
+            "details": "Buy 18.0 Call & 15.0 Put",
+            "cost": -1.55,
             "metric_name": "Implied Move",
-            "metric_value": "+/- 5.89%"
+            "metric_value": "+/- 9.22%"
+        },
+        {
+            "ticker": "TSLA",
+            "strategy": "Long Straddle",
+            "expiry": "2025-07-11",
+            "details": "Buy 315.0 Call & 315.0 Put",
+            "cost": -17.15,
+            "metric_name": "Implied Move",
+            "metric_value": "+/- 5.44%"
+        },
+        {
+            "ticker": "TSLA",
+            "strategy": "Long Strangle",
+            "expiry": "2025-07-11",
+            "details": "Buy 332.5 Call & 297.5 Put",
+            "cost": -5.35,
+            "metric_name": "Implied Move",
+            "metric_value": "+/- 1.70%"
+        },
+        {
+            "ticker": "TSLA",
+            "strategy": "Long Straddle",
+            "expiry": "2025-07-18",
+            "details": "Buy 315.0 Call & 315.0 Put",
+            "cost": -24.549999999999997,
+            "metric_name": "Implied Move",
+            "metric_value": "+/- 7.79%"
+        },
+        {
+            "ticker": "TSLA",
+            "strategy": "Long Strangle",
+            "expiry": "2025-07-18",
+            "details": "Buy 332.5 Call & 297.5 Put",
+            "cost": -11.05,
+            "metric_name": "Implied Move",
+            "metric_value": "+/- 3.50%"
+        },
+        {
+            "ticker": "LCID",
+            "strategy": "Long Straddle",
+            "expiry": "2025-07-11",
+            "details": "Buy 2.0 Call & 2.0 Put",
+            "cost": -0.22,
+            "metric_name": "Implied Move",
+            "metric_value": "+/- 10.19%"
+        },
+        {
+            "ticker": "LCID",
+            "strategy": "Long Strangle",
+            "expiry": "2025-07-11",
+            "details": "Buy 2.5 Call & 2.0 Put",
+            "cost": -0.05,
+            "metric_name": "Implied Move",
+            "metric_value": "+/- 2.31%"
+        },
+        {
+            "ticker": "LCID",
+            "strategy": "Long Straddle",
+            "expiry": "2025-07-18",
+            "details": "Buy 2.0 Call & 2.0 Put",
+            "cost": -0.3,
+            "metric_name": "Implied Move",
+            "metric_value": "+/- 13.89%"
+        },
+        {
+            "ticker": "LCID",
+            "strategy": "Long Strangle",
+            "expiry": "2025-07-18",
+            "details": "Buy 2.5 Call & 2.0 Put",
+            "cost": -0.1,
+            "metric_name": "Implied Move",
+            "metric_value": "+/- 4.63%"
         },
         {
             "ticker": "HOOD",
@@ -277,40 +307,40 @@
             "metric_value": "+/- 13.39%"
         },
         {
-            "ticker": "LCID",
+            "ticker": "SOFI",
             "strategy": "Long Straddle",
             "expiry": "2025-07-11",
-            "details": "Buy 2.0 Call & 2.0 Put",
-            "cost": -0.22,
+            "details": "Buy 18.5 Call & 18.5 Put",
+            "cost": -1.1,
             "metric_name": "Implied Move",
-            "metric_value": "+/- 10.19%"
+            "metric_value": "+/- 5.92%"
         },
         {
-            "ticker": "LCID",
+            "ticker": "SOFI",
             "strategy": "Long Strangle",
             "expiry": "2025-07-11",
-            "details": "Buy 2.5 Call & 2.0 Put",
-            "cost": -0.05,
+            "details": "Buy 20.0 Call & 17.5 Put",
+            "cost": -0.31,
             "metric_name": "Implied Move",
-            "metric_value": "+/- 2.31%"
+            "metric_value": "+/- 1.67%"
         },
         {
-            "ticker": "LCID",
+            "ticker": "SOFI",
             "strategy": "Long Straddle",
             "expiry": "2025-07-18",
-            "details": "Buy 2.0 Call & 2.0 Put",
-            "cost": -0.3,
+            "details": "Buy 18.5 Call & 18.5 Put",
+            "cost": -1.5899999999999999,
             "metric_name": "Implied Move",
-            "metric_value": "+/- 13.89%"
+            "metric_value": "+/- 8.56%"
         },
         {
-            "ticker": "LCID",
+            "ticker": "SOFI",
             "strategy": "Long Strangle",
             "expiry": "2025-07-18",
-            "details": "Buy 2.5 Call & 2.0 Put",
-            "cost": -0.1,
+            "details": "Buy 20.0 Call & 17.5 Put",
+            "cost": -0.6799999999999999,
             "metric_name": "Implied Move",
-            "metric_value": "+/- 4.63%"
+            "metric_value": "+/- 3.66%"
         },
         {
             "ticker": "NVDA",
@@ -349,113 +379,164 @@
             "metric_value": "+/- 1.56%"
         },
         {
-            "ticker": "TSLA",
+            "ticker": "INTC",
             "strategy": "Long Straddle",
             "expiry": "2025-07-11",
-            "details": "Buy 315.0 Call & 315.0 Put",
-            "cost": -17.15,
+            "details": "Buy 22.5 Call & 22.5 Put",
+            "cost": -1.06,
             "metric_name": "Implied Move",
-            "metric_value": "+/- 5.44%"
+            "metric_value": "+/- 4.71%"
         },
         {
-            "ticker": "TSLA",
+            "ticker": "INTC",
             "strategy": "Long Strangle",
             "expiry": "2025-07-11",
-            "details": "Buy 332.5 Call & 297.5 Put",
-            "cost": -5.35,
+            "details": "Buy 24.0 Call & 21.0 Put",
+            "cost": -0.23,
             "metric_name": "Implied Move",
-            "metric_value": "+/- 1.70%"
+            "metric_value": "+/- 1.02%"
         },
         {
-            "ticker": "TSLA",
+            "ticker": "INTC",
             "strategy": "Long Straddle",
             "expiry": "2025-07-18",
-            "details": "Buy 315.0 Call & 315.0 Put",
-            "cost": -24.549999999999997,
-            "metric_name": "Implied Move",
-            "metric_value": "+/- 7.79%"
-        },
-        {
-            "ticker": "TSLA",
-            "strategy": "Long Strangle",
-            "expiry": "2025-07-18",
-            "details": "Buy 332.5 Call & 297.5 Put",
-            "cost": -11.05,
-            "metric_name": "Implied Move",
-            "metric_value": "+/- 3.50%"
-        },
-        {
-            "ticker": "IREN",
-            "strategy": "Long Straddle",
-            "expiry": "2025-07-11",
-            "details": "Buy 16.0 Call & 16.0 Put",
-            "cost": -2.15,
-            "metric_name": "Implied Move",
-            "metric_value": "+/- 12.78%"
-        },
-        {
-            "ticker": "IREN",
-            "strategy": "Long Strangle",
-            "expiry": "2025-07-11",
-            "details": "Buy 18.0 Call & 15.0 Put",
-            "cost": -1.03,
-            "metric_name": "Implied Move",
-            "metric_value": "+/- 6.12%"
-        },
-        {
-            "ticker": "IREN",
-            "strategy": "Long Straddle",
-            "expiry": "2025-07-18",
-            "details": "Buy 17.0 Call & 17.0 Put",
-            "cost": -2.87,
-            "metric_name": "Implied Move",
-            "metric_value": "+/- 17.06%"
-        },
-        {
-            "ticker": "IREN",
-            "strategy": "Long Strangle",
-            "expiry": "2025-07-18",
-            "details": "Buy 18.0 Call & 15.0 Put",
+            "details": "Buy 22.5 Call & 22.5 Put",
             "cost": -1.55,
             "metric_name": "Implied Move",
-            "metric_value": "+/- 9.22%"
+            "metric_value": "+/- 6.89%"
         },
         {
-            "ticker": "SOFI",
+            "ticker": "INTC",
+            "strategy": "Long Strangle",
+            "expiry": "2025-07-18",
+            "details": "Buy 24.0 Call & 21.0 Put",
+            "cost": -0.52,
+            "metric_name": "Implied Move",
+            "metric_value": "+/- 2.31%"
+        },
+        {
+            "ticker": "WULF",
             "strategy": "Long Straddle",
             "expiry": "2025-07-11",
-            "details": "Buy 18.5 Call & 18.5 Put",
-            "cost": -1.1,
+            "details": "Buy 5.5 Call & 5.5 Put",
+            "cost": -0.67,
             "metric_name": "Implied Move",
-            "metric_value": "+/- 5.92%"
+            "metric_value": "+/- 12.74%"
         },
         {
-            "ticker": "SOFI",
+            "ticker": "WULF",
             "strategy": "Long Strangle",
             "expiry": "2025-07-11",
-            "details": "Buy 20.0 Call & 17.5 Put",
+            "details": "Buy 6.0 Call & 4.5 Put",
+            "cost": -0.17,
+            "metric_name": "Implied Move",
+            "metric_value": "+/- 3.23%"
+        },
+        {
+            "ticker": "WULF",
+            "strategy": "Long Straddle",
+            "expiry": "2025-07-18",
+            "details": "Buy 5.5 Call & 5.5 Put",
+            "cost": -0.9199999999999999,
+            "metric_name": "Implied Move",
+            "metric_value": "+/- 17.49%"
+        },
+        {
+            "ticker": "WULF",
+            "strategy": "Long Strangle",
+            "expiry": "2025-07-18",
+            "details": "Buy 6.0 Call & 4.5 Put",
             "cost": -0.31,
             "metric_name": "Implied Move",
-            "metric_value": "+/- 1.67%"
-        },
-        {
-            "ticker": "SOFI",
-            "strategy": "Long Straddle",
-            "expiry": "2025-07-18",
-            "details": "Buy 18.5 Call & 18.5 Put",
-            "cost": -1.5899999999999999,
-            "metric_name": "Implied Move",
-            "metric_value": "+/- 8.56%"
-        },
-        {
-            "ticker": "SOFI",
-            "strategy": "Long Strangle",
-            "expiry": "2025-07-18",
-            "details": "Buy 20.0 Call & 17.5 Put",
-            "cost": -0.6799999999999999,
-            "metric_name": "Implied Move",
-            "metric_value": "+/- 3.66%"
+            "metric_value": "+/- 5.89%"
         }
     ],
-    "skipped_tickers": []
+    "skipped_tickers": [],
+    "vix_data": [
+        {
+            "date": "2025-06-05",
+            "close": 18.48
+        },
+        {
+            "date": "2025-06-06",
+            "close": 16.77
+        },
+        {
+            "date": "2025-06-09",
+            "close": 17.16
+        },
+        {
+            "date": "2025-06-10",
+            "close": 16.95
+        },
+        {
+            "date": "2025-06-11",
+            "close": 17.26
+        },
+        {
+            "date": "2025-06-12",
+            "close": 18.02
+        },
+        {
+            "date": "2025-06-13",
+            "close": 20.82
+        },
+        {
+            "date": "2025-06-16",
+            "close": 19.11
+        },
+        {
+            "date": "2025-06-17",
+            "close": 21.6
+        },
+        {
+            "date": "2025-06-18",
+            "close": 20.14
+        },
+        {
+            "date": "2025-06-20",
+            "close": 20.62
+        },
+        {
+            "date": "2025-06-23",
+            "close": 19.83
+        },
+        {
+            "date": "2025-06-24",
+            "close": 17.48
+        },
+        {
+            "date": "2025-06-25",
+            "close": 16.76
+        },
+        {
+            "date": "2025-06-26",
+            "close": 16.59
+        },
+        {
+            "date": "2025-06-27",
+            "close": 16.32
+        },
+        {
+            "date": "2025-06-30",
+            "close": 16.73
+        },
+        {
+            "date": "2025-07-01",
+            "close": 16.83
+        },
+        {
+            "date": "2025-07-02",
+            "close": 16.64
+        },
+        {
+            "date": "2025-07-03",
+            "close": 16.38
+        },
+        {
+            "date": "2025-07-04",
+            "close": 17.48
+        }
+    ],
+    "gamma_analysis": null
 }
