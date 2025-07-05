@@ -1,0 +1,9 @@
+{
+    "CREDIT_SPREAD_OTM_PERCENT": 2.0,
+    "STRANGLE_OTM_PERCENT": 5.0,
+    "NUM_MOST_ACTIVE_TICKERS": 10,
+    "FIXED_TICKERS": [],
+    "MIN_PROB_SUCCESS": 70.0,  
+    "MIN_CREDIT_RECEIVED": 0.10,
+    "SORT_TRADES_BY": "Prob. of Success" 
+}
