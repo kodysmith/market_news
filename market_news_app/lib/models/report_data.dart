@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:market_news_app/models/vix_data.dart';
 
 class ReportData {
@@ -9,6 +8,11 @@ class ReportData {
   final List<VixData> vixData;
   final GammaAnalysis? gammaAnalysis;
   final List<TopStrategy> topStrategies;
+  final List<Map<String, dynamic>> economicCalendar;
+  final List<Map<String, dynamic>> earningsCalendar;
+  final List<Map<String, dynamic>> topGainers;
+  final List<Map<String, dynamic>> topLosers;
+  final List<Map<String, dynamic>> indices;
 
   ReportData({
     required this.timestamp,
@@ -18,6 +22,11 @@ class ReportData {
     required this.vixData,
     this.gammaAnalysis,
     required this.topStrategies,
+    required this.economicCalendar,
+    required this.earningsCalendar,
+    required this.topGainers,
+    required this.topLosers,
+    required this.indices,
   });
 
   factory ReportData.fromJson(Map<String, dynamic> json) {
@@ -29,6 +38,11 @@ class ReportData {
       vixData: (json['vix_data'] ?? []).map<VixData>((i) => VixData.fromJson(i)).toList(),
       gammaAnalysis: json['gamma_analysis'] != null ? GammaAnalysis.fromJson(json['gamma_analysis']) : null,
       topStrategies: (json['top_strategies'] ?? []).map<TopStrategy>((i) => TopStrategy.fromJson(i)).toList(),
+      economicCalendar: (json['economic_calendar'] ?? []).map<Map<String, dynamic>>((i) => Map<String, dynamic>.from(i)).toList(),
+      earningsCalendar: (json['earnings_calendar'] ?? []).map<Map<String, dynamic>>((i) => Map<String, dynamic>.from(i)).toList(),
+      topGainers: (json['top_gainers'] ?? []).map<Map<String, dynamic>>((i) => Map<String, dynamic>.from(i)).toList(),
+      topLosers: (json['top_losers'] ?? []).map<Map<String, dynamic>>((i) => Map<String, dynamic>.from(i)).toList(),
+      indices: (json['indices'] ?? []).map<Map<String, dynamic>>((i) => Map<String, dynamic>.from(i)).toList(),
     );
   }
 }

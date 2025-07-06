@@ -1,16 +1,39 @@
 from flask import Flask, send_from_directory, jsonify
 import os
 from flask_cors import CORS
+import subprocess
+import time
 
 app = Flask(__name__)
 CORS(app)  # This will allow all domains. For production, restrict origins!
 
+REPORT_PATH = 'report.json'
+REFRESH_INTERVAL = 30 * 60  # 30 minutes in seconds
+
+def is_report_stale():
+    if not os.path.exists(REPORT_PATH):
+        return True
+    mtime = os.path.getmtime(REPORT_PATH)
+    return (time.time() - mtime) > REFRESH_INTERVAL
+
 @app.route('/report.json')
 def get_report_json():
     try:
-        return send_from_directory(os.getcwd(), 'report.json')
+        if is_report_stale():
+            # Regenerate the report
+            subprocess.run(['python3', 'generate_report.py'], check=True)
+        return send_from_directory(os.getcwd(), REPORT_PATH)
     except FileNotFoundError:
         return jsonify({"error": "report.json not found"}), 404
+    except subprocess.CalledProcessError as e:
+        return jsonify({"error": f"Failed to regenerate report: {e}"}), 500
+
+@app.route('/news.json')
+def get_news_json():
+    try:
+        return send_from_directory(os.getcwd(), "news.json")
+    except FileNotFoundError:
+        return jsonify({"error": "news.json not found"}), 404
 
 @app.route('/')
 def index():

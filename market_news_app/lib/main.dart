@@ -8,6 +8,7 @@ import 'package:market_news_app/screens/strategy_detail_screen.dart';
 import 'package:market_news_app/screens/economic_calendar_screen.dart';
 import 'package:market_news_app/screens/settings_screen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'screens/news_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,28 +39,65 @@ class MainNavigation extends StatefulWidget {
 class _MainNavigationState extends State<MainNavigation> {
   int _selectedIndex = 0;
 
-  final List<Widget> _screens = [
-    const DashboardScreen(),
-    MarketInsightsScreenPlaceholder(),
-    EconomicCalendarScreen(),
-    SettingsScreen(),
-  ];
+  ReportData? _reportData;
+  String? _error;
+  bool _isLoading = false;
 
-  void _onItemTapped(int index) {
+  @override
+  void initState() {
+    super.initState();
+    _loadReportData();
+  }
+
+  Future<void> _loadReportData() async {
     setState(() {
-      _selectedIndex = index;
+      _isLoading = true;
+      _error = null;
     });
+    try {
+      final response = await http.get(Uri.parse('http://localhost:5000/report.json'));
+      if (response.statusCode == 200) {
+        final jsonString = response.body;
+        final jsonData = json.decode(jsonString);
+        setState(() {
+          _reportData = ReportData.fromJson(jsonData);
+        });
+      } else {
+        setState(() {
+          _error = 'Failed to load report.json from backend (status: [1m${response.statusCode}[0m)';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _error = 'Error loading report.json: $e';
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> widgetOptions = <Widget>[
+      DashboardScreen(),
+      _reportData != null
+          ? MarketInsightsScreen(reportData: _reportData!)
+          : const Center(child: CircularProgressIndicator()),
+      NewsScreen(),
+      _reportData != null
+          ? EconomicCalendarScreen(economicCalendar: _reportData!.economicCalendar)
+          : const Center(child: CircularProgressIndicator()),
+      SettingsScreen(),
+    ];
     return Scaffold(
-      body: _screens[_selectedIndex],
+      body: _error != null
+          ? Center(child: Text(_error!))
+          : widgetOptions[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
-        items: const [
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.dashboard),
             label: 'Dashboard',
@@ -67,6 +105,10 @@ class _MainNavigationState extends State<MainNavigation> {
           BottomNavigationBarItem(
             icon: Icon(Icons.insights),
             label: 'Insights',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.article),
+            label: 'News',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today),
@@ -77,6 +119,12 @@ class _MainNavigationState extends State<MainNavigation> {
             label: 'Settings',
           ),
         ],
+        currentIndex: _selectedIndex,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
       ),
     );
   }

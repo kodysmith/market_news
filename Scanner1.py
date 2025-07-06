@@ -52,7 +52,7 @@ def get_trade_ideas():
 
     # Fetch risk-free rate (using 10-year treasury yield)
     try:
-        tnx = yf.Ticker('^TNX').history(period='1d')['Close'][-1]
+        tnx = yf.Ticker('^TNX').history(period='1d')['Close'].iloc[-1]
         risk_free_rate = tnx / 100  # Convert to decimal
     except Exception:
         risk_free_rate = 0.02 # Default to 2% if cannot fetch
@@ -64,7 +64,7 @@ def get_trade_ideas():
             if history.empty:
                 print(f"Skipping {ticker}: No historical data found.")
                 continue
-            current_price = history['Close'][-1]
+            current_price = history['Close'].iloc[-1]
             expirations = stock.options[:2]
 
             for expiry in expirations:
@@ -85,26 +85,26 @@ def get_trade_ideas():
                     candidate = otm_puts.iloc[(otm_puts['strike'] - target_put_strike).abs().argsort()[:1]].iloc[0]
                     
                     # Estimate probability of success (option expiring OTM)
-                    prob_otm = 1 - black_scholes_cdf(current_price, candidate['strike'], T, risk_free_rate, candidate['impliedVolatility'], 'put')
+                    prob_otm = 1 - black_scholes_cdf(current_price, float(candidate['strike']), T, risk_free_rate, float(candidate['impliedVolatility']), 'put')
 
                     # For a simple credit spread, we need a second leg (bought put) to define max loss.
                     # For now, we'll assume a 5-point wide spread for max loss calculation for simplicity.
                     # In a real scenario, you'd scan for the second leg.
                     assumed_spread_width = 5.0 # Example: assuming a $5 wide spread
-                    max_profit = candidate['bid']
+                    max_profit = float(candidate['bid'])
                     max_loss = assumed_spread_width - max_profit
-                    risk_reward_ratio = max_profit / max_loss if max_loss > 0 else float('inf')
+                    risk_reward_ratio = float(max_profit / max_loss) if max_loss > 0 else float('inf')
 
-                    if prob_otm * 100 >= MIN_PROB_SUCCESS and candidate['bid'] >= MIN_CREDIT_RECEIVED:
+                    if prob_otm * 100 >= MIN_PROB_SUCCESS and float(candidate['bid']) >= MIN_CREDIT_RECEIVED:
                         trade_ideas.append({
                             "ticker": ticker, "strategy": "Bull Put Spread", "expiry": expiry,
-                            "details": f"Sell {candidate['strike']} Put",
-                            "cost": candidate['bid'],
+                            "details": f"Sell {float(candidate['strike'])} Put",
+                            "cost": float(candidate['bid']),
                             "metric_name": "Prob. of Success",
                             "metric_value": f"{prob_otm * 100:.1f}%",
-                            "max_profit": max_profit,
-                            "max_loss": max_loss,
-                            "risk_reward_ratio": risk_reward_ratio
+                            "max_profit": float(max_profit),
+                            "max_loss": float(max_loss),
+                            "risk_reward_ratio": float(risk_reward_ratio)
                         })
 
                 # --- Strategy 2: Bear Call Spread (Bearish) ---
@@ -114,42 +114,42 @@ def get_trade_ideas():
                     candidate = otm_calls.iloc[(otm_calls['strike'] - target_call_strike).abs().argsort()[:1]].iloc[0]
 
                     # Estimate probability of success (option expiring OTM)
-                    prob_otm = 1 - black_scholes_cdf(current_price, candidate['strike'], T, risk_free_rate, candidate['impliedVolatility'], 'call')
+                    prob_otm = 1 - black_scholes_cdf(current_price, float(candidate['strike']), T, risk_free_rate, float(candidate['impliedVolatility']), 'call')
 
                     # For a simple credit spread, we need a second leg (bought call) to define max loss.
                     # For now, we'll assume a 5-point wide spread for max loss calculation for simplicity.
                     # In a real scenario, you'd scan for the second leg.
                     assumed_spread_width = 5.0 # Example: assuming a $5 wide spread
-                    max_profit = candidate['bid']
+                    max_profit = float(candidate['bid'])
                     max_loss = assumed_spread_width - max_profit
-                    risk_reward_ratio = max_profit / max_loss if max_loss > 0 else float('inf')
+                    risk_reward_ratio = float(max_profit / max_loss) if max_loss > 0 else float('inf')
 
-                    if prob_otm * 100 >= MIN_PROB_SUCCESS and candidate['bid'] >= MIN_CREDIT_RECEIVED:
+                    if prob_otm * 100 >= MIN_PROB_SUCCESS and float(candidate['bid']) >= MIN_CREDIT_RECEIVED:
                         trade_ideas.append({
                             "ticker": ticker, "strategy": "Bear Call Spread", "expiry": expiry,
-                            "details": f"Sell {candidate['strike']} Call",
-                            "cost": candidate['bid'],
+                            "details": f"Sell {float(candidate['strike'])} Call",
+                            "cost": float(candidate['bid']),
                             "metric_name": "Prob. of Success",
                             "metric_value": f"{prob_otm * 100:.1f}%",
-                            "max_profit": max_profit,
-                            "max_loss": max_loss,
-                            "risk_reward_ratio": risk_reward_ratio
+                            "max_profit": float(max_profit),
+                            "max_loss": float(max_loss),
+                            "risk_reward_ratio": float(risk_reward_ratio)
                         })
 
                 # --- Strategy 3: Long Straddle (High Volatility) ---
                 atm_strike_row = puts.iloc[(puts['strike'] - current_price).abs().argsort()[:1]]
                 if atm_strike_row.empty:
                     continue
-                atm_strike = atm_strike_row['strike'].iloc[0]
+                atm_strike = float(atm_strike_row['strike'].iloc[0])
                 atm_call = calls[calls['strike'] == atm_strike]
                 atm_put = puts[puts['strike'] == atm_strike]
                 if not atm_call.empty and not atm_put.empty:
-                    cost = atm_call['ask'].iloc[0] + atm_put['ask'].iloc[0]
+                    cost = float(atm_call['ask'].iloc[0]) + float(atm_put['ask'].iloc[0])
                     implied_move = (cost / current_price) * 100
                     trade_ideas.append({
                         "ticker": ticker, "strategy": "Long Straddle", "expiry": expiry,
                         "details": f"Buy {atm_strike} Call & {atm_strike} Put", 
-                        "cost": -cost,
+                        "cost": -float(cost),
                         "metric_name": "Implied Move",
                         "metric_value": f"+/- {implied_move:.2f}%"
                     })
@@ -162,18 +162,18 @@ def get_trade_ideas():
                 if not otm_put_candidate.empty and not otm_call_candidate.empty:
                     otm_put = otm_put_candidate.iloc[(otm_put_candidate['strike'] - target_strangle_put_strike).abs().argsort()[:1]].iloc[0]
                     otm_call = otm_call_candidate.iloc[(otm_call_candidate['strike'] - target_strangle_call_strike).abs().argsort()[:1]].iloc[0]
-                    cost = otm_call['ask'] + otm_put['ask']
+                    cost = float(otm_call['ask']) + float(otm_put['ask'])
                     implied_move = (cost / current_price) * 100
                     trade_ideas.append({
                         "ticker": ticker, "strategy": "Long Strangle", "expiry": expiry,
-                        "details": f"Buy {otm_call['strike']} Call & {otm_put['strike']} Put", 
-                        "cost": -cost,
+                        "details": f"Buy {float(otm_call['strike'])} Call & {float(otm_put['strike'])} Put", 
+                        "cost": -float(cost),
                         "metric_name": "Implied Move",
                         "metric_value": f"+/- {implied_move:.2f}%"
                     })
 
         except Exception as e:
-            trade_ideas.append({"ticker": ticker, "strategy": f"Error: {e}", "details": "", "cost": 0, "metric_name": "", "metric_value": ""})
+            trade_ideas.append({"ticker": ticker, "strategy": f"Error: {e}", "details": "", "cost": 0.0, "metric_name": "", "metric_value": ""})
             
     return trade_ideas
 
