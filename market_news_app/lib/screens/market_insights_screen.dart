@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:market_news_app/models/vix_data.dart';
 import 'package:market_news_app/widgets/daily_strategy_guide.dart';
 import 'package:market_news_app/models/report_data.dart';
+import 'dart:math' as math;
 
 class MarketInsightsScreen extends StatefulWidget {
   final ReportData reportData;
@@ -15,6 +16,18 @@ class MarketInsightsScreen extends StatefulWidget {
 class _MarketInsightsScreenState extends State<MarketInsightsScreen> {
   List<VixData> _vixData = [];
   String? _newsError;
+  String _selectedStrategy = 'All';
+  final List<String> _strategyOptions = [
+    'All',
+    'Covered Call',
+    'Bull Put Spread',
+    'Bear Call Spread',
+    'Long Straddle',
+    'Long Strangle',
+    // Add more as needed
+  ];
+  int _currentPage = 0;
+  static const int _ideasPerPage = 10;
 
   @override
   void initState() {
@@ -26,6 +39,11 @@ class _MarketInsightsScreenState extends State<MarketInsightsScreen> {
   @override
   Widget build(BuildContext context) {
     final report = widget.reportData;
+    final filteredIdeas = _selectedStrategy == 'All'
+        ? report.tradeIdeas
+        : report.tradeIdeas.where((t) => t.strategy == _selectedStrategy).toList();
+    final totalPages = (filteredIdeas.length / _ideasPerPage).ceil();
+    final pageIdeas = filteredIdeas.skip(_currentPage * _ideasPerPage).take(_ideasPerPage).toList();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Market Insights'),
@@ -35,7 +53,96 @@ class _MarketInsightsScreenState extends State<MarketInsightsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const DailyStrategyGuide(),
+            // Strategy Filter Bar
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                child: Row(
+                  children: [
+                    const Text('Filter by strategy:'),
+                    const SizedBox(width: 12),
+                    DropdownButton<String>(
+                      value: _selectedStrategy,
+                      items: _strategyOptions.map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
+                      onChanged: (val) => setState(() => _selectedStrategy = val!),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            // Trade Ideas List with Pagination
+            _buildSectionCard(
+              context,
+              title: 'Actionable Trade Ideas',
+              child: Column(
+                children: [
+                  if (pageIdeas.isEmpty)
+                    const Text('No trade ideas available for this strategy.'),
+                  if (pageIdeas.isNotEmpty)
+                    ...pageIdeas.map((t) => ListTile(
+                          leading: const Icon(Icons.lightbulb, color: Colors.blue),
+                          title: Text('${t.ticker} - ${t.strategy}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                          subtitle: Text('Expiry: ${t.expiry} | ${t.details}'),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              _buildProbabilityBadge(t.metricName, t.metricValue),
+                            ],
+                          ),
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text('${t.ticker} - ${t.strategy}'),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Expiry: ${t.expiry}'),
+                                    Text('Details: ${t.details}'),
+                                    Text('Cost: ${t.cost > 0 ? 'Credit' : 'Debit'} ${t.cost.abs().toStringAsFixed(2)}'),
+                                    if (t.maxProfit != null) Text('Max Profit: ${t.maxProfit}'),
+                                    if (t.maxLoss != null) Text('Max Loss: ${t.maxLoss}'),
+                                    if (t.riskRewardRatio != null) Text('Risk/Reward: ${t.riskRewardRatio!.toStringAsFixed(2)}'),
+                                    if (t.metricName.isNotEmpty) Text('${t.metricName}: ${t.metricValue}'),
+                                    const SizedBox(height: 10),
+                                    Text('Why this strategy?', style: const TextStyle(fontWeight: FontWeight.bold)),
+                                    Text(_explainStrategy(t)),
+                                  ],
+                                ),
+                                actions: [
+                                  TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Close')),
+                                ],
+                              ),
+                            );
+                          },
+                        )),
+                  if (pageIdeas.isNotEmpty && totalPages > 1)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.chevron_left),
+                            onPressed: _currentPage > 0
+                                ? () => setState(() => _currentPage--)
+                                : null,
+                          ),
+                          Text('Page ${_currentPage + 1} of $totalPages'),
+                          IconButton(
+                            icon: const Icon(Icons.chevron_right),
+                            onPressed: _currentPage < totalPages - 1
+                                ? () => setState(() => _currentPage++)
+                                : null,
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
             const SizedBox(height: 20),
             _buildVolatilityCard(context),
             const SizedBox(height: 20),
@@ -69,6 +176,19 @@ class _MarketInsightsScreenState extends State<MarketInsightsScreen> {
   }
 
   Widget _buildVolatilityCard(BuildContext context) {
+    double vix = _vixData.isNotEmpty ? _vixData.first.close : 0;
+    String vixLevel;
+    Color gaugeColor;
+    if (vix < 15) {
+      vixLevel = 'Low';
+      gaugeColor = Colors.green;
+    } else if (vix < 25) {
+      vixLevel = 'Moderate';
+      gaugeColor = Colors.orange;
+    } else {
+      vixLevel = 'High';
+      gaugeColor = Colors.red;
+    }
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -78,12 +198,60 @@ class _MarketInsightsScreenState extends State<MarketInsightsScreen> {
             Text('Volatility Forecast', style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: 10),
             if (_vixData.isNotEmpty)
-              Text('Today\'s VIX: ${_vixData.first.close.toStringAsFixed(2)}', style: Theme.of(context).textTheme.titleLarge),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Today's VIX: ${vix.toStringAsFixed(2)} ($vixLevel)", style: Theme.of(context).textTheme.titleLarge),
+                  const SizedBox(height: 8),
+                  // Gauge graphic
+                  _buildVixGauge(vix, gaugeColor),
+                  const SizedBox(height: 6),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      Text('<15: Low', style: TextStyle(color: Colors.green)),
+                      Text('15-25: Moderate', style: TextStyle(color: Colors.orange)),
+                      Text('>25: High', style: TextStyle(color: Colors.red)),
+                    ],
+                  ),
+                ],
+              ),
             const SizedBox(height: 5),
             if (_vixData.length > 2)
               Text('Next 3 Days: ${_vixData.sublist(0, 3).map((v) => v.close.toStringAsFixed(2)).join(', ')}', style: Theme.of(context).textTheme.bodyMedium),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildVixGauge(double vix, Color color) {
+    // Gauge: horizontal bar, 0-40 scale
+    double percent = (vix / 40).clamp(0.0, 1.0);
+    return Container(
+      height: 24,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.grey[200],
+      ),
+      child: Stack(
+        children: [
+          FractionallySizedBox(
+            widthFactor: percent,
+            child: Container(
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+          Positioned.fill(
+            child: Center(
+              child: Text('${vix.toStringAsFixed(2)}', style: TextStyle(color: color, fontWeight: FontWeight.bold)),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -214,6 +382,54 @@ class _MarketInsightsScreenState extends State<MarketInsightsScreen> {
         },
       )).toList(),
     );
+  }
+
+  String _explainStrategy(TradeIdea t) {
+    // Simple explanations based on strategy type
+    if (t.strategy.contains('Covered Call')) {
+      return 'A covered call generates income from stocks you already own. It is best used in neutral to slightly bullish markets.';
+    } else if (t.strategy.contains('Bull Put Spread')) {
+      return 'A bull put spread profits if the stock stays above the short put strike. It is a bullish, limited-risk strategy.';
+    } else if (t.strategy.contains('Bear Call Spread')) {
+      return 'A bear call spread profits if the stock stays below the short call strike. It is a bearish, limited-risk strategy.';
+    } else if (t.strategy.contains('Long Straddle')) {
+      return 'A long straddle profits from large moves in either direction. Use when expecting high volatility.';
+    } else if (t.strategy.contains('Long Strangle')) {
+      return 'A long strangle profits from large moves in either direction, but is cheaper than a straddle. Use when expecting high volatility.';
+    }
+    return 'This strategy is selected based on current market conditions and risk/reward profile.';
+  }
+
+  Widget _buildProbabilityBadge(String metricName, String metricValue) {
+    if (metricName.toLowerCase().contains('prob')) {
+      // Extract numeric value for color cue
+      final percent = double.tryParse(metricValue.replaceAll(RegExp(r'[^0-9\.]'), '')) ?? 0;
+      Color color;
+      if (percent >= 80) {
+        color = Colors.green;
+      } else if (percent >= 65) {
+        color = Colors.orange;
+      } else {
+        color = Colors.red;
+      }
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.15),
+          border: Border.all(color: color, width: 1.5),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Text(
+          metricValue,
+          style: TextStyle(
+            color: color,
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
+        ),
+      );
+    }
+    return const SizedBox.shrink();
   }
 }
 

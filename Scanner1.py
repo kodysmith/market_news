@@ -38,16 +38,25 @@ def black_scholes_cdf(S, K, T, r, sigma, option_type):
 
 def get_trade_ideas():
     """
-    Scans for various option strategies based on configured risk parameters.
+    Scans for various option strategies based on configured risk parameters, restricted to US stocks (NYSE/NASDAQ) with liquid options.
     """
     dynamic_tickers = get_most_active_tickers(num_tickers=config['NUM_MOST_ACTIVE_TICKERS'])
     TICKERS = list(set(config['FIXED_TICKERS'] + dynamic_tickers))
-    TICKERS = [ticker.strip() for ticker in TICKERS] # Clean up tickers
+    TICKERS = [ticker.strip() for ticker in TICKERS]
 
-    if not TICKERS:
-        print("No tickers to scan. Exiting.")
+    # Filter tickers to only US stocks (NYSE/NASDAQ) with liquid options
+    us_tickers = []
+    for ticker in TICKERS:
+        try:
+            info = yf.Ticker(ticker).info
+            if info.get('exchange') in ('NYSE', 'NASDAQ') and info.get('options'):
+                us_tickers.append(ticker)
+        except Exception:
+            continue
+    if not us_tickers:
+        print("No US tickers with liquid options to scan. Exiting.")
         return []
-        
+
     trade_ideas = []
 
     # Fetch risk-free rate (using 10-year treasury yield)
@@ -57,7 +66,7 @@ def get_trade_ideas():
     except Exception:
         risk_free_rate = 0.02 # Default to 2% if cannot fetch
 
-    for ticker in TICKERS:
+    for ticker in us_tickers:
         try:
             stock = yf.Ticker(ticker)
             history = stock.history(period='1d')
@@ -171,6 +180,12 @@ def get_trade_ideas():
                         "metric_name": "Implied Move",
                         "metric_value": f"+/- {implied_move:.2f}%"
                     })
+
+                # --- Strategy 5: Covered Call (if holding shares) ---
+                # --- Strategy 6: Selling Naked Puts/Calls (if margin) ---
+                # --- Strategy 7: Delta Hedging (if implemented) ---
+                # --- Strategy 8: Gamma Scalping (if implemented) ---
+                # Only include these strategies in trade_ideas
 
         except Exception as e:
             trade_ideas.append({"ticker": ticker, "strategy": f"Error: {e}", "details": "", "cost": 0.0, "metric_name": "", "metric_value": ""})
