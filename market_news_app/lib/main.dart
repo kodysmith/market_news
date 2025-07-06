@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:market_news_app/models/report_data.dart';
 import 'package:market_news_app/screens/market_insights_screen.dart';
-import 'package:market_news_app/screens/gamma_scalping_screen.dart';
 import 'package:market_news_app/screens/market_sentiment_detail_screen.dart';
 import 'package:market_news_app/screens/strategy_detail_screen.dart';
 import 'package:market_news_app/screens/economic_calendar_screen.dart';
@@ -102,6 +101,7 @@ class SimplifiedDashboard extends StatefulWidget {
 class _SimplifiedDashboardState extends State<SimplifiedDashboard> {
   ReportData? _reportData;
   String? _error;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -110,15 +110,30 @@ class _SimplifiedDashboardState extends State<SimplifiedDashboard> {
   }
 
   Future<void> _loadReportData() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
     try {
-      final jsonString = await rootBundle.loadString('assets/results.json');
-      final data = json.decode(jsonString);
-      setState(() {
-        _reportData = ReportData.fromJson(data);
-      });
+      final response = await http.get(Uri.parse('http://localhost:5000/report.json'));
+      if (response.statusCode == 200) {
+        final jsonString = response.body;
+        final jsonData = json.decode(jsonString);
+        setState(() {
+          _reportData = ReportData.fromJson(jsonData);
+        });
+      } else {
+        setState(() {
+          _error = 'Failed to load report.json from backend (status: [1m${response.statusCode}[0m)';
+        });
+      }
     } catch (e) {
       setState(() {
-        _error = "Error loading or parsing data: $e";
+        _error = 'Error loading report.json: $e';
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
       });
     }
   }
@@ -248,9 +263,14 @@ class _SimplifiedDashboardState extends State<SimplifiedDashboard> {
       children: [
         const Text(
           'Top Strategies for Today',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 4),
+        Text(
+          'Best ways to trade today, ranked by edge/probability.',
+          style: TextStyle(fontSize: 14, color: Colors.blueGrey),
+        ),
+        const SizedBox(height: 16),
         ...strategies.take(3).map((strategy) => _buildStrategyCard(context, strategy)),
       ],
     );
@@ -259,9 +279,11 @@ class _SimplifiedDashboardState extends State<SimplifiedDashboard> {
   Widget _buildStrategyCard(BuildContext context, TopStrategy strategy) {
     Color color = _getStrategyColor(strategy.name);
     IconData icon = _getStrategyIcon(strategy.name);
+    String? why = strategy.topTickers.isNotEmpty ? strategy.topTickers.first.reason : null;
     return Card(
-      elevation: 3,
-      margin: const EdgeInsets.only(bottom: 12),
+      elevation: 6,
+      margin: const EdgeInsets.only(bottom: 16),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: InkWell(
         onTap: () {
           Navigator.push(
@@ -272,37 +294,51 @@ class _SimplifiedDashboardState extends State<SimplifiedDashboard> {
           );
         },
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(20.0),
           child: Row(
             children: [
-              Icon(icon, color: color, size: 32),
-              const SizedBox(width: 16),
+              Icon(icon, color: color, size: 36),
+              const SizedBox(width: 18),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       strategy.name,
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color),
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: color),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       strategy.description,
-                      style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
+                      style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
                     ),
+                    if (why != null && why.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: color.withOpacity(0.13),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          'Why: $why',
+                          style: TextStyle(fontSize: 13, color: color, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
               const SizedBox(width: 12),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(12),
+                  color: color.withOpacity(0.18),
+                  borderRadius: BorderRadius.circular(14),
                 ),
                 child: Text(
                   'Score: ${strategy.score.toStringAsFixed(1)}',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: color),
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: color),
                 ),
               ),
             ],

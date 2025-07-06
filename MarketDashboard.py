@@ -22,8 +22,8 @@ def get_market_dashboard():
         try:
             data = yf.Ticker(ticker).history(period='2d')
             if len(data) > 1:
-                price = data['Close'][-1]
-                prev_price = data['Close'][-2]
+                price = data['Close'].iloc[-1]
+                prev_price = data['Close'].iloc[-2]
                 change = price - prev_price
                 
                 if change > 0:

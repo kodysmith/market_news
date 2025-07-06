@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:market_news_app/models/vix_data.dart';
 import 'package:market_news_app/models/economic_event.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class FmpApiService {
   final String _apiKey;

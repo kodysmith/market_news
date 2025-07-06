@@ -1,7 +1,9 @@
 from flask import Flask, send_from_directory, jsonify
 import os
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)  # This will allow all domains. For production, restrict origins!
 
 @app.route('/report.json')
 def get_report_json():
