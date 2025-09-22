@@ -255,12 +255,12 @@ class QuantBot:
             # For now, simulate data updates
             await self.data_manager.update_real_time_data(universe)
 
-                # Update news and sentiment
-                if self.config['data_sources']['news_feeds']['enabled']:
-                    await self.update_news_sentiment()
+            # Update news and sentiment
+            if self.config['data_sources']['news_feeds']['enabled']:
+                await self.update_news_sentiment()
 
-                # Update economic calendar data
-                await self.update_economic_calendar()
+            # Update economic calendar data
+            await self.update_economic_calendar()
 
             logger.info("✅ Market data updated")
 

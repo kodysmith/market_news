@@ -18,23 +18,63 @@ from typing import Dict, List, Any, Optional
 from pathlib import Path
 import threading
 import time
+import os
+
+# Firebase imports for production
+try:
+    import firebase_admin
+    from firebase_admin import credentials, firestore
+    FIREBASE_AVAILABLE = True
+except ImportError:
+    FIREBASE_AVAILABLE = False
+    logging.warning("Firebase not available, using SQLite only")
 
 logger = logging.getLogger(__name__)
 
 class QuantBotDataBroker:
     """
     Data broker that manages QuantBot data storage and retrieval
+    Supports both SQLite (development) and Firestore (production)
     """
 
     def __init__(self, db_path: str = None):
-        if db_path is None:
-            # Use QuantEngine directory as base
-            quant_engine_dir = Path(__file__).parent
-            self.db_path = quant_engine_dir / "quantbot_data.db"
+        # Detect production mode
+        self.production_mode = os.getenv('QUANT_ENV', '').lower() in ['production', 'prod', 'live']
+
+        if self.production_mode and FIREBASE_AVAILABLE:
+            # Use Firebase Firestore in production
+            self.use_firestore = True
+            self._initialize_firebase()
+            logger.info("QuantBotDataBroker: Using Firestore (Production Mode)")
         else:
-            self.db_path = Path(db_path)
-        self.lock = threading.Lock()
-        self._initialize_database()
+            # Use SQLite in development
+            self.use_firestore = False
+            if db_path is None:
+                # Use QuantEngine directory as base
+                quant_engine_dir = Path(__file__).parent
+                self.db_path = quant_engine_dir / "quantbot_data.db"
+            else:
+                self.db_path = Path(db_path)
+            self.lock = threading.Lock()
+            self._initialize_database()
+            logger.info(f"QuantBotDataBroker: Using SQLite (Development Mode) - {self.db_path}")
+
+    def _initialize_firebase(self):
+        """Initialize Firebase for production use"""
+        try:
+            # Check if Firebase is already initialized
+            if not firebase_admin._apps:
+                # For production, use environment variables or service account
+                # In production, you'd typically use GOOGLE_APPLICATION_CREDENTIALS
+                firebase_admin.initialize_app()
+            self.db = firestore.client()
+        except Exception as e:
+            logger.error(f"Failed to initialize Firebase: {e}")
+            # Fallback to SQLite
+            self.use_firestore = False
+            self.db_path = Path(__file__).parent / "quantbot_data_fallback.db"
+            self.lock = threading.Lock()
+            self._initialize_database()
 
     def _initialize_database(self):
         """Create database tables and indexes"""
@@ -165,71 +205,109 @@ class QuantBotDataBroker:
         if not opportunities:
             return
 
-        with self.lock:
-            conn = sqlite3.connect(self.db_path)
-            cursor = conn.cursor()
+        if self.use_firestore:
+            # Save to Firestore
+            batch = self.db.batch()
+            opportunities_ref = self.db.collection('opportunities')
 
             for opp in opportunities:
-                cursor.execute('''
-                    INSERT OR REPLACE INTO opportunities
-                    (id, symbol, strategy, direction, entry_price, expected_return,
-                     expected_volatility, confidence, timeframe, regime, signal_strength,
-                     risk_reward_ratio, rank, timestamp, created_at, updated_at)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                ''', (
-                    opp.get('id'),
-                    opp.get('symbol'),
-                    opp.get('strategy'),
-                    opp.get('direction'),
-                    opp.get('entry_price'),
-                    opp.get('expected_return'),
-                    opp.get('expected_volatility'),
-                    opp.get('confidence'),
-                    opp.get('timeframe'),
-                    opp.get('regime'),
-                    opp.get('signal_strength'),
-                    opp.get('risk_reward_ratio'),
-                    opp.get('rank'),
-                    opp.get('timestamp'),
-                    time.time(),
-                    time.time()
-                ))
+                doc_id = opp.get('id', f"{opp.get('symbol')}_{opp.get('timestamp')}")
+                doc_ref = opportunities_ref.document(doc_id)
+                opp_data = {
+                    **opp,
+                    'created_at': firestore.SERVER_TIMESTAMP,
+                    'updated_at': firestore.SERVER_TIMESTAMP
+                }
+                batch.set(doc_ref, opp_data)
 
-            conn.commit()
-            conn.close()
+            batch.commit()
+            logger.info(f"💾 Saved {len(opportunities)} opportunities to Firestore")
+        else:
+            # Save to SQLite
+            with self.lock:
+                conn = sqlite3.connect(self.db_path)
+                cursor = conn.cursor()
 
-        logger.info(f"💾 Saved {len(opportunities)} opportunities to database")
+                for opp in opportunities:
+                    cursor.execute('''
+                        INSERT OR REPLACE INTO opportunities
+                        (id, symbol, strategy, direction, entry_price, expected_return,
+                         expected_volatility, confidence, timeframe, regime, signal_strength,
+                         risk_reward_ratio, rank, timestamp, created_at, updated_at)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ''', (
+                        opp.get('id'),
+                        opp.get('symbol'),
+                        opp.get('strategy'),
+                        opp.get('direction'),
+                        opp.get('entry_price'),
+                        opp.get('expected_return'),
+                        opp.get('expected_volatility'),
+                        opp.get('confidence'),
+                        opp.get('timeframe'),
+                        opp.get('regime'),
+                        opp.get('signal_strength'),
+                        opp.get('risk_reward_ratio'),
+                        opp.get('rank'),
+                        opp.get('timestamp'),
+                        time.time(),
+                        time.time()
+                    ))
+
+                conn.commit()
+                conn.close()
+
+            logger.info(f"💾 Saved {len(opportunities)} opportunities to SQLite")
 
     def get_opportunities(self, limit: int = 50, symbol: str = None) -> List[Dict[str, Any]]:
         """Retrieve trading opportunities from database"""
-        with self.lock:
-            conn = sqlite3.connect(self.db_path)
-            cursor = conn.cursor()
+        if self.use_firestore:
+            # Retrieve from Firestore
+            opportunities_ref = self.db.collection('opportunities')
+
+            query = opportunities_ref.order_by('timestamp', direction=firestore.Query.DESCENDING).limit(limit)
 
             if symbol:
-                cursor.execute('''
-                    SELECT * FROM opportunities
-                    WHERE symbol = ?
-                    ORDER BY timestamp DESC
-                    LIMIT ?
-                ''', (symbol, limit))
-            else:
-                cursor.execute('''
-                    SELECT * FROM opportunities
-                    ORDER BY timestamp DESC
-                    LIMIT ?
-                ''', (limit,))
+                query = query.where('symbol', '==', symbol)
 
-            rows = cursor.fetchall()
-            conn.close()
+            docs = query.stream()
+            opportunities = []
+            for doc in docs:
+                opp_data = doc.to_dict()
+                opp_data['id'] = doc.id
+                opportunities.append(opp_data)
 
-        # Convert to dict format
-        opportunities = []
-        for row in rows:
-            opportunities.append({
-                'id': row[0],
-                'symbol': row[1],
-                'strategy': row[2],
+            return opportunities
+        else:
+            # Retrieve from SQLite
+            with self.lock:
+                conn = sqlite3.connect(self.db_path)
+                cursor = conn.cursor()
+
+                if symbol:
+                    cursor.execute('''
+                        SELECT * FROM opportunities
+                        WHERE symbol = ?
+                        ORDER BY timestamp DESC
+                        LIMIT ?
+                    ''', (symbol, limit))
+                else:
+                    cursor.execute('''
+                        SELECT * FROM opportunities
+                        ORDER BY timestamp DESC
+                        LIMIT ?
+                    ''', (limit,))
+
+                rows = cursor.fetchall()
+                conn.close()
+
+            # Convert to dict format
+            opportunities = []
+            for row in rows:
+                opportunities.append({
+                    'id': row[0],
+                    'symbol': row[1],
+                    'strategy': row[2],
                 'direction': row[3],
                 'entry_price': row[4],
                 'expected_return': row[5],

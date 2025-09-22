@@ -23,6 +23,7 @@ import json
 from pathlib import Path
 from datetime import datetime
 import logging
+from quant_bot import QuantBot
 
 # Configure logging
 logging.basicConfig(
@@ -38,7 +39,7 @@ logger = logging.getLogger('QuantBot')
 # Add QuantEngine to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from quant_bot import QuantBot
+
 
 
 class QuantBotRunner:

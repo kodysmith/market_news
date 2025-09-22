@@ -10,6 +10,7 @@ robustness testing, and reporting.
 import argparse
 import logging
 import sys
+import time
 from pathlib import Path
 from datetime import datetime
 import json
@@ -24,6 +25,7 @@ from engine.backtest_engine.backtester import VectorizedBacktester
 from engine.robustness_lab.robustness_tester import RobustnessTester
 from engine.reporting_notes.report_generator import ReportGenerator
 from research.research_agent import ResearchAgent
+from data_broker import QuantBotDataBroker
 
 
 def setup_logging(config: dict):
@@ -38,6 +40,28 @@ def setup_logging(config: dict):
         ]
     )
 
+
+def get_data_broker():
+    """Get data broker instance (production or development)"""
+    return QuantBotDataBroker()
+
+def save_to_production_database(broker: QuantBotDataBroker, data_type: str, data: dict):
+    """Save data to production database if in production mode"""
+    if broker.production_mode:
+        try:
+            if data_type == 'opportunities':
+                broker.save_opportunities(data.get('opportunities', []))
+            elif data_type == 'analysis':
+                broker.save_market_analysis(data)
+            elif data_type == 'signals':
+                broker.save_trading_signals(data.get('signals', []))
+            elif data_type == 'performance':
+                broker.save_performance_metrics(data)
+            logging.info(f"💾 Saved {data_type} data to production database")
+        except Exception as e:
+            logging.error(f"❌ Failed to save {data_type} to production database: {e}")
+    else:
+        logging.debug(f"📝 Skipping production database save (development mode)")
 
 def load_config(config_path: str = "config/config.yaml") -> dict:
     """Load configuration from file"""
@@ -156,6 +180,31 @@ def run_research_cycle(config: dict, objectives: list = None):
     print(f"   - Strategies tested: {results['strategies_tested']}")
     print(f"   - Strategies approved: {results['strategies_approved']}")
     print(f"   - Reports generated: {len(results['reports_generated'])}")
+
+    # Save approved strategies to production database
+    if results['strategies_approved'] > 0:
+        broker = get_data_broker()
+        # Convert approved strategies to opportunities format
+        opportunities = []
+        for strategy_name in results.get('approved_strategies', []):
+            opportunities.append({
+                'id': f"strategy_{strategy_name}_{int(time.time())}",
+                'symbol': 'MULTI-ASSET',  # Strategies can apply to multiple assets
+                'strategy': strategy_name,
+                'direction': 'neutral',  # Most strategies are market neutral
+                'entry_price': None,  # Strategy-level, not position-level
+                'expected_return': results.get('expected_returns', {}).get(strategy_name, 0.15),
+                'expected_volatility': results.get('volatility_targets', {}).get(strategy_name, 0.12),
+                'confidence': results.get('confidence_scores', {}).get(strategy_name, 0.8),
+                'timeframe': 'daily',
+                'regime': 'all_market_conditions',
+                'signal_strength': results.get('sharpe_ratios', {}).get(strategy_name, 1.5),
+                'risk_reward_ratio': 2.0,
+                'rank': 1,
+                'timestamp': time.time() * 1000
+            })
+
+        save_to_production_database(broker, 'opportunities', {'opportunities': opportunities})
 
     return results
 
