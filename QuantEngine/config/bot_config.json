@@ -1,0 +1,71 @@
+{
+  "data_sources": {
+    "yahoo_finance": {
+      "enabled": true,
+      "update_interval": 60
+    },
+    "news_feeds": {
+      "enabled": true,
+      "update_interval": 300
+    },
+    "economic_data": {
+      "enabled": true,
+      "update_interval": 3600
+    }
+  },
+  "strategy_research": {
+    "enabled": true,
+    "research_interval": 3600,
+    "max_strategies": 50,
+    "min_sharpe_ratio": 1.0,
+    "max_drawdown_limit": 0.15
+  },
+  "market_monitoring": {
+    "enabled": true,
+    "regime_check_interval": 900,
+    "opportunity_scan_interval": 300
+  },
+  "risk_management": {
+    "enabled": true,
+    "max_portfolio_risk": 0.02,
+    "max_single_position": 0.05,
+    "circuit_breaker_threshold": 0.1
+  },
+  "learning": {
+    "enabled": true,
+    "performance_window": 252,
+    "adaptation_threshold": 0.05
+  },
+  "universe": {
+    "equities": [
+      "SPY",
+      "QQQ",
+      "IWM",
+      "VTI",
+      "BND"
+    ],
+    "sectors": [
+      "XLE",
+      "XLF",
+      "XLK",
+      "XLV",
+      "XLY",
+      "XLI",
+      "XLC",
+      "XLU",
+      "XLB",
+      "XLRE"
+    ],
+    "leveraged": [
+      "TQQQ",
+      "SQQQ",
+      "UVXY",
+      "SVXY"
+    ]
+  },
+  "operating_hours": {
+    "market_open": "09:30",
+    "market_close": "16:00",
+    "timezone": "US/Eastern"
+  }
+}

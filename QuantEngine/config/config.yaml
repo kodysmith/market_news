@@ -1,0 +1,131 @@
+# AI Quant Trading System Configuration
+defaults:
+  - _self_
+
+# System settings
+system:
+  name: "AI Quant v1"
+  version: "0.1.0"
+  log_level: "INFO"
+  random_seed: 42
+
+# Data settings
+data:
+  base_path: "${oc.env:QUANT_DATA_PATH,data}"
+  cache_dir: "${data.base_path}/cache"
+  raw_dir: "${data.base_path}/raw"
+  processed_dir: "${data.base_path}/processed"
+
+  # Market data sources
+  sources:
+    yahoo_finance: true
+    alpha_vantage: false
+    polygon: false
+
+  # Universe settings
+  universe:
+    equities: ["SPY", "QQQ", "IWM", "VTI"]
+    leveraged: ["TQQQ", "UVXY", "SOXL", "SOXS"]
+    sectors: ["XLE", "XLF", "XLK", "XLV", "XLY", "XLB", "XLI", "XLRE", "XLU"]
+
+# Backtesting settings
+backtest:
+  start_date: "2010-01-01"
+  end_date: "2024-01-01"
+  initial_capital: 1000000
+  commission_bps: 2.0
+  slippage_bps: 1.0
+
+  # Walk-forward optimization
+  walk_forward:
+    train_window_months: 24
+    test_window_months: 6
+    step_months: 3
+    min_train_periods: 12
+
+  # Robustness testing
+  robustness:
+    num_bootstraps: 1000
+    confidence_level: 0.95
+    regime_splits: ["bull", "bear", "chop"]
+    oos_sharpe_threshold: 0.8
+    max_dd_threshold: 0.25
+
+# Risk management
+risk:
+  vol_target_ann: 0.12
+  max_dd_limit: 0.20
+  max_position_size: 0.10
+  max_sector_exposure: 0.30
+  kelly_fraction: 0.5
+
+  # Options overlay settings
+  options:
+    target_delta: -0.15
+    max_dte: 90
+    min_dte: 30
+    roll_trigger_delta: 0.08
+    budget_pct_monthly: 0.015
+
+# Research agent settings
+research:
+  llm_provider: "openai"  # or "local"
+  model: "gpt-4"
+  temperature: 0.7
+  max_tokens: 2000
+
+  # Hypothesis generation
+  hypotheses_per_run: 10
+  max_strategies_per_day: 5
+  feature_catalog_path: "config/feature_catalog.yaml"
+
+  # Validation thresholds
+  validation:
+    min_sharpe_oos: 0.8
+    min_t_stat: 2.0
+    max_turnover: 2.0
+    min_capacity: 1000000
+
+# Live trading settings
+live:
+  enabled: false
+  paper_trading: true
+  max_orders_per_day: 10
+  min_order_size: 1000
+
+  # Risk limits
+  risk_limits:
+    daily_dd_limit: 0.02
+    weekly_dd_limit: 0.05
+    monthly_dd_limit: 0.10
+
+  # Position limits
+  position_limits:
+    max_positions: 20
+    max_single_position: 0.05
+    max_sector_positions: 5
+
+# Reporting settings
+reporting:
+  output_dir: "reports"
+  template_dir: "templates"
+  formats: ["markdown", "pdf", "html"]
+
+  # Dashboard settings
+  dashboard:
+    update_frequency: "daily"
+    metrics: ["sharpe", "max_dd", "win_rate", "profit_factor"]
+    charts: ["equity_curve", "drawdown", "exposure", "returns_dist"]
+
+# Performance monitoring
+monitoring:
+  enable_alerts: true
+  alert_channels: ["email", "slack"]
+  drift_detection: true
+  data_freshness_check: true
+
+  # Alert thresholds
+  alerts:
+    data_delay_hours: 24
+    feature_drift_threshold: 0.1
+    strategy_degradation_threshold: 0.2

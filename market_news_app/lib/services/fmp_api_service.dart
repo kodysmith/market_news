@@ -2,16 +2,17 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:market_news_app/models/vix_data.dart';
 import 'package:market_news_app/models/economic_event.dart';
+import '../main.dart' show apiBaseUrl;
 
 class FmpApiService {
   final String _apiKey;
 
   FmpApiService(this._apiKey);
-  static const String _baseUrl = 'https://financialmodelingprep.com/api/v3';
+  // static const String _baseUrl = 'https://financialmodelingprep.com/api/v3';
 
   Future<List<VixData>> fetchVixData({http.Client? client}) async {
     client ??= http.Client();
-    final response = await client.get(Uri.parse('$_baseUrl/historical-price-full/VIX?apikey=$_apiKey'));
+    final response = await client.get(Uri.parse('${apiBaseUrl}/historical-price-full/VIX?apikey=$_apiKey'));
 
     if (response.statusCode == 200) {
       if (response.body.trim() == '{}') {
@@ -42,7 +43,7 @@ class FmpApiService {
     final String fromDate = "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
     final String toDate = "${sevenDaysLater.year}-${sevenDaysLater.month.toString().padLeft(2, '0')}-${sevenDaysLater.day.toString().padLeft(2, '0')}";
 
-    final response = await client.get(Uri.parse('$_baseUrl/economic-calendar?from=$fromDate&to=$toDate&apikey=$_apiKey'));
+    final response = await client.get(Uri.parse('${apiBaseUrl}/economic-calendar?from=$fromDate&to=$toDate&apikey=$_apiKey'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);

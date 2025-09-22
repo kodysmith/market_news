@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "499631561531",
+    "project_id": "kardova-capital",
+    "storage_bucket": "kardova-capital.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:499631561531:android:b26ec5a0faf913bfdf351e",
+        "android_client_info": {
+          "package_name": "com.example.market_news_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_n1T2gIYcBDVbYfXGImzQna_KnGOxqd0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

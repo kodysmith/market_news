@@ -1,0 +1,44 @@
+{
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run build"
+      ],
+      "runtimeEnvironmentVariables": {
+        "FMP_API_KEY": "4c57b61a53f1578b5d1711ea76fb262e",
+        "API_SECRET_KEY": "b7e2f8c4e1a94e2b8c9d4e7f2a1b3c4d"
+      }
+    }
+  ],
+  "hosting": {
+    "public": "../market_news_app/build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
+  "emulators": {
+    "functions": {
+      "port": 5002
+    },
+    "ui": {
+      "enabled": true,
+      "port": 4002
+    }
+  }
+} 

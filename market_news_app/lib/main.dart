@@ -9,11 +9,56 @@ import 'package:market_news_app/screens/economic_calendar_screen.dart';
 import 'package:market_news_app/screens/settings_screen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'screens/news_screen.dart';
+import 'dart:math' as math;
+import 'package:market_news_app/models/vix_data.dart';
+import 'dart:ui';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+
+// Set the API base URL here for easy switching between local, staging, and production
+const String apiBaseUrl = 'https://api-hvi4gdtdka-uc.a.run.app'; // TODO: Update this when moving to a custom domain
+const String apiSecretKey = 'b7e2f8c4e1a94e2b8c9d4e7f2a1b3c4d';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  
   await dotenv.load(fileName: ".env");
+
+  // Initialize Firebase Messaging (Android)
+  await _initFirebaseMessaging();
+
   runApp(const MyApp());
+}
+
+Future<void> _initFirebaseMessaging() async {
+  // Skip Firebase messaging initialization for web to avoid service worker errors
+  if (kIsWeb) {
+    print('Skipping Firebase messaging for web development');
+    return;
+  }
+  
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  // Request permission (not strictly needed for Android, but good practice)
+  await messaging.requestPermission();
+
+  // Get the token
+  String? token = await messaging.getToken();
+  print('FCM Token: ' + (token ?? 'null'));
+
+  // Optionally: handle foreground messages
+  FirebaseMessaging.onMessage.listen((message) {
+    print('Received a foreground message: \n');
+    print('Title: \${message.notification?.title}');
+    print('Body: \${message.notification?.body}');
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -50,28 +95,44 @@ class _MainNavigationState extends State<MainNavigation> {
   }
 
   Future<void> _loadReportData() async {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
       _error = null;
     });
     try {
-      final response = await http.get(Uri.parse('http://localhost:5000/report.json'));
+      final response = await http.get(
+        Uri.parse('$apiBaseUrl/report.json'),
+        headers: {'x-api-key': apiSecretKey},
+      );
+      if (!mounted) return;
       if (response.statusCode == 200) {
         final jsonString = response.body;
         final jsonData = json.decode(jsonString);
-        setState(() {
-          _reportData = ReportData.fromJson(jsonData);
-        });
+        if (jsonData == null || jsonData is! Map<String, dynamic>) {
+          if (!mounted) return;
+          setState(() {
+            _error = 'Received invalid data from backend.';
+          });
+        } else {
+          if (!mounted) return;
+          setState(() {
+            _reportData = ReportData.fromJson(jsonData);
+          });
+        }
       } else {
+        if (!mounted) return;
         setState(() {
-          _error = 'Failed to load report.json from backend (status: [1m${response.statusCode}[0m)';
+          _error = 'Failed to load report.json from backend (status: ${response.statusCode})';
         });
       }
     } catch (e) {
+      if (!mounted) return;
       setState(() {
-        _error = 'Error loading report.json: $e';
+        _error = 'Unable to connect to backend. Please check your connection and try again.\n\nDetails: $e';
       });
     } finally {
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
@@ -93,7 +154,19 @@ class _MainNavigationState extends State<MainNavigation> {
     ];
     return Scaffold(
       body: _error != null
-          ? Center(child: Text(_error!))
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(_error!, textAlign: TextAlign.center, style: TextStyle(color: Colors.red)),
+                  SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: _loadReportData,
+                    child: Text('Retry'),
+                  ),
+                ],
+              ),
+            )
           : widgetOptions[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -158,28 +231,44 @@ class _SimplifiedDashboardState extends State<SimplifiedDashboard> {
   }
 
   Future<void> _loadReportData() async {
+    if (!mounted) return;
     setState(() {
       _isLoading = true;
       _error = null;
     });
     try {
-      final response = await http.get(Uri.parse('http://localhost:5000/report.json'));
+      final response = await http.get(
+        Uri.parse('$apiBaseUrl/report.json'),
+        headers: {'x-api-key': apiSecretKey},
+      );
+      if (!mounted) return;
       if (response.statusCode == 200) {
         final jsonString = response.body;
         final jsonData = json.decode(jsonString);
-        setState(() {
-          _reportData = ReportData.fromJson(jsonData);
-        });
+        if (jsonData == null || jsonData is! Map<String, dynamic>) {
+          if (!mounted) return;
+          setState(() {
+            _error = 'Received invalid data from backend.';
+          });
+        } else {
+          if (!mounted) return;
+          setState(() {
+            _reportData = ReportData.fromJson(jsonData);
+          });
+        }
       } else {
+        if (!mounted) return;
         setState(() {
-          _error = 'Failed to load report.json from backend (status: [1m${response.statusCode}[0m)';
+          _error = 'Failed to load report.json from backend (status: ${response.statusCode})';
         });
       }
     } catch (e) {
+      if (!mounted) return;
       setState(() {
-        _error = 'Error loading report.json: $e';
+        _error = 'Unable to connect to backend. Please check your connection and try again.\n\nDetails: $e';
       });
     } finally {
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
@@ -191,7 +280,17 @@ class _SimplifiedDashboardState extends State<SimplifiedDashboard> {
     if (_error != null) {
       return Scaffold(
         body: Center(
-          child: Text(_error!),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(_error!, textAlign: TextAlign.center, style: TextStyle(color: Colors.red)),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _loadReportData,
+                child: Text('Retry'),
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -202,19 +301,29 @@ class _SimplifiedDashboardState extends State<SimplifiedDashboard> {
         ),
       );
     }
-    try {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Market News'),
-        ),
-        body: SingleChildScrollView(
+    final vixData = _reportData!.vixData;
+    final indices = _reportData!.indices;
+    final sentiment = _reportData!.marketSentiment;
+    final topStrategies = _reportData!.topStrategies;
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Market News'),
+      ),
+      body: RefreshIndicator(
+        onRefresh: _loadReportData,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildSentimentCard(context),
+              _buildMarketDirectionCard(sentiment),
               const SizedBox(height: 20),
-              _buildTopStrategies(context),
+              _buildVolatilityTrendCard(vixData),
+              const SizedBox(height: 20),
+              _buildFuturesCard(indices),
+              const SizedBox(height: 20),
+              _buildTopStrategyTypesCard(topStrategies),
               const SizedBox(height: 20),
               _buildIndicatorsCard(context),
               const SizedBox(height: 20),
@@ -230,165 +339,6 @@ class _SimplifiedDashboardState extends State<SimplifiedDashboard> {
                   child: const Text('View Market Insights'),
                 ),
               ),
-              const SizedBox(height: 20),
-              _buildTradeIdeasList(context),
-            ],
-          ),
-        ),
-      );
-    } catch (e) {
-      return Scaffold(
-        body: Center(
-          child: Text('Error: $e'),
-        ),
-      );
-    }
-  }
-
-  Widget _buildSentimentCard(BuildContext context) {
-    try {
-      return Card(
-        child: InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MarketSentimentDetailScreen(
-                  marketSentiment: _reportData!.marketSentiment,
-                ),
-              ),
-            );
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Market Sentiment',
-                        style: Theme.of(context).textTheme.headlineSmall,
-                      ),
-                    ),
-                    Icon(
-                      Icons.info_outline,
-                      color: Colors.grey.shade600,
-                      size: 20,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  _reportData!.marketSentiment.sentiment,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Tap for detailed analysis',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade600,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    } catch (e) {
-      return Text("Error in Sentiment Card: $e");
-    }
-  }
-
-  Widget _buildTopStrategies(BuildContext context) {
-    final strategies = _reportData!.topStrategies;
-    if (strategies.isEmpty) return const SizedBox();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Top Strategies for Today',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          'Best ways to trade today, ranked by edge/probability.',
-          style: TextStyle(fontSize: 14, color: Colors.blueGrey),
-        ),
-        const SizedBox(height: 16),
-        ...strategies.take(3).map((strategy) => _buildStrategyCard(context, strategy)),
-      ],
-    );
-  }
-
-  Widget _buildStrategyCard(BuildContext context, TopStrategy strategy) {
-    Color color = _getStrategyColor(strategy.name);
-    IconData icon = _getStrategyIcon(strategy.name);
-    String? why = strategy.topTickers.isNotEmpty ? strategy.topTickers.first.reason : null;
-    return Card(
-      elevation: 6,
-      margin: const EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => StrategyDetailScreen(strategy: strategy),
-            ),
-          );
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Row(
-            children: [
-              Icon(icon, color: color, size: 36),
-              const SizedBox(width: 18),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      strategy.name,
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: color),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      strategy.description,
-                      style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
-                    ),
-                    if (why != null && why.isNotEmpty) ...[
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: color.withOpacity(0.13),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          'Why: $why',
-                          style: TextStyle(fontSize: 13, color: color, fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.18),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Text(
-                  'Score: ${strategy.score.toStringAsFixed(1)}',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: color),
-                ),
-              ),
             ],
           ),
         ),
@@ -396,20 +346,193 @@ class _SimplifiedDashboardState extends State<SimplifiedDashboard> {
     );
   }
 
-  Color _getStrategyColor(String name) {
-    if (name.toLowerCase().contains('scalp')) return Colors.blue.shade700;
-    if (name.toLowerCase().contains('covered')) return Colors.orange.shade700;
-    if (name.toLowerCase().contains('bull')) return Colors.green.shade700;
-    if (name.toLowerCase().contains('bear')) return Colors.red.shade700;
-    return Colors.purple.shade700;
+  Widget _buildMarketDirectionCard(MarketSentiment sentiment) {
+    // For now, use today's sentiment for all periods. In future, use historical data.
+    String day = sentiment.sentiment;
+    String week = sentiment.sentiment;
+    String month = sentiment.sentiment;
+    Color getColor(String s) {
+      if (s.toLowerCase().contains('bull')) return Colors.green;
+      if (s.toLowerCase().contains('bear')) return Colors.red;
+      return Colors.grey;
+    }
+    IconData getIcon(String s) {
+      if (s.toLowerCase().contains('bull')) return Icons.trending_up;
+      if (s.toLowerCase().contains('bear')) return Icons.trending_down;
+      return Icons.horizontal_rule;
+    }
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Market Direction', style: Theme.of(context).textTheme.headlineSmall),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildDirectionColumn('Day', day, getColor(day), getIcon(day)),
+                _buildDirectionColumn('Week', week, getColor(week), getIcon(week)),
+                _buildDirectionColumn('Month', month, getColor(month), getIcon(month)),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  IconData _getStrategyIcon(String name) {
-    if (name.toLowerCase().contains('scalp')) return Icons.show_chart;
-    if (name.toLowerCase().contains('covered')) return Icons.call;
-    if (name.toLowerCase().contains('bull')) return Icons.trending_up;
-    if (name.toLowerCase().contains('bear')) return Icons.trending_down;
-    return Icons.auto_graph;
+  Widget _buildDirectionColumn(String label, String sentiment, Color color, IconData icon) {
+    return Column(
+      children: [
+        Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+        Icon(icon, color: color, size: 32),
+        Text(sentiment, style: TextStyle(color: color, fontWeight: FontWeight.bold)),
+      ],
+    );
+  }
+
+  Widget _buildVolatilityTrendCard(List<VixData> vixData) {
+    if (vixData.isEmpty) {
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text('No volatility data available.'),
+        ),
+      );
+    }
+    final last7 = vixData.take(7).toList();
+    final values = last7.map((v) => v.close).toList();
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Volatility Trend (VIX, 7d)', style: Theme.of(context).textTheme.headlineSmall),
+            const SizedBox(height: 10),
+            SizedBox(
+              height: 48,
+              child: CustomPaint(
+                painter: _SparklinePainter(values),
+                child: Container(),
+              ),
+            ),
+            const SizedBox(height: 6),
+            if (values.isNotEmpty)
+              Text('Latest: ${values.first.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.bold)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFuturesCard(List<Map<String, dynamic>> indices) {
+    // Show S&P 500, Nasdaq, Dow
+    List<String> symbols = ['^GSPC', '^IXIC', '^DJI'];
+    Map<String, String> names = {
+      '^GSPC': 'S&P 500',
+      '^IXIC': 'Nasdaq',
+      '^DJI': 'Dow',
+    };
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Market Futures', style: Theme.of(context).textTheme.headlineSmall),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: symbols.map((s) {
+                final idx = indices.firstWhere((i) => i['symbol'] == s, orElse: () => {});
+                final price = idx['price']?.toStringAsFixed(2) ?? '--';
+                final change = idx['change'] ?? 0.0;
+                final color = change > 0 ? Colors.green : (change < 0 ? Colors.red : Colors.grey);
+                final icon = change > 0 ? Icons.arrow_upward : (change < 0 ? Icons.arrow_downward : Icons.horizontal_rule);
+                return Column(
+                  children: [
+                    Text(names[s] ?? s, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Icon(icon, color: color, size: 28),
+                    Text(' 24$price', style: TextStyle(color: color, fontWeight: FontWeight.bold)),
+                    Text('Chg: $change', style: TextStyle(color: color)),
+                  ],
+                );
+              }).toList(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTopStrategyTypesCard(List<TopStrategy> strategies) {
+    if (strategies.isEmpty) return const SizedBox();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Top Strategy Types for Today',
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Most likely to succeed based on current market conditions.',
+          style: TextStyle(fontSize: 14, color: Colors.blueGrey),
+        ),
+        const SizedBox(height: 16),
+        ...strategies.take(3).map((strategy) => _buildStrategyTypeCard(strategy)),
+      ],
+    );
+  }
+
+  Widget _buildStrategyTypeCard(TopStrategy strategy) {
+    Color color = _getStrategyColor(strategy.name);
+    IconData icon = _getStrategyIcon(strategy.name);
+    return Card(
+      elevation: 4,
+      margin: const EdgeInsets.only(bottom: 12),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            Icon(icon, color: color, size: 32),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    strategy.name,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    strategy.description,
+                    style: TextStyle(fontSize: 13, color: Colors.grey.shade700),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 10),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.13),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                'Score: ${strategy.score.toStringAsFixed(1)}',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: color),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildIndicatorsCard(BuildContext context) {
@@ -438,30 +561,44 @@ class _SimplifiedDashboardState extends State<SimplifiedDashboard> {
     }
   }
 
-  Widget _buildTradeIdeasList(BuildContext context) {
-    try {
-      return Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Trade Ideas',
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              const SizedBox(height: 10),
-              ..._reportData!.tradeIdeas.map((trade) => ListTile(
-                    title: Text('${trade.ticker} - ${trade.strategy}'),
-                    subtitle: Text(trade.details),
-                    trailing: Text(trade.cost > 0 ? 'Credit' : 'Debit'),
-                  ))
-            ],
-          ),
-        ),
-      );
-    } catch (e) {
-      return Text("Error in Trade Ideas List: $e");
-    }
+  Color _getStrategyColor(String name) {
+    if (name.toLowerCase().contains('scalp')) return Colors.blue.shade700;
+    if (name.toLowerCase().contains('covered')) return Colors.orange.shade700;
+    if (name.toLowerCase().contains('bull')) return Colors.green.shade700;
+    if (name.toLowerCase().contains('bear')) return Colors.red.shade700;
+    return Colors.purple.shade700;
   }
+
+  IconData _getStrategyIcon(String name) {
+    if (name.toLowerCase().contains('scalp')) return Icons.show_chart;
+    if (name.toLowerCase().contains('covered')) return Icons.call;
+    if (name.toLowerCase().contains('bull')) return Icons.trending_up;
+    if (name.toLowerCase().contains('bear')) return Icons.trending_down;
+    return Icons.auto_graph;
+  }
+}
+
+class _SparklinePainter extends CustomPainter {
+  final List<double> values;
+  _SparklinePainter(this.values);
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (values.isEmpty) return;
+    final paint = Paint()
+      ..color = Colors.orange
+      ..strokeWidth = 3
+      ..style = PaintingStyle.stroke;
+    final minV = values.reduce(math.min);
+    final maxV = values.reduce(math.max);
+    final range = (maxV - minV).abs() < 1e-3 ? 1.0 : (maxV - minV);
+    final points = <Offset>[];
+    for (int i = 0; i < values.length; i++) {
+      final x = i * size.width / (values.length - 1);
+      final y = size.height - ((values[i] - minV) / range * size.height);
+      points.add(Offset(x, y));
+    }
+    canvas.drawPoints(PointMode.lines, points, paint);
+  }
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

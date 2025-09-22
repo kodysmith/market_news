@@ -3,6 +3,41 @@ import 'package:market_news_app/models/vix_data.dart';
 import 'package:market_news_app/widgets/daily_strategy_guide.dart';
 import 'package:market_news_app/models/report_data.dart';
 import 'dart:math' as math;
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '../main.dart' show apiBaseUrl, apiSecretKey;
+
+class TradeRecommendation {
+  final String symbol;
+  final int ivRank;
+  final double currentIv;
+  final String trend;
+  final String volatilityLevel;
+  final String recommendation;
+  final String rationale;
+
+  TradeRecommendation({
+    required this.symbol,
+    required this.ivRank,
+    required this.currentIv,
+    required this.trend,
+    required this.volatilityLevel,
+    required this.recommendation,
+    required this.rationale,
+  });
+
+  factory TradeRecommendation.fromJson(Map<String, dynamic> json) {
+    return TradeRecommendation(
+      symbol: json['symbol'],
+      ivRank: json['iv_rank'],
+      currentIv: (json['current_iv'] as num).toDouble(),
+      trend: json['trend'],
+      volatilityLevel: json['volatility_level'],
+      recommendation: json['recommendation'],
+      rationale: json['rationale'],
+    );
+  }
+}
 
 class MarketInsightsScreen extends StatefulWidget {
   final ReportData reportData;
@@ -28,12 +63,32 @@ class _MarketInsightsScreenState extends State<MarketInsightsScreen> {
   ];
   int _currentPage = 0;
   static const int _ideasPerPage = 10;
+  late Future<List<TradeRecommendation>> _futureRecs;
+  final List<String> _symbols = ['TQQQ', 'TSLA', 'AAPL', 'META', 'SPY', 'NVDA', 'MSFT'];
 
   @override
   void initState() {
     super.initState();
     _vixData = widget.reportData.vixData;
     _newsError = "Economic calendar data is not available on the current API plan.";
+    _futureRecs = fetchTradeRecommendations();
+  }
+
+  Future<List<TradeRecommendation>> fetchTradeRecommendations() async {
+    final response = await http.post(
+      Uri.parse('$apiBaseUrl/trade_recommendations'),
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiSecretKey,
+      },
+      body: json.encode({'symbols': _symbols}),
+    );
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      return data.map((json) => TradeRecommendation.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load trade recommendations: ${response.body}');
+    }
   }
 
   @override
@@ -168,6 +223,75 @@ class _MarketInsightsScreenState extends State<MarketInsightsScreen> {
               context,
               title: 'Major Indices',
               child: _buildIndicesList(report.indices),
+            ),
+            const SizedBox(height: 20),
+            _buildSectionCard(
+              context,
+              title: 'Trade Recommendations',
+              child: FutureBuilder<List<TradeRecommendation>>(
+                future: _futureRecs,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Error: \\${snapshot.error}', textAlign: TextAlign.center, style: TextStyle(color: Colors.red)),
+                          SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                _futureRecs = fetchTradeRecommendations();
+                              });
+                            },
+                            child: const Text('Retry'),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text('No trade recommendations available.'));
+                  }
+                  final recs = snapshot.data!;
+                  return ListView.separated(
+                    itemCount: recs.length,
+                    separatorBuilder: (context, i) => const Divider(),
+                    itemBuilder: (context, i) {
+                      final rec = recs[i];
+                      return Card(
+                        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        child: ListTile(
+                          title: Text(
+                            '${rec.symbol}: ${rec.recommendation}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: rec.recommendation == 'Sell Options'
+                                  ? Colors.green
+                                  : rec.recommendation == 'Buy Options'
+                                      ? Colors.blue
+                                      : rec.recommendation.contains('Scalp')
+                                          ? Colors.orange
+                                          : Colors.grey,
+                            ),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('IV Rank: ${rec.ivRank}  |  IV: ${rec.currentIv.toStringAsFixed(2)}  |  Trend: ${rec.trend}'),
+                              const SizedBox(height: 4),
+                              Text('Volatility: ${rec.volatilityLevel}'),
+                              const SizedBox(height: 4),
+                              Text(rec.rationale),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ],
         ),

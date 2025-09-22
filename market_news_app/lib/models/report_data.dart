@@ -31,7 +31,11 @@ class ReportData {
 
   factory ReportData.fromJson(Map<String, dynamic> json) {
     return ReportData(
-      timestamp: json['timestamp'] != null ? DateTime.parse(json['timestamp']) : DateTime.now(),
+      timestamp: json['timestamp'] != null
+          ? DateTime.parse(json['timestamp'])
+          : (json['generated_at'] != null
+              ? DateTime.parse(json['generated_at'])
+              : DateTime.now()),
       marketSentiment: MarketSentiment.fromJson(json['market_sentiment']),
       tradeIdeas: (json['trade_ideas'] ?? []).map<TradeIdea>((i) => TradeIdea.fromJson(i)).toList(),
       skippedTickers: (json['skipped_tickers'] ?? []).map<SkippedTicker>((i) => SkippedTicker.fromJson(i)).toList(),
@@ -266,7 +270,9 @@ class TopStrategy {
       name: json['name'],
       score: (json['score'] as num).toDouble(),
       description: json['description'],
-      topTickers: (json['top_tickers'] as List).map((i) => StrategyTicker.fromJson(i)).toList(),
+      topTickers: (json['top_tickers'] != null)
+          ? (json['top_tickers'] as List).map((i) => StrategyTicker.fromJson(i)).toList()
+          : [],
     );
   }
 }

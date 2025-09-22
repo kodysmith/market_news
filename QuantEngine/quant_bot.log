@@ -1,0 +1,209 @@
+2025-09-21 12:59:43,388 - 🤖 QuantBot - INFO - 🚀 Starting QuantEngine Autonomous Trading System
+2025-09-21 12:59:43,388 - 🤖 QuantBot - INFO - ============================================================
+2025-09-21 12:59:43,389 - 🤖 QuantBot - INFO - 🤖 QuantBot initialized
+2025-09-21 12:59:43,389 - 🤖 QuantBot - INFO - 🎯 Running in DEMO MODE (limited functionality)
+2025-09-21 12:59:43,389 - 🤖 QuantBot - INFO - 🎭 Running QuantBot demo simulation...
+2025-09-21 12:59:43,389 - 🤖 QuantBot - INFO -    🔧 Initializing components...
+2025-09-21 12:59:45,390 - 🤖 QuantBot - INFO -    📊 Connecting to data feeds...
+2025-09-21 12:59:48,391 - 🤖 QuantBot - INFO -    🎭 Detecting market regime...
+2025-09-21 12:59:50,393 - 🤖 QuantBot - INFO -    ✅ Detected: Bull Market (confidence: 78%)
+2025-09-21 12:59:50,394 - 🤖 QuantBot - INFO -    🧪 Researching strategies...
+2025-09-21 12:59:53,395 - 🤖 QuantBot - INFO -    ✅ Generated 3 new strategies (avg Sharpe: 1.45)
+2025-09-21 12:59:53,396 - 🤖 QuantBot - INFO -    🔍 Scanning opportunities...
+2025-09-21 12:59:55,397 - 🤖 QuantBot - INFO -    ✅ Found 2 trading opportunities (avg EV: 1.8%)
+2025-09-21 12:59:55,397 - 🤖 QuantBot - INFO -    📈 Generating reports...
+2025-09-21 12:59:56,399 - 🤖 QuantBot - INFO - 🎉 Demo simulation complete!
+2025-09-21 12:59:56,399 - 🤖 QuantBot - INFO - 
+2025-09-21 12:59:56,399 - 🤖 QuantBot - INFO - In full production mode, QuantBot would:
+2025-09-21 12:59:56,399 - 🤖 QuantBot - INFO - • Run continuously 24/7
+2025-09-21 12:59:56,399 - 🤖 QuantBot - INFO - • Process real market data and news
+2025-09-21 12:59:56,399 - 🤖 QuantBot - INFO - • Adapt strategies to live market conditions
+2025-09-21 12:59:56,399 - 🤖 QuantBot - INFO - • Execute trades through connected brokers
+2025-09-21 12:59:56,399 - 🤖 QuantBot - INFO - • Learn from performance and improve over time
+2025-09-21 12:59:56,399 - 🤖 QuantBot - INFO - 🛑 Shutting down QuantBot Runner...
+2025-09-21 12:59:56,399 - 🤖 QuantBot - INFO - ✅ QuantBot Runner shutdown complete
+2025-09-21 13:00:05,349 - 🤖 QuantBot - INFO - 📊 QuantBot Status Report
+2025-09-21 13:00:05,349 - 🤖 QuantBot - INFO - ========================================
+2025-09-21 13:00:05,349 - 🤖 QuantBot - INFO - 🤖 Bot Status: Not running
+2025-09-21 13:00:05,349 - 🤖 QuantBot - INFO - 💡 Use 'python3 run_quant_bot.py' to start the bot
+2025-09-21 13:00:05,349 - 🤖 QuantBot - INFO - 
+📋 Recent Activity:
+2025-09-21 13:19:26,495 - 🤖 QuantBot - INFO - 🚀 Starting QuantEngine Autonomous Trading System
+2025-09-21 13:19:26,495 - 🤖 QuantBot - INFO - ============================================================
+2025-09-21 13:19:26,495 - 🤖 QuantBot - INFO - 🤖 QuantBot initialized
+2025-09-21 13:19:26,495 - 🤖 QuantBot - INFO - 🎯 Running in DEMO MODE (limited functionality)
+2025-09-21 13:19:26,495 - 🤖 QuantBot - INFO - 🎭 Running QuantBot demo simulation...
+2025-09-21 13:19:26,495 - 🤖 QuantBot - INFO -    🔧 Initializing components...
+2025-09-21 13:19:28,497 - 🤖 QuantBot - INFO -    📊 Connecting to data feeds...
+2025-09-21 13:19:31,498 - 🤖 QuantBot - INFO -    🎭 Detecting market regime...
+2025-09-21 13:19:33,500 - 🤖 QuantBot - INFO -    ✅ Detected: Bull Market (confidence: 78%)
+2025-09-21 13:19:33,501 - 🤖 QuantBot - INFO -    🧪 Researching strategies...
+2025-09-21 13:19:36,502 - 🤖 QuantBot - INFO -    ✅ Generated 3 new strategies (avg Sharpe: 1.45)
+2025-09-21 13:19:36,502 - 🤖 QuantBot - INFO -    🔍 Scanning opportunities...
+2025-09-21 13:19:38,504 - 🤖 QuantBot - INFO -    ✅ Found 2 trading opportunities (avg EV: 1.8%)
+2025-09-21 13:19:38,504 - 🤖 QuantBot - INFO -    📈 Generating reports...
+2025-09-21 13:19:39,506 - 🤖 QuantBot - INFO - 🎉 Demo simulation complete!
+2025-09-21 13:19:39,506 - 🤖 QuantBot - INFO - 
+2025-09-21 13:19:39,506 - 🤖 QuantBot - INFO - In full production mode, QuantBot would:
+2025-09-21 13:19:39,506 - 🤖 QuantBot - INFO - • Run continuously 24/7
+2025-09-21 13:19:39,507 - 🤖 QuantBot - INFO - • Process real market data and news
+2025-09-21 13:19:39,507 - 🤖 QuantBot - INFO - • Adapt strategies to live market conditions
+2025-09-21 13:19:39,507 - 🤖 QuantBot - INFO - • Execute trades through connected brokers
+2025-09-21 13:19:39,507 - 🤖 QuantBot - INFO - • Learn from performance and improve over time
+2025-09-21 13:19:39,507 - 🤖 QuantBot - INFO - 🛑 Shutting down QuantBot Runner...
+2025-09-21 13:19:39,507 - 🤖 QuantBot - INFO - ✅ QuantBot Runner shutdown complete
+2025-09-21 17:51:38,839 - 🤖 QuantBot - INFO - 🚀 Starting QuantEngine Autonomous Trading System
+2025-09-21 17:51:38,839 - 🤖 QuantBot - INFO - ============================================================
+2025-09-21 17:51:38,840 - 🤖 QuantBot - INFO - 🤖 QuantBot initialized
+2025-09-21 17:51:38,840 - 🤖 QuantBot - INFO - 🎯 Running in DEMO MODE (limited functionality)
+2025-09-21 17:51:38,840 - 🤖 QuantBot - INFO - 🎭 Running QuantBot demo simulation...
+2025-09-21 17:51:38,840 - 🤖 QuantBot - INFO -    🔧 Initializing components...
+2025-09-21 17:51:40,843 - 🤖 QuantBot - INFO -    📊 Connecting to data feeds...
+2025-09-21 17:51:43,844 - 🤖 QuantBot - INFO -    🎭 Detecting market regime...
+2025-09-21 17:51:45,846 - 🤖 QuantBot - INFO -    ✅ Detected: Bull Market (confidence: 78%)
+2025-09-21 17:51:45,846 - 🤖 QuantBot - INFO -    🧪 Researching strategies...
+2025-09-21 17:51:48,847 - 🤖 QuantBot - INFO -    ✅ Generated 3 new strategies (avg Sharpe: 1.45)
+2025-09-21 17:51:48,848 - 🤖 QuantBot - INFO -    🔍 Scanning opportunities...
+2025-09-21 17:51:50,849 - 🤖 QuantBot - INFO -    ✅ Found 2 trading opportunities (avg EV: 1.8%)
+2025-09-21 17:51:50,849 - 🤖 QuantBot - INFO -    📈 Generating reports...
+2025-09-21 17:51:51,850 - 🤖 QuantBot - INFO - 🎉 Demo simulation complete!
+2025-09-21 17:51:51,851 - 🤖 QuantBot - INFO - 
+2025-09-21 17:51:51,851 - 🤖 QuantBot - INFO - In full production mode, QuantBot would:
+2025-09-21 17:51:51,851 - 🤖 QuantBot - INFO - • Run continuously 24/7
+2025-09-21 17:51:51,851 - 🤖 QuantBot - INFO - • Process real market data and news
+2025-09-21 17:51:51,851 - 🤖 QuantBot - INFO - • Adapt strategies to live market conditions
+2025-09-21 17:51:51,851 - 🤖 QuantBot - INFO - • Execute trades through connected brokers
+2025-09-21 17:51:51,852 - 🤖 QuantBot - INFO - • Learn from performance and improve over time
+2025-09-21 17:51:51,852 - 🤖 QuantBot - INFO - 🛑 Shutting down QuantBot Runner...
+2025-09-21 17:51:51,852 - 🤖 QuantBot - INFO - ✅ QuantBot Runner shutdown complete
+2025-09-21 17:52:20,558 - 🤖 QuantBot - INFO - 🚀 Starting QuantEngine Autonomous Trading System
+2025-09-21 17:52:20,558 - 🤖 QuantBot - INFO - ============================================================
+2025-09-21 17:52:20,559 - 🤖 QuantBot - INFO - 🤖 QuantBot initialized
+2025-09-21 17:52:20,559 - 🤖 QuantBot - INFO - 🎯 Running in DEMO MODE (limited functionality)
+2025-09-21 17:52:20,559 - 🤖 QuantBot - INFO - 🎭 Running QuantBot demo simulation...
+2025-09-21 17:52:20,559 - 🤖 QuantBot - INFO -    🔧 Initializing components...
+2025-09-21 17:52:22,560 - 🤖 QuantBot - INFO -    📊 Connecting to data feeds...
+2025-09-21 17:52:25,562 - 🤖 QuantBot - INFO -    🎭 Detecting market regime...
+2025-09-21 17:52:27,563 - 🤖 QuantBot - ERROR - ❌ Fatal error: name 'bot' is not defined
+2025-09-21 17:52:27,564 - 🤖 QuantBot - INFO - 🛑 Shutting down QuantBot Runner...
+2025-09-21 17:52:27,564 - 🤖 QuantBot - INFO - ✅ QuantBot Runner shutdown complete
+2025-09-21 17:52:27,565 - 🤖 QuantBot - ERROR - Fatal error: name 'bot' is not defined
+2025-09-21 17:52:40,828 - 🤖 QuantBot - INFO - 🚀 Starting QuantEngine Autonomous Trading System
+2025-09-21 17:52:40,828 - 🤖 QuantBot - INFO - ============================================================
+2025-09-21 17:52:40,828 - 🤖 QuantBot - INFO - 🤖 QuantBot initialized
+2025-09-21 17:52:40,828 - 🤖 QuantBot - INFO - 🎯 Running in DEMO MODE (limited functionality)
+2025-09-21 17:52:40,828 - 🤖 QuantBot - ERROR - ❌ Fatal error: name 'bot' is not defined
+2025-09-21 17:52:40,828 - 🤖 QuantBot - INFO - 🛑 Shutting down QuantBot Runner...
+2025-09-21 17:52:40,828 - 🤖 QuantBot - INFO - ✅ QuantBot Runner shutdown complete
+2025-09-21 17:52:40,828 - 🤖 QuantBot - ERROR - Fatal error: name 'bot' is not defined
+2025-09-21 17:52:47,370 - 🤖 QuantBot - INFO - 🚀 Starting QuantEngine Autonomous Trading System
+2025-09-21 17:52:47,370 - 🤖 QuantBot - INFO - ============================================================
+2025-09-21 17:52:47,370 - 🤖 QuantBot - INFO - 🤖 QuantBot initialized
+2025-09-21 17:52:47,370 - 🤖 QuantBot - INFO - 🎯 Running in DEMO MODE (limited functionality)
+2025-09-21 17:52:47,371 - 🤖 QuantBot - INFO - 🎭 Running QuantBot demo simulation...
+2025-09-21 17:52:47,371 - 🤖 QuantBot - INFO -    🔧 Initializing components...
+2025-09-21 17:52:49,372 - 🤖 QuantBot - INFO -    📊 Connecting to data feeds...
+2025-09-21 17:52:52,373 - 🤖 QuantBot - INFO -    🎭 Detecting market regime...
+2025-09-21 17:52:54,374 - 🤖 QuantBot - INFO -    ✅ Detected: Bull Market (confidence: 78%)
+2025-09-21 17:52:54,375 - 🤖 QuantBot - INFO -    🧪 Researching strategies...
+2025-09-21 17:52:57,377 - 🤖 QuantBot - INFO -    ✅ Generated 3 new strategies (avg Sharpe: 1.45)
+2025-09-21 17:52:57,378 - 🤖 QuantBot - INFO -    🔍 Scanning opportunities...
+2025-09-21 17:52:59,379 - 🤖 QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-21 17:52:59,379 - 🤖 QuantBot - ERROR - ❌ Opportunity scanning failed: 'NoneType' object has no attribute 'scan_opportunities'
+2025-09-21 17:52:59,379 - 🤖 QuantBot - INFO -    ✅ Found 0 trading opportunities (avg EV: 1.8%)
+2025-09-21 17:52:59,380 - 🤖 QuantBot - INFO -    📈 Generating reports...
+2025-09-21 17:53:00,381 - 🤖 QuantBot - INFO - 🎉 Demo simulation complete!
+2025-09-21 17:53:00,381 - 🤖 QuantBot - INFO - 
+2025-09-21 17:53:00,381 - 🤖 QuantBot - INFO - In full production mode, QuantBot would:
+2025-09-21 17:53:00,382 - 🤖 QuantBot - INFO - • Run continuously 24/7
+2025-09-21 17:53:00,382 - 🤖 QuantBot - INFO - • Process real market data and news
+2025-09-21 17:53:00,382 - 🤖 QuantBot - INFO - • Adapt strategies to live market conditions
+2025-09-21 17:53:00,382 - 🤖 QuantBot - INFO - • Execute trades through connected brokers
+2025-09-21 17:53:00,382 - 🤖 QuantBot - INFO - • Learn from performance and improve over time
+2025-09-21 17:53:00,382 - 🤖 QuantBot - INFO - 🛑 Shutting down QuantBot Runner...
+2025-09-21 17:53:00,382 - 🤖 QuantBot - INFO - ✅ QuantBot Runner shutdown complete
+2025-09-21 18:10:43,092 - 🤖 QuantBot - INFO - 🚀 Starting QuantEngine Autonomous Trading System
+2025-09-21 18:10:43,092 - 🤖 QuantBot - INFO - ============================================================
+2025-09-21 18:10:43,092 - 🤖 QuantBot - INFO - 🤖 QuantBot initialized
+2025-09-21 18:10:43,092 - 🤖 QuantBot - INFO - 🎯 Running in DEMO MODE (limited functionality)
+2025-09-21 18:10:43,092 - 🤖 QuantBot - INFO - 🎭 Running QuantBot demo simulation...
+2025-09-21 18:10:43,092 - 🤖 QuantBot - INFO -    🔧 Initializing components...
+2025-09-21 18:10:45,094 - 🤖 QuantBot - INFO -    📊 Connecting to data feeds...
+2025-09-21 18:10:48,095 - 🤖 QuantBot - INFO -    🎭 Detecting market regime...
+2025-09-21 18:10:50,097 - 🤖 QuantBot - INFO -    ✅ Detected: Bull Market (confidence: 78%)
+2025-09-21 18:10:50,097 - 🤖 QuantBot - INFO -    🧪 Researching strategies...
+2025-09-21 18:10:53,098 - 🤖 QuantBot - INFO -    ✅ Generated 3 new strategies (avg Sharpe: 1.45)
+2025-09-21 18:10:53,098 - 🤖 QuantBot - INFO -    🔍 Scanning opportunities...
+2025-09-21 18:10:55,100 - 🤖 QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-21 18:10:55,100 - 🤖 QuantBot - WARNING - Failed to get live market state, using fallback: 'NoneType' object has no attribute 'get_market_overview'
+2025-09-21 18:10:55,100 - 🤖 QuantBot - ERROR - ❌ Opportunity scanning failed: 'NoneType' object has no attribute 'scan_opportunities'
+2025-09-21 18:10:55,100 - 🤖 QuantBot - INFO -    ✅ Found 0 trading opportunities (avg EV: 1.8%)
+2025-09-21 18:10:55,100 - 🤖 QuantBot - INFO -    📈 Generating reports...
+2025-09-21 18:10:56,102 - 🤖 QuantBot - INFO - 🎉 Demo simulation complete!
+2025-09-21 18:10:56,102 - 🤖 QuantBot - INFO - 
+2025-09-21 18:10:56,102 - 🤖 QuantBot - INFO - In full production mode, QuantBot would:
+2025-09-21 18:10:56,102 - 🤖 QuantBot - INFO - • Run continuously 24/7
+2025-09-21 18:10:56,102 - 🤖 QuantBot - INFO - • Process real market data and news
+2025-09-21 18:10:56,102 - 🤖 QuantBot - INFO - • Adapt strategies to live market conditions
+2025-09-21 18:10:56,102 - 🤖 QuantBot - INFO - • Execute trades through connected brokers
+2025-09-21 18:10:56,103 - 🤖 QuantBot - INFO - • Learn from performance and improve over time
+2025-09-21 18:10:56,103 - 🤖 QuantBot - INFO - 🛑 Shutting down QuantBot Runner...
+2025-09-21 18:10:56,103 - 🤖 QuantBot - INFO - ✅ QuantBot Runner shutdown complete
+2025-09-21 18:11:05,695 - 🤖 QuantBot - INFO - 🚀 Starting QuantEngine Autonomous Trading System
+2025-09-21 18:11:05,695 - 🤖 QuantBot - INFO - ============================================================
+2025-09-21 18:11:05,696 - 🤖 QuantBot - INFO - 🤖 QuantBot initialized
+2025-09-21 18:11:05,696 - 🤖 QuantBot - INFO - 🎯 Running in DEMO MODE (limited functionality)
+2025-09-21 18:11:05,696 - 🤖 QuantBot - INFO - 🔧 Initializing bot components...
+2025-09-21 18:11:06,185 - 🤖 QuantBot - INFO - 🔴 LiveDataManager initialized
+2025-09-21 18:11:10,430 - 🤖 QuantBot - ERROR - ❌ Component initialization failed: cannot import name 'sharpe_ratio' from 'sklearn.metrics' (/Users/kody/base/MarketNews/venv/lib/python3.13/site-packages/sklearn/metrics/__init__.py)
+2025-09-21 18:11:10,430 - 🤖 QuantBot - ERROR - ❌ Fatal error: cannot import name 'sharpe_ratio' from 'sklearn.metrics' (/Users/kody/base/MarketNews/venv/lib/python3.13/site-packages/sklearn/metrics/__init__.py)
+2025-09-21 18:11:10,430 - 🤖 QuantBot - INFO - 🛑 Shutting down QuantBot Runner...
+2025-09-21 18:11:10,430 - 🤖 QuantBot - INFO - ✅ QuantBot Runner shutdown complete
+2025-09-21 18:11:10,430 - 🤖 QuantBot - ERROR - Fatal error: cannot import name 'sharpe_ratio' from 'sklearn.metrics' (/Users/kody/base/MarketNews/venv/lib/python3.13/site-packages/sklearn/metrics/__init__.py)
+2025-09-21 18:11:24,850 - 🤖 QuantBot - INFO - 🚀 Starting QuantEngine Autonomous Trading System
+2025-09-21 18:11:24,850 - 🤖 QuantBot - INFO - ============================================================
+2025-09-21 18:11:24,851 - 🤖 QuantBot - INFO - 🤖 QuantBot initialized
+2025-09-21 18:11:24,851 - 🤖 QuantBot - INFO - 🎯 Running in DEMO MODE (limited functionality)
+2025-09-21 18:11:24,851 - 🤖 QuantBot - INFO - 🔧 Initializing bot components...
+2025-09-21 18:11:25,324 - 🤖 QuantBot - INFO - 🔴 LiveDataManager initialized
+2025-09-21 18:11:26,096 - 🤖 QuantBot - INFO - ✅ All components initialized successfully
+2025-09-21 18:11:26,096 - 🤖 QuantBot - INFO - 🎭 Running QuantBot demo simulation...
+2025-09-21 18:11:26,096 - 🤖 QuantBot - INFO -    🔧 Initializing components...
+2025-09-21 18:11:28,097 - 🤖 QuantBot - INFO -    📊 Connecting to data feeds...
+2025-09-21 18:11:31,101 - 🤖 QuantBot - INFO -    🎭 Detecting market regime...
+2025-09-21 18:11:33,103 - 🤖 QuantBot - INFO -    ✅ Detected: Bull Market (confidence: 78%)
+2025-09-21 18:11:33,103 - 🤖 QuantBot - INFO -    🧪 Researching strategies...
+2025-09-21 18:11:36,104 - 🤖 QuantBot - INFO -    ✅ Generated 3 new strategies (avg Sharpe: 1.45)
+2025-09-21 18:11:36,105 - 🤖 QuantBot - INFO -    🔍 Scanning opportunities...
+2025-09-21 18:11:38,106 - 🤖 QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-21 18:11:38,108 - 🤖 QuantBot - INFO - ✅ Live data session initialized
+2025-09-21 18:11:38,110 - 🤖 QuantBot - WARNING - Yahoo Finance fetcher not available, using fallback
+2025-09-21 18:11:41,027 - 🤖 QuantBot - WARNING - Failed to fetch GDP: -1
+2025-09-21 18:11:41,226 - 🤖 QuantBot - WARNING - Failed to fetch UNRATE: -1
+2025-09-21 18:11:41,614 - 🤖 QuantBot - WARNING - Failed to fetch CPIAUCSL: -1
+2025-09-21 18:11:41,815 - 🤖 QuantBot - WARNING - Failed to fetch FEDFUNDS: -1
+2025-09-21 18:11:41,815 - 🤖 QuantBot - WARNING - Failed to get live market state, using fallback: '>' not supported between instances of 'NoneType' and 'int'
+2025-09-21 18:11:41,816 - 🤖 QuantBot - INFO - 🔍 Scanning for trading opportunities...
+2025-09-21 18:11:41,817 - 🤖 QuantBot - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-21 18:11:41,817 - 🤖 QuantBot - INFO - ✅ Discovered 0 valid opportunities
+2025-09-21 18:11:41,817 - 🤖 QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-21 18:11:41,817 - 🤖 QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-21 18:11:41,817 - 🤖 QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-21 18:11:41,817 - 🤖 QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-21 18:11:41,817 - 🤖 QuantBot - INFO -    ✅ Found 3 trading opportunities (avg EV: 1.8%)
+2025-09-21 18:11:41,817 - 🤖 QuantBot - INFO -    📈 Generating reports...
+2025-09-21 18:11:42,818 - 🤖 QuantBot - INFO - 🎉 Demo simulation complete!
+2025-09-21 18:11:42,819 - 🤖 QuantBot - INFO - 
+2025-09-21 18:11:42,819 - 🤖 QuantBot - INFO - In full production mode, QuantBot would:
+2025-09-21 18:11:42,819 - 🤖 QuantBot - INFO - • Run continuously 24/7
+2025-09-21 18:11:42,819 - 🤖 QuantBot - INFO - • Process real market data and news
+2025-09-21 18:11:42,819 - 🤖 QuantBot - INFO - • Adapt strategies to live market conditions
+2025-09-21 18:11:42,819 - 🤖 QuantBot - INFO - • Execute trades through connected brokers
+2025-09-21 18:11:42,819 - 🤖 QuantBot - INFO - • Learn from performance and improve over time
+2025-09-21 18:11:42,819 - 🤖 QuantBot - INFO - 🛑 Shutting down QuantBot Runner...
+2025-09-21 18:11:42,819 - 🤖 QuantBot - INFO - ✅ QuantBot Runner shutdown complete
+2025-09-21 18:11:42,824 - 🤖 QuantBot - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x129add6a0>
+2025-09-21 18:11:42,824 - 🤖 QuantBot - ERROR - Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x12ab67ad0>, 587386.659733291)])']
+connector: <aiohttp.connector.TCPConnector object at 0x129add7f0>
