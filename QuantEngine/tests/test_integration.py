@@ -195,3 +195,4 @@ if __name__ == "__main__":
         print(f"❌ Integration test failed: {e}")
         import traceback
         traceback.print_exc()
+

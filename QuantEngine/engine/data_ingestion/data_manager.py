@@ -387,3 +387,4 @@ class DataManager:
         """Cleanup database connection"""
         if hasattr(self, 'conn'):
             self.conn.close()
+

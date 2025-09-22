@@ -1,0 +1,6 @@
+artifact_location: file:///Users/kody/base/MarketNews/market_news_app/backtesting_v2/mlruns/601606250549985971
+creation_time: 1758480410880
+experiment_id: '601606250549985971'
+last_update_time: 1758480410880
+lifecycle_stage: active
+name: equity_backtest

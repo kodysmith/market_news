@@ -7,6 +7,7 @@ import 'package:market_news_app/screens/market_sentiment_detail_screen.dart';
 import 'package:market_news_app/screens/strategy_detail_screen.dart';
 import 'package:market_news_app/screens/economic_calendar_screen.dart';
 import 'package:market_news_app/screens/settings_screen.dart';
+import 'package:market_news_app/screens/bull_put_screener_screen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'screens/news_screen.dart';
 import 'dart:math' as math;
@@ -18,7 +19,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 // Set the API base URL here for easy switching between local, staging, and production
-const String apiBaseUrl = 'https://api-hvi4gdtdka-uc.a.run.app'; // TODO: Update this when moving to a custom domain
+const String apiBaseUrl = 'http://localhost:5000'; // Local development - change to production when deploying
 const String apiSecretKey = 'b7e2f8c4e1a94e2b8c9d4e7f2a1b3c4d';
 
 Future<void> main() async {
@@ -147,9 +148,8 @@ class _MainNavigationState extends State<MainNavigation> {
           ? MarketInsightsScreen(reportData: _reportData!)
           : const Center(child: CircularProgressIndicator()),
       NewsScreen(),
-      _reportData != null
-          ? EconomicCalendarScreen(economicCalendar: _reportData!.economicCalendar)
-          : const Center(child: CircularProgressIndicator()),
+      BullPutScreenerScreen(),
+      const EconomicCalendarScreen(),
       SettingsScreen(),
     ];
     return Scaffold(
@@ -182,6 +182,10 @@ class _MainNavigationState extends State<MainNavigation> {
           BottomNavigationBarItem(
             icon: Icon(Icons.article),
             label: 'News',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.trending_up),
+            label: 'Spreads',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today),

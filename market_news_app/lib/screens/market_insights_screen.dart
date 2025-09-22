@@ -255,10 +255,11 @@ class _MarketInsightsScreenState extends State<MarketInsightsScreen> {
                     return const Center(child: Text('No trade recommendations available.'));
                   }
                   final recs = snapshot.data!;
-                  return ListView.separated(
-                    itemCount: recs.length,
-                    separatorBuilder: (context, i) => const Divider(),
-                    itemBuilder: (context, i) {
+                  return Expanded(
+                    child: ListView.separated(
+                      itemCount: recs.length,
+                      separatorBuilder: (context, i) => const Divider(),
+                      itemBuilder: (context, i) {
                       final rec = recs[i];
                       return Card(
                         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -289,6 +290,7 @@ class _MarketInsightsScreenState extends State<MarketInsightsScreen> {
                         ),
                       );
                     },
+                    ),
                   );
                 },
               ),

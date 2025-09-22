@@ -63,6 +63,9 @@ class QuantBotRunner:
                 logger.info("🎯 Running in DEMO MODE (limited functionality)")
                 # Initialize components for demo
                 await self.bot.initialize_components()
+                # Initialize data broker for demo
+                from data_broker import data_broker
+                self.bot.data_broker = data_broker
                 # Run for limited time in demo mode
                 await asyncio.wait_for(self.run_demo(self.bot), timeout=300)  # 5 minutes
             else:

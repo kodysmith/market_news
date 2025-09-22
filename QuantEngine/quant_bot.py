@@ -16,11 +16,18 @@ Author: AI Quant System
 import asyncio
 import logging
 import time
+import sys
+from pathlib import Path
 from datetime import datetime, timedelta
 from typing import Dict, List, Any, Optional, Tuple
+
+# Add QuantEngine root to path for imports
+quant_engine_root = Path(__file__).parent
+if str(quant_engine_root) not in sys.path:
+    sys.path.insert(0, str(quant_engine_root))
+
 import json
 import os
-from pathlib import Path
 
 # Configure logging
 logging.basicConfig(
@@ -102,9 +109,17 @@ class QuantBot:
             }
         }
 
+        import json  # Import json for saving config later
+
         if os.path.exists(config_path):
-            with open(config_path, 'r') as f:
-                user_config = json.load(f)
+            try:
+                import yaml
+                with open(config_path, 'r') as f:
+                    user_config = yaml.safe_load(f)
+            except ImportError:
+                # Fallback to JSON if yaml not available
+                with open(config_path, 'r') as f:
+                    user_config = json.load(f)
                 # Merge with defaults
                 for key, value in user_config.items():
                     if key in default_config and isinstance(default_config[key], dict):
@@ -130,6 +145,10 @@ class QuantBot:
 
         # Initialize live data manager
         await self.data_manager.initialize()
+
+        # Initialize data broker for database storage
+        from data_broker import data_broker
+        self.data_broker = data_broker
 
         # Start main bot loop
         try:
@@ -236,9 +255,12 @@ class QuantBot:
             # For now, simulate data updates
             await self.data_manager.update_real_time_data(universe)
 
-            # Update news and sentiment
-            if self.config['data_sources']['news_feeds']['enabled']:
-                await self.update_news_sentiment()
+                # Update news and sentiment
+                if self.config['data_sources']['news_feeds']['enabled']:
+                    await self.update_news_sentiment()
+
+                # Update economic calendar data
+                await self.update_economic_calendar()
 
             logger.info("✅ Market data updated")
 
@@ -263,6 +285,22 @@ class QuantBot:
 
                 # Trigger strategy adaptation
                 await self.adapt_to_regime_change(regime_info)
+
+            # Save market analysis to database
+            market_analysis = {
+                'regime': regime_info['regime'],
+                'confidence': regime_info.get('confidence', 0),
+                'volatility': self.market_state.get('volatility', 0.25) if hasattr(self, 'market_state') else 0.25,
+                'sentiment': self.market_sentiment,
+                'economic_score': self._calculate_economic_score(self.market_state.get('economic_indicators', {}) if hasattr(self, 'market_state') else {}),
+                'active_strategies': len(self.strategy_portfolio),
+                'market_conditions': {
+                    'trend': self.market_state.get('trend', 'unknown') if hasattr(self, 'market_state') else 'unknown',
+                    'liquidity': self.market_state.get('liquidity', 'normal') if hasattr(self, 'market_state') else 'normal'
+                },
+                'timestamp': datetime.now().isoformat()
+            }
+            self.data_broker.save_market_analysis(market_analysis)
 
             logger.info(f"✅ Current regime: {self.current_regime} (confidence: {regime_info.get('confidence', 0):.1%})")
 
@@ -298,7 +336,11 @@ class QuantBot:
             if not valid_opportunities:
                 valid_opportunities = self.create_demo_opportunities()
 
-            # Update opportunity cache
+            # Save opportunities to database
+            if valid_opportunities:
+                self.data_broker.save_opportunities(valid_opportunities)
+
+            # Update opportunity cache (keep in memory for quick access)
             self.opportunity_cache = {opp['id']: opp for opp in valid_opportunities[:10]}  # Keep top 10
 
             logger.info(f"✅ Found {len(valid_opportunities)} valid opportunities")
@@ -556,6 +598,28 @@ class QuantBot:
             if news_items:
                 logger.info(f"📈 Fetched {len(news_items)} live news items")
 
+                # Save news to database
+                news_for_db = []
+                for item in news_items:
+                    news_for_db.append({
+                        'id': f"fmp_{item.timestamp.strftime('%Y%m%d_%H%M%S')}_{hash(item.title) % 10000}",
+                        'headline': item.title,
+                        'source': item.source,
+                        'url': item.url,
+                        'summary': item.content[:300] + '...' if len(item.content) > 300 else item.content,
+                        'content': item.content,
+                        'sentiment': 'bullish' if item.sentiment_score and item.sentiment_score > 0.1 else
+                                   'bearish' if item.sentiment_score and item.sentiment_score < -0.1 else 'neutral',
+                        'sentiment_score': item.sentiment_score,
+                        'tickers': item.tickers or [],
+                        'type': 'financial_news',
+                        'impact': 'high' if abs(item.sentiment_score or 0) > 0.3 else 'medium',
+                        'published_date': item.timestamp.isoformat()
+                    })
+
+                if news_for_db:
+                    self.data_broker.save_news_items(news_for_db)
+
                 # Calculate market sentiment from recent news
                 recent_news = [item for item in news_items if item.sentiment_score is not None]
                 if recent_news:
@@ -568,6 +632,29 @@ class QuantBot:
         except Exception as e:
             logger.warning(f"Failed to update news sentiment: {e}")
             # Continue without news data - not critical for operation
+
+    async def update_economic_calendar(self):
+        """Update economic calendar data"""
+        try:
+            logger.info("📅 Updating economic calendar data...")
+
+            # Get economic data from data manager
+            economic_data = await self.data_manager.get_economic_data()
+
+            # Convert to calendar format
+            calendar_events = self.data_manager.get_economic_calendar()
+
+            # Save to database if we have events
+            if calendar_events:
+                from data_broker import save_calendar_to_db
+                save_calendar_to_db(calendar_events)
+                logger.info(f"💾 Saved {len(calendar_events)} economic calendar events")
+            else:
+                logger.info("📅 No economic calendar data to save")
+
+        except Exception as e:
+            logger.warning(f"Failed to update economic calendar: {e}")
+            # Continue without calendar data - not critical for operation
 
     async def shutdown(self):
         """Graceful shutdown"""

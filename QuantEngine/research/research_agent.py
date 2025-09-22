@@ -14,12 +14,20 @@ import json
 import time
 from datetime import datetime
 
-from ..utils.strategy_dsl import StrategySpec, StrategyValidator, EXAMPLE_TQQQ_STRATEGY
-from ..engine.data_ingestion.data_manager import DataManager
-from ..engine.feature_builder.feature_builder import FeatureBuilder
-from ..engine.backtest_engine.backtester import VectorizedBacktester, WalkForwardBacktester
-from ..engine.robustness_lab.robustness_tester import RobustnessTester
-from ..engine.reporting_notes.report_generator import ReportGenerator
+import sys
+from pathlib import Path
+
+# Add QuantEngine root to path for imports
+quant_engine_root = Path(__file__).parent.parent
+if str(quant_engine_root) not in sys.path:
+    sys.path.insert(0, str(quant_engine_root))
+
+from utils.strategy_dsl import StrategySpec, StrategyValidator, EXAMPLE_TQQQ_STRATEGY
+from engine.data_ingestion.data_manager import DataManager
+from engine.feature_builder.feature_builder import FeatureBuilder
+from engine.backtest_engine.backtester import VectorizedBacktester, WalkForwardBacktester
+from engine.robustness_lab.robustness_tester import RobustnessTester
+from engine.reporting_notes.report_generator import ReportGenerator
 
 logger = logging.getLogger(__name__)
 

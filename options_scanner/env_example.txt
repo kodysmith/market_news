@@ -1,0 +1,18 @@
+# Alpha Vantage API Configuration
+ALPHAVANTAGE_API_KEY=your_alpha_vantage_api_key_here
+
+# Firebase Configuration (Base64 encoded service account JSON)
+FIREBASE_SERVICE_ACCOUNT_JSON_BASE64=your_base64_encoded_firebase_service_account_json_here
+
+# Report Publishing Configuration
+PUBLIC_BUCKET_URL=https://api-hvi4gdtdka-uc.a.run.app
+REPORT_OBJECT_PATH=/report.json
+
+# Scanner Configuration
+TICKERS=SPY,QQQ,IWM
+SCAN_INTERVAL_MINUTES=5
+MARKET_TZ=America/New_York
+
+# Optional: Risk-free rate for calculations
+RISK_FREE_RATE=0.02
+

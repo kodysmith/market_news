@@ -1,0 +1,43 @@
+{
+  "asOf": "2025-09-21T07:26:44.589071+00:00",
+  "scanner": {
+    "universe": [
+      "SPY"
+    ],
+    "dteWindow": [
+      20,
+      45
+    ],
+    "thresholds": {
+      "minPOP": 0.5,
+      "minEVPer100": 0.1
+    }
+  },
+  "topIdeas": [
+    {
+      "ticker": "SPY",
+      "strategy": "BULL_PUT",
+      "expiry": "2025-10-18",
+      "shortK": 510.0,
+      "longK": 505.0,
+      "width": 5.0,
+      "credit": 0.95,
+      "maxLoss": 4.05,
+      "dte": 33,
+      "pop": 0.64,
+      "ev": 50.0,
+      "ivShort": 0.22,
+      "ivLong": 0.2,
+      "bidAskW": 0.06,
+      "oiShort": 1423,
+      "oiLong": 1312,
+      "volShort": 289,
+      "volLong": 214,
+      "fillScore": 0.82,
+      "id": "test_spread_1"
+    }
+  ],
+  "alertsSentThisRun": [
+    "test_spread_1"
+  ]
+}

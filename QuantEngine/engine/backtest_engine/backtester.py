@@ -17,7 +17,15 @@ import logging
 from pathlib import Path
 import numba as nb
 
-from ...utils.strategy_dsl import StrategySpec, SignalDefinition, SignalType
+import sys
+from pathlib import Path
+
+# Add QuantEngine root to path for imports
+quant_engine_root = Path(__file__).parent.parent.parent
+if str(quant_engine_root) not in sys.path:
+    sys.path.insert(0, str(quant_engine_root))
+
+from utils.strategy_dsl import StrategySpec, SignalDefinition, SignalType
 
 logger = logging.getLogger(__name__)
 

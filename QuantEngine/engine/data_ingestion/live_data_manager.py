@@ -124,7 +124,15 @@ class LiveDataManager:
             sys.path.append('../..')  # Add parent directory to path
 
             try:
-                from options_scanner.fetch_yahoo_finance import YahooFinanceFetcher
+                # Try to import from options_scanner directory
+                import sys
+                from pathlib import Path
+
+                options_scanner_path = Path(__file__).parent.parent.parent.parent / 'options_scanner'
+                if str(options_scanner_path) not in sys.path:
+                    sys.path.insert(0, str(options_scanner_path))
+
+                from fetch_yahoo_finance import YahooFinanceFetcher
                 yf_fetcher = YahooFinanceFetcher()
 
                 for symbol in symbols:
@@ -152,7 +160,7 @@ class LiveDataManager:
                         logger.warning(f"Failed to fetch {symbol} from Yahoo: {e}")
                         continue
 
-            except ImportError:
+            except (ImportError, ModuleNotFoundError):
                 logger.warning("Yahoo Finance fetcher not available, using fallback")
                 # Fallback to yfinance library
                 import yfinance as yf
@@ -408,7 +416,7 @@ class LiveDataManager:
         Get economic indicators (GDP, unemployment, inflation, etc.)
 
         Returns:
-            Dictionary of economic indicators
+            Dictionary of economic indicators with calendar event data
         """
         economic_data = {}
 
@@ -417,42 +425,227 @@ class LiveDataManager:
             fred_api_key = os.getenv('FRED_API_KEY')
 
             if fred_api_key:
-                indicators = ['GDP', 'UNRATE', 'CPIAUCSL', 'FEDFUNDS']
+                indicators = [
+                    ('GDP', 'GDP'),
+                    ('UNRATE', 'Unemployment Rate'),
+                    ('CPIAUCSL', 'Consumer Price Index'),
+                    ('FEDFUNDS', 'Federal Funds Rate'),
+                    ('PAYEMS', 'Non-Farm Payrolls'),
+                    ('INDPRO', 'Industrial Production'),
+                    ('HOUST', 'Housing Starts'),
+                    ('DGS10', '10-Year Treasury Rate')
+                ]
 
-                for indicator in indicators:
+                for series_id, name in indicators:
                     try:
                         url = f"https://api.stlouisfed.org/fred/series/observations"
                         params = {
-                            'series_id': indicator,
+                            'series_id': series_id,
                             'api_key': fred_api_key,
                             'file_type': 'json',
-                            'limit': 1  # Most recent value
+                            'limit': 5,  # Get last 5 observations for trend
+                            'sort_order': 'desc'
                         }
 
                         async with self.http_session.get(url, params=params) as response:
                             if response.status == 200:
                                 data = await response.json()
-                                if data and len(data) > 0:
-                                    latest = data[-1]
+                                if data.get('observations') and len(data['observations']) > 0:
+                                    latest = data['observations'][0]  # Most recent first
+                                    prev = data['observations'][1] if len(data['observations']) > 1 else None
+
                                     value = float(latest.get('value', 0))
-                                    economic_data[indicator.lower()] = value
+                                    date = latest.get('date', '')
+
+                                    # Calculate change if previous value available
+                                    change = None
+                                    if prev and prev.get('value'):
+                                        prev_value = float(prev.get('value', 0))
+                                        change = value - prev_value
+
+                                    economic_data[series_id.lower()] = {
+                                        'name': name,
+                                        'value': value,
+                                        'date': date,
+                                        'change': change,
+                                        'series_id': series_id
+                                    }
 
                     except Exception as e:
-                        logger.warning(f"Failed to fetch {indicator}: {e}")
+                        logger.warning(f"Failed to fetch {series_id}: {e}")
 
-            # Fallback with sample data if no real data available
+            # Enhanced fallback data with calendar-style events
             if not economic_data:
+                from datetime import datetime, timedelta
+                base_date = datetime.now()
+
                 economic_data = {
-                    'gdp_growth': 0.025,  # 2.5% GDP growth
-                    'unemployment': 0.042,  # 4.2% unemployment
-                    'inflation': 0.023,  # 2.3% inflation
-                    'fed_funds_rate': 0.055  # 5.5% fed funds rate
+                    'gdp': {
+                        'name': 'GDP',
+                        'value': 28953.5,
+                        'date': (base_date - timedelta(days=90)).strftime('%Y-%m-%d'),
+                        'change': 1.2,
+                        'series_id': 'GDP'
+                    },
+                    'unrate': {
+                        'name': 'Unemployment Rate',
+                        'value': 4.2,
+                        'date': (base_date - timedelta(days=30)).strftime('%Y-%m-%d'),
+                        'change': -0.1,
+                        'series_id': 'UNRATE'
+                    },
+                    'cpiaucsl': {
+                        'name': 'Consumer Price Index',
+                        'value': 314.5,
+                        'date': (base_date - timedelta(days=30)).strftime('%Y-%m-%d'),
+                        'change': 0.3,
+                        'series_id': 'CPIAUCSL'
+                    },
+                    'fedfunds': {
+                        'name': 'Federal Funds Rate',
+                        'value': 5.25,
+                        'date': (base_date - timedelta(days=30)).strftime('%Y-%m-%d'),
+                        'change': 0.0,
+                        'series_id': 'FEDFUNDS'
+                    },
+                    'payems': {
+                        'name': 'Non-Farm Payrolls',
+                        'value': 275000,
+                        'date': (base_date - timedelta(days=30)).strftime('%Y-%m-%d'),
+                        'change': 25000,
+                        'series_id': 'PAYEMS'
+                    }
                 }
 
         except Exception as e:
             logger.error(f"Error fetching economic data: {e}")
 
         return economic_data
+
+    async def get_economic_calendar_async(self) -> List[Dict[str, Any]]:
+        """
+        Get economic calendar events for display (async version)
+
+        Returns:
+            List of calendar events with dates, titles, and impacts
+        """
+        calendar_events = []
+
+        try:
+            # Get the economic data we have
+            economic_data = await self.get_economic_data()
+
+            # Convert to calendar format
+            for key, data in economic_data.items():
+                if isinstance(data, dict):
+                    event = {
+                        'id': f"econ_{data.get('series_id', key)}_{data.get('date', 'unknown')}",
+                        'title': f"{data.get('name', key)}: {data.get('value', 'N/A')}",
+                        'date': data.get('date', datetime.now().strftime('%Y-%m-%d')),
+                        'time': '08:30',  # Default economic data release time
+                        'impact': self._determine_economic_impact(data),
+                        'actual': data.get('value'),
+                        'previous': data.get('value') - data.get('change', 0) if data.get('change') is not None else None,
+                        'forecast': None,  # Would need additional API for forecasts
+                        'currency': 'USD',
+                        'source': 'FRED' if os.getenv('FRED_API_KEY') else 'Sample Data'
+                    }
+                    calendar_events.append(event)
+
+            # Sort by date (most recent first)
+            calendar_events.sort(key=lambda x: x['date'], reverse=True)
+
+        except Exception as e:
+            logger.error(f"Error creating economic calendar: {e}")
+
+        return calendar_events
+
+    def get_economic_calendar(self) -> List[Dict[str, Any]]:
+        """
+        Get economic calendar events for display (synchronous wrapper)
+
+        Returns:
+            List of calendar events with dates, titles, and impacts
+        """
+        try:
+            # Try to get the current event loop
+            loop = asyncio.get_event_loop()
+            if loop.is_running():
+                # If loop is already running, we can't use asyncio.run()
+                # Fall back to sample data
+                return self._get_sample_calendar_events()
+            else:
+                # Use asyncio.run() if no loop is running
+                return asyncio.run(self.get_economic_calendar_async())
+        except RuntimeError:
+            # No event loop, use asyncio.run()
+            return asyncio.run(self.get_economic_calendar_async())
+
+    def _get_sample_calendar_events(self) -> List[Dict[str, Any]]:
+        """Get sample calendar events when async is not available"""
+        from datetime import datetime, timedelta
+
+        base_date = datetime.now()
+        return [
+            {
+                'id': 'sample_gdp',
+                'title': 'GDP: 28953.5',
+                'date': (base_date - timedelta(days=90)).strftime('%Y-%m-%d'),
+                'time': '08:30',
+                'impact': 'high',
+                'actual': 28953.5,
+                'previous': 28750.2,
+                'forecast': None,
+                'currency': 'USD',
+                'source': 'Sample Data'
+            },
+            {
+                'id': 'sample_unrate',
+                'title': 'Unemployment Rate: 4.2',
+                'date': (base_date - timedelta(days=30)).strftime('%Y-%m-%d'),
+                'time': '08:30',
+                'impact': 'medium',
+                'actual': 4.2,
+                'previous': 4.3,
+                'forecast': None,
+                'currency': 'USD',
+                'source': 'Sample Data'
+            },
+            {
+                'id': 'sample_payems',
+                'title': 'Non-Farm Payrolls: 275000',
+                'date': (base_date - timedelta(days=30)).strftime('%Y-%m-%d'),
+                'time': '08:30',
+                'impact': 'high',
+                'actual': 275000,
+                'previous': 250000,
+                'forecast': None,
+                'currency': 'USD',
+                'source': 'Sample Data'
+            }
+        ]
+
+    def _determine_economic_impact(self, data: Dict[str, Any]) -> str:
+        """Determine the market impact level of an economic indicator"""
+        name = data.get('name', '').lower()
+        change = data.get('change')
+
+        # High impact indicators
+        high_impact = ['gdp', 'non-farm payrolls', 'federal funds rate', 'consumer price index']
+        if any(term in name.lower() for term in high_impact):
+            return 'high'
+
+        # Medium impact indicators
+        medium_impact = ['unemployment', 'industrial production', 'housing starts']
+        if any(term in name.lower() for term in medium_impact):
+            return 'medium'
+
+        # Check for significant changes
+        if change is not None:
+            if abs(change) > 0.5:  # Significant change
+                return 'medium'
+
+        return 'low'
 
     def get_cached_quote(self, symbol: str) -> Optional[LiveQuote]:
         """Get cached quote if available and not stale"""
@@ -494,6 +687,27 @@ class LiveDataManager:
             return 0.0
 
         return np.mean(sentiment_scores)
+
+    async def update_real_time_data(self, symbols: List[str]) -> bool:
+        """Update real-time data cache for given symbols"""
+        try:
+            # Refresh quotes for the universe
+            quotes = await self.get_live_quotes(symbols)
+
+            # Update cache with fresh data
+            for symbol, quote in quotes.items():
+                if quote:
+                    self.quote_cache[symbol] = {
+                        'quote': quote,
+                        'timestamp': datetime.now()
+                    }
+
+            logger.info(f"✅ Updated real-time data for {len(quotes)} symbols")
+            return True
+
+        except Exception as e:
+            logger.error(f"Failed to update real-time data: {e}")
+            return False
 
     async def get_market_overview(self) -> Dict[str, Any]:
         """

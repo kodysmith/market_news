@@ -207,3 +207,1276 @@ client_session: <aiohttp.client.ClientSession object at 0x129add6a0>
 2025-09-21 18:11:42,824 - 🤖 QuantBot - ERROR - Unclosed connector
 connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x12ab67ad0>, 587386.659733291)])']
 connector: <aiohttp.connector.TCPConnector object at 0x129add7f0>
+2025-09-21 18:14:06,196 - 🤖 QuantBot - INFO - 🚀 Starting QuantEngine Autonomous Trading System
+2025-09-21 18:14:06,196 - 🤖 QuantBot - INFO - ============================================================
+2025-09-21 18:14:06,197 - 🤖 QuantBot - INFO - 🤖 QuantBot initialized
+2025-09-21 18:14:06,197 - 🤖 QuantBot - INFO - 🔄 Starting 24/7 autonomous operation
+2025-09-21 18:14:06,197 - 🤖 QuantBot - INFO - 🚀 Starting QuantBot autonomous trading system
+2025-09-21 18:14:06,197 - 🤖 QuantBot - INFO - 🔧 Initializing bot components...
+2025-09-21 18:14:06,676 - 🤖 QuantBot - INFO - 🔴 LiveDataManager initialized
+2025-09-21 18:14:07,452 - 🤖 QuantBot - INFO - ✅ All components initialized successfully
+2025-09-21 18:14:07,452 - 🤖 QuantBot - INFO - ✅ Live data session initialized
+2025-09-21 18:14:07,452 - 🤖 QuantBot - INFO - 🔄 Starting main autonomous loop
+2025-09-21 18:14:07,452 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:14:07,452 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:14:07,452 - 🤖 QuantBot - INFO - 🎭 Checking market regime...
+2025-09-21 18:14:07,453 - 🤖 QuantBot - WARNING - Yahoo Finance fetcher not available, using fallback
+2025-09-21 18:14:11,124 - 🤖 QuantBot - WARNING - Yahoo Finance fetcher not available, using fallback
+2025-09-21 18:14:11,364 - 🤖 QuantBot - INFO - 🎭 Detected regime: low_volatility (confidence: 68.3%)
+2025-09-21 18:14:11,364 - 🤖 QuantBot - INFO - 📈 Market regime changed: unknown → low_volatility
+2025-09-21 18:14:11,364 - 🤖 QuantBot - INFO - 🔄 Adapting to regime change: {'regime': 'low_volatility', 'confidence': 0.6833333333333333, 'indicators': {'trend_strength': 0.0, 'volatility': -1.0, 'momentum': -3.4416913763379853e-15, 'volume_trend': 0.0, 'correlation_spread': nan, 'vix_level': 0.5453333333333332, 'put_call_ratio': 0.0}, 'secondary_regimes': ['ranging'], 'regime_score': 2.0, 'timestamp': '2025-09-21T18:14:11.364425', 'market_data_quality': 'good'}
+2025-09-21 18:14:11,365 - 🤖 QuantBot - INFO - ✅ Strategies adapted to new regime
+2025-09-21 18:14:11,365 - 🤖 QuantBot - INFO - ✅ Current regime: low_volatility (confidence: 68.3%)
+2025-09-21 18:14:11,365 - 🤖 QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-21 18:14:13,361 - 🤖 QuantBot - WARNING - Yahoo Finance fetcher not available, using fallback
+2025-09-21 18:14:14,317 - 🤖 QuantBot - WARNING - Failed to fetch GDP: -1
+2025-09-21 18:14:14,503 - 🤖 QuantBot - WARNING - Failed to fetch UNRATE: -1
+2025-09-21 18:14:14,763 - 🤖 QuantBot - WARNING - Failed to fetch CPIAUCSL: -1
+2025-09-21 18:14:14,971 - 🤖 QuantBot - WARNING - Failed to fetch FEDFUNDS: -1
+2025-09-21 18:14:14,972 - 🤖 QuantBot - WARNING - Failed to get live market state, using fallback: '>' not supported between instances of 'NoneType' and 'int'
+2025-09-21 18:14:14,972 - 🤖 QuantBot - INFO - 🔍 Scanning for trading opportunities...
+2025-09-21 18:14:14,974 - 🤖 QuantBot - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-21 18:14:14,974 - 🤖 QuantBot - INFO - ✅ Discovered 0 valid opportunities
+2025-09-21 18:14:14,975 - 🤖 QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-21 18:14:14,975 - 🤖 QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-21 18:14:14,975 - 🤖 QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-21 18:14:14,975 - 🤖 QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-21 18:14:14,975 - 🤖 QuantBot - INFO - 🧪 Researching new strategies...
+2025-09-21 18:14:14,975 - 🤖 QuantBot - INFO - 🧪 Researching strategies for low_volatility regime
+2025-09-21 18:14:15,208 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,208 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,208 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,208 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,208 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,208 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,208 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,209 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,209 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,209 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,209 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,209 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,209 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,209 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,209 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,209 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,209 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,209 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,209 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,209 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,210 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,210 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,210 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,210 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,210 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,210 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,210 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,210 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,210 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,210 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,210 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,210 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,211 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,211 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,211 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,211 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,211 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,211 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,211 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,211 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,211 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,211 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,211 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,211 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,211 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,212 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,212 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,212 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,212 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,212 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,212 - 🤖 QuantBot - WARNING - Strategy evaluation failed: attempted relative import beyond top-level package
+2025-09-21 18:14:15,212 - 🤖 QuantBot - INFO - ✅ Generated 0 new strategies
+2025-09-21 18:14:15,212 - 🤖 QuantBot - INFO - ✅ Strategy portfolio: 0 active strategies
+2025-09-21 18:15:15,232 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:15:15,240 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:16:15,245 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:16:15,246 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:17:15,250 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:17:15,252 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:18:15,258 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:18:15,259 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:19:15,263 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:19:15,263 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:19:15,263 - 🤖 QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-21 18:19:15,264 - 🤖 QuantBot - WARNING - Yahoo Finance fetcher not available, using fallback
+2025-09-21 18:19:16,575 - 🤖 QuantBot - WARNING - Failed to fetch GDP: -1
+2025-09-21 18:19:16,792 - 🤖 QuantBot - WARNING - Failed to fetch UNRATE: -1
+2025-09-21 18:19:17,002 - 🤖 QuantBot - WARNING - Failed to fetch CPIAUCSL: -1
+2025-09-21 18:19:17,178 - 🤖 QuantBot - WARNING - Failed to fetch FEDFUNDS: -1
+2025-09-21 18:19:17,179 - 🤖 QuantBot - WARNING - Failed to get live market state, using fallback: '>' not supported between instances of 'NoneType' and 'int'
+2025-09-21 18:19:17,179 - 🤖 QuantBot - INFO - 🔍 Scanning for trading opportunities...
+2025-09-21 18:19:17,180 - 🤖 QuantBot - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-21 18:19:17,180 - 🤖 QuantBot - INFO - ✅ Discovered 0 valid opportunities
+2025-09-21 18:19:17,180 - 🤖 QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-21 18:19:17,180 - 🤖 QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-21 18:19:17,180 - 🤖 QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-21 18:19:17,180 - 🤖 QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-21 18:20:17,185 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:20:17,186 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:20:48,161 - 🤖 QuantBot - INFO - Received signal 2, initiating shutdown...
+2025-09-21 18:21:17,192 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:21:17,193 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:22:04,568 - 🤖 QuantBot - INFO - 📊 QuantBot Status Report
+2025-09-21 18:22:04,568 - 🤖 QuantBot - INFO - ========================================
+2025-09-21 18:22:04,568 - 🤖 QuantBot - INFO - 🤖 Bot Status: Not running
+2025-09-21 18:22:04,568 - 🤖 QuantBot - INFO - 💡 Use 'python3 run_quant_bot.py' to start the bot
+2025-09-21 18:22:04,568 - 🤖 QuantBot - INFO - 
+📋 Recent Activity:
+2025-09-21 18:22:17,216 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:22:17,253 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:23:17,258 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:23:17,260 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:24:17,264 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:24:17,268 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:24:17,268 - 🤖 QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-21 18:24:17,273 - 🤖 QuantBot - WARNING - Yahoo Finance fetcher not available, using fallback
+2025-09-21 18:24:18,497 - 🤖 QuantBot - WARNING - Failed to fetch GDP: -1
+2025-09-21 18:24:18,722 - 🤖 QuantBot - WARNING - Failed to fetch UNRATE: -1
+2025-09-21 18:24:18,859 - 🤖 QuantBot - WARNING - Failed to fetch CPIAUCSL: -1
+2025-09-21 18:24:19,002 - 🤖 QuantBot - WARNING - Failed to fetch FEDFUNDS: -1
+2025-09-21 18:24:19,002 - 🤖 QuantBot - WARNING - Failed to get live market state, using fallback: '>' not supported between instances of 'NoneType' and 'int'
+2025-09-21 18:24:19,002 - 🤖 QuantBot - INFO - 🔍 Scanning for trading opportunities...
+2025-09-21 18:24:19,003 - 🤖 QuantBot - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-21 18:24:19,003 - 🤖 QuantBot - INFO - ✅ Discovered 0 valid opportunities
+2025-09-21 18:24:19,003 - 🤖 QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-21 18:24:19,004 - 🤖 QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-21 18:24:19,004 - 🤖 QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-21 18:24:19,004 - 🤖 QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-21 18:25:19,008 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:25:19,011 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:26:19,015 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:26:19,016 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:27:19,019 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:27:19,020 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:28:19,025 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:28:19,027 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:29:11,937 - 🤖 QuantBot - INFO - Received signal 2, initiating shutdown...
+2025-09-21 18:29:19,030 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:29:19,030 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:29:19,031 - 🤖 QuantBot - INFO - 🎭 Checking market regime...
+2025-09-21 18:29:19,033 - 🤖 QuantBot - WARNING - Yahoo Finance fetcher not available, using fallback
+2025-09-21 18:29:21,999 - 🤖 QuantBot - WARNING - Yahoo Finance fetcher not available, using fallback
+2025-09-21 18:29:22,160 - 🤖 QuantBot - INFO - 🎭 Detected regime: low_volatility (confidence: 68.3%)
+2025-09-21 18:29:22,160 - 🤖 QuantBot - INFO - ✅ Current regime: low_volatility (confidence: 68.3%)
+2025-09-21 18:29:22,160 - 🤖 QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-21 18:29:24,154 - 🤖 QuantBot - WARNING - Yahoo Finance fetcher not available, using fallback
+2025-09-21 18:29:25,130 - 🤖 QuantBot - WARNING - Failed to fetch GDP: -1
+2025-09-21 18:29:25,262 - 🤖 QuantBot - WARNING - Failed to fetch UNRATE: -1
+2025-09-21 18:29:25,396 - 🤖 QuantBot - WARNING - Failed to fetch CPIAUCSL: -1
+2025-09-21 18:29:25,547 - 🤖 QuantBot - WARNING - Failed to fetch FEDFUNDS: -1
+2025-09-21 18:29:25,548 - 🤖 QuantBot - WARNING - Failed to get live market state, using fallback: '>' not supported between instances of 'NoneType' and 'int'
+2025-09-21 18:29:25,548 - 🤖 QuantBot - INFO - 🔍 Scanning for trading opportunities...
+2025-09-21 18:29:25,549 - 🤖 QuantBot - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-21 18:29:25,549 - 🤖 QuantBot - INFO - ✅ Discovered 0 valid opportunities
+2025-09-21 18:29:25,549 - 🤖 QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-21 18:29:25,549 - 🤖 QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-21 18:29:25,549 - 🤖 QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-21 18:29:25,549 - 🤖 QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-21 18:30:25,676 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:30:25,678 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:30:45,220 - 🤖 QuantBot - INFO - Received signal 2, initiating shutdown...
+2025-09-21 18:31:25,691 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:31:25,692 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:32:25,697 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:32:25,699 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:33:25,716 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:33:25,721 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:34:25,760 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:34:25,761 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:34:25,761 - 🤖 QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-21 18:34:25,763 - 🤖 QuantBot - WARNING - Yahoo Finance fetcher not available, using fallback
+2025-09-21 18:34:26,884 - 🤖 QuantBot - WARNING - Failed to fetch GDP: -1
+2025-09-21 18:34:27,029 - 🤖 QuantBot - WARNING - Failed to fetch UNRATE: -1
+2025-09-21 18:34:27,175 - 🤖 QuantBot - WARNING - Failed to fetch CPIAUCSL: -1
+2025-09-21 18:34:27,309 - 🤖 QuantBot - WARNING - Failed to fetch FEDFUNDS: -1
+2025-09-21 18:34:27,309 - 🤖 QuantBot - WARNING - Failed to get live market state, using fallback: '>' not supported between instances of 'NoneType' and 'int'
+2025-09-21 18:34:27,309 - 🤖 QuantBot - INFO - 🔍 Scanning for trading opportunities...
+2025-09-21 18:34:27,310 - 🤖 QuantBot - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-21 18:34:27,311 - 🤖 QuantBot - INFO - ✅ Discovered 0 valid opportunities
+2025-09-21 18:34:27,311 - 🤖 QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-21 18:34:27,311 - 🤖 QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-21 18:34:27,311 - 🤖 QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-21 18:34:27,311 - 🤖 QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-21 18:34:53,579 - 🤖 QuantBot - INFO - Received signal 2, initiating shutdown...
+2025-09-21 18:35:27,334 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:35:27,336 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:36:27,365 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:36:27,368 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:37:27,373 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:37:27,375 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:37:50,762 - 🤖 QuantBot - INFO - Received signal 2, initiating shutdown...
+2025-09-21 18:38:27,381 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:38:27,383 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:39:27,388 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:39:27,390 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:39:27,390 - 🤖 QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-21 18:39:27,393 - 🤖 QuantBot - WARNING - Yahoo Finance fetcher not available, using fallback
+2025-09-21 18:39:28,611 - 🤖 QuantBot - WARNING - Failed to fetch GDP: -1
+2025-09-21 18:39:28,758 - 🤖 QuantBot - WARNING - Failed to fetch UNRATE: -1
+2025-09-21 18:39:28,916 - 🤖 QuantBot - WARNING - Failed to fetch CPIAUCSL: -1
+2025-09-21 18:39:29,076 - 🤖 QuantBot - WARNING - Failed to fetch FEDFUNDS: -1
+2025-09-21 18:39:29,076 - 🤖 QuantBot - WARNING - Failed to get live market state, using fallback: '>' not supported between instances of 'NoneType' and 'int'
+2025-09-21 18:39:29,076 - 🤖 QuantBot - INFO - 🔍 Scanning for trading opportunities...
+2025-09-21 18:39:29,078 - 🤖 QuantBot - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-21 18:39:29,079 - 🤖 QuantBot - INFO - ✅ Discovered 0 valid opportunities
+2025-09-21 18:39:29,079 - 🤖 QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-21 18:39:29,079 - 🤖 QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-21 18:39:29,079 - 🤖 QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-21 18:39:29,079 - 🤖 QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-21 18:40:20,339 - 🤖 QuantBot - INFO - Received signal 2, initiating shutdown...
+2025-09-21 18:40:29,335 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:40:29,336 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:41:29,341 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:41:29,343 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:42:29,349 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:42:29,355 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:42:48,049 - 🤖 QuantBot - INFO - Received signal 2, initiating shutdown...
+2025-09-21 18:43:04,735 - 🤖 QuantBot - INFO - Received signal 2, initiating shutdown...
+2025-09-21 18:43:29,362 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:43:29,363 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:44:29,369 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:44:29,371 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:44:29,371 - 🤖 QuantBot - INFO - 🎭 Checking market regime...
+2025-09-21 18:44:29,373 - 🤖 QuantBot - WARNING - Yahoo Finance fetcher not available, using fallback
+2025-09-21 18:44:32,764 - 🤖 QuantBot - WARNING - Yahoo Finance fetcher not available, using fallback
+2025-09-21 18:44:32,946 - 🤖 QuantBot - INFO - 🎭 Detected regime: low_volatility (confidence: 68.3%)
+2025-09-21 18:44:32,946 - 🤖 QuantBot - INFO - ✅ Current regime: low_volatility (confidence: 68.3%)
+2025-09-21 18:44:32,946 - 🤖 QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-21 18:44:34,939 - 🤖 QuantBot - WARNING - Yahoo Finance fetcher not available, using fallback
+2025-09-21 18:44:35,935 - 🤖 QuantBot - WARNING - Failed to fetch GDP: -1
+2025-09-21 18:44:36,070 - 🤖 QuantBot - WARNING - Failed to fetch UNRATE: -1
+2025-09-21 18:44:36,224 - 🤖 QuantBot - WARNING - Failed to fetch CPIAUCSL: -1
+2025-09-21 18:44:36,357 - 🤖 QuantBot - WARNING - Failed to fetch FEDFUNDS: -1
+2025-09-21 18:44:36,357 - 🤖 QuantBot - WARNING - Failed to get live market state, using fallback: '>' not supported between instances of 'NoneType' and 'int'
+2025-09-21 18:44:36,357 - 🤖 QuantBot - INFO - 🔍 Scanning for trading opportunities...
+2025-09-21 18:44:36,359 - 🤖 QuantBot - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-21 18:44:36,359 - 🤖 QuantBot - INFO - ✅ Discovered 0 valid opportunities
+2025-09-21 18:44:36,359 - 🤖 QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-21 18:44:36,359 - 🤖 QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-21 18:44:36,359 - 🤖 QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-21 18:44:36,359 - 🤖 QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-21 18:45:36,364 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:45:36,365 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:45:56,157 - 🤖 QuantBot - INFO - Received signal 2, initiating shutdown...
+2025-09-21 18:46:19,537 - 🤖 QuantBot - INFO - Received signal 2, initiating shutdown...
+2025-09-21 18:46:36,370 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:46:36,371 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:47:17,225 - 🤖 QuantBot - INFO - Received signal 2, initiating shutdown...
+2025-09-21 18:47:36,377 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:47:36,378 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:48:29,579 - 🤖 QuantBot - INFO - Received signal 2, initiating shutdown...
+2025-09-21 18:48:35,420 - 🤖 QuantBot - INFO - Received signal 2, initiating shutdown...
+2025-09-21 18:48:36,382 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:48:36,382 - 🤖 QuantBot - ERROR - ❌ Data update failed: 'LiveDataManager' object has no attribute 'update_real_time_data'
+2025-09-21 18:48:54,501 - 🤖 QuantBot - INFO - Received signal 2, initiating shutdown...
+2025-09-21 18:49:27,883 - 🤖 QuantBot - INFO - 📊 QuantBot Status Report
+2025-09-21 18:49:27,883 - 🤖 QuantBot - INFO - ========================================
+2025-09-21 18:49:27,883 - 🤖 QuantBot - INFO - 🤖 Bot Status: Not running
+2025-09-21 18:49:27,883 - 🤖 QuantBot - INFO - 💡 Use 'python3 run_quant_bot.py' to start the bot
+2025-09-21 18:49:27,883 - 🤖 QuantBot - INFO - 
+📋 Recent Activity:
+2025-09-21 18:49:49,794 - 🤖 QuantBot - INFO - 🚀 Starting QuantEngine Autonomous Trading System
+2025-09-21 18:49:49,795 - 🤖 QuantBot - INFO - ============================================================
+2025-09-21 18:49:49,795 - 🤖 QuantBot - INFO - 🤖 QuantBot initialized
+2025-09-21 18:49:49,795 - 🤖 QuantBot - INFO - 🔄 Starting 24/7 autonomous operation
+2025-09-21 18:49:49,795 - 🤖 QuantBot - INFO - 🚀 Starting QuantBot autonomous trading system
+2025-09-21 18:49:49,795 - 🤖 QuantBot - INFO - 🔧 Initializing bot components...
+2025-09-21 18:49:50,336 - 🤖 QuantBot - INFO - 🔴 LiveDataManager initialized
+2025-09-21 18:49:51,641 - 🤖 QuantBot - INFO - ✅ All components initialized successfully
+2025-09-21 18:49:51,641 - 🤖 QuantBot - INFO - ✅ Live data session initialized
+2025-09-21 18:49:51,652 - 🤖 QuantBot - INFO - ✅ Database initialized at quantbot_data.db
+2025-09-21 18:49:51,653 - 🤖 QuantBot - INFO - 🔄 Starting main autonomous loop
+2025-09-21 18:49:51,653 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:49:51,655 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:51,655 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:51,655 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:51,655 - 🤖 QuantBot - WARNING - Failed to fetch VTI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:51,655 - 🤖 QuantBot - WARNING - Failed to fetch BND from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:51,655 - 🤖 QuantBot - WARNING - Failed to fetch XLE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:51,655 - 🤖 QuantBot - WARNING - Failed to fetch XLF from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:51,655 - 🤖 QuantBot - WARNING - Failed to fetch XLK from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:51,655 - 🤖 QuantBot - WARNING - Failed to fetch XLV from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:51,655 - 🤖 QuantBot - WARNING - Failed to fetch XLY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:51,655 - 🤖 QuantBot - WARNING - Failed to fetch XLI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:51,655 - 🤖 QuantBot - WARNING - Failed to fetch XLC from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:51,655 - 🤖 QuantBot - WARNING - Failed to fetch XLU from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:51,655 - 🤖 QuantBot - WARNING - Failed to fetch XLB from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:51,655 - 🤖 QuantBot - WARNING - Failed to fetch XLRE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:51,655 - 🤖 QuantBot - WARNING - Failed to fetch TQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:51,655 - 🤖 QuantBot - WARNING - Failed to fetch SQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:51,655 - 🤖 QuantBot - WARNING - Failed to fetch UVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:51,655 - 🤖 QuantBot - WARNING - Failed to fetch SVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:51,656 - 🤖 QuantBot - INFO - ✅ Updated real-time data for 0 symbols
+2025-09-21 18:49:52,072 - 🤖 QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-21 18:49:52,084 - 🤖 QuantBot - INFO - 💾 Saved 20 news items to database
+2025-09-21 18:49:52,084 - 🤖 QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-21 18:49:52,084 - 🤖 QuantBot - INFO - ✅ Market data updated
+2025-09-21 18:49:52,084 - 🤖 QuantBot - INFO - 🎭 Checking market regime...
+2025-09-21 18:49:53,658 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:53,659 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:53,659 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:53,659 - 🤖 QuantBot - WARNING - Failed to fetch VTI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:53,659 - 🤖 QuantBot - WARNING - Failed to fetch BND from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:55,661 - 🤖 QuantBot - WARNING - Failed to fetch VXX from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:55,662 - 🤖 QuantBot - INFO - 🎭 Detected regime: ranging (confidence: 66.7%)
+2025-09-21 18:49:55,662 - 🤖 QuantBot - INFO - 📈 Market regime changed: unknown → ranging
+2025-09-21 18:49:55,662 - 🤖 QuantBot - INFO - 🔄 Adapting to regime change: {'regime': 'ranging', 'confidence': 0.6666666666666667, 'indicators': {'correlation_spread': 0.0, 'trend_strength': 0.0, 'volatility': 0.0, 'momentum': 0.0, 'volume_trend': 0.0, 'put_call_ratio': 0.0, 'vix_level': 0.0}, 'secondary_regimes': ['bull_market', 'bear_market', 'high_volatility', 'low_volatility', 'risk_on', 'risk_off', 'trending'], 'regime_score': 1.0, 'timestamp': '2025-09-21T18:49:55.662470', 'market_data_quality': 'poor'}
+2025-09-21 18:49:55,662 - 🤖 QuantBot - INFO - ✅ Strategies adapted to new regime
+2025-09-21 18:49:55,665 - 🤖 QuantBot - INFO - 💾 Saved market analysis to database
+2025-09-21 18:49:55,665 - 🤖 QuantBot - INFO - ✅ Current regime: ranging (confidence: 66.7%)
+2025-09-21 18:49:55,665 - 🤖 QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-21 18:49:57,663 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:57,664 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:57,664 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:57,664 - 🤖 QuantBot - WARNING - Failed to fetch VXX from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:49:57,891 - 🤖 QuantBot - WARNING - Failed to fetch GDP: -1
+2025-09-21 18:49:58,384 - 🤖 QuantBot - WARNING - Failed to fetch UNRATE: -1
+2025-09-21 18:49:58,605 - 🤖 QuantBot - WARNING - Failed to fetch CPIAUCSL: -1
+2025-09-21 18:49:58,933 - 🤖 QuantBot - WARNING - Failed to fetch FEDFUNDS: -1
+2025-09-21 18:49:58,937 - 🤖 QuantBot - INFO - 🔍 Scanning for trading opportunities...
+2025-09-21 18:49:58,937 - 🤖 QuantBot - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-21 18:49:58,938 - 🤖 QuantBot - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-21 18:49:58,938 - 🤖 QuantBot - INFO - ✅ Discovered 0 valid opportunities
+2025-09-21 18:49:58,940 - 🤖 QuantBot - INFO - 💾 Saved 3 opportunities to database
+2025-09-21 18:49:58,940 - 🤖 QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-21 18:49:58,940 - 🤖 QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-21 18:49:58,940 - 🤖 QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-21 18:49:58,940 - 🤖 QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-21 18:49:58,941 - 🤖 QuantBot - INFO - 🧪 Researching new strategies...
+2025-09-21 18:49:58,941 - 🤖 QuantBot - INFO - 🧪 Researching strategies for ranging regime
+2025-09-21 18:49:59,288 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,289 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,290 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,290 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,290 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,290 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,290 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,290 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,290 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,290 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,290 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,290 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,290 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,290 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,290 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,290 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,290 - 🤖 QuantBot - WARNING - Strategy evaluation failed: cannot import name 'Backtester' from 'engine.backtest_engine.backtester' (/Users/kody/base/MarketNews/QuantEngine/engine/backtest_engine/backtester.py)
+2025-09-21 18:49:59,290 - 🤖 QuantBot - INFO - ✅ Generated 27 new strategies
+2025-09-21 18:49:59,290 - 🤖 QuantBot - INFO - ✅ Strategy portfolio: 0 active strategies
+2025-09-21 18:50:59,301 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:50:59,304 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:50:59,305 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:50:59,305 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:50:59,306 - 🤖 QuantBot - WARNING - Failed to fetch VTI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:50:59,306 - 🤖 QuantBot - WARNING - Failed to fetch BND from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:50:59,306 - 🤖 QuantBot - WARNING - Failed to fetch XLE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:50:59,306 - 🤖 QuantBot - WARNING - Failed to fetch XLF from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:50:59,306 - 🤖 QuantBot - WARNING - Failed to fetch XLK from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:50:59,306 - 🤖 QuantBot - WARNING - Failed to fetch XLV from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:50:59,306 - 🤖 QuantBot - WARNING - Failed to fetch XLY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:50:59,306 - 🤖 QuantBot - WARNING - Failed to fetch XLI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:50:59,306 - 🤖 QuantBot - WARNING - Failed to fetch XLC from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:50:59,306 - 🤖 QuantBot - WARNING - Failed to fetch XLU from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:50:59,306 - 🤖 QuantBot - WARNING - Failed to fetch XLB from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:50:59,306 - 🤖 QuantBot - WARNING - Failed to fetch XLRE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:50:59,306 - 🤖 QuantBot - WARNING - Failed to fetch TQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:50:59,306 - 🤖 QuantBot - WARNING - Failed to fetch SQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:50:59,306 - 🤖 QuantBot - WARNING - Failed to fetch UVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:50:59,306 - 🤖 QuantBot - WARNING - Failed to fetch SVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:50:59,306 - 🤖 QuantBot - INFO - ✅ Updated real-time data for 0 symbols
+2025-09-21 18:50:59,675 - 🤖 QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-21 18:50:59,679 - 🤖 QuantBot - INFO - 💾 Saved 20 news items to database
+2025-09-21 18:50:59,679 - 🤖 QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-21 18:50:59,679 - 🤖 QuantBot - INFO - ✅ Market data updated
+2025-09-21 18:51:33,742 - QuantBot - INFO - 🤖 QuantBot initialized
+2025-09-21 18:51:45,918 - QuantBot - INFO - 🤖 QuantBot initialized
+2025-09-21 18:51:45,919 - QuantBot - INFO - 🔧 Initializing bot components...
+2025-09-21 18:51:45,919 - engine.data_ingestion.live_data_manager - INFO - 🔴 LiveDataManager initialized
+2025-09-21 18:51:46,629 - QuantBot - INFO - ✅ All components initialized successfully
+2025-09-21 18:51:52,873 - 🤖 QuantBot - INFO - 🚀 Starting QuantEngine Autonomous Trading System
+2025-09-21 18:51:52,875 - 🤖 QuantBot - INFO - ============================================================
+2025-09-21 18:51:53,038 - 🤖 QuantBot - INFO - 🤖 QuantBot initialized
+2025-09-21 18:51:53,038 - 🤖 QuantBot - INFO - 🎯 Running in DEMO MODE (limited functionality)
+2025-09-21 18:51:53,038 - 🤖 QuantBot - INFO - 🔧 Initializing bot components...
+2025-09-21 18:51:53,735 - 🤖 QuantBot - INFO - 🔴 LiveDataManager initialized
+2025-09-21 18:51:54,457 - 🤖 QuantBot - INFO - ✅ All components initialized successfully
+2025-09-21 18:51:54,457 - 🤖 QuantBot - INFO - 🎭 Running QuantBot demo simulation...
+2025-09-21 18:51:54,457 - 🤖 QuantBot - INFO -    🔧 Initializing components...
+2025-09-21 18:51:56,460 - 🤖 QuantBot - INFO -    📊 Connecting to data feeds...
+2025-09-21 18:51:59,462 - 🤖 QuantBot - INFO -    🎭 Detecting market regime...
+2025-09-21 18:51:59,683 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:51:59,686 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:51:59,686 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:51:59,686 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:51:59,686 - 🤖 QuantBot - WARNING - Failed to fetch VTI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:51:59,686 - 🤖 QuantBot - WARNING - Failed to fetch BND from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:51:59,686 - 🤖 QuantBot - WARNING - Failed to fetch XLE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:51:59,686 - 🤖 QuantBot - WARNING - Failed to fetch XLF from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:51:59,686 - 🤖 QuantBot - WARNING - Failed to fetch XLK from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:51:59,686 - 🤖 QuantBot - WARNING - Failed to fetch XLV from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:51:59,686 - 🤖 QuantBot - WARNING - Failed to fetch XLY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:51:59,686 - 🤖 QuantBot - WARNING - Failed to fetch XLI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:51:59,686 - 🤖 QuantBot - WARNING - Failed to fetch XLC from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:51:59,686 - 🤖 QuantBot - WARNING - Failed to fetch XLU from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:51:59,686 - 🤖 QuantBot - WARNING - Failed to fetch XLB from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:51:59,686 - 🤖 QuantBot - WARNING - Failed to fetch XLRE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:51:59,686 - 🤖 QuantBot - WARNING - Failed to fetch TQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:51:59,686 - 🤖 QuantBot - WARNING - Failed to fetch SQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:51:59,686 - 🤖 QuantBot - WARNING - Failed to fetch UVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:51:59,686 - 🤖 QuantBot - WARNING - Failed to fetch SVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:51:59,686 - 🤖 QuantBot - INFO - ✅ Updated real-time data for 0 symbols
+2025-09-21 18:52:00,067 - 🤖 QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-21 18:52:00,070 - 🤖 QuantBot - INFO - 💾 Saved 20 news items to database
+2025-09-21 18:52:00,070 - 🤖 QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-21 18:52:00,070 - 🤖 QuantBot - INFO - ✅ Market data updated
+2025-09-21 18:52:01,457 - 🤖 QuantBot - INFO - Received signal 15, initiating shutdown...
+2025-09-21 18:52:01,457 - 🤖 QuantBot - INFO - Received signal 15, initiating shutdown...
+2025-09-21 18:52:01,462 - 🤖 QuantBot - INFO -    ✅ Detected: Bull Market (confidence: 78%)
+2025-09-21 18:52:01,463 - 🤖 QuantBot - INFO -    🧪 Researching strategies...
+2025-09-21 18:52:04,464 - 🤖 QuantBot - INFO -    ✅ Generated 3 new strategies (avg Sharpe: 1.45)
+2025-09-21 18:52:04,464 - 🤖 QuantBot - INFO -    🔍 Scanning opportunities...
+2025-09-21 18:52:06,465 - 🤖 QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-21 18:52:06,467 - 🤖 QuantBot - INFO - ✅ Live data session initialized
+2025-09-21 18:52:06,473 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:52:06,473 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:52:06,473 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:52:06,473 - 🤖 QuantBot - WARNING - Failed to fetch VXX from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:52:06,743 - 🤖 QuantBot - WARNING - Failed to fetch GDP: -1
+2025-09-21 18:52:06,958 - 🤖 QuantBot - WARNING - Failed to fetch UNRATE: -1
+2025-09-21 18:52:07,090 - 🤖 QuantBot - WARNING - Failed to fetch CPIAUCSL: -1
+2025-09-21 18:52:07,247 - 🤖 QuantBot - WARNING - Failed to fetch FEDFUNDS: -1
+2025-09-21 18:52:07,248 - 🤖 QuantBot - INFO - 🔍 Scanning for trading opportunities...
+2025-09-21 18:52:07,248 - 🤖 QuantBot - WARNING - News dislocation scan failed: 'float' object has no attribute 'get'
+2025-09-21 18:52:07,248 - 🤖 QuantBot - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-21 18:52:07,248 - 🤖 QuantBot - INFO - ✅ Discovered 0 valid opportunities
+2025-09-21 18:52:07,248 - 🤖 QuantBot - ERROR - ❌ Opportunity scanning failed: 'QuantBot' object has no attribute 'data_broker'
+2025-09-21 18:52:07,248 - 🤖 QuantBot - INFO -    ✅ Found 0 trading opportunities (avg EV: 1.8%)
+2025-09-21 18:52:07,248 - 🤖 QuantBot - INFO -    📈 Generating reports...
+2025-09-21 18:52:08,249 - 🤖 QuantBot - INFO - 🎉 Demo simulation complete!
+2025-09-21 18:52:08,249 - 🤖 QuantBot - INFO - 
+2025-09-21 18:52:08,249 - 🤖 QuantBot - INFO - In full production mode, QuantBot would:
+2025-09-21 18:52:08,250 - 🤖 QuantBot - INFO - • Run continuously 24/7
+2025-09-21 18:52:08,250 - 🤖 QuantBot - INFO - • Process real market data and news
+2025-09-21 18:52:08,250 - 🤖 QuantBot - INFO - • Adapt strategies to live market conditions
+2025-09-21 18:52:08,250 - 🤖 QuantBot - INFO - • Execute trades through connected brokers
+2025-09-21 18:52:08,250 - 🤖 QuantBot - INFO - • Learn from performance and improve over time
+2025-09-21 18:52:08,250 - 🤖 QuantBot - INFO - 🛑 Shutting down QuantBot Runner...
+2025-09-21 18:52:08,250 - 🤖 QuantBot - INFO - ✅ QuantBot Runner shutdown complete
+2025-09-21 18:52:08,251 - 🤖 QuantBot - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x12a2cf620>
+2025-09-21 18:52:08,251 - 🤖 QuantBot - ERROR - Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x12a49eb70>, 589812.067710083)])']
+connector: <aiohttp.connector.TCPConnector object at 0x12a2cf770>
+2025-09-21 18:53:00,080 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:53:00,083 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:00,083 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:00,083 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:00,083 - 🤖 QuantBot - WARNING - Failed to fetch VTI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:00,083 - 🤖 QuantBot - WARNING - Failed to fetch BND from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:00,083 - 🤖 QuantBot - WARNING - Failed to fetch XLE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:00,084 - 🤖 QuantBot - WARNING - Failed to fetch XLF from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:00,084 - 🤖 QuantBot - WARNING - Failed to fetch XLK from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:00,084 - 🤖 QuantBot - WARNING - Failed to fetch XLV from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:00,084 - 🤖 QuantBot - WARNING - Failed to fetch XLY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:00,084 - 🤖 QuantBot - WARNING - Failed to fetch XLI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:00,084 - 🤖 QuantBot - WARNING - Failed to fetch XLC from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:00,084 - 🤖 QuantBot - WARNING - Failed to fetch XLU from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:00,084 - 🤖 QuantBot - WARNING - Failed to fetch XLB from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:00,084 - 🤖 QuantBot - WARNING - Failed to fetch XLRE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:00,084 - 🤖 QuantBot - WARNING - Failed to fetch TQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:00,084 - 🤖 QuantBot - WARNING - Failed to fetch SQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:00,084 - 🤖 QuantBot - WARNING - Failed to fetch UVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:00,084 - 🤖 QuantBot - WARNING - Failed to fetch SVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:00,084 - 🤖 QuantBot - INFO - ✅ Updated real-time data for 0 symbols
+2025-09-21 18:53:00,480 - 🤖 QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-21 18:53:00,484 - 🤖 QuantBot - INFO - 💾 Saved 20 news items to database
+2025-09-21 18:53:00,484 - 🤖 QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-21 18:53:00,484 - 🤖 QuantBot - INFO - ✅ Market data updated
+2025-09-21 18:53:48,066 - 🤖 QuantBot - INFO - 🚀 Starting QuantEngine Autonomous Trading System
+2025-09-21 18:53:48,066 - 🤖 QuantBot - INFO - ============================================================
+2025-09-21 18:53:48,075 - 🤖 QuantBot - INFO - 🤖 QuantBot initialized
+2025-09-21 18:53:48,075 - 🤖 QuantBot - INFO - 🔄 Starting 24/7 autonomous operation
+2025-09-21 18:53:48,075 - 🤖 QuantBot - INFO - 🚀 Starting QuantBot autonomous trading system
+2025-09-21 18:53:48,075 - 🤖 QuantBot - INFO - 🔧 Initializing bot components...
+2025-09-21 18:53:48,421 - 🤖 QuantBot - INFO - 🔴 LiveDataManager initialized
+2025-09-21 18:53:49,096 - 🤖 QuantBot - INFO - ✅ All components initialized successfully
+2025-09-21 18:53:49,096 - 🤖 QuantBot - INFO - ✅ Live data session initialized
+2025-09-21 18:53:49,100 - 🤖 QuantBot - INFO - ✅ Database initialized at quantbot_data.db
+2025-09-21 18:53:49,100 - 🤖 QuantBot - INFO - 🔄 Starting main autonomous loop
+2025-09-21 18:53:49,100 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:53:49,100 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:49,100 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:49,100 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:49,100 - 🤖 QuantBot - WARNING - Failed to fetch VTI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:49,100 - 🤖 QuantBot - WARNING - Failed to fetch BND from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:49,100 - 🤖 QuantBot - WARNING - Failed to fetch XLE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:49,100 - 🤖 QuantBot - WARNING - Failed to fetch XLF from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:49,100 - 🤖 QuantBot - WARNING - Failed to fetch XLK from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:49,101 - 🤖 QuantBot - WARNING - Failed to fetch XLV from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:49,101 - 🤖 QuantBot - WARNING - Failed to fetch XLY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:49,101 - 🤖 QuantBot - WARNING - Failed to fetch XLI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:49,101 - 🤖 QuantBot - WARNING - Failed to fetch XLC from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:49,101 - 🤖 QuantBot - WARNING - Failed to fetch XLU from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:49,101 - 🤖 QuantBot - WARNING - Failed to fetch XLB from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:49,101 - 🤖 QuantBot - WARNING - Failed to fetch XLRE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:49,101 - 🤖 QuantBot - WARNING - Failed to fetch TQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:49,101 - 🤖 QuantBot - WARNING - Failed to fetch SQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:49,101 - 🤖 QuantBot - WARNING - Failed to fetch UVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:49,101 - 🤖 QuantBot - WARNING - Failed to fetch SVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:49,101 - 🤖 QuantBot - INFO - ✅ Updated real-time data for 0 symbols
+2025-09-21 18:53:49,567 - 🤖 QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-21 18:53:49,571 - 🤖 QuantBot - INFO - 💾 Saved 20 news items to database
+2025-09-21 18:53:49,571 - 🤖 QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-21 18:53:49,571 - 🤖 QuantBot - INFO - ✅ Market data updated
+2025-09-21 18:53:49,571 - 🤖 QuantBot - INFO - 🎭 Checking market regime...
+2025-09-21 18:53:51,103 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:51,103 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:51,103 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:51,104 - 🤖 QuantBot - WARNING - Failed to fetch VTI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:51,104 - 🤖 QuantBot - WARNING - Failed to fetch BND from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:53,106 - 🤖 QuantBot - WARNING - Failed to fetch VXX from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:53,107 - 🤖 QuantBot - INFO - 🎭 Detected regime: ranging (confidence: 66.7%)
+2025-09-21 18:53:53,107 - 🤖 QuantBot - INFO - 📈 Market regime changed: unknown → ranging
+2025-09-21 18:53:53,107 - 🤖 QuantBot - INFO - 🔄 Adapting to regime change: {'regime': 'ranging', 'confidence': 0.6666666666666667, 'indicators': {'correlation_spread': 0.0, 'trend_strength': 0.0, 'volatility': 0.0, 'momentum': 0.0, 'volume_trend': 0.0, 'put_call_ratio': 0.0, 'vix_level': 0.0}, 'secondary_regimes': ['bull_market', 'bear_market', 'high_volatility', 'low_volatility', 'risk_on', 'risk_off', 'trending'], 'regime_score': 1.0, 'timestamp': '2025-09-21T18:53:53.107272', 'market_data_quality': 'poor'}
+2025-09-21 18:53:53,107 - 🤖 QuantBot - INFO - ✅ Strategies adapted to new regime
+2025-09-21 18:53:53,111 - 🤖 QuantBot - INFO - 💾 Saved market analysis to database
+2025-09-21 18:53:53,111 - 🤖 QuantBot - INFO - ✅ Current regime: ranging (confidence: 66.7%)
+2025-09-21 18:53:53,111 - 🤖 QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-21 18:53:55,107 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:55,108 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:55,108 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:55,108 - 🤖 QuantBot - WARNING - Failed to fetch VXX from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:53:56,132 - 🤖 QuantBot - WARNING - Failed to fetch GDP: -1
+2025-09-21 18:53:56,525 - 🤖 QuantBot - WARNING - Failed to fetch UNRATE: -1
+2025-09-21 18:53:56,841 - 🤖 QuantBot - WARNING - Failed to fetch CPIAUCSL: -1
+2025-09-21 18:53:57,142 - 🤖 QuantBot - WARNING - Failed to fetch FEDFUNDS: -1
+2025-09-21 18:53:57,143 - 🤖 QuantBot - INFO - 🔍 Scanning for trading opportunities...
+2025-09-21 18:53:57,143 - 🤖 QuantBot - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-21 18:53:57,145 - 🤖 QuantBot - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-21 18:53:57,145 - 🤖 QuantBot - INFO - ✅ Discovered 0 valid opportunities
+2025-09-21 18:53:57,148 - 🤖 QuantBot - INFO - 💾 Saved 3 opportunities to database
+2025-09-21 18:53:57,149 - 🤖 QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-21 18:53:57,149 - 🤖 QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-21 18:53:57,149 - 🤖 QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-21 18:53:57,149 - 🤖 QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-21 18:53:57,149 - 🤖 QuantBot - INFO - 🧪 Researching new strategies...
+2025-09-21 18:53:57,150 - 🤖 QuantBot - INFO - 🧪 Researching strategies for ranging regime
+2025-09-21 18:53:57,357 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,357 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,358 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,358 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,358 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,358 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,358 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,358 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,358 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,358 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,358 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,358 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,358 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,358 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,358 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,358 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,358 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,358 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,358 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,358 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,358 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,358 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,359 - 🤖 QuantBot - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-21 18:53:57,360 - 🤖 QuantBot - INFO - ✅ Generated 26 new strategies
+2025-09-21 18:53:57,360 - 🤖 QuantBot - INFO - ✅ Strategy portfolio: 0 active strategies
+2025-09-21 18:54:00,490 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:54:00,493 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:00,493 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:00,494 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:00,494 - 🤖 QuantBot - WARNING - Failed to fetch VTI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:00,494 - 🤖 QuantBot - WARNING - Failed to fetch BND from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:00,494 - 🤖 QuantBot - WARNING - Failed to fetch XLE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:00,494 - 🤖 QuantBot - WARNING - Failed to fetch XLF from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:00,494 - 🤖 QuantBot - WARNING - Failed to fetch XLK from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:00,494 - 🤖 QuantBot - WARNING - Failed to fetch XLV from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:00,494 - 🤖 QuantBot - WARNING - Failed to fetch XLY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:00,494 - 🤖 QuantBot - WARNING - Failed to fetch XLI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:00,494 - 🤖 QuantBot - WARNING - Failed to fetch XLC from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:00,494 - 🤖 QuantBot - WARNING - Failed to fetch XLU from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:00,495 - 🤖 QuantBot - WARNING - Failed to fetch XLB from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:00,495 - 🤖 QuantBot - WARNING - Failed to fetch XLRE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:00,495 - 🤖 QuantBot - WARNING - Failed to fetch TQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:00,495 - 🤖 QuantBot - WARNING - Failed to fetch SQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:00,495 - 🤖 QuantBot - WARNING - Failed to fetch UVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:00,495 - 🤖 QuantBot - WARNING - Failed to fetch SVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:00,495 - 🤖 QuantBot - INFO - ✅ Updated real-time data for 0 symbols
+2025-09-21 18:54:00,910 - 🤖 QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-21 18:54:00,913 - 🤖 QuantBot - INFO - 💾 Saved 20 news items to database
+2025-09-21 18:54:00,913 - 🤖 QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-21 18:54:00,913 - 🤖 QuantBot - INFO - ✅ Market data updated
+2025-09-21 18:54:57,363 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:54:57,368 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:57,368 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:57,368 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:57,369 - 🤖 QuantBot - WARNING - Failed to fetch VTI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:57,369 - 🤖 QuantBot - WARNING - Failed to fetch BND from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:57,369 - 🤖 QuantBot - WARNING - Failed to fetch XLE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:57,369 - 🤖 QuantBot - WARNING - Failed to fetch XLF from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:57,369 - 🤖 QuantBot - WARNING - Failed to fetch XLK from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:57,369 - 🤖 QuantBot - WARNING - Failed to fetch XLV from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:57,369 - 🤖 QuantBot - WARNING - Failed to fetch XLY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:57,369 - 🤖 QuantBot - WARNING - Failed to fetch XLI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:57,369 - 🤖 QuantBot - WARNING - Failed to fetch XLC from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:57,369 - 🤖 QuantBot - WARNING - Failed to fetch XLU from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:57,369 - 🤖 QuantBot - WARNING - Failed to fetch XLB from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:57,369 - 🤖 QuantBot - WARNING - Failed to fetch XLRE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:57,369 - 🤖 QuantBot - WARNING - Failed to fetch TQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:57,369 - 🤖 QuantBot - WARNING - Failed to fetch SQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:57,369 - 🤖 QuantBot - WARNING - Failed to fetch UVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:57,369 - 🤖 QuantBot - WARNING - Failed to fetch SVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:54:57,369 - 🤖 QuantBot - INFO - ✅ Updated real-time data for 0 symbols
+2025-09-21 18:54:57,755 - 🤖 QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-21 18:54:57,759 - 🤖 QuantBot - INFO - 💾 Saved 20 news items to database
+2025-09-21 18:54:57,759 - 🤖 QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-21 18:54:57,759 - 🤖 QuantBot - INFO - ✅ Market data updated
+2025-09-21 18:55:00,918 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:55:00,921 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:00,921 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:00,921 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:00,922 - 🤖 QuantBot - WARNING - Failed to fetch VTI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:00,922 - 🤖 QuantBot - WARNING - Failed to fetch BND from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:00,922 - 🤖 QuantBot - WARNING - Failed to fetch XLE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:00,922 - 🤖 QuantBot - WARNING - Failed to fetch XLF from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:00,922 - 🤖 QuantBot - WARNING - Failed to fetch XLK from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:00,922 - 🤖 QuantBot - WARNING - Failed to fetch XLV from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:00,922 - 🤖 QuantBot - WARNING - Failed to fetch XLY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:00,922 - 🤖 QuantBot - WARNING - Failed to fetch XLI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:00,922 - 🤖 QuantBot - WARNING - Failed to fetch XLC from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:00,922 - 🤖 QuantBot - WARNING - Failed to fetch XLU from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:00,922 - 🤖 QuantBot - WARNING - Failed to fetch XLB from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:00,922 - 🤖 QuantBot - WARNING - Failed to fetch XLRE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:00,923 - 🤖 QuantBot - WARNING - Failed to fetch TQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:00,923 - 🤖 QuantBot - WARNING - Failed to fetch SQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:00,923 - 🤖 QuantBot - WARNING - Failed to fetch UVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:00,923 - 🤖 QuantBot - WARNING - Failed to fetch SVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:00,923 - 🤖 QuantBot - INFO - ✅ Updated real-time data for 0 symbols
+2025-09-21 18:55:01,313 - 🤖 QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-21 18:55:01,318 - 🤖 QuantBot - INFO - 💾 Saved 20 news items to database
+2025-09-21 18:55:01,318 - 🤖 QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-21 18:55:01,318 - 🤖 QuantBot - INFO - ✅ Market data updated
+2025-09-21 18:55:01,318 - 🤖 QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-21 18:55:02,925 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:02,925 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:02,925 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:02,925 - 🤖 QuantBot - WARNING - Failed to fetch VXX from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:03,143 - 🤖 QuantBot - WARNING - Failed to fetch GDP: -1
+2025-09-21 18:55:03,280 - 🤖 QuantBot - WARNING - Failed to fetch UNRATE: -1
+2025-09-21 18:55:03,443 - 🤖 QuantBot - WARNING - Failed to fetch CPIAUCSL: -1
+2025-09-21 18:55:03,583 - 🤖 QuantBot - WARNING - Failed to fetch FEDFUNDS: -1
+2025-09-21 18:55:03,584 - 🤖 QuantBot - INFO - 🔍 Scanning for trading opportunities...
+2025-09-21 18:55:03,584 - 🤖 QuantBot - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-21 18:55:03,586 - 🤖 QuantBot - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-21 18:55:03,586 - 🤖 QuantBot - INFO - ✅ Discovered 0 valid opportunities
+2025-09-21 18:55:03,589 - 🤖 QuantBot - INFO - 💾 Saved 3 opportunities to database
+2025-09-21 18:55:03,589 - 🤖 QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-21 18:55:03,589 - 🤖 QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-21 18:55:03,589 - 🤖 QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-21 18:55:03,589 - 🤖 QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-21 18:55:57,780 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:55:57,785 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:57,785 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:57,785 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:57,785 - 🤖 QuantBot - WARNING - Failed to fetch VTI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:57,785 - 🤖 QuantBot - WARNING - Failed to fetch BND from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:57,785 - 🤖 QuantBot - WARNING - Failed to fetch XLE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:57,785 - 🤖 QuantBot - WARNING - Failed to fetch XLF from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:57,785 - 🤖 QuantBot - WARNING - Failed to fetch XLK from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:57,785 - 🤖 QuantBot - WARNING - Failed to fetch XLV from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:57,785 - 🤖 QuantBot - WARNING - Failed to fetch XLY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:57,785 - 🤖 QuantBot - WARNING - Failed to fetch XLI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:57,785 - 🤖 QuantBot - WARNING - Failed to fetch XLC from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:57,785 - 🤖 QuantBot - WARNING - Failed to fetch XLU from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:57,785 - 🤖 QuantBot - WARNING - Failed to fetch XLB from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:57,786 - 🤖 QuantBot - WARNING - Failed to fetch XLRE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:57,786 - 🤖 QuantBot - WARNING - Failed to fetch TQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:57,786 - 🤖 QuantBot - WARNING - Failed to fetch SQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:57,786 - 🤖 QuantBot - WARNING - Failed to fetch UVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:57,786 - 🤖 QuantBot - WARNING - Failed to fetch SVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:55:57,786 - 🤖 QuantBot - INFO - ✅ Updated real-time data for 0 symbols
+2025-09-21 18:55:58,192 - 🤖 QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-21 18:55:58,196 - 🤖 QuantBot - INFO - 💾 Saved 20 news items to database
+2025-09-21 18:55:58,196 - 🤖 QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-21 18:55:58,196 - 🤖 QuantBot - INFO - ✅ Market data updated
+2025-09-21 18:56:03,595 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:56:03,599 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:03,599 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:03,599 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:03,599 - 🤖 QuantBot - WARNING - Failed to fetch VTI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:03,599 - 🤖 QuantBot - WARNING - Failed to fetch BND from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:03,599 - 🤖 QuantBot - WARNING - Failed to fetch XLE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:03,599 - 🤖 QuantBot - WARNING - Failed to fetch XLF from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:03,599 - 🤖 QuantBot - WARNING - Failed to fetch XLK from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:03,600 - 🤖 QuantBot - WARNING - Failed to fetch XLV from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:03,600 - 🤖 QuantBot - WARNING - Failed to fetch XLY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:03,600 - 🤖 QuantBot - WARNING - Failed to fetch XLI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:03,600 - 🤖 QuantBot - WARNING - Failed to fetch XLC from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:03,600 - 🤖 QuantBot - WARNING - Failed to fetch XLU from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:03,600 - 🤖 QuantBot - WARNING - Failed to fetch XLB from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:03,600 - 🤖 QuantBot - WARNING - Failed to fetch XLRE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:03,600 - 🤖 QuantBot - WARNING - Failed to fetch TQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:03,600 - 🤖 QuantBot - WARNING - Failed to fetch SQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:03,600 - 🤖 QuantBot - WARNING - Failed to fetch UVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:03,600 - 🤖 QuantBot - WARNING - Failed to fetch SVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:03,600 - 🤖 QuantBot - INFO - ✅ Updated real-time data for 0 symbols
+2025-09-21 18:56:04,207 - 🤖 QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-21 18:56:04,211 - 🤖 QuantBot - INFO - 💾 Saved 20 news items to database
+2025-09-21 18:56:04,211 - 🤖 QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-21 18:56:04,211 - 🤖 QuantBot - INFO - ✅ Market data updated
+2025-09-21 18:56:58,201 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:56:58,216 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:58,217 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:58,217 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:58,217 - 🤖 QuantBot - WARNING - Failed to fetch VTI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:58,217 - 🤖 QuantBot - WARNING - Failed to fetch BND from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:58,217 - 🤖 QuantBot - WARNING - Failed to fetch XLE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:58,217 - 🤖 QuantBot - WARNING - Failed to fetch XLF from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:58,218 - 🤖 QuantBot - WARNING - Failed to fetch XLK from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:58,220 - 🤖 QuantBot - WARNING - Failed to fetch XLV from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:58,220 - 🤖 QuantBot - WARNING - Failed to fetch XLY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:58,220 - 🤖 QuantBot - WARNING - Failed to fetch XLI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:58,220 - 🤖 QuantBot - WARNING - Failed to fetch XLC from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:58,220 - 🤖 QuantBot - WARNING - Failed to fetch XLU from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:58,220 - 🤖 QuantBot - WARNING - Failed to fetch XLB from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:58,220 - 🤖 QuantBot - WARNING - Failed to fetch XLRE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:58,220 - 🤖 QuantBot - WARNING - Failed to fetch TQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:58,220 - 🤖 QuantBot - WARNING - Failed to fetch SQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:58,220 - 🤖 QuantBot - WARNING - Failed to fetch UVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:58,220 - 🤖 QuantBot - WARNING - Failed to fetch SVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:56:58,221 - 🤖 QuantBot - INFO - ✅ Updated real-time data for 0 symbols
+2025-09-21 18:56:58,602 - 🤖 QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-21 18:56:58,608 - 🤖 QuantBot - INFO - 💾 Saved 20 news items to database
+2025-09-21 18:56:58,608 - 🤖 QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-21 18:56:58,608 - 🤖 QuantBot - INFO - ✅ Market data updated
+2025-09-21 18:57:04,216 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:57:04,228 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:04,228 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:04,228 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:04,229 - 🤖 QuantBot - WARNING - Failed to fetch VTI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:04,229 - 🤖 QuantBot - WARNING - Failed to fetch BND from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:04,229 - 🤖 QuantBot - WARNING - Failed to fetch XLE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:04,229 - 🤖 QuantBot - WARNING - Failed to fetch XLF from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:04,229 - 🤖 QuantBot - WARNING - Failed to fetch XLK from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:04,229 - 🤖 QuantBot - WARNING - Failed to fetch XLV from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:04,229 - 🤖 QuantBot - WARNING - Failed to fetch XLY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:04,229 - 🤖 QuantBot - WARNING - Failed to fetch XLI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:04,229 - 🤖 QuantBot - WARNING - Failed to fetch XLC from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:04,229 - 🤖 QuantBot - WARNING - Failed to fetch XLU from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:04,229 - 🤖 QuantBot - WARNING - Failed to fetch XLB from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:04,229 - 🤖 QuantBot - WARNING - Failed to fetch XLRE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:04,229 - 🤖 QuantBot - WARNING - Failed to fetch TQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:04,229 - 🤖 QuantBot - WARNING - Failed to fetch SQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:04,229 - 🤖 QuantBot - WARNING - Failed to fetch UVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:04,229 - 🤖 QuantBot - WARNING - Failed to fetch SVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:04,229 - 🤖 QuantBot - INFO - ✅ Updated real-time data for 0 symbols
+2025-09-21 18:57:04,608 - 🤖 QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-21 18:57:04,620 - 🤖 QuantBot - INFO - 💾 Saved 20 news items to database
+2025-09-21 18:57:04,620 - 🤖 QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-21 18:57:04,621 - 🤖 QuantBot - INFO - ✅ Market data updated
+2025-09-21 18:57:58,615 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:57:58,620 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:58,620 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:58,620 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:58,620 - 🤖 QuantBot - WARNING - Failed to fetch VTI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:58,620 - 🤖 QuantBot - WARNING - Failed to fetch BND from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:58,620 - 🤖 QuantBot - WARNING - Failed to fetch XLE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:58,620 - 🤖 QuantBot - WARNING - Failed to fetch XLF from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:58,620 - 🤖 QuantBot - WARNING - Failed to fetch XLK from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:58,621 - 🤖 QuantBot - WARNING - Failed to fetch XLV from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:58,621 - 🤖 QuantBot - WARNING - Failed to fetch XLY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:58,621 - 🤖 QuantBot - WARNING - Failed to fetch XLI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:58,621 - 🤖 QuantBot - WARNING - Failed to fetch XLC from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:58,621 - 🤖 QuantBot - WARNING - Failed to fetch XLU from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:58,621 - 🤖 QuantBot - WARNING - Failed to fetch XLB from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:58,621 - 🤖 QuantBot - WARNING - Failed to fetch XLRE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:58,621 - 🤖 QuantBot - WARNING - Failed to fetch TQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:58,621 - 🤖 QuantBot - WARNING - Failed to fetch SQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:58,621 - 🤖 QuantBot - WARNING - Failed to fetch UVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:58,621 - 🤖 QuantBot - WARNING - Failed to fetch SVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:57:58,621 - 🤖 QuantBot - INFO - ✅ Updated real-time data for 0 symbols
+2025-09-21 18:57:59,223 - 🤖 QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-21 18:57:59,227 - 🤖 QuantBot - INFO - 💾 Saved 20 news items to database
+2025-09-21 18:57:59,227 - 🤖 QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-21 18:57:59,227 - 🤖 QuantBot - INFO - ✅ Market data updated
+2025-09-21 18:58:04,625 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:58:04,628 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:04,628 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:04,628 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:04,628 - 🤖 QuantBot - WARNING - Failed to fetch VTI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:04,628 - 🤖 QuantBot - WARNING - Failed to fetch BND from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:04,628 - 🤖 QuantBot - WARNING - Failed to fetch XLE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:04,628 - 🤖 QuantBot - WARNING - Failed to fetch XLF from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:04,628 - 🤖 QuantBot - WARNING - Failed to fetch XLK from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:04,628 - 🤖 QuantBot - WARNING - Failed to fetch XLV from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:04,628 - 🤖 QuantBot - WARNING - Failed to fetch XLY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:04,629 - 🤖 QuantBot - WARNING - Failed to fetch XLI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:04,629 - 🤖 QuantBot - WARNING - Failed to fetch XLC from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:04,629 - 🤖 QuantBot - WARNING - Failed to fetch XLU from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:04,629 - 🤖 QuantBot - WARNING - Failed to fetch XLB from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:04,629 - 🤖 QuantBot - WARNING - Failed to fetch XLRE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:04,629 - 🤖 QuantBot - WARNING - Failed to fetch TQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:04,629 - 🤖 QuantBot - WARNING - Failed to fetch SQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:04,629 - 🤖 QuantBot - WARNING - Failed to fetch UVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:04,629 - 🤖 QuantBot - WARNING - Failed to fetch SVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:04,629 - 🤖 QuantBot - INFO - ✅ Updated real-time data for 0 symbols
+2025-09-21 18:58:05,008 - 🤖 QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-21 18:58:05,013 - 🤖 QuantBot - INFO - 💾 Saved 20 news items to database
+2025-09-21 18:58:05,013 - 🤖 QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-21 18:58:05,013 - 🤖 QuantBot - INFO - ✅ Market data updated
+2025-09-21 18:58:59,234 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:58:59,236 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:59,236 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:59,236 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:59,236 - 🤖 QuantBot - WARNING - Failed to fetch VTI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:59,236 - 🤖 QuantBot - WARNING - Failed to fetch BND from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:59,236 - 🤖 QuantBot - WARNING - Failed to fetch XLE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:59,236 - 🤖 QuantBot - WARNING - Failed to fetch XLF from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:59,236 - 🤖 QuantBot - WARNING - Failed to fetch XLK from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:59,236 - 🤖 QuantBot - WARNING - Failed to fetch XLV from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:59,236 - 🤖 QuantBot - WARNING - Failed to fetch XLY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:59,236 - 🤖 QuantBot - WARNING - Failed to fetch XLI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:59,236 - 🤖 QuantBot - WARNING - Failed to fetch XLC from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:59,236 - 🤖 QuantBot - WARNING - Failed to fetch XLU from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:59,236 - 🤖 QuantBot - WARNING - Failed to fetch XLB from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:59,236 - 🤖 QuantBot - WARNING - Failed to fetch XLRE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:59,236 - 🤖 QuantBot - WARNING - Failed to fetch TQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:59,236 - 🤖 QuantBot - WARNING - Failed to fetch SQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:59,236 - 🤖 QuantBot - WARNING - Failed to fetch UVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:59,236 - 🤖 QuantBot - WARNING - Failed to fetch SVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:58:59,236 - 🤖 QuantBot - INFO - ✅ Updated real-time data for 0 symbols
+2025-09-21 18:58:59,611 - 🤖 QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-21 18:58:59,616 - 🤖 QuantBot - INFO - 💾 Saved 20 news items to database
+2025-09-21 18:58:59,616 - 🤖 QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-21 18:58:59,616 - 🤖 QuantBot - INFO - ✅ Market data updated
+2025-09-21 18:58:59,616 - 🤖 QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-21 18:59:01,238 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:59:01,238 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:59:01,238 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:59:01,238 - 🤖 QuantBot - WARNING - Failed to fetch VXX from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:59:01,471 - 🤖 QuantBot - WARNING - Failed to fetch GDP: -1
+2025-09-21 18:59:01,609 - 🤖 QuantBot - WARNING - Failed to fetch UNRATE: -1
+2025-09-21 18:59:01,769 - 🤖 QuantBot - WARNING - Failed to fetch CPIAUCSL: -1
+2025-09-21 18:59:01,905 - 🤖 QuantBot - WARNING - Failed to fetch FEDFUNDS: -1
+2025-09-21 18:59:01,905 - 🤖 QuantBot - INFO - 🔍 Scanning for trading opportunities...
+2025-09-21 18:59:01,905 - 🤖 QuantBot - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-21 18:59:01,906 - 🤖 QuantBot - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-21 18:59:01,906 - 🤖 QuantBot - INFO - ✅ Discovered 0 valid opportunities
+2025-09-21 18:59:01,909 - 🤖 QuantBot - INFO - 💾 Saved 3 opportunities to database
+2025-09-21 18:59:01,910 - 🤖 QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-21 18:59:01,910 - 🤖 QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-21 18:59:01,910 - 🤖 QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-21 18:59:01,910 - 🤖 QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-21 18:59:05,017 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 18:59:05,019 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:59:05,019 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:59:05,019 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:59:05,019 - 🤖 QuantBot - WARNING - Failed to fetch VTI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:59:05,019 - 🤖 QuantBot - WARNING - Failed to fetch BND from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:59:05,019 - 🤖 QuantBot - WARNING - Failed to fetch XLE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:59:05,019 - 🤖 QuantBot - WARNING - Failed to fetch XLF from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:59:05,019 - 🤖 QuantBot - WARNING - Failed to fetch XLK from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:59:05,019 - 🤖 QuantBot - WARNING - Failed to fetch XLV from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:59:05,019 - 🤖 QuantBot - WARNING - Failed to fetch XLY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:59:05,019 - 🤖 QuantBot - WARNING - Failed to fetch XLI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:59:05,019 - 🤖 QuantBot - WARNING - Failed to fetch XLC from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:59:05,019 - 🤖 QuantBot - WARNING - Failed to fetch XLU from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:59:05,019 - 🤖 QuantBot - WARNING - Failed to fetch XLB from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:59:05,019 - 🤖 QuantBot - WARNING - Failed to fetch XLRE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:59:05,019 - 🤖 QuantBot - WARNING - Failed to fetch TQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:59:05,019 - 🤖 QuantBot - WARNING - Failed to fetch SQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:59:05,020 - 🤖 QuantBot - WARNING - Failed to fetch UVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:59:05,020 - 🤖 QuantBot - WARNING - Failed to fetch SVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 18:59:05,020 - 🤖 QuantBot - INFO - ✅ Updated real-time data for 0 symbols
+2025-09-21 18:59:05,396 - 🤖 QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-21 18:59:05,400 - 🤖 QuantBot - INFO - 💾 Saved 20 news items to database
+2025-09-21 18:59:05,400 - 🤖 QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-21 18:59:05,400 - 🤖 QuantBot - INFO - ✅ Market data updated
+2025-09-21 18:59:36,517 - 🤖 QuantBot - INFO - Received signal 15, initiating shutdown...
+2025-09-21 18:59:36,517 - 🤖 QuantBot - INFO - Received signal 15, initiating shutdown...
+2025-09-21 18:59:44,134 - 🤖 QuantBot - INFO - 🚀 Starting QuantEngine Autonomous Trading System
+2025-09-21 18:59:44,134 - 🤖 QuantBot - INFO - ============================================================
+2025-09-21 18:59:44,145 - 🤖 QuantBot - INFO - 🤖 QuantBot initialized
+2025-09-21 18:59:44,145 - 🤖 QuantBot - INFO - 🎯 Running in DEMO MODE (limited functionality)
+2025-09-21 18:59:44,145 - 🤖 QuantBot - INFO - 🔧 Initializing bot components...
+2025-09-21 18:59:45,113 - 🤖 QuantBot - INFO - 🔴 LiveDataManager initialized
+2025-09-21 18:59:45,958 - 🤖 QuantBot - INFO - ✅ All components initialized successfully
+2025-09-21 18:59:45,958 - 🤖 QuantBot - INFO - 🎭 Running QuantBot demo simulation...
+2025-09-21 18:59:45,958 - 🤖 QuantBot - INFO -    🔧 Initializing components...
+2025-09-21 18:59:47,959 - 🤖 QuantBot - INFO -    📊 Connecting to data feeds...
+2025-09-21 18:59:50,961 - 🤖 QuantBot - INFO -    🎭 Detecting market regime...
+2025-09-21 18:59:52,962 - 🤖 QuantBot - INFO -    ✅ Detected: Bull Market (confidence: 78%)
+2025-09-21 18:59:52,962 - 🤖 QuantBot - INFO -    🧪 Researching strategies...
+2025-09-21 18:59:55,964 - 🤖 QuantBot - INFO -    ✅ Generated 3 new strategies (avg Sharpe: 1.45)
+2025-09-21 18:59:55,969 - 🤖 QuantBot - INFO -    🔍 Scanning opportunities...
+2025-09-21 18:59:57,971 - 🤖 QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-21 18:59:57,974 - 🤖 QuantBot - INFO - ✅ Live data session initialized
+2025-09-21 19:00:01,914 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 19:00:01,916 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:01,916 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:01,916 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:01,916 - 🤖 QuantBot - WARNING - Failed to fetch VTI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:01,916 - 🤖 QuantBot - WARNING - Failed to fetch BND from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:01,917 - 🤖 QuantBot - WARNING - Failed to fetch XLE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:01,917 - 🤖 QuantBot - WARNING - Failed to fetch XLF from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:01,917 - 🤖 QuantBot - WARNING - Failed to fetch XLK from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:01,917 - 🤖 QuantBot - WARNING - Failed to fetch XLV from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:01,917 - 🤖 QuantBot - WARNING - Failed to fetch XLY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:01,917 - 🤖 QuantBot - WARNING - Failed to fetch XLI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:01,917 - 🤖 QuantBot - WARNING - Failed to fetch XLC from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:01,917 - 🤖 QuantBot - WARNING - Failed to fetch XLU from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:01,917 - 🤖 QuantBot - WARNING - Failed to fetch XLB from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:01,917 - 🤖 QuantBot - WARNING - Failed to fetch XLRE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:01,917 - 🤖 QuantBot - WARNING - Failed to fetch TQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:01,917 - 🤖 QuantBot - WARNING - Failed to fetch SQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:01,917 - 🤖 QuantBot - WARNING - Failed to fetch UVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:01,917 - 🤖 QuantBot - WARNING - Failed to fetch SVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:01,917 - 🤖 QuantBot - INFO - ✅ Updated real-time data for 0 symbols
+2025-09-21 19:00:02,295 - 🤖 QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-21 19:00:02,300 - 🤖 QuantBot - INFO - 💾 Saved 20 news items to database
+2025-09-21 19:00:02,300 - 🤖 QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-21 19:00:02,300 - 🤖 QuantBot - INFO - ✅ Market data updated
+2025-09-21 19:00:04,316 - 🤖 QuantBot - WARNING - Failed to fetch GDP: -1
+2025-09-21 19:00:04,481 - 🤖 QuantBot - WARNING - Failed to fetch UNRATE: -1
+2025-09-21 19:00:04,624 - 🤖 QuantBot - WARNING - Failed to fetch CPIAUCSL: -1
+2025-09-21 19:00:04,838 - 🤖 QuantBot - WARNING - Failed to fetch FEDFUNDS: -1
+2025-09-21 19:00:04,838 - 🤖 QuantBot - INFO - 🔍 Scanning for trading opportunities...
+2025-09-21 19:00:04,838 - 🤖 QuantBot - WARNING - News dislocation scan failed: 'float' object has no attribute 'get'
+2025-09-21 19:00:04,840 - 🤖 QuantBot - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-21 19:00:04,840 - 🤖 QuantBot - INFO - ✅ Discovered 0 valid opportunities
+2025-09-21 19:00:04,840 - 🤖 QuantBot - ERROR - ❌ Opportunity scanning failed: 'QuantBot' object has no attribute 'data_broker'
+2025-09-21 19:00:04,840 - 🤖 QuantBot - INFO -    ✅ Found 0 trading opportunities (avg EV: 1.8%)
+2025-09-21 19:00:04,840 - 🤖 QuantBot - INFO -    📈 Generating reports...
+2025-09-21 19:00:05,403 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 19:00:05,405 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:05,405 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:05,405 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:05,405 - 🤖 QuantBot - WARNING - Failed to fetch VTI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:05,405 - 🤖 QuantBot - WARNING - Failed to fetch BND from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:05,405 - 🤖 QuantBot - WARNING - Failed to fetch XLE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:05,405 - 🤖 QuantBot - WARNING - Failed to fetch XLF from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:05,405 - 🤖 QuantBot - WARNING - Failed to fetch XLK from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:05,405 - 🤖 QuantBot - WARNING - Failed to fetch XLV from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:05,405 - 🤖 QuantBot - WARNING - Failed to fetch XLY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:05,405 - 🤖 QuantBot - WARNING - Failed to fetch XLI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:05,405 - 🤖 QuantBot - WARNING - Failed to fetch XLC from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:05,405 - 🤖 QuantBot - WARNING - Failed to fetch XLU from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:05,405 - 🤖 QuantBot - WARNING - Failed to fetch XLB from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:05,405 - 🤖 QuantBot - WARNING - Failed to fetch XLRE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:05,405 - 🤖 QuantBot - WARNING - Failed to fetch TQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:05,405 - 🤖 QuantBot - WARNING - Failed to fetch SQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:05,405 - 🤖 QuantBot - WARNING - Failed to fetch UVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:05,405 - 🤖 QuantBot - WARNING - Failed to fetch SVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:05,405 - 🤖 QuantBot - INFO - ✅ Updated real-time data for 0 symbols
+2025-09-21 19:00:05,841 - 🤖 QuantBot - INFO - 🎉 Demo simulation complete!
+2025-09-21 19:00:05,841 - 🤖 QuantBot - INFO - 
+2025-09-21 19:00:05,841 - 🤖 QuantBot - INFO - In full production mode, QuantBot would:
+2025-09-21 19:00:05,841 - 🤖 QuantBot - INFO - • Run continuously 24/7
+2025-09-21 19:00:05,841 - 🤖 QuantBot - INFO - • Process real market data and news
+2025-09-21 19:00:05,841 - 🤖 QuantBot - INFO - • Adapt strategies to live market conditions
+2025-09-21 19:00:05,841 - 🤖 QuantBot - INFO - • Execute trades through connected brokers
+2025-09-21 19:00:05,841 - 🤖 QuantBot - INFO - • Learn from performance and improve over time
+2025-09-21 19:00:05,841 - 🤖 QuantBot - INFO - 🛑 Shutting down QuantBot Runner...
+2025-09-21 19:00:05,841 - 🤖 QuantBot - INFO - ✅ QuantBot Runner shutdown complete
+2025-09-21 19:00:05,842 - 🤖 QuantBot - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x11ea53620>
+2025-09-21 19:00:05,842 - 🤖 QuantBot - ERROR - Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x11ec23110>, 590289.657567791)])']
+connector: <aiohttp.connector.TCPConnector object at 0x11ea53770>
+2025-09-21 19:00:05,977 - 🤖 QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-21 19:00:05,979 - 🤖 QuantBot - INFO - 💾 Saved 20 news items to database
+2025-09-21 19:00:05,979 - 🤖 QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-21 19:00:05,979 - 🤖 QuantBot - INFO - ✅ Market data updated
+2025-09-21 19:00:05,979 - 🤖 QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-21 19:00:07,407 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:07,408 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:07,408 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:07,408 - 🤖 QuantBot - WARNING - Failed to fetch VXX from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:00:07,939 - 🤖 QuantBot - WARNING - Failed to fetch GDP: -1
+2025-09-21 19:00:08,176 - 🤖 QuantBot - WARNING - Failed to fetch UNRATE: -1
+2025-09-21 19:00:08,455 - 🤖 QuantBot - WARNING - Failed to fetch CPIAUCSL: -1
+2025-09-21 19:00:08,777 - 🤖 QuantBot - WARNING - Failed to fetch FEDFUNDS: -1
+2025-09-21 19:00:08,793 - 🤖 QuantBot - INFO - 🔍 Scanning for trading opportunities...
+2025-09-21 19:00:08,819 - 🤖 QuantBot - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-21 19:00:08,828 - 🤖 QuantBot - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-21 19:00:08,828 - 🤖 QuantBot - INFO - ✅ Discovered 0 valid opportunities
+2025-09-21 19:00:08,877 - 🤖 QuantBot - INFO - 💾 Saved 3 opportunities to database
+2025-09-21 19:00:08,890 - 🤖 QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-21 19:00:08,890 - 🤖 QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-21 19:00:08,890 - 🤖 QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-21 19:00:08,890 - 🤖 QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-21 19:00:17,120 - 🤖 QuantBot - INFO - Received signal 15, initiating shutdown...
+2025-09-21 19:00:17,120 - 🤖 QuantBot - INFO - Received signal 15, initiating shutdown...
+2025-09-21 19:00:19,304 - 🤖 QuantBot - INFO - 🚀 Starting QuantEngine Autonomous Trading System
+2025-09-21 19:00:19,304 - 🤖 QuantBot - INFO - ============================================================
+2025-09-21 19:00:19,354 - 🤖 QuantBot - INFO - 🤖 QuantBot initialized
+2025-09-21 19:00:19,354 - 🤖 QuantBot - INFO - 🎯 Running in DEMO MODE (limited functionality)
+2025-09-21 19:00:19,354 - 🤖 QuantBot - INFO - 🔧 Initializing bot components...
+2025-09-21 19:00:20,697 - 🤖 QuantBot - INFO - 🔴 LiveDataManager initialized
+2025-09-21 19:00:22,802 - 🤖 QuantBot - INFO - ✅ All components initialized successfully
+2025-09-21 19:00:22,802 - 🤖 QuantBot - INFO - 🎭 Running QuantBot demo simulation...
+2025-09-21 19:00:22,802 - 🤖 QuantBot - INFO -    🔧 Initializing components...
+2025-09-21 19:00:24,804 - 🤖 QuantBot - INFO -    📊 Connecting to data feeds...
+2025-09-21 19:00:27,804 - 🤖 QuantBot - INFO -    🎭 Detecting market regime...
+2025-09-21 19:00:29,806 - 🤖 QuantBot - INFO -    ✅ Detected: Bull Market (confidence: 78%)
+2025-09-21 19:00:29,806 - 🤖 QuantBot - INFO -    🧪 Researching strategies...
+2025-09-21 19:00:32,807 - 🤖 QuantBot - INFO -    ✅ Generated 3 new strategies (avg Sharpe: 1.45)
+2025-09-21 19:00:32,807 - 🤖 QuantBot - INFO -    🔍 Scanning opportunities...
+2025-09-21 19:00:34,809 - 🤖 QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-21 19:00:34,809 - 🤖 QuantBot - INFO - ✅ Live data session initialized
+2025-09-21 19:00:41,108 - 🤖 QuantBot - WARNING - Failed to fetch GDP: -1
+2025-09-21 19:00:41,732 - 🤖 QuantBot - WARNING - Failed to fetch UNRATE: -1
+2025-09-21 19:00:41,870 - 🤖 QuantBot - WARNING - Failed to fetch CPIAUCSL: -1
+2025-09-21 19:00:42,321 - 🤖 QuantBot - WARNING - Failed to fetch FEDFUNDS: -1
+2025-09-21 19:00:42,322 - 🤖 QuantBot - INFO - 🔍 Scanning for trading opportunities...
+2025-09-21 19:00:42,322 - 🤖 QuantBot - WARNING - News dislocation scan failed: 'float' object has no attribute 'get'
+2025-09-21 19:00:42,323 - 🤖 QuantBot - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-21 19:00:42,323 - 🤖 QuantBot - INFO - ✅ Discovered 0 valid opportunities
+2025-09-21 19:00:42,323 - 🤖 QuantBot - ERROR - ❌ Opportunity scanning failed: 'QuantBot' object has no attribute 'data_broker'
+2025-09-21 19:00:42,323 - 🤖 QuantBot - INFO -    ✅ Found 0 trading opportunities (avg EV: 1.8%)
+2025-09-21 19:00:42,323 - 🤖 QuantBot - INFO -    📈 Generating reports...
+2025-09-21 19:00:43,323 - 🤖 QuantBot - INFO - 🎉 Demo simulation complete!
+2025-09-21 19:00:43,323 - 🤖 QuantBot - INFO - 
+2025-09-21 19:00:43,323 - 🤖 QuantBot - INFO - In full production mode, QuantBot would:
+2025-09-21 19:00:43,323 - 🤖 QuantBot - INFO - • Run continuously 24/7
+2025-09-21 19:00:43,323 - 🤖 QuantBot - INFO - • Process real market data and news
+2025-09-21 19:00:43,323 - 🤖 QuantBot - INFO - • Adapt strategies to live market conditions
+2025-09-21 19:00:43,323 - 🤖 QuantBot - INFO - • Execute trades through connected brokers
+2025-09-21 19:00:43,323 - 🤖 QuantBot - INFO - • Learn from performance and improve over time
+2025-09-21 19:00:43,323 - 🤖 QuantBot - INFO - 🛑 Shutting down QuantBot Runner...
+2025-09-21 19:00:43,323 - 🤖 QuantBot - INFO - ✅ QuantBot Runner shutdown complete
+2025-09-21 19:00:43,324 - 🤖 QuantBot - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x12e4001a0>
+2025-09-21 19:00:43,325 - 🤖 QuantBot - ERROR - Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x12e4467b0>, 590327.141496625)])']
+connector: <aiohttp.connector.TCPConnector object at 0x12e4002f0>
+2025-09-21 19:01:02,304 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 19:01:02,307 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:02,307 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:02,307 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:02,307 - 🤖 QuantBot - WARNING - Failed to fetch VTI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:02,307 - 🤖 QuantBot - WARNING - Failed to fetch BND from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:02,307 - 🤖 QuantBot - WARNING - Failed to fetch XLE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:02,307 - 🤖 QuantBot - WARNING - Failed to fetch XLF from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:02,307 - 🤖 QuantBot - WARNING - Failed to fetch XLK from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:02,307 - 🤖 QuantBot - WARNING - Failed to fetch XLV from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:02,307 - 🤖 QuantBot - WARNING - Failed to fetch XLY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:02,307 - 🤖 QuantBot - WARNING - Failed to fetch XLI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:02,307 - 🤖 QuantBot - WARNING - Failed to fetch XLC from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:02,307 - 🤖 QuantBot - WARNING - Failed to fetch XLU from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:02,307 - 🤖 QuantBot - WARNING - Failed to fetch XLB from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:02,307 - 🤖 QuantBot - WARNING - Failed to fetch XLRE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:02,307 - 🤖 QuantBot - WARNING - Failed to fetch TQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:02,307 - 🤖 QuantBot - WARNING - Failed to fetch SQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:02,307 - 🤖 QuantBot - WARNING - Failed to fetch UVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:02,307 - 🤖 QuantBot - WARNING - Failed to fetch SVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:02,308 - 🤖 QuantBot - INFO - ✅ Updated real-time data for 0 symbols
+2025-09-21 19:01:02,739 - 🤖 QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-21 19:01:02,745 - 🤖 QuantBot - INFO - 💾 Saved 20 news items to database
+2025-09-21 19:01:02,745 - 🤖 QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-21 19:01:02,745 - 🤖 QuantBot - INFO - ✅ Market data updated
+2025-09-21 19:01:08,893 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 19:01:08,895 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:08,895 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:08,895 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:08,895 - 🤖 QuantBot - WARNING - Failed to fetch VTI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:08,895 - 🤖 QuantBot - WARNING - Failed to fetch BND from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:08,895 - 🤖 QuantBot - WARNING - Failed to fetch XLE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:08,895 - 🤖 QuantBot - WARNING - Failed to fetch XLF from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:08,895 - 🤖 QuantBot - WARNING - Failed to fetch XLK from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:08,895 - 🤖 QuantBot - WARNING - Failed to fetch XLV from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:08,895 - 🤖 QuantBot - WARNING - Failed to fetch XLY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:08,895 - 🤖 QuantBot - WARNING - Failed to fetch XLI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:08,895 - 🤖 QuantBot - WARNING - Failed to fetch XLC from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:08,895 - 🤖 QuantBot - WARNING - Failed to fetch XLU from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:08,895 - 🤖 QuantBot - WARNING - Failed to fetch XLB from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:08,895 - 🤖 QuantBot - WARNING - Failed to fetch XLRE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:08,895 - 🤖 QuantBot - WARNING - Failed to fetch TQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:08,896 - 🤖 QuantBot - WARNING - Failed to fetch SQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:08,896 - 🤖 QuantBot - WARNING - Failed to fetch UVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:08,896 - 🤖 QuantBot - WARNING - Failed to fetch SVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:01:08,896 - 🤖 QuantBot - INFO - ✅ Updated real-time data for 0 symbols
+2025-09-21 19:01:09,256 - 🤖 QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-21 19:01:09,261 - 🤖 QuantBot - INFO - 💾 Saved 20 news items to database
+2025-09-21 19:01:09,262 - 🤖 QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-21 19:01:09,262 - 🤖 QuantBot - INFO - ✅ Market data updated
+2025-09-21 19:01:20,386 - 🤖 QuantBot - INFO - Received signal 15, initiating shutdown...
+2025-09-21 19:01:20,386 - 🤖 QuantBot - INFO - Received signal 15, initiating shutdown...
+2025-09-21 19:01:22,462 - 🤖 QuantBot - INFO - 🚀 Starting QuantEngine Autonomous Trading System
+2025-09-21 19:01:22,462 - 🤖 QuantBot - INFO - ============================================================
+2025-09-21 19:01:22,471 - 🤖 QuantBot - INFO - 🤖 QuantBot initialized
+2025-09-21 19:01:22,471 - 🤖 QuantBot - INFO - 🎯 Running in DEMO MODE (limited functionality)
+2025-09-21 19:01:22,471 - 🤖 QuantBot - INFO - 🔧 Initializing bot components...
+2025-09-21 19:01:23,355 - 🤖 QuantBot - INFO - 🔴 LiveDataManager initialized
+2025-09-21 19:01:24,001 - 🤖 QuantBot - INFO - ✅ All components initialized successfully
+2025-09-21 19:01:24,006 - 🤖 QuantBot - INFO - ✅ Database initialized at quantbot_data.db
+2025-09-21 19:01:24,006 - 🤖 QuantBot - INFO - 🎭 Running QuantBot demo simulation...
+2025-09-21 19:01:24,006 - 🤖 QuantBot - INFO -    🔧 Initializing components...
+2025-09-21 19:01:26,055 - 🤖 QuantBot - INFO -    📊 Connecting to data feeds...
+2025-09-21 19:01:29,057 - 🤖 QuantBot - INFO -    🎭 Detecting market regime...
+2025-09-21 19:01:31,058 - 🤖 QuantBot - INFO -    ✅ Detected: Bull Market (confidence: 78%)
+2025-09-21 19:01:31,058 - 🤖 QuantBot - INFO -    🧪 Researching strategies...
+2025-09-21 19:01:34,060 - 🤖 QuantBot - INFO -    ✅ Generated 3 new strategies (avg Sharpe: 1.45)
+2025-09-21 19:01:34,060 - 🤖 QuantBot - INFO -    🔍 Scanning opportunities...
+2025-09-21 19:01:36,061 - 🤖 QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-21 19:01:36,062 - 🤖 QuantBot - INFO - ✅ Live data session initialized
+2025-09-21 19:01:42,427 - 🤖 QuantBot - WARNING - Failed to fetch GDP: -1
+2025-09-21 19:01:42,574 - 🤖 QuantBot - WARNING - Failed to fetch UNRATE: -1
+2025-09-21 19:01:42,719 - 🤖 QuantBot - WARNING - Failed to fetch CPIAUCSL: -1
+2025-09-21 19:01:42,861 - 🤖 QuantBot - WARNING - Failed to fetch FEDFUNDS: -1
+2025-09-21 19:01:42,861 - 🤖 QuantBot - INFO - 🔍 Scanning for trading opportunities...
+2025-09-21 19:01:42,861 - 🤖 QuantBot - WARNING - News dislocation scan failed: 'float' object has no attribute 'get'
+2025-09-21 19:01:42,862 - 🤖 QuantBot - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-21 19:01:42,862 - 🤖 QuantBot - INFO - ✅ Discovered 0 valid opportunities
+2025-09-21 19:01:42,865 - 🤖 QuantBot - INFO - 💾 Saved 3 opportunities to database
+2025-09-21 19:01:42,865 - 🤖 QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-21 19:01:42,866 - 🤖 QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-21 19:01:42,866 - 🤖 QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-21 19:01:42,866 - 🤖 QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-21 19:01:42,866 - 🤖 QuantBot - INFO -    ✅ Found 3 trading opportunities (avg EV: 1.8%)
+2025-09-21 19:01:42,866 - 🤖 QuantBot - INFO -    📈 Generating reports...
+2025-09-21 19:01:43,867 - 🤖 QuantBot - INFO - 🎉 Demo simulation complete!
+2025-09-21 19:01:43,867 - 🤖 QuantBot - INFO - 
+2025-09-21 19:01:43,867 - 🤖 QuantBot - INFO - In full production mode, QuantBot would:
+2025-09-21 19:01:43,867 - 🤖 QuantBot - INFO - • Run continuously 24/7
+2025-09-21 19:01:43,867 - 🤖 QuantBot - INFO - • Process real market data and news
+2025-09-21 19:01:43,867 - 🤖 QuantBot - INFO - • Adapt strategies to live market conditions
+2025-09-21 19:01:43,867 - 🤖 QuantBot - INFO - • Execute trades through connected brokers
+2025-09-21 19:01:43,868 - 🤖 QuantBot - INFO - • Learn from performance and improve over time
+2025-09-21 19:01:43,868 - 🤖 QuantBot - INFO - 🛑 Shutting down QuantBot Runner...
+2025-09-21 19:01:43,868 - 🤖 QuantBot - INFO - ✅ QuantBot Runner shutdown complete
+2025-09-21 19:01:43,869 - 🤖 QuantBot - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x130563770>
+2025-09-21 19:01:43,869 - 🤖 QuantBot - ERROR - Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x130733dd0>, 590387.680925291)])']
+connector: <aiohttp.connector.TCPConnector object at 0x1305638c0>
+2025-09-21 19:02:02,751 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 19:02:02,754 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:02,754 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:02,754 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:02,754 - 🤖 QuantBot - WARNING - Failed to fetch VTI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:02,754 - 🤖 QuantBot - WARNING - Failed to fetch BND from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:02,754 - 🤖 QuantBot - WARNING - Failed to fetch XLE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:02,754 - 🤖 QuantBot - WARNING - Failed to fetch XLF from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:02,754 - 🤖 QuantBot - WARNING - Failed to fetch XLK from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:02,754 - 🤖 QuantBot - WARNING - Failed to fetch XLV from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:02,754 - 🤖 QuantBot - WARNING - Failed to fetch XLY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:02,755 - 🤖 QuantBot - WARNING - Failed to fetch XLI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:02,755 - 🤖 QuantBot - WARNING - Failed to fetch XLC from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:02,755 - 🤖 QuantBot - WARNING - Failed to fetch XLU from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:02,755 - 🤖 QuantBot - WARNING - Failed to fetch XLB from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:02,755 - 🤖 QuantBot - WARNING - Failed to fetch XLRE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:02,755 - 🤖 QuantBot - WARNING - Failed to fetch TQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:02,755 - 🤖 QuantBot - WARNING - Failed to fetch SQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:02,755 - 🤖 QuantBot - WARNING - Failed to fetch UVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:02,755 - 🤖 QuantBot - WARNING - Failed to fetch SVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:02,755 - 🤖 QuantBot - INFO - ✅ Updated real-time data for 0 symbols
+2025-09-21 19:02:03,159 - 🤖 QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-21 19:02:03,163 - 🤖 QuantBot - INFO - 💾 Saved 20 news items to database
+2025-09-21 19:02:03,163 - 🤖 QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-21 19:02:03,163 - 🤖 QuantBot - INFO - ✅ Market data updated
+2025-09-21 19:02:09,266 - 🤖 QuantBot - INFO - 📊 Updating market data...
+2025-09-21 19:02:09,267 - 🤖 QuantBot - WARNING - Failed to fetch SPY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:09,267 - 🤖 QuantBot - WARNING - Failed to fetch QQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:09,267 - 🤖 QuantBot - WARNING - Failed to fetch IWM from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:09,267 - 🤖 QuantBot - WARNING - Failed to fetch VTI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:09,267 - 🤖 QuantBot - WARNING - Failed to fetch BND from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:09,267 - 🤖 QuantBot - WARNING - Failed to fetch XLE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:09,267 - 🤖 QuantBot - WARNING - Failed to fetch XLF from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:09,267 - 🤖 QuantBot - WARNING - Failed to fetch XLK from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:09,267 - 🤖 QuantBot - WARNING - Failed to fetch XLV from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:09,267 - 🤖 QuantBot - WARNING - Failed to fetch XLY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:09,267 - 🤖 QuantBot - WARNING - Failed to fetch XLI from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:09,267 - 🤖 QuantBot - WARNING - Failed to fetch XLC from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:09,267 - 🤖 QuantBot - WARNING - Failed to fetch XLU from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:09,268 - 🤖 QuantBot - WARNING - Failed to fetch XLB from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:09,268 - 🤖 QuantBot - WARNING - Failed to fetch XLRE from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:09,268 - 🤖 QuantBot - WARNING - Failed to fetch TQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:09,268 - 🤖 QuantBot - WARNING - Failed to fetch SQQQ from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:09,268 - 🤖 QuantBot - WARNING - Failed to fetch UVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:09,268 - 🤖 QuantBot - WARNING - Failed to fetch SVXY from Yahoo: 'YahooFinanceFetcher' object has no attribute 'fetch_quote_data'
+2025-09-21 19:02:09,268 - 🤖 QuantBot - INFO - ✅ Updated real-time data for 0 symbols
+2025-09-21 19:02:09,637 - 🤖 QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-21 19:02:09,645 - 🤖 QuantBot - INFO - 💾 Saved 20 news items to database
+2025-09-21 19:02:09,645 - 🤖 QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-21 19:02:09,645 - 🤖 QuantBot - INFO - ✅ Market data updated

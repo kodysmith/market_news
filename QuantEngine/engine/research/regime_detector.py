@@ -575,3 +575,4 @@ class MarketRegimeDetector:
             return probabilities
 
         return {'error': 'No transition data for current regime'}
+

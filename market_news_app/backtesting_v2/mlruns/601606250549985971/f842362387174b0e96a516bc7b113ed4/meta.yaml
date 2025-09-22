@@ -1,0 +1,14 @@
+artifact_uri: file:///Users/kody/base/MarketNews/market_news_app/backtesting_v2/mlruns/601606250549985971/f842362387174b0e96a516bc7b113ed4/artifacts
+end_time: 1758480410976
+entry_point_name: ''
+experiment_id: '601606250549985971'
+lifecycle_stage: active
+run_id: f842362387174b0e96a516bc7b113ed4
+run_name: SPY_fed_rate_cut_momentum_2026
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1758480410943
+status: 4
+tags: []
+user_id: kody
