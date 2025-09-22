@@ -1,0 +1,10 @@
+# Alpha Vantage API Key (get from https://www.alphavantage.co/support/#api-key)
+ALPHAVANTAGE_API_KEY=your_alpha_vantage_key_here
+
+# Financial Modeling Prep API Key (get from https://financialmodelingprep.com/developer/docs)
+FMP_API_KEY=your_fmp_key_here
+
+# Optional: Other API keys for enhanced data
+# POLYGON_API_KEY=your_polygon_key_here
+# QUANDL_API_KEY=your_quandl_key_here
+

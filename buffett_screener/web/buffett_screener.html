@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buffett Screener - Value Investment Tool</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 40px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #1a252f 0%, #2c3e50 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 3em;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+        .header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1.2em;
+        }
+        .main-content {
+            display: flex;
+            min-height: calc(100vh - 200px);
+        }
+        .filters-panel {
+            width: 400px;
+            background: #f8f9fa;
+            border-right: 1px solid #e9ecef;
+            padding: 30px;
+            overflow-y: auto;
+        }
+        .results-panel {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+        .filter-section {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #2c3e50;
+        }
+        .filter-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .filter-title::before {
+            content: "📊";
+            margin-right: 10px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: #2c3e50;
+            box-shadow: 0 0 0 3px rgba(44,62,80,0.1);
+        }
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+            border: 1px solid #e9ecef;
+        }
+        .checkbox-item:hover {
+            background: #e9ecef;
+        }
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        .checkbox-item label {
+            font-size: 0.9em;
+            color: #495057;
+            cursor: pointer;
+            margin: 0;
+            font-weight: 500;
+        }
+        .apply-filters-btn {
+            width: 100%;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 15px;
+        }
+        .apply-filters-btn:hover {
+            background: #1a252f;
+        }
+        .apply-filters-btn:active {
+            transform: translateY(1px);
+        }
+        .reset-filters-btn {
+            width: 100%;
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .reset-filters-btn:hover {
+            background: #545b62;
+        }
+        .status-bar {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .status-bar.error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .company-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 25px 0;
+            transition: all 0.3s ease;
+        }
+        .company-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border-color: #28a745;
+        }
+        .company-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .company-title {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .company-badge {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1em;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        .metric-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        .metric-label {
+            font-weight: bold;
+            color: #6c757d;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .metric-value {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .positive { color: #28a745; }
+        .negative { color: #dc3545; }
+        .neutral { color: #6c757d; }
+        .dcf-analysis {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        .dcf-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        .moat-analysis {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        .moat-title {
+            font-weight: bold;
+            color: #0c5460;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        .no-companies {
+            text-align: center;
+            padding: 80px 20px;
+            color: #6c757d;
+        }
+        .no-companies h3 {
+            margin: 0 0 15px 0;
+            font-size: 1.8em;
+        }
+        .refresh-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+        .refresh-btn:hover {
+            background: #138496;
+        }
+        .refresh-btn.secondary {
+            background: #6c757d;
+            margin-left: 10px;
+        }
+        .refresh-btn.secondary:hover {
+            background: #545b62;
+        }
+        .filter-summary {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 25px;
+            font-size: 0.95em;
+            color: #1565c0;
+        }
+        .filter-summary strong {
+            color: #0d47a1;
+        }
+        .screening-stats {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Buffett Screener</h1>
+            <p>Warren Buffett-style value investment analysis & DCF calculator</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="filters-panel">
+                <div class="filter-section">
+                    <div class="filter-title">Market & Universe</div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Market Cap Range</label>
+                        <select class="form-control" id="market_cap">
+                            <option value="large">Large Cap ($10B+)</option>
+                            <option value="mega" selected>Mega Cap ($200B+)</option>
+                            <option value="all">All Sizes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Sector Focus</label>
+                        <select class="form-control" id="sector_focus">
+                            <option value="all">All Sectors</option>
+                            <option value="consumer">Consumer Staples</option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="financial">Financial Services</option>
+                            <option value="industrial">Industrial</option>
+                            <option value="technology">Technology</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="filter-section">
+                    <div class="filter-title">Financial Health</div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Min Revenue Growth (5Y)</label>
+                        <select class="form-control" id="revenue_growth">
+                            <option value="0.03">3% (Conservative)</option>
+                            <option value="0.05" selected>5% (Moderate)</option>
+                            <option value="0.08">8% (Growth)</option>
+                            <option value="0.10">10% (High Growth)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Min Net Margin</label>
+                        <select class="form-control" id="net_margin">
+                            <option value="0.05">5% (Basic)</option>
+                            <option value="0.10" selected>10% (Good)</option>
+                            <option value="0.15">15% (Excellent)</option>
+                            <option value="0.20">20% (Outstanding)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Min ROE</label>
+                        <select class="form-control" id="roe">
+                            <option value="0.10">10% (Basic)</option>
+                            <option value="0.15" selected>15% (Good)</option>
+                            <option value="0.20">20% (Excellent)</option>
+                            <option value="0.25">25% (Outstanding)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Min ROIC</label>
+                        <select class="form-control" id="roic">
+                            <option value="0.08">8% (Basic)</option>
+                            <option value="0.12" selected>12% (Good)</option>
+                            <option value="0.15">15% (Excellent)</option>
+                            <option value="0.20">20% (Outstanding)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="filter-section">
+                    <div class="filter-title">Debt & Leverage</div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Max Debt-to-Equity</label>
+                        <select class="form-control" id="debt_equity">
+                            <option value="0.30">30% (Conservative)</option>
+                            <option value="0.50" selected>50% (Moderate)</option>
+                            <option value="0.70">70% (Aggressive)</option>
+                            <option value="1.00">100% (High Risk)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Min Interest Coverage</label>
+                        <select class="form-control" id="interest_coverage">
+                            <option value="3.0">3x (Basic)</option>
+                            <option value="5.0" selected>5x (Good)</option>
+                            <option value="8.0">8x (Excellent)</option>
+                            <option value="10.0">10x (Outstanding)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Min Current Ratio</label>
+                        <select class="form-control" id="current_ratio">
+                            <option value="1.0">1.0x (Basic)</option>
+                            <option value="1.5" selected>1.5x (Good)</option>
+                            <option value="2.0">2.0x (Excellent)</option>
+                            <option value="2.5">2.5x (Outstanding)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="filter-section">
+                    <div class="filter-title">Cash Flow & Valuation</div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Min FCF Margin</label>
+                        <select class="form-control" id="fcf_margin">
+                            <option value="0.05">5% (Basic)</option>
+                            <option value="0.08" selected>8% (Good)</option>
+                            <option value="0.12">12% (Excellent)</option>
+                            <option value="0.15">15% (Outstanding)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Max P/E Ratio</label>
+                        <select class="form-control" id="pe_ratio">
+                            <option value="15">15x (Value)</option>
+                            <option value="20">20x (Moderate)</option>
+                            <option value="25" selected>25x (Growth)</option>
+                            <option value="30">30x (High Growth)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Max P/B Ratio</label>
+                        <select class="form-control" id="pb_ratio">
+                            <option value="1.5">1.5x (Value)</option>
+                            <option value="2.0">2.0x (Moderate)</option>
+                            <option value="3.0" selected>3.0x (Growth)</option>
+                            <option value="5.0">5.0x (High Growth)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="filter-section">
+                    <div class="filter-title">Moat & Management</div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Min Moat Score</label>
+                        <select class="form-control" id="moat_score">
+                            <option value="4">4/10 (Basic)</option>
+                            <option value="6" selected>6/10 (Good)</option>
+                            <option value="7">7/10 (Strong)</option>
+                            <option value="8">8/10 (Excellent)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Min Management Score</label>
+                        <select class="form-control" id="management_score">
+                            <option value="4">4/10 (Basic)</option>
+                            <option value="6" selected>6/10 (Good)</option>
+                            <option value="7">7/10 (Strong)</option>
+                            <option value="8">8/10 (Excellent)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="filter-section">
+                    <div class="filter-title">Exclusions</div>
+                    
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="exclude_financials">
+                            <label for="exclude_financials">Exclude Financials</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="exclude_utilities">
+                            <label for="exclude_utilities">Exclude Utilities</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="exclude_tech">
+                            <label for="exclude_tech">Exclude Tech</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="exclude_biotech">
+                            <label for="exclude_biotech">Exclude Biotech</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="apply-filters-btn" onclick="runScreening()">
+                    🔍 Run Buffett Screening
+                </button>
+                <button class="reset-filters-btn" onclick="resetFilters()">
+                    🔄 Reset to Defaults
+                </button>
+            </div>
+            
+            <div class="results-panel">
+                <div class="filter-summary" id="filter-summary" style="display: none;"></div>
+                <div class="status-bar" id="status-bar"></div>
+                <button class="refresh-btn" onclick="runScreening()">🔄 Run Fresh Analysis</button>
+                <button class="refresh-btn secondary" onclick="loadCachedResults()">📊 Load Cached Results</button>
+                
+                <div id="screening-stats" style="display: none;"></div>
+                <div id="companies-results"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentResults = null;
+        
+        function getScreeningCriteria() {
+            return {
+                market_cap: document.getElementById('market_cap').value,
+                sector_focus: document.getElementById('sector_focus').value,
+                revenue_growth: parseFloat(document.getElementById('revenue_growth').value),
+                net_margin: parseFloat(document.getElementById('net_margin').value),
+                roe: parseFloat(document.getElementById('roe').value),
+                roic: parseFloat(document.getElementById('roic').value),
+                debt_equity: parseFloat(document.getElementById('debt_equity').value),
+                interest_coverage: parseFloat(document.getElementById('interest_coverage').value),
+                current_ratio: parseFloat(document.getElementById('current_ratio').value),
+                fcf_margin: parseFloat(document.getElementById('fcf_margin').value),
+                pe_ratio: parseFloat(document.getElementById('pe_ratio').value),
+                pb_ratio: parseFloat(document.getElementById('pb_ratio').value),
+                moat_score: parseInt(document.getElementById('moat_score').value),
+                management_score: parseInt(document.getElementById('management_score').value),
+                exclude_financials: document.getElementById('exclude_financials').checked,
+                exclude_utilities: document.getElementById('exclude_utilities').checked,
+                exclude_tech: document.getElementById('exclude_tech').checked,
+                exclude_biotech: document.getElementById('exclude_biotech').checked
+            };
+        }
+        
+        function updateFilterSummary() {
+            const criteria = getScreeningCriteria();
+            const summary = document.getElementById('filter-summary');
+            
+            let summaryText = `<strong>Active Filters:</strong> `;
+            summaryText += `${criteria.market_cap} cap | `;
+            summaryText += `${criteria.sector_focus} sector | `;
+            summaryText += `${(criteria.revenue_growth * 100).toFixed(0)}% min growth | `;
+            summaryText += `${(criteria.net_margin * 100).toFixed(0)}% min margin | `;
+            summaryText += `${criteria.moat_score}/10 min moat`;
+            
+            summary.innerHTML = summaryText;
+            summary.style.display = 'block';
+        }
+        
+        function resetFilters() {
+            // Reset all form elements to defaults
+            document.getElementById('market_cap').value = 'mega';
+            document.getElementById('sector_focus').value = 'all';
+            document.getElementById('revenue_growth').value = '0.05';
+            document.getElementById('net_margin').value = '0.10';
+            document.getElementById('roe').value = '0.15';
+            document.getElementById('roic').value = '0.12';
+            document.getElementById('debt_equity').value = '0.50';
+            document.getElementById('interest_coverage').value = '5.0';
+            document.getElementById('current_ratio').value = '1.5';
+            document.getElementById('fcf_margin').value = '0.08';
+            document.getElementById('pe_ratio').value = '25';
+            document.getElementById('pb_ratio').value = '3.0';
+            document.getElementById('moat_score').value = '6';
+            document.getElementById('management_score').value = '6';
+            
+            // Reset checkboxes
+            document.getElementById('exclude_financials').checked = false;
+            document.getElementById('exclude_utilities').checked = false;
+            document.getElementById('exclude_tech').checked = false;
+            document.getElementById('exclude_biotech').checked = false;
+            
+            runScreening();
+        }
+        
+        async function runScreening() {
+            const statusDiv = document.getElementById('status-bar');
+            const resultsDiv = document.getElementById('companies-results');
+            const statsDiv = document.getElementById('screening-stats');
+            
+            try {
+                statusDiv.style.display = 'block';
+                statusDiv.textContent = '🔄 Running fresh Buffett screening analysis...';
+                statusDiv.className = 'status-bar';
+                
+                // Call the POST endpoint to trigger fresh screening
+                const response = await fetch('http://localhost:5000/buffett-screener/run', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                // Extract results from the response
+                const results = data.results || data;
+                
+                currentResults = results;
+                updateFilterSummary();
+                displayResults(results);
+                
+                statusDiv.textContent = `✅ Fresh screening complete: ${results.companies_passing_screen} passed, ${results.companies_with_mos_30_plus} with MOS ≥30%`;
+                statusDiv.className = 'status-bar';
+                
+            } catch (error) {
+                console.error('Error running screening:', error);
+                resultsDiv.innerHTML = `
+                    <div class="no-companies">
+                        <h3>❌ Error running screening</h3>
+                        <p>Could not complete analysis: ${error.message}</p>
+                        <p>Make sure the API server is running on port 5000</p>
+                    </div>
+                `;
+                statusDiv.textContent = '❌ Error running screening';
+                statusDiv.className = 'status-bar error';
+            }
+        }
+        
+        async function loadCachedResults() {
+            const statusDiv = document.getElementById('status-bar');
+            const resultsDiv = document.getElementById('companies-results');
+            const statsDiv = document.getElementById('screening-stats');
+            
+            try {
+                statusDiv.style.display = 'block';
+                statusDiv.textContent = '📊 Loading cached results...';
+                statusDiv.className = 'status-bar';
+                
+                // Call the GET endpoint to fetch cached results
+                const response = await fetch('http://localhost:5000/buffett-screener.json');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const results = await response.json();
+                
+                if (results.error) {
+                    throw new Error(results.error);
+                }
+                
+                currentResults = results;
+                updateFilterSummary();
+                displayResults(results);
+                
+                statusDiv.textContent = `📊 Cached results loaded: ${results.companies_passing_screen} passed, ${results.companies_with_mos_30_plus} with MOS ≥30%`;
+                statusDiv.className = 'status-bar';
+                
+            } catch (error) {
+                console.error('Error loading cached results:', error);
+                resultsDiv.innerHTML = `
+                    <div class="no-companies">
+                        <h3>❌ Error loading cached results</h3>
+                        <p>Could not load data: ${error.message}</p>
+                        <p>Make sure the API server is running on port 5000</p>
+                    </div>
+                `;
+                statusDiv.textContent = '❌ Error loading cached results';
+                statusDiv.className = 'status-bar error';
+            }
+        }
+        
+        function displayResults(results) {
+            const resultsDiv = document.getElementById('companies-results');
+            const statsDiv = document.getElementById('screening-stats');
+            
+            // Display statistics
+            statsDiv.innerHTML = `
+                <div class="screening-stats">
+                    <h3>📊 Screening Results</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value">${results.total_companies_screened}</div>
+                            <div class="stat-label">Companies Screened</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${results.companies_passing_screen}</div>
+                            <div class="stat-label">Passed Screen</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${results.companies_for_dcf}</div>
+                            <div class="stat-label">DCF Analysis</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${results.companies_with_mos_30_plus}</div>
+                            <div class="stat-label">MOS ≥30%</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            statsDiv.style.display = 'block';
+            
+            // Display companies
+            if (results.top_candidates.length === 0) {
+                resultsDiv.innerHTML = `
+                    <div class="no-companies">
+                        <h3>❌ No companies match your criteria</h3>
+                        <p>Try adjusting your filters or expanding the search parameters.</p>
+                    </div>
+                `;
+            } else {
+                resultsDiv.innerHTML = results.top_candidates.map(company => createCompanyCard(company)).join('');
+            }
+        }
+        
+        function createCompanyCard(company) {
+            const dcf = company.dcf || {};
+            const marginOfSafety = dcf.margin_of_safety || 0;
+            const upsidePotential = dcf.upside_potential || 0;
+            const intrinsicValue = dcf.intrinsic_value_per_share || 0;
+            const currentPrice = company.current_price || 0;
+            
+            const mosClass = marginOfSafety >= 0.30 ? 'positive' : 'neutral';
+            const upsideClass = upsidePotential > 0 ? 'positive' : 'negative';
+            
+            return `
+                <div class="company-card">
+                    <div class="company-header">
+                        <div class="company-title">${company.symbol} - ${company.name}</div>
+                        <div class="company-badge">MOS: ${(marginOfSafety * 100).toFixed(1)}%</div>
+                    </div>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">Market Cap</div>
+                            <div class="metric-value">$${(company.market_cap / 1000000000).toFixed(1)}B</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Revenue Growth (5Y)</div>
+                            <div class="metric-value positive">${(company.revenue_growth_5y * 100).toFixed(1)}%</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Net Margin</div>
+                            <div class="metric-value positive">${(company.net_margin * 100).toFixed(1)}%</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">ROE</div>
+                            <div class="metric-value positive">${(company.roe * 100).toFixed(1)}%</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">ROIC</div>
+                            <div class="metric-value positive">${(company.roic * 100).toFixed(1)}%</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Debt-to-Equity</div>
+                            <div class="metric-value neutral">${company.debt_to_equity.toFixed(2)}</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">FCF Margin</div>
+                            <div class="metric-value positive">${(company.fcf_margin * 100).toFixed(1)}%</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">P/E Ratio</div>
+                            <div class="metric-value neutral">${company.pe_ratio.toFixed(1)}x</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Moat Score</div>
+                            <div class="metric-value positive">${company.moat_score}/10</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Management Score</div>
+                            <div class="metric-value positive">${company.management_score}/10</div>
+                        </div>
+                    </div>
+                    
+                    ${dcf.intrinsic_value_per_share ? `
+                    <div class="dcf-analysis">
+                        <div class="dcf-title">💰 DCF Analysis</div>
+                        <p><strong>Intrinsic Value:</strong> $${intrinsicValue.toFixed(2)} per share</p>
+                        <p><strong>Current Price:</strong> $${currentPrice.toFixed(2)} per share</p>
+                        <p><strong>Margin of Safety:</strong> <span class="${mosClass}">${(marginOfSafety * 100).toFixed(1)}%</span></p>
+                        <p><strong>Upside Potential:</strong> <span class="${upsideClass}">${(upsidePotential * 100).toFixed(1)}%</span></p>
+                    </div>
+                    ` : ''}
+                    
+                    <div class="moat-analysis">
+                        <div class="moat-title">🏰 Economic Moat Analysis</div>
+                        <p><strong>Sector:</strong> ${company.sector}</p>
+                        <p><strong>Moat Strength:</strong> ${company.moat_score}/10 (${company.moat_score >= 8 ? 'Excellent' : company.moat_score >= 6 ? 'Good' : 'Basic'})</p>
+                        <p><strong>Management Quality:</strong> ${company.management_score}/10 (${company.management_score >= 8 ? 'Excellent' : company.management_score >= 6 ? 'Good' : 'Basic'})</p>
+                        ${company.reasons ? `<p><strong>Screening Notes:</strong> ${company.reasons.join(', ')}</p>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Initialize with default filters
+        document.addEventListener('DOMContentLoaded', function() {
+            resetFilters();
+            // Load cached results on page load
+            loadCachedResults();
+        });
+    </script>
+</body>
+</html>

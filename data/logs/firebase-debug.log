@@ -1,0 +1,68 @@
+[debug] [2025-07-07T00:06:32.968Z] ----------------------------------------------------------------------
+[debug] [2025-07-07T00:06:32.971Z] Command:       /Users/kody/.nvm/versions/node/v20.18.0/bin/node /Users/kody/.nvm/versions/node/v20.18.0/bin/firebase emulators:start --only functions
+[debug] [2025-07-07T00:06:32.971Z] CLI Version:   14.7.0
+[debug] [2025-07-07T00:06:32.971Z] Platform:      darwin
+[debug] [2025-07-07T00:06:32.971Z] Node Version:  v20.18.0
+[debug] [2025-07-07T00:06:32.971Z] Time:          Sun Jul 06 2025 17:06:32 GMT-0700 (Pacific Daylight Time)
+[debug] [2025-07-07T00:06:32.971Z] ----------------------------------------------------------------------
+[debug] 
+[warn] ⚠  functions: The functions emulator is configured but there is no functions source directory. Have you run firebase init functions? {"metadata":{"emulator":{"name":"functions"},"message":"The functions emulator is configured but there is no functions source directory. Have you run \u001b[1mfirebase init functions\u001b[22m?"}}
+[debug] [2025-07-07T00:06:33.012Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-07-07T00:06:33.012Z] > authorizing via signed-in user (kodysmith2010@gmail.com)
+[warn] ⚠  Could not find config (firebase.json) so using defaults. 
+[info] i  emulators: Starting emulators: functions {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: functions"}}
+[warn] ⚠  logging: Logging Emulator unable to start on port 4500, starting on 4501 instead. {"metadata":{"emulator":{"name":"logging"},"message":"Logging Emulator unable to start on port 4500, starting on 4501 instead."}}
+[debug] [2025-07-07T00:06:33.194Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-07-07T00:06:33.194Z] assigned listening specs for emulators {"user":{"logging":[{"address":"127.0.0.1","family":"IPv4","port":4501}]},"metadata":{"message":"assigned listening specs for emulators"}}
+[warn] ⚠  functions: The functions emulator is configured but there is no functions source directory. Have you run firebase init functions? {"metadata":{"emulator":{"name":"functions"},"message":"The functions emulator is configured but there is no functions source directory. Have you run \u001b[1mfirebase init functions\u001b[22m?"}}
+[warn] ⚠  emulators: The Emulator UI is not starting, either because none of the running emulators have a UI component or the Emulator UI cannot determine the Project ID. Pass the --project flag to specify a project. {"metadata":{"emulator":{"name":"hub"},"message":"The Emulator UI is not starting, either because none of the running emulators have a UI component or the Emulator UI cannot determine the Project ID. Pass the --project flag to specify a project."}}
+[debug] [2025-07-07T00:06:33.211Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: . If you are not running the Firebase Data Connect VSCode extension, this is expected and not an issue.
+[info] 
+┌─────────────────────────────────────────────────────────────┐
+│ ✔  All emulators ready! It is now safe to connect your app. │
+└─────────────────────────────────────────────────────────────┘
+
+┌───────────┬──────────────────────────────────┐
+│ Emulator  │ Host:Port                        │
+├───────────┼──────────────────────────────────┤
+│ Functions │ Failed to initialize (see above) │
+└───────────┴──────────────────────────────────┘
+  Emulator Hub not running.
+  Other reserved ports: 4501
+
+Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
+ 
+[debug] [2025-07-07T00:08:05.117Z] ----------------------------------------------------------------------
+[debug] [2025-07-07T00:08:05.119Z] Command:       /Users/kody/.nvm/versions/node/v20.18.0/bin/node /Users/kody/.nvm/versions/node/v20.18.0/bin/firebase emulators:start --only functions
+[debug] [2025-07-07T00:08:05.120Z] CLI Version:   14.7.0
+[debug] [2025-07-07T00:08:05.120Z] Platform:      darwin
+[debug] [2025-07-07T00:08:05.120Z] Node Version:  v20.18.0
+[debug] [2025-07-07T00:08:05.120Z] Time:          Sun Jul 06 2025 17:08:05 GMT-0700 (Pacific Daylight Time)
+[debug] [2025-07-07T00:08:05.120Z] ----------------------------------------------------------------------
+[debug] 
+[warn] ⚠  functions: The functions emulator is configured but there is no functions source directory. Have you run firebase init functions? {"metadata":{"emulator":{"name":"functions"},"message":"The functions emulator is configured but there is no functions source directory. Have you run \u001b[1mfirebase init functions\u001b[22m?"}}
+[debug] [2025-07-07T00:08:05.163Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-07-07T00:08:05.164Z] > authorizing via signed-in user (kodysmith2010@gmail.com)
+[warn] ⚠  Could not find config (firebase.json) so using defaults. 
+[info] i  emulators: Starting emulators: functions {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: functions"}}
+[warn] ⚠  logging: Logging Emulator unable to start on port 4500, starting on 4502 instead. {"metadata":{"emulator":{"name":"logging"},"message":"Logging Emulator unable to start on port 4500, starting on 4502 instead."}}
+[debug] [2025-07-07T00:08:05.413Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-07-07T00:08:05.413Z] assigned listening specs for emulators {"user":{"logging":[{"address":"127.0.0.1","family":"IPv4","port":4502}]},"metadata":{"message":"assigned listening specs for emulators"}}
+[warn] ⚠  functions: The functions emulator is configured but there is no functions source directory. Have you run firebase init functions? {"metadata":{"emulator":{"name":"functions"},"message":"The functions emulator is configured but there is no functions source directory. Have you run \u001b[1mfirebase init functions\u001b[22m?"}}
+[warn] ⚠  emulators: The Emulator UI is not starting, either because none of the running emulators have a UI component or the Emulator UI cannot determine the Project ID. Pass the --project flag to specify a project. {"metadata":{"emulator":{"name":"hub"},"message":"The Emulator UI is not starting, either because none of the running emulators have a UI component or the Emulator UI cannot determine the Project ID. Pass the --project flag to specify a project."}}
+[debug] [2025-07-07T00:08:05.430Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: . If you are not running the Firebase Data Connect VSCode extension, this is expected and not an issue.
+[info] 
+┌─────────────────────────────────────────────────────────────┐
+│ ✔  All emulators ready! It is now safe to connect your app. │
+└─────────────────────────────────────────────────────────────┘
+
+┌───────────┬──────────────────────────────────┐
+│ Emulator  │ Host:Port                        │
+├───────────┼──────────────────────────────────┤
+│ Functions │ Failed to initialize (see above) │
+└───────────┴──────────────────────────────────┘
+  Emulator Hub not running.
+  Other reserved ports: 4502
+
+Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
+ 

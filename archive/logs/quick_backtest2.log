@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/kody/base/MarketNews/tqqq_options_strategy.py", line 13, in <module>
+    import pandas as pd
+ModuleNotFoundError: No module named 'pandas'

@@ -94,3 +94,4 @@ Each optimized strategy uses a configuration dictionary with:
 - Results include realistic transaction costs and slippage
 - All strategies maintain protection while capturing upside
 - Budget constraints prevent excessive hedging costs
+

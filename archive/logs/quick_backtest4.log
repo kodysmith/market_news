@@ -1,0 +1,42 @@
+🏦 TQQQ Options Protection Strategy Backtest
+============================================================
+📊 Downloading TQQQ data...
+✅ Downloaded 1006 days of TQQQ data
+📊 Downloading QQQ data (for hedge and IVR)...
+✅ Downloaded 1006 days of QQQ data
+🚀 Starting TQQQ Options Protection Strategy Backtest
+============================================================
+📈 Bought 100 TQQQ shares at $28.17 on 2020-11-02
+📈 Bought 100 TQQQ shares at $45.96 on 2021-02-23
+📈 Bought 100 TQQQ shares at $48.11 on 2021-05-04
+📈 Bought 100 TQQQ shares at $62.29 on 2021-08-18
+📈 Bought 100 TQQQ shares at $64.02 on 2021-09-20
+📈 Bought 100 TQQQ shares at $74.38 on 2021-12-01
+📈 Bought 100 TQQQ shares at $71.62 on 2022-01-05
+📈 Bought 100 TQQQ shares at $24.44 on 2023-04-25
+📈 Bought 100 TQQQ shares at $39.96 on 2023-08-08
+📈 Bought 100 TQQQ shares at $36.85 on 2023-09-20
+📈 Bought 100 TQQQ shares at $33.28 on 2023-10-20
+
+============================================================
+📊 TQQQ OPTIONS PROTECTION STRATEGY RESULTS
+============================================================
+Initial Capital: $1,000,000
+Final Value: $1,014,646
+Total Return: 1.5%
+Benchmark Return: 128.2%
+Excess Return: -126.8%
+Shares Owned: 1,100
+Total Invested: $52,908
+Cash Remaining: $966,727
+Total Trades: 53
+Active Options Positions: 0
+
+Risk Metrics:
+Annualized Volatility: 1.4%
+Sharpe Ratio: 0.28
+Maximum Drawdown: -3.8%
+Avg Monthly Hedge Spend: 0.01%
+Current Hedge Ratio: 64%
+
+💾 Detailed results saved to 'tqqq_options_strategy_results.csv'

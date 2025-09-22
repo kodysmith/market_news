@@ -4,24 +4,64 @@ A comprehensive market analysis and trading opportunity application that combine
 
 ## Overview
 
-This application provides real-time market sentiment analysis, options trading strategies, and market insights through two main components:
+This application provides real-time market sentiment analysis, options trading strategies, and market insights through multiple decoupled components:
 
 1. **Python Backend**: Handles data fetching, market analysis, and report generation
 2. **Flutter Frontend**: Cross-platform mobile app for displaying market insights
+3. **Quant Engine**: Advanced quantitative trading and backtesting system
+4. **Screeners**: Various stock screening and options scanning tools
+5. **Backtesting Systems**: Multiple backtesting frameworks for strategy validation
+
+## Project Structure
+
+```
+MarketNews/
+├── apis/                    # API servers and clients
+├── screeners/              # Stock and options screeners
+├── strategies/             # Strategy analysis and optimization
+├── tools/                  # Utility scripts and helpers
+├── data/                   # Data files, results, and logs
+├── backtesting/            # Options strategy backtesting
+├── buffett_screener/       # Buffett-style stock screener
+├── options_scanner/        # Options scanning system
+├── QuantEngine/            # Advanced quant trading engine
+├── market_news_app/        # Flutter mobile application
+├── firebase/               # Firebase functions
+└── archive/                # Archived old files
+```
 
 ## Architecture
 
 ### Backend Components (Python)
 
-#### Core Files
+#### Core Components
 
+**APIs (`apis/`)**
 - **`api.py`**: Flask web server that serves market data via REST API
+- **`fmp_api.py`**: Financial Modeling Prep API client
+- **`start_apis.py`**: API server startup script
+
+**Screeners (`screeners/`)**
+- **`Scanner1.py`**: Options trading strategy scanner and analyzer
+- **`run_buffett_screener.py`**: Buffett-style stock screener runner
+- **`test_screener_ev.py`**: Screener testing utilities
+
+**Tools (`tools/`)**
 - **`generate_report.py`**: Main report generation engine that coordinates all data sources
 - **`MarketDashboard.py`**: Market sentiment analysis using key indicators
-- **`Scanner1.py`**: Options trading strategy scanner and analyzer
 - **`TickerProvider.py`**: Fetches most active stocks from Yahoo Finance
 - **`get_vix_data.py`**: VIX volatility data collection
+- **`update_news_from_quantbot.py`**: News feed updater
+
+**Strategies (`strategies/`)**
+- **`GammaScalpingAnalyzer.py`**: Gamma scalping analysis
+- **`optimize_tqqq_strategy.py`**: TQQQ strategy optimization
+- **`analyze_spy_options.py`**: SPY options analysis
+
+**Data (`data/`)**
 - **`config.json`**: Configuration settings for trading parameters
+- **`results/`**: Strategy backtest results and CSV files
+- **`logs/`**: Application logs and debug files
 
 #### Key Features
 
@@ -135,12 +175,12 @@ pip install -r requirements.txt
 
 3. **Run the report generator:**
 ```bash
-python generate_report.py
+python tools/generate_report.py
 ```
 
 4. **Start the API server:**
 ```bash
-python api.py
+python apis/api.py
 ```
 
 ### Flutter App Setup
@@ -172,15 +212,15 @@ flutter run
 
 1. **Generate Market Report:**
    ```bash
-   python generate_report.py
+   python tools/generate_report.py
    ```
    - Fetches market sentiment data
    - Scans for trading opportunities
-   - Generates `report.json` and `report.html`
+   - Generates `data/report.json` and `data/report.html`
 
 2. **Start API Server:**
    ```bash
-   python api.py
+   python apis/api.py
    ```
    - Serves market data at `http://localhost:5000`
    - Provides `/report.json` endpoint
@@ -195,15 +235,15 @@ flutter run
 ### Data Flow
 
 1. **Backend Data Collection:**
-   - `TickerProvider.py` → Fetches active stocks
-   - `MarketDashboard.py` → Analyzes market sentiment
-   - `Scanner1.py` → Scans for trading opportunities
-   - `get_vix_data.py` → Collects volatility data
+   - `tools/TickerProvider.py` → Fetches active stocks
+   - `tools/MarketDashboard.py` → Analyzes market sentiment
+   - `screeners/Scanner1.py` → Scans for trading opportunities
+   - `tools/get_vix_data.py` → Collects volatility data
 
 2. **Report Generation:**
-   - `generate_report.py` → Coordinates all data sources
-   - Outputs `report.json` for Flutter app
-   - Outputs `report.html` for web viewing
+   - `tools/generate_report.py` → Coordinates all data sources
+   - Outputs `data/report.json` for Flutter app
+   - Outputs `data/report.html` for web viewing
 
 3. **Frontend Display:**
    - Flutter app reads `assets/results.json`
@@ -280,10 +320,10 @@ flutter run
 ### Gamma Scalping Analysis
 ```bash
 # Run standalone gamma analysis
-python GammaScalpingAnalyzer.py
+python strategies/GammaScalpingAnalyzer.py
 
 # Generate full report with gamma analysis
-python generate_report.py
+python tools/generate_report.py
 ```
 
 **Sample Output:**

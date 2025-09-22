@@ -1,0 +1,107 @@
+2025-09-21 08:33:59.969 Python[67936:60541000] +[IMKClient subclass]: chose IMKClient_Modern
+2025-09-21 08:33:59.970 Python[67936:60541000] +[IMKInputSession subclass]: chose IMKInputSession_Modern
+🏦 TSLA Options Protection Strategy Backtest
+============================================================
+📊 Downloading TSLA data...
+✅ Downloaded 1006 days of TSLA data
+📊 Downloading QQQ data (for hedge and IVR)...
+✅ Downloaded 1006 days of QQQ data
+🚀 Starting TQQQ Options Protection Strategy Backtest
+============================================================
+📈 Bought 100 TQQQ shares at $133.50 on 2020-11-02
+📈 Bought 100 TQQQ shares at $141.30 on 2020-11-03
+📈 Bought 100 TQQQ shares at $232.95 on 2021-02-23
+📈 Bought 100 TQQQ shares at $227.41 on 2021-02-25
+📈 Bought 100 TQQQ shares at $225.17 on 2021-02-26
+📈 Bought 100 TQQQ shares at $228.81 on 2021-03-02
+📈 Bought 100 TQQQ shares at $217.73 on 2021-03-03
+📈 Bought 100 TQQQ shares at $207.15 on 2021-03-04
+📈 Bought 100 TQQQ shares at $199.32 on 2021-03-05
+📈 Bought 100 TQQQ shares at $187.67 on 2021-03-08
+📈 Bought 100 TQQQ shares at $224.53 on 2021-03-09
+📈 Bought 100 TQQQ shares at $222.69 on 2021-03-10
+📈 Bought 100 TQQQ shares at $224.53 on 2021-05-04
+📈 Bought 100 TQQQ shares at $223.65 on 2021-05-05
+📈 Bought 100 TQQQ shares at $221.18 on 2021-05-06
+📈 Bought 100 TQQQ shares at $209.68 on 2021-05-10
+📈 Bought 100 TQQQ shares at $205.73 on 2021-05-11
+📈 Bought 100 TQQQ shares at $196.63 on 2021-05-12
+📈 Bought 100 TQQQ shares at $196.58 on 2021-05-14
+📈 Bought 100 TQQQ shares at $229.66 on 2021-08-18
+📈 Bought 100 TQQQ shares at $243.39 on 2021-09-20
+📈 Bought 100 TQQQ shares at $246.46 on 2021-09-21
+📈 Bought 100 TQQQ shares at $250.65 on 2021-09-22
+📈 Bought 100 TQQQ shares at $263.79 on 2021-09-27
+📈 Bought 100 TQQQ shares at $259.19 on 2021-09-28
+📈 Bought 100 TQQQ shares at $260.44 on 2021-09-29
+📈 Bought 100 TQQQ shares at $258.49 on 2021-09-30
+📈 Bought 100 TQQQ shares at $258.41 on 2021-10-01
+📈 Bought 100 TQQQ shares at $260.51 on 2021-10-04
+📈 Bought 100 TQQQ shares at $260.20 on 2021-10-05
+📈 Bought 100 TQQQ shares at $260.92 on 2021-10-06
+📈 Bought 100 TQQQ shares at $263.98 on 2021-10-11
+📈 Bought 100 TQQQ shares at $268.57 on 2021-10-12
+📈 Bought 100 TQQQ shares at $365.00 on 2021-12-01
+📈 Bought 100 TQQQ shares at $338.32 on 2021-12-03
+📈 Bought 100 TQQQ shares at $336.34 on 2021-12-06
+📈 Bought 100 TQQQ shares at $299.98 on 2021-12-20
+📈 Bought 100 TQQQ shares at $362.71 on 2022-01-05
+📈 Bought 100 TQQQ shares at $354.90 on 2022-01-06
+📈 Bought 100 TQQQ shares at $342.32 on 2022-01-07
+📈 Bought 100 TQQQ shares at $352.71 on 2022-01-10
+📈 Bought 100 TQQQ shares at $343.85 on 2022-01-13
+⚠️  Insufficient cash to buy shares on 2022-01-14
+⚠️  Insufficient cash to buy shares on 2022-01-18
+⚠️  Insufficient cash to buy shares on 2022-01-19
+⚠️  Insufficient cash to buy shares on 2022-01-20
+⚠️  Insufficient cash to buy shares on 2022-01-21
+⚠️  Insufficient cash to buy shares on 2022-01-24
+⚠️  Insufficient cash to buy shares on 2022-01-25
+⚠️  Insufficient cash to buy shares on 2022-01-26
+📈 Bought 100 TQQQ shares at $276.37 on 2022-01-27
+⚠️  Insufficient cash to buy shares on 2022-01-28
+📈 Bought 100 TQQQ shares at $249.70 on 2023-08-08
+📈 Bought 100 TQQQ shares at $242.19 on 2023-08-09
+📈 Bought 100 TQQQ shares at $245.34 on 2023-08-10
+📈 Bought 100 TQQQ shares at $242.65 on 2023-08-11
+📈 Bought 100 TQQQ shares at $239.76 on 2023-08-14
+📈 Bought 100 TQQQ shares at $232.96 on 2023-08-15
+⚠️  Insufficient cash to buy shares on 2023-08-16
+⚠️  Insufficient cash to buy shares on 2023-08-17
+📈 Bought 100 TQQQ shares at $215.49 on 2023-08-18
+⚠️  Insufficient cash to buy shares on 2023-08-21
+⚠️  Insufficient cash to buy shares on 2023-08-22
+⚠️  Insufficient cash to buy shares on 2023-08-24
+⚠️  Insufficient cash to buy shares on 2023-09-20
+⚠️  Insufficient cash to buy shares on 2023-09-21
+⚠️  Insufficient cash to buy shares on 2023-09-22
+⚠️  Insufficient cash to buy shares on 2023-09-25
+⚠️  Insufficient cash to buy shares on 2023-09-26
+📈 Bought 100 TQQQ shares at $240.50 on 2023-09-27
+⚠️  Insufficient cash to buy shares on 2023-09-28
+⚠️  Insufficient cash to buy shares on 2023-09-29
+⚠️  Insufficient cash to buy shares on 2023-10-02
+⚠️  Insufficient cash to buy shares on 2023-10-03
+
+============================================================
+📊 TSLA OPTIONS PROTECTION STRATEGY RESULTS
+============================================================
+Initial Capital: $1,000,000
+Final Value: $1,277,292
+Total Return: 27.7%
+Benchmark Return: 766.3%
+Excess Return: -738.5%
+Shares Owned: 5,100
+Total Invested: $1,279,193
+Cash Remaining: $44,169
+Total Trades: 610
+Active Options Positions: 0
+
+Risk Metrics:
+Annualized Volatility: 42.3%
+Sharpe Ratio: 0.36
+Maximum Drawdown: -70.9%
+Avg Monthly Hedge Spend: 0.00%
+Current Hedge Ratio: 71%
+
+💾 Detailed results saved to 'tsla_options_strategy_results.csv'
