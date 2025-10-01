@@ -146,3 +146,4 @@ python run_quantengine_production.py
 - [ ] Firebase project has proper permissions
 - [ ] Test with small dataset first
 - [ ] Monitor Firebase usage and costs
+

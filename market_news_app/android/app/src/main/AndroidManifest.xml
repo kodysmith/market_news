@@ -2,6 +2,19 @@
 
     <!-- The INTERNET permission is required for development. -->
     <uses-permission android:name="android.permission.INTERNET" />
+    
+    <!-- AI and ML permissions for Pixel 10 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    
+    <!-- Hardware features for AI inference -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+    <uses-feature android:name="android.hardware.microphone" android:required="false" />
+    
+    <!-- AI/ML capabilities -->
+    <uses-feature android:name="android.hardware.neuralnetworks" android:required="false" />
+    <uses-feature android:name="android.hardware.accelerometer" android:required="false" />
 
     <application
         android:label="market_news_app"

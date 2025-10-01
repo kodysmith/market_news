@@ -36,9 +36,19 @@ def main():
     logger.info("📊 Data will be sent to Firestore production database")
 
     try:
-        # Import and run the main QuantEngine
+        # Import and run the main QuantEngine with cycle command
         from main import main as quant_main
-        quant_main()
+        import sys
+        
+        # Set up command line arguments for production
+        original_argv = sys.argv
+        sys.argv = ['run_quantengine_production.py', 'cycle']
+        
+        try:
+            quant_main()
+        finally:
+            # Restore original argv
+            sys.argv = original_argv
 
     except KeyboardInterrupt:
         logger.info("🛑 QuantEngine production run interrupted by user")

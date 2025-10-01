@@ -137,8 +137,24 @@ class _MarketInsightsScreenState extends State<MarketInsightsScreen> {
                   if (pageIdeas.isNotEmpty)
                     ...pageIdeas.map((t) => ListTile(
                           leading: const Icon(Icons.lightbulb, color: Colors.blue),
-                          title: Text('${t.ticker} - ${t.strategy}', style: const TextStyle(fontWeight: FontWeight.bold)),
-                          subtitle: Text('Expiry: ${t.expiry} | ${t.details}'),
+                          title: Row(
+                            children: [
+                              Text('${t.ticker} - ${t.strategy}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                              const SizedBox(width: 8),
+                              if (t.ivRank != null) _buildIvRankBadge(t.ivRank!),
+                            ],
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Expiry: ${t.expiry} | ${t.details}'),
+                              if (t.currentIv != null)
+                                Text('IV: ${t.currentIv!.toStringAsFixed(1)}%', style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                              if (t.expectedMove != null)
+                                Text('Expected Move: ${t.expectedMove!.toStringAsFixed(1)} (${t.expectedMovePct!.toStringAsFixed(1)}%)',
+                                    style: const TextStyle(fontSize: 12, color: Colors.blue)),
+                            ],
+                          ),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -160,6 +176,8 @@ class _MarketInsightsScreenState extends State<MarketInsightsScreen> {
                                     if (t.maxProfit != null) Text('Max Profit: ${t.maxProfit}'),
                                     if (t.maxLoss != null) Text('Max Loss: ${t.maxLoss}'),
                                     if (t.riskRewardRatio != null) Text('Risk/Reward: ${t.riskRewardRatio!.toStringAsFixed(2)}'),
+                                    if (t.expectedMove != null) Text('Expected Move: ${t.expectedMove!.toStringAsFixed(1)} (${t.expectedMovePct!.toStringAsFixed(1)}%)'),
+                                    if (t.breakEvenPrice != null) Text('Break-even Price: ${t.breakEvenPrice!.toStringAsFixed(2)}'),
                                     if (t.metricName.isNotEmpty) Text('${t.metricName}: ${t.metricValue}'),
                                     const SizedBox(height: 10),
                                     Text('Why this strategy?', style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -556,6 +574,35 @@ class _MarketInsightsScreenState extends State<MarketInsightsScreen> {
       );
     }
     return const SizedBox.shrink();
+  }
+
+  Widget _buildIvRankBadge(double ivRank) {
+    Color color;
+
+    if (ivRank >= 70) {
+      color = Colors.red;
+    } else if (ivRank >= 40) {
+      color = Colors.orange;
+    } else {
+      color = Colors.green;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.15),
+        border: Border.all(color: color, width: 1.5),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        'IV ${ivRank.toStringAsFixed(0)}%',
+        style: TextStyle(
+          color: color,
+          fontWeight: FontWeight.bold,
+          fontSize: 12,
+        ),
+      ),
+    );
   }
 }
 

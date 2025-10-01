@@ -255,12 +255,20 @@ class ResearchAgent:
         # Adjust parameters based on recent volatility
         if market_data:
             sample_ticker = list(market_data.keys())[0]
-            recent_vol = market_data[sample_ticker]['close'].pct_change().rolling(20).std().iloc[-1] * np.sqrt(252)
+            recent_vol_series = market_data[sample_ticker]['close'].pct_change().rolling(20).std() * np.sqrt(252)
+            if len(recent_vol_series) > 0:
+                last_vol = recent_vol_series.iloc[-1]
+                # Ensure we get a scalar value
+                if hasattr(last_vol, 'iloc'):
+                    last_vol = last_vol.iloc[0] if len(last_vol) > 0 else 0.20
+                recent_vol_value = last_vol if not pd.isna(last_vol) else 0.20
+            else:
+                recent_vol_value = 0.20
 
             # Adjust position sizing based on volatility
-            if recent_vol > 0.25:  # High vol environment
+            if recent_vol_value > 0.25:  # High vol environment
                 customized['vol_target'] = 0.10  # Reduce vol target
-            elif recent_vol < 0.15:  # Low vol environment
+            elif recent_vol_value < 0.15:  # Low vol environment
                 customized['vol_target'] = 0.18  # Increase vol target
             else:
                 customized['vol_target'] = 0.15  # Standard target

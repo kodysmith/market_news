@@ -64,12 +64,24 @@ class QuantBotDataBroker:
         try:
             # Check if Firebase is already initialized
             if not firebase_admin._apps:
-                # For production, use environment variables or service account
-                # In production, you'd typically use GOOGLE_APPLICATION_CREDENTIALS
-                firebase_admin.initialize_app()
+                # Try to initialize with default credentials first
+                try:
+                    firebase_admin.initialize_app()
+                except Exception as cred_error:
+                    logger.warning(f"Default credentials not found: {cred_error}")
+                    # Try to use service account key file if available
+                    service_account_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+                    if service_account_path and os.path.exists(service_account_path):
+                        cred = credentials.Certificate(service_account_path)
+                        firebase_admin.initialize_app(cred)
+                        logger.info("Using service account credentials")
+                    else:
+                        raise cred_error
             self.db = firestore.client()
+            logger.info("✅ Firebase initialized successfully")
         except Exception as e:
             logger.error(f"Failed to initialize Firebase: {e}")
+            logger.info("Falling back to SQLite database")
             # Fallback to SQLite
             self.use_firestore = False
             self.db_path = Path(__file__).parent / "quantbot_data_fallback.db"

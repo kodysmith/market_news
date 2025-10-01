@@ -450,33 +450,54 @@ class AdaptiveStrategyResearcher:
 
         return None
 
-    def strategy_to_backtest_config(self, strategy: Dict[str, Any]) -> Dict[str, Any]:
-        """Convert strategy dict to backtest configuration"""
+    def strategy_to_backtest_config(self, strategy: Dict[str, Any]) -> 'StrategySpec':
+        """Convert strategy dict to StrategySpec object"""
+        from utils.strategy_dsl import StrategySpec, SignalDefinition, SignalType, EntryCondition, PositionSizing, CostModel, RiskLimits
 
-        return {
-            'strategy_name': strategy['name'],
-            'universe': ['SPY'],  # Single asset for evaluation
-            'signals': [
-                {
-                    'type': 'SMA_cross' if 'SMA' in strategy.get('entry_indicators', []) else 'RSI',
-                    'name': 'entry_signal',
-                    'params': strategy.get('entry_params', {})
-                }
-            ],
-            'entry_condition': f"entry_signal > 0",
-            'sizing': {
-                'type': 'fixed',
-                'size': strategy.get('position_size', 0.02)
-            },
-            'costs': {
-                'commission': 0.001,
-                'slippage': 0.0005
-            },
-            'risk_limits': {
-                'max_drawdown': 0.15,
-                'max_position_size': 0.05
-            }
-        }
+        # Create signal definition
+        signal_type = SignalType.MA_CROSS if 'SMA' in strategy.get('entry_indicators', []) else SignalType.RSI
+        signal_def = SignalDefinition(
+            name='entry_signal',
+            type=signal_type,
+            params=strategy.get('entry_params', {})
+        )
+
+        # Create entry condition
+        entry_condition = EntryCondition(
+            condition='entry_signal > 0'
+        )
+
+        # Create position sizing
+        sizing = PositionSizing(
+            type='fixed',
+            size=strategy.get('position_size', 0.02)
+        )
+
+        # Create cost model
+        costs = CostModel(
+            commission=0.001,
+            slippage=0.0005
+        )
+
+        # Create risk limits
+        risk_limits = RiskLimits(
+            max_drawdown=0.15,
+            max_position_size=0.05
+        )
+
+        # Create StrategySpec
+        strategy_spec = StrategySpec(
+            name=strategy['name'],
+            universe=['SPY'],  # Single asset for evaluation
+            description=f"Generated strategy: {strategy.get('description', '')}",
+            signals=[signal_def],
+            entry=entry_condition,
+            sizing=sizing,
+            costs=costs,
+            risk=risk_limits
+        )
+
+        return strategy_spec
 
     def meets_minimum_criteria(self, performance: Dict[str, Any]) -> bool:
         """Check if strategy meets minimum performance criteria"""

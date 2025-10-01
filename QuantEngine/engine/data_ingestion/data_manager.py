@@ -20,6 +20,8 @@ from functools import lru_cache
 import duckdb
 import pyarrow as pa
 import pyarrow.parquet as pq
+import time
+import random
 
 logger = logging.getLogger(__name__)
 
@@ -103,13 +105,21 @@ class DataManager:
         """
 
         data = {}
+        failed_tickers = []
 
-        for ticker in tickers:
+        for i, ticker in enumerate(tickers):
             # Try cache first
             cached_data = self._get_cached_data(ticker, start_date, end_date)
             if cached_data is not None and not self._is_stale(cached_data, ticker):
                 data[ticker] = cached_data
+                logger.debug(f"Using cached data for {ticker}")
                 continue
+
+            # Rate limiting: add delay between requests
+            if i > 0:  # Skip delay for first request
+                delay = random.uniform(1.0, 2.5)  # Random delay between 1-2.5 seconds
+                logger.debug(f"Rate limiting: sleeping for {delay:.1f}s")
+                time.sleep(delay)
 
             # Download fresh data
             try:
@@ -124,9 +134,14 @@ class DataManager:
                     # Cache the data
                     self._cache_data(ticker, df, source)
                     data[ticker] = df
+                    logger.info(f"✅ Downloaded data for {ticker}")
+                else:
+                    failed_tickers.append(ticker)
+                    logger.warning(f"⚠️ No data returned for {ticker}")
 
             except Exception as e:
-                logger.error(f"Failed to get data for {ticker}: {e}")
+                failed_tickers.append(ticker)
+                logger.error(f"❌ Failed to get data for {ticker}: {e}")
                 continue
 
         return data
@@ -168,50 +183,61 @@ class DataManager:
         return hours_since_update > max_age_hours
 
     def _download_yahoo_data(self, ticker: str, start_date: str, end_date: str) -> pd.DataFrame:
-        """Download data from Yahoo Finance"""
-        try:
-            # Add .NS suffix for Indian stocks if needed
-            yahoo_ticker = ticker
+        """Download data from Yahoo Finance with retry logic"""
+        max_retries = 3
+        base_delay = 2.0
+        
+        for attempt in range(max_retries):
+            try:
+                # Add .NS suffix for Indian stocks if needed
+                yahoo_ticker = ticker
 
-            # Download with yfinance
-            data = yf.download(
-                yahoo_ticker,
-                start=start_date,
-                end=end_date,
-                progress=False,
-                auto_adjust=True,
-                prepost=True
-            )
+                # Download with yfinance
+                data = yf.download(
+                    yahoo_ticker,
+                    start=start_date,
+                    end=end_date,
+                    progress=False,
+                    auto_adjust=True,
+                    prepost=True,
+                    threads=False  # Disable threading to avoid rate limits
+                )
 
-            if data.empty:
-                logger.warning(f"No data found for {ticker}")
-                return pd.DataFrame()
+                if data.empty:
+                    logger.warning(f"No data found for {ticker}")
+                    return pd.DataFrame()
 
-            # Ensure we have all required columns
-            required_cols = ['Open', 'High', 'Low', 'Close', 'Volume']
-            if not all(col in data.columns for col in required_cols):
-                logger.warning(f"Missing required columns for {ticker}")
-                return pd.DataFrame()
+                # Ensure we have all required columns
+                required_cols = ['Open', 'High', 'Low', 'Close', 'Volume']
+                if not all(col in data.columns for col in required_cols):
+                    logger.warning(f"Missing required columns for {ticker}")
+                    return pd.DataFrame()
 
-            # Rename columns to standard format
-            data = data.rename(columns={
-                'Open': 'open',
-                'High': 'high',
-                'Low': 'low',
-                'Close': 'close',
-                'Volume': 'volume',
-                'Adj Close': 'adj_close'
-            })
+                # Rename columns to standard format
+                data = data.rename(columns={
+                    'Open': 'open',
+                    'High': 'high',
+                    'Low': 'low',
+                    'Close': 'close',
+                    'Volume': 'volume',
+                    'Adj Close': 'adj_close'
+                })
 
-            # Add adjusted close if not present
-            if 'adj_close' not in data.columns:
-                data['adj_close'] = data['close']
+                # Add adjusted close if not present
+                if 'adj_close' not in data.columns:
+                    data['adj_close'] = data['close']
 
-            return data
+                return data
 
-        except Exception as e:
-            logger.error(f"Yahoo download failed for {ticker}: {e}")
-            return pd.DataFrame()
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    delay = base_delay * (2 ** attempt) + random.uniform(0, 1)
+                    logger.warning(f"Attempt {attempt + 1} failed for {ticker}: {e}")
+                    logger.warning(f"Retrying in {delay:.1f}s...")
+                    time.sleep(delay)
+                else:
+                    logger.error(f"All attempts failed for {ticker}: {e}")
+                    return pd.DataFrame()
 
     def _download_alpha_vantage_data(self, ticker: str, start_date: str, end_date: str) -> pd.DataFrame:
         """Download data from Alpha Vantage (requires API key)"""
@@ -274,9 +300,14 @@ class DataManager:
             cache_df['source'] = source
             cache_df['last_updated'] = pd.Timestamp.now()
 
+            # Ensure date column is properly named
+            if 'Date' in cache_df.columns:
+                cache_df = cache_df.rename(columns={'Date': 'date'})
+            elif cache_df.index.name == 'Date':
+                cache_df = cache_df.rename(columns={cache_df.index.name: 'date'})
+            
             # Rename columns to match schema
             cache_df = cache_df.rename(columns={
-                'date': 'date',
                 'open': 'open',
                 'high': 'high',
                 'low': 'low',
@@ -285,13 +316,42 @@ class DataManager:
                 'adj_close': 'adj_close'
             })
 
-            # Insert to database (upsert)
-            self.conn.execute("""
-                INSERT OR REPLACE INTO market_data
-                (ticker, date, open, high, low, close, volume, adj_close, source, last_updated)
-                SELECT ticker, date, open, high, low, close, volume, adj_close, source, last_updated
-                FROM cache_df
-            """)
+            # Insert to database (upsert) - use row-by-row insertion
+            for _, row in cache_df.iterrows():
+                try:
+                    # Convert date to proper format
+                    if hasattr(row['date'], 'strftime'):
+                        date_str = row['date'].strftime('%Y-%m-%d')
+                    elif hasattr(row['date'], 'iloc'):
+                        date_val = row['date'].iloc[0]
+                        date_str = date_val.strftime('%Y-%m-%d') if hasattr(date_val, 'strftime') else str(date_val)
+                    else:
+                        date_str = str(row['date'])
+                    
+                    # Convert timestamp to proper format
+                    if hasattr(row['last_updated'], 'strftime'):
+                        timestamp_str = row['last_updated'].strftime('%Y-%m-%d %H:%M:%S')
+                    elif hasattr(row['last_updated'], 'iloc'):
+                        ts_val = row['last_updated'].iloc[0]
+                        timestamp_str = ts_val.strftime('%Y-%m-%d %H:%M:%S') if hasattr(ts_val, 'strftime') else str(ts_val)
+                    else:
+                        timestamp_str = str(row['last_updated'])
+                    
+                    self.conn.execute("""
+                        INSERT OR REPLACE INTO market_data
+                        (ticker, date, open, high, low, close, volume, adj_close, source, last_updated)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (str(row['ticker']), date_str, 
+                          float(row['open'].iloc[0]) if hasattr(row['open'], 'iloc') else float(row['open']), 
+                          float(row['high'].iloc[0]) if hasattr(row['high'], 'iloc') else float(row['high']), 
+                          float(row['low'].iloc[0]) if hasattr(row['low'], 'iloc') else float(row['low']), 
+                          float(row['close'].iloc[0]) if hasattr(row['close'], 'iloc') else float(row['close']), 
+                          int(row['volume'].iloc[0]) if hasattr(row['volume'], 'iloc') else int(row['volume']), 
+                          float(row['adj_close'].iloc[0]) if hasattr(row['adj_close'], 'iloc') else float(row['adj_close']), 
+                          str(row['source']), timestamp_str))
+                except Exception as row_error:
+                    logger.warning(f"Failed to insert row for {ticker}: {row_error}")
+                    continue
 
             logger.debug(f"Cached {len(cache_df)} rows for {ticker}")
 

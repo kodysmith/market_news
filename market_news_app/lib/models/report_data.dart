@@ -104,6 +104,11 @@ class TradeIdea {
   final double? maxProfit;
   final double? maxLoss;
   final double? riskRewardRatio;
+  final double? ivRank;
+  final double? currentIv;
+  final double? expectedMove;
+  final double? expectedMovePct;
+  final double? breakEvenPrice;
 
   TradeIdea({
     required this.ticker,
@@ -116,6 +121,11 @@ class TradeIdea {
     this.maxProfit,
     this.maxLoss,
     this.riskRewardRatio,
+    this.ivRank,
+    this.currentIv,
+    this.expectedMove,
+    this.expectedMovePct,
+    this.breakEvenPrice,
   });
 
   factory TradeIdea.fromJson(Map<String, dynamic> json) {
@@ -130,6 +140,11 @@ class TradeIdea {
       maxProfit: json['max_profit']?.toDouble(),
       maxLoss: json['max_loss']?.toDouble(),
       riskRewardRatio: json['risk_reward_ratio']?.toDouble(),
+      ivRank: json['iv_rank']?.toDouble(),
+      currentIv: json['current_iv']?.toDouble(),
+      expectedMove: json['expected_move']?.toDouble(),
+      expectedMovePct: json['expected_move_pct']?.toDouble(),
+      breakEvenPrice: json['break_even_price']?.toDouble(),
     );
   }
 }

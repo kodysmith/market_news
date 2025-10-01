@@ -14,6 +14,7 @@ import time
 from pathlib import Path
 from datetime import datetime
 import json
+import pandas as pd
 
 # Add QuantEngine to path
 sys.path.insert(0, str(Path(__file__).parent))

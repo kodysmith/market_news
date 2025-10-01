@@ -45,3 +45,14 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    // Gemini AI for Pixel 10 local inference
+    implementation("com.google.ai.client.generativeai:generativeai:0.2.2")
+    
+    // Coroutines for async operations
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    
+    // JSON handling
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+}

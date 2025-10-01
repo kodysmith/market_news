@@ -1,6 +1,6 @@
 # tqqq_regime_puts_v1 - Phase 0 Performance Report
 
-**Generated:** 2025-09-21 12:23:36
+**Generated:** 2025-09-26 07:35:33
 
 ## Strategy Overview
 - **Universe:** TQQQ
@@ -11,21 +11,21 @@
 
 | Metric | Value |
 |--------|-------|
-| Total Return | 1.2474 |
-| Annualized Return | 0.3014 |
-| Annualized Volatility | 0.3540 |
-| Sharpe Ratio | 0.85 |
-| Max Drawdown | -0.4723 |
-| Win Rate | 49.5% |
+| Total Return | 1.1276 |
+| Annualized Return | 0.2724 |
+| Annualized Volatility | 0.3599 |
+| Sharpe Ratio | 0.76 |
+| Max Drawdown | -0.4410 |
+| Win Rate | 51.0% |
 | Number of Trades | 1024 |
 
 ## Analysis
 
-**Moderate risk-adjusted performance** with Sharpe ratio of 0.85.
+**Moderate risk-adjusted performance** with Sharpe ratio of 0.76.
 
-**Good absolute returns** of 30.1% annualized.
+**Good absolute returns** of 27.2% annualized.
 
-**High risk** with maximum drawdown of -47.2%.
+**High risk** with maximum drawdown of -44.1%.
 
 ## Conclusion
 

@@ -576,3 +576,4 @@ class MarketRegimeDetector:
 
         return {'error': 'No transition data for current regime'}
 
+

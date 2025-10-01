@@ -3,11 +3,15 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:market_news_app/models/report_data.dart';
 import 'package:market_news_app/screens/market_insights_screen.dart';
+import 'package:market_news_app/screens/market_intelligence_screen.dart';
+import 'package:market_news_app/screens/performance_dashboard_screen.dart';
 import 'package:market_news_app/screens/market_sentiment_detail_screen.dart';
 import 'package:market_news_app/screens/strategy_detail_screen.dart';
 import 'package:market_news_app/screens/economic_calendar_screen.dart';
 import 'package:market_news_app/screens/settings_screen.dart';
 import 'package:market_news_app/screens/bull_put_screener_screen.dart';
+import 'package:market_news_app/screens/quant_chat_screen.dart';
+import 'package:market_news_app/screens/opportunities_screen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'screens/news_screen.dart';
 import 'dart:math' as math;
@@ -19,7 +23,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 // Set the API base URL here for easy switching between local, staging, and production
-const String apiBaseUrl = 'http://localhost:5000'; // Local development - change to production when deploying
+const String apiBaseUrl = 'https://api-hvi4gdtdka-uc.a.run.app'; // Production Firebase Cloud Functions
+// const String apiBaseUrl = 'http://localhost:5000'; // Local development
 const String apiSecretKey = 'b7e2f8c4e1a94e2b8c9d4e7f2a1b3c4d';
 
 Future<void> main() async {
@@ -144,12 +149,15 @@ class _MainNavigationState extends State<MainNavigation> {
   Widget build(BuildContext context) {
     final List<Widget> widgetOptions = <Widget>[
       DashboardScreen(),
+      const MarketIntelligenceScreen(), // New intelligence-focused screen
+      const PerformanceDashboardScreen(), // Performance tracking screen
       _reportData != null
           ? MarketInsightsScreen(reportData: _reportData!)
           : const Center(child: CircularProgressIndicator()),
       NewsScreen(),
       BullPutScreenerScreen(),
-      const EconomicCalendarScreen(),
+      const QuantChatScreen(), // New QuantEngine Chat
+      const OpportunitiesScreen(), // New Trading Opportunities
       SettingsScreen(),
     ];
     return Scaffold(
@@ -176,8 +184,16 @@ class _MainNavigationState extends State<MainNavigation> {
             label: 'Dashboard',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.psychology),
+            label: 'Intelligence',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.show_chart),
+            label: 'Performance',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.insights),
-            label: 'Insights',
+            label: 'Trade Ideas',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.article),
@@ -188,8 +204,12 @@ class _MainNavigationState extends State<MainNavigation> {
             label: 'Spreads',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: 'Calendar',
+            icon: Icon(Icons.chat),
+            label: 'Quant Chat',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.analytics),
+            label: 'Opportunities',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),

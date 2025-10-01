@@ -332,3 +332,4 @@ class FeatureBuilder:
             logger.error(f"Failed to generate {signal_type} signal: {e}")
             return pd.Series(0, index=data.index)
 
+

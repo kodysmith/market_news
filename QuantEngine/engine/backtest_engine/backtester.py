@@ -112,6 +112,11 @@ class VectorizedBacktester:
 
         # Align all dataframes on datetime index
         combined = pd.concat(price_dfs, axis=1, join='inner')
+        
+        # Flatten MultiIndex columns if they exist
+        if isinstance(combined.columns, pd.MultiIndex):
+            combined.columns = [col[0] if isinstance(col, tuple) else col for col in combined.columns]
+        
         return combined
 
     def _generate_signals(self, strategy_spec: StrategySpec, prices_df: pd.DataFrame) -> pd.DataFrame:
@@ -149,7 +154,12 @@ class VectorizedBacktester:
     def _iv_proxy_signal(self, prices_df: pd.DataFrame, params: Dict[str, Any]) -> pd.Series:
         """Generate implied volatility proxy signal"""
         # Simple realized volatility proxy
-        returns_col = [col for col in prices_df.columns if col.startswith('returns_')][0]
+        # Handle both string columns and MultiIndex columns
+        if isinstance(prices_df.columns, pd.MultiIndex):
+            returns_col = [col for col in prices_df.columns if isinstance(col, tuple) and any(str(c).startswith('returns_') for c in col)][0]
+        else:
+            returns_col = [col for col in prices_df.columns if str(col).startswith('returns_')][0]
+        
         returns = prices_df[returns_col]
 
         window = params.get('window', 20)
@@ -222,7 +232,13 @@ class VectorizedBacktester:
                     if signal_name in signals_df.columns:
                         result = result & (signals_df[signal_name] == 1)
                 else:
-                    result = result & signals_df[condition].astype(bool)
+                    # Handle expressions like "vol_regime<low_thresh"
+                    if '<' in condition or '>' in condition or '==' in condition or '!=' in condition:
+                        # This is an expression, not a signal name
+                        logger.warning(f"Expression condition not yet supported: {condition}")
+                        continue
+                    else:
+                        result = result & signals_df[condition].astype(bool)
         elif conditions.any:
             # Any condition must be true
             result = pd.Series(False, index=signals_df.index)
@@ -232,7 +248,13 @@ class VectorizedBacktester:
                     if signal_name in signals_df.columns:
                         result = result | (signals_df[signal_name] == 1)
                 else:
-                    result = result | signals_df[condition].astype(bool)
+                    # Handle expressions like "vol_regime<low_thresh"
+                    if '<' in condition or '>' in condition or '==' in condition or '!=' in condition:
+                        # This is an expression, not a signal name
+                        logger.warning(f"Expression condition not yet supported: {condition}")
+                        continue
+                    else:
+                        result = result | signals_df[condition].astype(bool)
         else:
             result = pd.Series(False, index=signals_df.index)
 

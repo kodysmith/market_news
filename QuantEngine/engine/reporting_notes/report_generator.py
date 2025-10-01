@@ -503,3 +503,4 @@ class ReportGenerator:
 
         return section
 
+
