@@ -7,6 +7,8 @@ import sys
 import os
 import json
 from pathlib import Path
+import pandas as pd
+from datetime import datetime
 
 def test_python_environment():
     """Test Python environment"""
@@ -166,7 +168,7 @@ def create_test_report():
     print("\n📋 Creating Test Report...")
     
     report = {
-        "timestamp": str(pd.Timestamp.now()),
+        "timestamp": str(datetime.now()),
         "python_version": sys.version,
         "python_path": sys.executable,
         "tests": {

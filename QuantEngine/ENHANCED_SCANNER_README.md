@@ -70,7 +70,7 @@ QuantEngine/
 ```bash
 # Install Python packages
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-pip install ollama-python transformers accelerate
+pip install ollama transformers accelerate
 pip install streamlit plotly dash
 pip install yfinance pandas numpy scikit-learn
 
