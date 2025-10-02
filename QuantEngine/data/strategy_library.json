@@ -43,14 +43,14 @@
     ],
     "entry_signal": "mean_reversion",
     "entry_params": {
-      "fast_period": 13,
-      "slow_period": 32,
-      "rsi_level": 49
+      "fast_period": 10,
+      "slow_period": 29,
+      "rsi_level": 48
     },
     "exit_signal": "stop_loss",
     "exit_params": {
-      "profit_target": 0.058518547027864645,
-      "stop_loss": 0.024563044255676902,
+      "profit_target": 0.0566832175782139,
+      "stop_loss": 0.027051406933973246,
       "trailing_stop": 0.025210182470752025
     },
     "risk_management": "fixed_position",
@@ -149,14 +149,14 @@
     ],
     "entry_signal": "divergence",
     "entry_params": {
-      "fast_period": 9,
-      "slow_period": 27,
-      "rsi_level": 40
+      "fast_period": 10,
+      "slow_period": 30,
+      "rsi_level": 52
     },
     "exit_signal": "time_exit",
     "exit_params": {
-      "profit_target": 0.06433685715977856,
-      "stop_loss": 0.03597928770797898,
+      "profit_target": 0.062429477766553526,
+      "stop_loss": 0.020330766401479183,
       "trailing_stop": 0.024154310623387087
     },
     "risk_management": "volatility_targeting",
@@ -534,14 +534,14 @@
     ],
     "entry_signal": "breakout",
     "entry_params": {
-      "fast_period": 15,
-      "slow_period": 33,
-      "rsi_level": 45
+      "fast_period": 9,
+      "slow_period": 28,
+      "rsi_level": 49
     },
     "exit_signal": "time_exit",
     "exit_params": {
-      "profit_target": 0.05672460240917113,
-      "stop_loss": 0.02234852495000611,
+      "profit_target": 0.06320816669474065,
+      "stop_loss": 0.02593106232155524,
       "trailing_stop": 0.02876513171292237
     },
     "risk_management": "fixed_position",
@@ -711,14 +711,14 @@
     ],
     "entry_signal": "breakout",
     "entry_params": {
-      "fast_period": 11,
-      "slow_period": 30,
-      "rsi_level": 45
+      "fast_period": 8,
+      "slow_period": 33,
+      "rsi_level": 49
     },
     "exit_signal": "signal_reversal",
     "exit_params": {
-      "profit_target": 0.06015244866153372,
-      "stop_loss": 0.029102030825358442,
+      "profit_target": 0.05610007332553146,
+      "stop_loss": 0.02065312077692559,
       "trailing_stop": 0.008901246474423025
     },
     "risk_management": "volatility_targeting",
@@ -1827,14 +1827,14 @@
     ],
     "entry_signal": "divergence",
     "entry_params": {
-      "fast_period": 9,
-      "slow_period": 34,
-      "rsi_level": 47
+      "fast_period": 8,
+      "slow_period": 32,
+      "rsi_level": 44
     },
     "exit_signal": "time_exit",
     "exit_params": {
-      "profit_target": 0.05666973569141549,
-      "stop_loss": 0.02412781529002771,
+      "profit_target": 0.05701350957201394,
+      "stop_loss": 0.025013798752657135,
       "trailing_stop": 0.02867079843975145
     },
     "risk_management": "volatility_targeting",
@@ -1897,14 +1897,14 @@
     ],
     "entry_signal": "breakout",
     "entry_params": {
-      "fast_period": 12,
-      "slow_period": 32,
-      "rsi_level": 43
+      "fast_period": 10,
+      "slow_period": 28,
+      "rsi_level": 53
     },
     "exit_signal": "time_exit",
     "exit_params": {
-      "profit_target": 0.05832060274973212,
-      "stop_loss": 0.0248513360728937,
+      "profit_target": 0.06554560120604101,
+      "stop_loss": 0.020690861923236683,
       "trailing_stop": 0.01636501405476739
     },
     "risk_management": "volatility_targeting",
@@ -2144,14 +2144,14 @@
     ],
     "entry_signal": "momentum",
     "entry_params": {
-      "fast_period": 11,
-      "slow_period": 30,
-      "rsi_level": 47
+      "fast_period": 8,
+      "slow_period": 39,
+      "rsi_level": 42
     },
     "exit_signal": "signal_reversal",
     "exit_params": {
-      "profit_target": 0.059722501470666704,
-      "stop_loss": 0.028244877602159935,
+      "profit_target": 0.047939816858949505,
+      "stop_loss": 0.02059222821535959,
       "trailing_stop": 0.011386458834157002
     },
     "risk_management": "kelly_criterion",
@@ -2216,14 +2216,14 @@
     ],
     "entry_signal": "divergence",
     "entry_params": {
-      "fast_period": 9,
-      "slow_period": 34,
-      "rsi_level": 47
+      "fast_period": 8,
+      "slow_period": 33,
+      "rsi_level": 45
     },
     "exit_signal": "time_exit",
     "exit_params": {
-      "profit_target": 0.05666973569141549,
-      "stop_loss": 0.02412781529002771,
+      "profit_target": 0.05686617790890032,
+      "stop_loss": 0.02463409155438738,
       "trailing_stop": 0.02867079843975145
     },
     "risk_management": "fixed_position",
@@ -2449,5 +2449,880 @@
       "win_rate": 0.6873297723172374
     },
     "generated_at": "2025-09-22T09:59:29.187269"
+  },
+  "random_ranging_8961_1758640731": {
+    "name": "random_ranging_8961",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "CCI",
+      "MACD"
+    ],
+    "entry_signal": "momentum",
+    "entry_params": {
+      "fast_period": 18,
+      "slow_period": 35,
+      "rsi_level": 71
+    },
+    "exit_signal": "target_profit",
+    "exit_params": {
+      "profit_target": 0.044064434838791265,
+      "stop_loss": 0.035349581266035324,
+      "trailing_stop": 0.01394971961922874
+    },
+    "risk_management": "fixed_position",
+    "position_size": 0.023714394770700198,
+    "filters": {
+      "min_volume": 956921,
+      "max_volatility": 0.020819766904536047,
+      "trend_filter": false
+    },
+    "performance": {
+      "sharpe_ratio": 1.140746786847804,
+      "total_return": 0.13814689917506073,
+      "max_drawdown": 0.0831179797611365,
+      "win_rate": 0.742300802786782
+    },
+    "generated_at": "2025-09-23T08:18:51.791458"
+  },
+  "random_ranging_9989_1758640731": {
+    "name": "random_ranging_9989",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "ROC",
+      "SMA",
+      "STOCH"
+    ],
+    "entry_signal": "mean_reversion",
+    "entry_params": {
+      "fast_period": 11,
+      "slow_period": 29,
+      "rsi_level": 49
+    },
+    "exit_signal": "time_exit",
+    "exit_params": {
+      "profit_target": 0.06315978623768254,
+      "stop_loss": 0.02253994377819217,
+      "trailing_stop": 0.0059412331675722475
+    },
+    "risk_management": "volatility_targeting",
+    "position_size": 0.019269283399076964,
+    "filters": {
+      "min_volume": 1387565,
+      "max_volatility": 0.0729015303936387,
+      "trend_filter": true
+    },
+    "performance": {
+      "sharpe_ratio": 1.186135874886106,
+      "total_return": 0.14481231996708271,
+      "max_drawdown": 0.06618094191045987,
+      "win_rate": 0.6452497317630359
+    },
+    "generated_at": "2025-09-23T08:18:51.790281"
+  },
+  "random_ranging_7889_1758640731": {
+    "name": "random_ranging_7889",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "MFI",
+      "BBANDS",
+      "STOCH"
+    ],
+    "entry_signal": "breakout",
+    "entry_params": {
+      "fast_period": 8,
+      "slow_period": 32,
+      "rsi_level": 80
+    },
+    "exit_signal": "target_profit",
+    "exit_params": {
+      "profit_target": 0.09443685681956841,
+      "stop_loss": 0.04789000162928246,
+      "trailing_stop": 0.01427373643550144
+    },
+    "risk_management": "kelly_criterion",
+    "position_size": 0.04633700400265981,
+    "filters": {
+      "min_volume": 1900171,
+      "max_volatility": 0.07009873714901622,
+      "trend_filter": false
+    },
+    "performance": {
+      "sharpe_ratio": 1.1782407442651486,
+      "total_return": 0.13702059274674278,
+      "max_drawdown": 0.13427898934484045,
+      "win_rate": 0.7014005442116245
+    },
+    "generated_at": "2025-09-23T08:18:51.790791"
+  },
+  "random_ranging_8803_1758640731": {
+    "name": "random_ranging_8803",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "RSI",
+      "EMA"
+    ],
+    "entry_signal": "reversal",
+    "entry_params": {
+      "fast_period": 19,
+      "slow_period": 39,
+      "rsi_level": 69
+    },
+    "exit_signal": "target_profit",
+    "exit_params": {
+      "profit_target": 0.07291027261366315,
+      "stop_loss": 0.029852322415664774,
+      "trailing_stop": 0.019359930051109323
+    },
+    "risk_management": "volatility_targeting",
+    "position_size": 0.03001250543508953,
+    "filters": {
+      "min_volume": 896030,
+      "max_volatility": 0.03656419237748565,
+      "trend_filter": false
+    },
+    "performance": {
+      "sharpe_ratio": 1.1685496765012329,
+      "total_return": 0.08171319228132476,
+      "max_drawdown": 0.10101183758823834,
+      "win_rate": 0.7366194222686335
+    },
+    "generated_at": "2025-09-23T08:18:51.791235"
+  },
+  "evolved_random_ranging_8681_6310_1758640731": {
+    "name": "evolved_random_ranging_8681_6310",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "BBANDS",
+      "RSI"
+    ],
+    "entry_signal": "mean_reversion",
+    "entry_params": {
+      "fast_period": 10,
+      "slow_period": 29,
+      "rsi_level": 48
+    },
+    "exit_signal": "stop_loss",
+    "exit_params": {
+      "profit_target": 0.0566832175782139,
+      "stop_loss": 0.027051406933973246,
+      "trailing_stop": 0.025210182470752025
+    },
+    "risk_management": "volatility_targeting",
+    "position_size": 0.03562965863972636,
+    "filters": {
+      "min_volume": 1603505,
+      "max_volatility": 0.05870737523267147,
+      "trend_filter": true
+    },
+    "performance": {
+      "sharpe_ratio": 1.1450097774836112,
+      "total_return": 0.12448513223460994,
+      "max_drawdown": 0.06703947835933241,
+      "win_rate": 0.703591955649586
+    },
+    "generated_at": "2025-09-23T08:18:51.791802"
+  },
+  "random_ranging_8554_1758646589": {
+    "name": "random_ranging_8554",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "EMA",
+      "STOCH",
+      "BBANDS"
+    ],
+    "entry_signal": "crossover",
+    "entry_params": {
+      "fast_period": 8,
+      "slow_period": 31,
+      "rsi_level": 52
+    },
+    "exit_signal": "target_profit",
+    "exit_params": {
+      "profit_target": 0.0608052486450226,
+      "stop_loss": 0.01969692540572549,
+      "trailing_stop": 0.026044129093433357
+    },
+    "risk_management": "risk_parity",
+    "position_size": 0.047581162421848275,
+    "filters": {
+      "min_volume": 1539383,
+      "max_volatility": 0.020248207113924603,
+      "trend_filter": false
+    },
+    "performance": {
+      "sharpe_ratio": 1.1977051803487095,
+      "total_return": 0.09508560555017853,
+      "max_drawdown": 0.05022004548444159,
+      "win_rate": 0.7992742728349519
+    },
+    "generated_at": "2025-09-23T09:56:29.050529"
+  },
+  "random_ranging_6550_1758646589": {
+    "name": "random_ranging_6550",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "CCI",
+      "RSI",
+      "MFI"
+    ],
+    "entry_signal": "breakout",
+    "entry_params": {
+      "fast_period": 9,
+      "slow_period": 39,
+      "rsi_level": 42
+    },
+    "exit_signal": "trailing_stop",
+    "exit_params": {
+      "profit_target": 0.044940748624493904,
+      "stop_loss": 0.019223149214280602,
+      "trailing_stop": 0.023114657335820944
+    },
+    "risk_management": "fixed_position",
+    "position_size": 0.0447773835212453,
+    "filters": {
+      "min_volume": 1952500,
+      "max_volatility": 0.05802534509872523,
+      "trend_filter": false
+    },
+    "performance": {
+      "sharpe_ratio": 1.1980669562191855,
+      "total_return": 0.09204161996960532,
+      "max_drawdown": 0.07142664852969717,
+      "win_rate": 0.7692034690728372
+    },
+    "generated_at": "2025-09-23T09:56:29.051292"
+  },
+  "random_ranging_4059_1758646589": {
+    "name": "random_ranging_4059",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "EMA"
+    ],
+    "entry_signal": "momentum",
+    "entry_params": {
+      "fast_period": 10,
+      "slow_period": 36,
+      "rsi_level": 48
+    },
+    "exit_signal": "signal_reversal",
+    "exit_params": {
+      "profit_target": 0.043990884581893375,
+      "stop_loss": 0.01711785998907827,
+      "trailing_stop": 0.009053963860315522
+    },
+    "risk_management": "kelly_criterion",
+    "position_size": 0.029451000788345318,
+    "filters": {
+      "min_volume": 1520047,
+      "max_volatility": 0.029210085049360714,
+      "trend_filter": false
+    },
+    "performance": {
+      "sharpe_ratio": 1.1370968334299494,
+      "total_return": 0.14386409805241146,
+      "max_drawdown": 0.12108618632255158,
+      "win_rate": 0.7512748627565626
+    },
+    "generated_at": "2025-09-23T09:56:29.050552"
+  },
+  "random_ranging_9123_1758646589": {
+    "name": "random_ranging_9123",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "RSI",
+      "EMA",
+      "ROC"
+    ],
+    "entry_signal": "reversal",
+    "entry_params": {
+      "fast_period": 13,
+      "slow_period": 38,
+      "rsi_level": 80
+    },
+    "exit_signal": "target_profit",
+    "exit_params": {
+      "profit_target": 0.05150259682048183,
+      "stop_loss": 0.03661583670022271,
+      "trailing_stop": 0.017931355946560253
+    },
+    "risk_management": "risk_parity",
+    "position_size": 0.018918436787059924,
+    "filters": {
+      "min_volume": 1729610,
+      "max_volatility": 0.07471643047337778,
+      "trend_filter": true
+    },
+    "performance": {
+      "sharpe_ratio": 1.18861622976716,
+      "total_return": 0.10372509888035986,
+      "max_drawdown": 0.14388224672305516,
+      "win_rate": 0.7274338254467323
+    },
+    "generated_at": "2025-09-23T09:56:29.050865"
+  },
+  "random_ranging_8214_1758646589": {
+    "name": "random_ranging_8214",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "MACD"
+    ],
+    "entry_signal": "reversal",
+    "entry_params": {
+      "fast_period": 8,
+      "slow_period": 33,
+      "rsi_level": 71
+    },
+    "exit_signal": "stop_loss",
+    "exit_params": {
+      "profit_target": 0.04855087187039159,
+      "stop_loss": 0.017861690639916862,
+      "trailing_stop": 0.025910251504884164
+    },
+    "risk_management": "risk_parity",
+    "position_size": 0.011954349210092415,
+    "filters": {
+      "min_volume": 1183624,
+      "max_volatility": 0.03748857464692663,
+      "trend_filter": true
+    },
+    "performance": {
+      "sharpe_ratio": 1.1705176103540629,
+      "total_return": 0.06500165426985843,
+      "max_drawdown": 0.06808286230374173,
+      "win_rate": 0.7340000495771217
+    },
+    "generated_at": "2025-09-23T09:56:29.050639"
+  },
+  "random_ranging_8126_1758650316": {
+    "name": "random_ranging_8126",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "WILLR"
+    ],
+    "entry_signal": "mean_reversion",
+    "entry_params": {
+      "fast_period": 9,
+      "slow_period": 45,
+      "rsi_level": 50
+    },
+    "exit_signal": "time_exit",
+    "exit_params": {
+      "profit_target": 0.03360822524827714,
+      "stop_loss": 0.04772078044758776,
+      "trailing_stop": 0.027705435747021414
+    },
+    "risk_management": "fixed_position",
+    "position_size": 0.019136588909527595,
+    "filters": {
+      "min_volume": 1125087,
+      "max_volatility": 0.03811620862801626,
+      "trend_filter": true
+    },
+    "performance": {
+      "sharpe_ratio": 1.1967750804067778,
+      "total_return": 0.09022809853108588,
+      "max_drawdown": 0.11319650143702625,
+      "win_rate": 0.7344676665199552
+    },
+    "generated_at": "2025-09-23T10:58:36.685410"
+  },
+  "random_ranging_5682_1758650316": {
+    "name": "random_ranging_5682",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "CCI"
+    ],
+    "entry_signal": "mean_reversion",
+    "entry_params": {
+      "fast_period": 14,
+      "slow_period": 31,
+      "rsi_level": 79
+    },
+    "exit_signal": "target_profit",
+    "exit_params": {
+      "profit_target": 0.08709463089091538,
+      "stop_loss": 0.047291548390678236,
+      "trailing_stop": 0.011428602763605238
+    },
+    "risk_management": "fixed_position",
+    "position_size": 0.04990990616841004,
+    "filters": {
+      "min_volume": 1587065,
+      "max_volatility": 0.021776927915991836,
+      "trend_filter": true
+    },
+    "performance": {
+      "sharpe_ratio": 1.1838751876043125,
+      "total_return": 0.1336266484888267,
+      "max_drawdown": 0.1226209974603205,
+      "win_rate": 0.6970686096458495
+    },
+    "generated_at": "2025-09-23T10:58:36.684446"
+  },
+  "random_ranging_3339_1758650316": {
+    "name": "random_ranging_3339",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "RSI"
+    ],
+    "entry_signal": "reversal",
+    "entry_params": {
+      "fast_period": 14,
+      "slow_period": 28,
+      "rsi_level": 68
+    },
+    "exit_signal": "signal_reversal",
+    "exit_params": {
+      "profit_target": 0.060148223256745195,
+      "stop_loss": 0.0361185999681413,
+      "trailing_stop": 0.022740131941063512
+    },
+    "risk_management": "fixed_position",
+    "position_size": 0.033202542688093195,
+    "filters": {
+      "min_volume": 1944092,
+      "max_volatility": 0.04300974905032702,
+      "trend_filter": false
+    },
+    "performance": {
+      "sharpe_ratio": 1.1447548597291877,
+      "total_return": 0.10305645144521274,
+      "max_drawdown": 0.1021758151588123,
+      "win_rate": 0.7572544563524602
+    },
+    "generated_at": "2025-09-23T10:58:36.685656"
+  },
+  "random_ranging_8585_1758650316": {
+    "name": "random_ranging_8585",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "EMA",
+      "SMA"
+    ],
+    "entry_signal": "reversal",
+    "entry_params": {
+      "fast_period": 13,
+      "slow_period": 35,
+      "rsi_level": 51
+    },
+    "exit_signal": "time_exit",
+    "exit_params": {
+      "profit_target": 0.03623383557253617,
+      "stop_loss": 0.03588376327564888,
+      "trailing_stop": 0.01052176061843873
+    },
+    "risk_management": "fixed_position",
+    "position_size": 0.04698203552836938,
+    "filters": {
+      "min_volume": 525385,
+      "max_volatility": 0.0367645449113887,
+      "trend_filter": true
+    },
+    "performance": {
+      "sharpe_ratio": 1.1811994943154778,
+      "total_return": 0.06642115499280665,
+      "max_drawdown": 0.11351879052071953,
+      "win_rate": 0.7395392792996721
+    },
+    "generated_at": "2025-09-23T10:58:36.685501"
+  },
+  "random_ranging_5933_1758650316": {
+    "name": "random_ranging_5933",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "SMA"
+    ],
+    "entry_signal": "momentum",
+    "entry_params": {
+      "fast_period": 8,
+      "slow_period": 36,
+      "rsi_level": 43
+    },
+    "exit_signal": "target_profit",
+    "exit_params": {
+      "profit_target": 0.04884034010963943,
+      "stop_loss": 0.020078137399260534,
+      "trailing_stop": 0.012920490593218148
+    },
+    "risk_management": "fixed_position",
+    "position_size": 0.022081485732531277,
+    "filters": {
+      "min_volume": 1195494,
+      "max_volatility": 0.05549646037075574,
+      "trend_filter": true
+    },
+    "performance": {
+      "sharpe_ratio": 1.1891116140471634,
+      "total_return": 0.11737546785632028,
+      "max_drawdown": 0.08183528058056505,
+      "win_rate": 0.6400582829310788
+    },
+    "generated_at": "2025-09-23T10:58:36.685118"
+  },
+  "random_ranging_5713_1758653906": {
+    "name": "random_ranging_5713",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "RSI",
+      "WILLR"
+    ],
+    "entry_signal": "crossover",
+    "entry_params": {
+      "fast_period": 10,
+      "slow_period": 45,
+      "rsi_level": 40
+    },
+    "exit_signal": "trailing_stop",
+    "exit_params": {
+      "profit_target": 0.09702179174736236,
+      "stop_loss": 0.0470402581468512,
+      "trailing_stop": 0.020614078120606387
+    },
+    "risk_management": "fixed_position",
+    "position_size": 0.019461679068572504,
+    "filters": {
+      "min_volume": 827388,
+      "max_volatility": 0.03781704228791515,
+      "trend_filter": false
+    },
+    "performance": {
+      "sharpe_ratio": 1.142591210192189,
+      "total_return": 0.14443783554511624,
+      "max_drawdown": 0.0885684462087008,
+      "win_rate": 0.7885547338592209
+    },
+    "generated_at": "2025-09-23T11:58:26.793865"
+  },
+  "random_ranging_1132_1758653906": {
+    "name": "random_ranging_1132",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "ROC",
+      "CCI"
+    ],
+    "entry_signal": "breakout",
+    "entry_params": {
+      "fast_period": 5,
+      "slow_period": 47,
+      "rsi_level": 67
+    },
+    "exit_signal": "trailing_stop",
+    "exit_params": {
+      "profit_target": 0.053122014828519,
+      "stop_loss": 0.044394093315971314,
+      "trailing_stop": 0.02840537343251618
+    },
+    "risk_management": "kelly_criterion",
+    "position_size": 0.013397064005498716,
+    "filters": {
+      "min_volume": 1703601,
+      "max_volatility": 0.06686755819861254,
+      "trend_filter": true
+    },
+    "performance": {
+      "sharpe_ratio": 1.1609251778045067,
+      "total_return": 0.07682779759732732,
+      "max_drawdown": 0.0727702712137463,
+      "win_rate": 0.7820090120983907
+    },
+    "generated_at": "2025-09-23T11:58:26.792821"
+  },
+  "random_ranging_7521_1758653906": {
+    "name": "random_ranging_7521",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "EMA",
+      "STOCH"
+    ],
+    "entry_signal": "momentum",
+    "entry_params": {
+      "fast_period": 18,
+      "slow_period": 30,
+      "rsi_level": 24
+    },
+    "exit_signal": "trailing_stop",
+    "exit_params": {
+      "profit_target": 0.06839113491164299,
+      "stop_loss": 0.04442337712547817,
+      "trailing_stop": 0.01629159893781589
+    },
+    "risk_management": "volatility_targeting",
+    "position_size": 0.037070840795509916,
+    "filters": {
+      "min_volume": 1503530,
+      "max_volatility": 0.03622913716218626,
+      "trend_filter": true
+    },
+    "performance": {
+      "sharpe_ratio": 1.1747581162853915,
+      "total_return": 0.1097335778264385,
+      "max_drawdown": 0.10153279643858557,
+      "win_rate": 0.6993647036138518
+    },
+    "generated_at": "2025-09-23T11:58:26.791402"
+  },
+  "random_ranging_8804_1758653906": {
+    "name": "random_ranging_8804",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "WILLR",
+      "MACD"
+    ],
+    "entry_signal": "mean_reversion",
+    "entry_params": {
+      "fast_period": 18,
+      "slow_period": 42,
+      "rsi_level": 72
+    },
+    "exit_signal": "stop_loss",
+    "exit_params": {
+      "profit_target": 0.061435742118585074,
+      "stop_loss": 0.04975023338886596,
+      "trailing_stop": 0.015790916327961334
+    },
+    "risk_management": "fixed_position",
+    "position_size": 0.01968863591442419,
+    "filters": {
+      "min_volume": 1727869,
+      "max_volatility": 0.04979945000771911,
+      "trend_filter": false
+    },
+    "performance": {
+      "sharpe_ratio": 1.1304781267994801,
+      "total_return": 0.09171288974496988,
+      "max_drawdown": 0.14110087506709862,
+      "win_rate": 0.7995187586481052
+    },
+    "generated_at": "2025-09-23T11:58:26.793050"
+  },
+  "evolved_evolved_random_ranging_6374_5059_6225_1758653906": {
+    "name": "evolved_evolved_random_ranging_6374_5059_6225",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "ROC",
+      "BBANDS"
+    ],
+    "entry_signal": "mean_reversion",
+    "entry_params": {
+      "fast_period": 9,
+      "slow_period": 28,
+      "rsi_level": 49
+    },
+    "exit_signal": "time_exit",
+    "exit_params": {
+      "profit_target": 0.06320816669474065,
+      "stop_loss": 0.02593106232155524,
+      "trailing_stop": 0.02876513171292237
+    },
+    "risk_management": "fixed_position",
+    "position_size": 0.025925340713603175,
+    "filters": {
+      "min_volume": 1793671,
+      "max_volatility": 0.025978516695411506,
+      "trend_filter": true
+    },
+    "performance": {
+      "sharpe_ratio": 1.127001730740264,
+      "total_return": 0.1438942901013351,
+      "max_drawdown": 0.11552766496036357,
+      "win_rate": 0.7342858671158781
+    },
+    "generated_at": "2025-09-23T11:58:26.794148"
+  },
+  "random_ranging_3814_1758657567": {
+    "name": "random_ranging_3814",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "EMA",
+      "MFI"
+    ],
+    "entry_signal": "crossover",
+    "entry_params": {
+      "fast_period": 5,
+      "slow_period": 43,
+      "rsi_level": 47
+    },
+    "exit_signal": "trailing_stop",
+    "exit_params": {
+      "profit_target": 0.0371591227251501,
+      "stop_loss": 0.04239734563335454,
+      "trailing_stop": 0.01856874241462793
+    },
+    "risk_management": "fixed_position",
+    "position_size": 0.031607101281280504,
+    "filters": {
+      "min_volume": 1934670,
+      "max_volatility": 0.05087916318804264,
+      "trend_filter": false
+    },
+    "performance": {
+      "sharpe_ratio": 1.1961593026280133,
+      "total_return": 0.09063977202504642,
+      "max_drawdown": 0.05551547201763235,
+      "win_rate": 0.7721201574331732
+    },
+    "generated_at": "2025-09-23T12:59:27.363385"
+  },
+  "random_ranging_7593_1758657567": {
+    "name": "random_ranging_7593",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "SMA",
+      "ROC",
+      "EMA"
+    ],
+    "entry_signal": "divergence",
+    "entry_params": {
+      "fast_period": 17,
+      "slow_period": 38,
+      "rsi_level": 30
+    },
+    "exit_signal": "target_profit",
+    "exit_params": {
+      "profit_target": 0.0794099194479175,
+      "stop_loss": 0.04685911741295143,
+      "trailing_stop": 0.020684472226405317
+    },
+    "risk_management": "volatility_targeting",
+    "position_size": 0.03012212308206342,
+    "filters": {
+      "min_volume": 789261,
+      "max_volatility": 0.057776830033498955,
+      "trend_filter": true
+    },
+    "performance": {
+      "sharpe_ratio": 1.118227730429723,
+      "total_return": 0.13928697731148929,
+      "max_drawdown": 0.0976457847630068,
+      "win_rate": 0.7596925715490489
+    },
+    "generated_at": "2025-09-23T12:59:27.362767"
+  },
+  "random_ranging_6308_1758657567": {
+    "name": "random_ranging_6308",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "SMA",
+      "ROC"
+    ],
+    "entry_signal": "breakout",
+    "entry_params": {
+      "fast_period": 10,
+      "slow_period": 21,
+      "rsi_level": 72
+    },
+    "exit_signal": "stop_loss",
+    "exit_params": {
+      "profit_target": 0.09361988802396694,
+      "stop_loss": 0.01013425389781129,
+      "trailing_stop": 0.00798872406792483
+    },
+    "risk_management": "risk_parity",
+    "position_size": 0.017601698124454494,
+    "filters": {
+      "min_volume": 1976308,
+      "max_volatility": 0.05728751752928493,
+      "trend_filter": false
+    },
+    "performance": {
+      "sharpe_ratio": 1.1938338864202054,
+      "total_return": 0.09659835644071188,
+      "max_drawdown": 0.14630755517662342,
+      "win_rate": 0.6321412641161432
+    },
+    "generated_at": "2025-09-23T12:59:27.363450"
+  },
+  "evolved_random_ranging_9989_1235_1758657567": {
+    "name": "evolved_random_ranging_9989_1235",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "ROC",
+      "SMA",
+      "STOCH"
+    ],
+    "entry_signal": "breakout",
+    "entry_params": {
+      "fast_period": 11,
+      "slow_period": 29,
+      "rsi_level": 49
+    },
+    "exit_signal": "time_exit",
+    "exit_params": {
+      "profit_target": 0.06315978623768254,
+      "stop_loss": 0.02253994377819217,
+      "trailing_stop": 0.0059412331675722475
+    },
+    "risk_management": "volatility_targeting",
+    "position_size": 0.019269283399076964,
+    "filters": {
+      "min_volume": 1387565,
+      "max_volatility": 0.0729015303936387,
+      "trend_filter": true
+    },
+    "performance": {
+      "sharpe_ratio": 1.0336416555891548,
+      "total_return": 0.12762855322358124,
+      "max_drawdown": 0.07926144605670514,
+      "win_rate": 0.7846218947965689
+    },
+    "generated_at": "2025-09-23T12:59:27.363770"
+  },
+  "random_ranging_7742_1758657567": {
+    "name": "random_ranging_7742",
+    "type": "technical",
+    "regime": "ranging",
+    "entry_indicators": [
+      "MFI"
+    ],
+    "entry_signal": "divergence",
+    "entry_params": {
+      "fast_period": 15,
+      "slow_period": 43,
+      "rsi_level": 52
+    },
+    "exit_signal": "trailing_stop",
+    "exit_params": {
+      "profit_target": 0.05289670676803629,
+      "stop_loss": 0.027303696784225354,
+      "trailing_stop": 0.009144922549761143
+    },
+    "risk_management": "volatility_targeting",
+    "position_size": 0.023718008018814043,
+    "filters": {
+      "min_volume": 1780274,
+      "max_volatility": 0.06242541457319151,
+      "trend_filter": false
+    },
+    "performance": {
+      "sharpe_ratio": 1.1820831126473763,
+      "total_return": 0.11347890740904387,
+      "max_drawdown": 0.07892986711423206,
+      "win_rate": 0.5882067837045878
+    },
+    "generated_at": "2025-09-23T12:59:27.362719"
   }
 }

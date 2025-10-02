@@ -1,0 +1,752 @@
+2025-09-22 12:57:52,323 - __main__ - INFO - 🚀 Starting QuantEngine in PRODUCTION mode
+2025-09-22 12:57:52,323 - __main__ - INFO - 📊 Data will be sent to Firestore production database
+2025-09-22 12:58:03,811 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 12:58:03,836 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 12:58:03,840 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 12:58:03,842 - __main__ - INFO - 🏁 QuantEngine production run completed
+2025-09-22 12:59:15,921 - __main__ - INFO - 🚀 Starting QuantEngine in PRODUCTION mode
+2025-09-22 12:59:15,922 - __main__ - INFO - 📊 Data will be sent to Firestore production database
+2025-09-22 12:59:27,424 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 12:59:27,425 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 12:59:27,430 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 12:59:27,430 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 12:59:27,462 - __main__ - ERROR - ❌ QuantEngine production run failed: name 'pd' is not defined
+2025-09-22 12:59:27,463 - __main__ - INFO - 🏁 QuantEngine production run completed
+2025-09-22 12:59:42,476 - __main__ - INFO - 🚀 Starting QuantEngine in PRODUCTION mode
+2025-09-22 12:59:42,476 - __main__ - INFO - 📊 Data will be sent to Firestore production database
+2025-09-22 12:59:53,539 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 12:59:53,540 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 12:59:53,552 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 12:59:53,552 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 12:59:54,404 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for SPY: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 12:59:54,704 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for QQQ: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 12:59:55,000 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for IWM: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 12:59:55,476 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for VTI: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 12:59:55,808 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for TQQQ: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 12:59:55,832 - engine.feature_builder.feature_builder - ERROR - Failed to build features for SPY: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 12:59:55,850 - engine.feature_builder.feature_builder - ERROR - Failed to build features for QQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 12:59:55,868 - engine.feature_builder.feature_builder - ERROR - Failed to build features for IWM: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 12:59:55,884 - engine.feature_builder.feature_builder - ERROR - Failed to build features for VTI: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 12:59:55,900 - engine.feature_builder.feature_builder - ERROR - Failed to build features for TQQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 12:59:55,908 - research.research_agent - INFO - Starting research cycle with objectives: ['trend_following', 'volatility_targeting']
+2025-09-22 12:59:55,938 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for SPY: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 12:59:55,969 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for QQQ: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 12:59:55,988 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for IWM: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 12:59:56,019 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for VTI: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 12:59:56,019 - __main__ - ERROR - ❌ QuantEngine production run failed: The truth value of a Series is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
+2025-09-22 12:59:56,019 - __main__ - INFO - 🏁 QuantEngine production run completed
+2025-09-22 13:00:40,223 - __main__ - INFO - 🚀 Starting QuantEngine in PRODUCTION mode
+2025-09-22 13:00:40,223 - __main__ - INFO - 📊 Data will be sent to Firestore production database
+2025-09-22 13:00:52,499 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 13:00:52,499 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 13:00:52,505 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 13:00:52,505 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 13:00:53,101 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for SPY: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 13:01:23,123 - yfinance - ERROR - 
+1 Failed download:
+2025-09-22 13:01:23,123 - yfinance - ERROR - ['QQQ']: Timeout('Failed to perform, curl: (28) Connection timed out after 30002 milliseconds. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.')
+2025-09-22 13:01:23,130 - engine.data_ingestion.data_manager - WARNING - No data found for QQQ
+2025-09-22 13:01:23,582 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for IWM: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 13:01:24,015 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for VTI: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 13:01:24,396 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for TQQQ: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 13:01:24,417 - engine.feature_builder.feature_builder - ERROR - Failed to build features for SPY: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:01:24,435 - engine.feature_builder.feature_builder - ERROR - Failed to build features for IWM: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:01:24,451 - engine.feature_builder.feature_builder - ERROR - Failed to build features for VTI: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:01:24,468 - engine.feature_builder.feature_builder - ERROR - Failed to build features for TQQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:01:24,483 - research.research_agent - INFO - Starting research cycle with objectives: ['trend_following', 'volatility_targeting']
+2025-09-22 13:01:24,513 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for SPY: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 13:01:30,411 - __main__ - INFO - 🛑 QuantEngine production run interrupted by user
+2025-09-22 13:01:30,414 - __main__ - INFO - 🏁 QuantEngine production run completed
+2025-09-22 13:01:36,876 - __main__ - INFO - 🚀 Starting QuantEngine in PRODUCTION mode
+2025-09-22 13:01:36,876 - __main__ - INFO - 📊 Data will be sent to Firestore production database
+2025-09-22 13:01:48,004 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 13:01:48,005 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 13:01:48,006 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 13:01:48,006 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 13:01:48,588 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for SPY: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 13:01:48,972 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for QQQ: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 13:01:49,391 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for IWM: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 13:01:49,785 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for VTI: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 13:01:50,141 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for TQQQ: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 13:01:50,165 - engine.feature_builder.feature_builder - ERROR - Failed to build features for SPY: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:01:50,188 - engine.feature_builder.feature_builder - ERROR - Failed to build features for QQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:01:50,208 - engine.feature_builder.feature_builder - ERROR - Failed to build features for IWM: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:01:50,226 - engine.feature_builder.feature_builder - ERROR - Failed to build features for VTI: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:01:50,244 - engine.feature_builder.feature_builder - ERROR - Failed to build features for TQQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:01:50,253 - research.research_agent - INFO - Starting research cycle with objectives: ['trend_following', 'volatility_targeting']
+2025-09-22 13:01:50,283 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for SPY: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 13:01:50,301 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for QQQ: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 13:01:50,332 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for IWM: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 13:01:50,362 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for VTI: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 13:01:50,363 - __main__ - ERROR - ❌ QuantEngine production run failed: The truth value of a Series is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
+2025-09-22 13:01:50,363 - __main__ - INFO - 🏁 QuantEngine production run completed
+2025-09-22 13:02:15,734 - __main__ - INFO - 🚀 Starting QuantEngine in PRODUCTION mode
+2025-09-22 13:02:15,735 - __main__ - INFO - 📊 Data will be sent to Firestore production database
+2025-09-22 13:02:26,923 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 13:02:26,924 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 13:02:26,933 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 13:02:26,934 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 13:02:27,616 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for SPY: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 13:02:28,000 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for QQQ: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 13:02:28,396 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for IWM: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 13:02:28,778 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for VTI: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 13:02:29,148 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for TQQQ: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 13:02:29,173 - engine.feature_builder.feature_builder - ERROR - Failed to build features for SPY: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:02:29,347 - engine.feature_builder.feature_builder - ERROR - Failed to build features for QQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:02:29,409 - engine.feature_builder.feature_builder - ERROR - Failed to build features for IWM: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:02:29,436 - engine.feature_builder.feature_builder - ERROR - Failed to build features for VTI: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:02:29,459 - engine.feature_builder.feature_builder - ERROR - Failed to build features for TQQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:02:29,470 - research.research_agent - INFO - Starting research cycle with objectives: ['trend_following', 'volatility_targeting']
+2025-09-22 13:02:29,500 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for SPY: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 13:02:29,530 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for QQQ: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 13:02:29,561 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for IWM: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 13:02:29,591 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for VTI: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 13:02:29,592 - __main__ - ERROR - ❌ QuantEngine production run failed: The truth value of a Series is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
+2025-09-22 13:02:29,592 - __main__ - INFO - 🏁 QuantEngine production run completed
+2025-09-22 13:06:37,403 - __main__ - INFO - 🚀 Starting QuantEngine in PRODUCTION mode
+2025-09-22 13:06:37,403 - __main__ - INFO - 📊 Data will be sent to Firestore production database
+2025-09-22 13:06:42,028 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 13:06:42,028 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 13:06:42,031 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 13:06:42,031 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 13:07:38,131 - engine.feature_builder.feature_builder - ERROR - Failed to build features for SPY: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:07:38,149 - engine.feature_builder.feature_builder - ERROR - Failed to build features for QQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:07:38,167 - engine.feature_builder.feature_builder - ERROR - Failed to build features for IWM: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:07:38,184 - engine.feature_builder.feature_builder - ERROR - Failed to build features for VTI: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:07:38,202 - engine.feature_builder.feature_builder - ERROR - Failed to build features for TQQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:07:38,254 - research.research_agent - INFO - Starting research cycle with objectives: ['trend_following', 'volatility_targeting']
+2025-09-22 13:08:23,329 - __main__ - ERROR - ❌ QuantEngine production run failed: The truth value of a Series is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
+2025-09-22 13:08:23,329 - __main__ - INFO - 🏁 QuantEngine production run completed
+2025-09-22 13:08:30,741 - __main__ - INFO - 🚀 Starting QuantEngine in PRODUCTION mode
+2025-09-22 13:08:30,741 - __main__ - INFO - 📊 Data will be sent to Firestore production database
+2025-09-22 13:08:41,755 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 13:08:41,755 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 13:08:41,759 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 13:08:41,759 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 13:09:40,651 - engine.feature_builder.feature_builder - ERROR - Failed to build features for SPY: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:09:40,670 - engine.feature_builder.feature_builder - ERROR - Failed to build features for QQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:09:40,690 - engine.feature_builder.feature_builder - ERROR - Failed to build features for IWM: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:09:40,709 - engine.feature_builder.feature_builder - ERROR - Failed to build features for VTI: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:09:40,727 - engine.feature_builder.feature_builder - ERROR - Failed to build features for TQQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:09:40,772 - research.research_agent - INFO - Starting research cycle with objectives: ['trend_following', 'volatility_targeting']
+2025-09-22 13:09:47,007 - engine.data_ingestion.data_manager - WARNING - Failed to insert row for SPY: Query interrupted
+2025-09-22 13:09:50,135 - __main__ - INFO - 🚀 Starting QuantEngine in PRODUCTION mode
+2025-09-22 13:09:50,135 - __main__ - INFO - 📊 Data will be sent to Firestore production database
+2025-09-22 13:10:02,098 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 13:10:02,098 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 13:10:02,100 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 13:10:02,100 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 13:10:02,120 - __main__ - ERROR - ❌ QuantEngine production run failed: IO Error: Could not set lock on file "/Users/kody/base/MarketNews/QuantEngine/data/cache/market_data.db": Conflicting lock is held in /opt/homebrew/Cellar/python@3.13/3.13.3/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python (PID 84089) by user kody. See also https://duckdb.org/docs/stable/connect/concurrency
+2025-09-22 13:10:02,120 - __main__ - INFO - 🏁 QuantEngine production run completed
+2025-09-22 13:10:25,402 - research.research_agent - INFO - Generated 3 strategy hypotheses
+2025-09-22 13:10:25,411 - research.research_agent - ERROR - Failed to test hypothesis: 'fast'
+2025-09-22 13:10:25,414 - engine.backtest_engine.backtester - WARNING - Unsupported signal type: SignalType.MOMENTUM
+2025-09-22 13:10:25,417 - research.research_agent - ERROR - Failed to test hypothesis: 'tuple' object has no attribute 'startswith'
+2025-09-22 13:10:25,418 - research.research_agent - ERROR - Failed to test hypothesis: 'tuple' object has no attribute 'startswith'
+2025-09-22 13:10:25,418 - research.research_agent - INFO - Research cycle completed: 0/0 strategies approved
+2025-09-22 13:10:25,453 - research.research_agent - INFO - Running TQQQ reference strategy implementation
+2025-09-22 13:10:28,804 - __main__ - ERROR - ❌ QuantEngine production run failed: 'tuple' object has no attribute 'startswith'
+2025-09-22 13:10:28,804 - __main__ - INFO - 🏁 QuantEngine production run completed
+2025-09-22 13:10:31,436 - __main__ - INFO - 🚀 Starting QuantEngine in PRODUCTION mode
+2025-09-22 13:10:31,437 - __main__ - INFO - 📊 Data will be sent to Firestore production database
+2025-09-22 13:10:42,374 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 13:10:42,375 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 13:10:42,377 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 13:10:42,377 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 13:11:37,059 - engine.feature_builder.feature_builder - ERROR - Failed to build features for SPY: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:11:37,082 - engine.feature_builder.feature_builder - ERROR - Failed to build features for QQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:11:37,109 - engine.feature_builder.feature_builder - ERROR - Failed to build features for IWM: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:11:37,129 - engine.feature_builder.feature_builder - ERROR - Failed to build features for VTI: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:11:37,149 - engine.feature_builder.feature_builder - ERROR - Failed to build features for TQQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:11:37,204 - research.research_agent - INFO - Starting research cycle with objectives: ['trend_following', 'volatility_targeting']
+2025-09-22 13:12:16,424 - research.research_agent - INFO - Generated 3 strategy hypotheses
+2025-09-22 13:12:16,426 - research.research_agent - ERROR - Failed to test hypothesis: 'fast'
+2025-09-22 13:12:16,429 - engine.backtest_engine.backtester - WARNING - Unsupported signal type: SignalType.MOMENTUM
+2025-09-22 13:12:16,431 - research.research_agent - ERROR - Failed to test hypothesis: 'tuple' object has no attribute 'startswith'
+2025-09-22 13:12:16,433 - research.research_agent - ERROR - Failed to test hypothesis: 'tuple' object has no attribute 'startswith'
+2025-09-22 13:12:16,433 - research.research_agent - INFO - Research cycle completed: 0/0 strategies approved
+2025-09-22 13:12:16,495 - research.research_agent - INFO - Running TQQQ reference strategy implementation
+2025-09-22 13:12:19,049 - __main__ - ERROR - ❌ QuantEngine production run failed: 'tuple' object has no attribute 'startswith'
+2025-09-22 13:12:19,050 - __main__ - INFO - 🏁 QuantEngine production run completed
+2025-09-22 13:15:09,947 - __main__ - INFO - 🚀 Starting QuantEngine in PRODUCTION mode
+2025-09-22 13:15:09,948 - __main__ - INFO - 📊 Data will be sent to Firestore production database
+2025-09-22 13:15:22,423 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 13:15:22,426 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 13:15:22,437 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 13:15:22,437 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 13:16:27,648 - engine.feature_builder.feature_builder - ERROR - Failed to build features for SPY: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:16:27,665 - engine.feature_builder.feature_builder - ERROR - Failed to build features for QQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:16:27,682 - engine.feature_builder.feature_builder - ERROR - Failed to build features for IWM: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:16:27,699 - engine.feature_builder.feature_builder - ERROR - Failed to build features for VTI: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:16:27,717 - engine.feature_builder.feature_builder - ERROR - Failed to build features for TQQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:16:27,762 - research.research_agent - INFO - Starting research cycle with objectives: ['trend_following', 'volatility_targeting']
+2025-09-22 13:17:15,787 - research.research_agent - INFO - Generated 3 strategy hypotheses
+2025-09-22 13:17:15,794 - research.research_agent - ERROR - Failed to test hypothesis: 'fast'
+2025-09-22 13:17:15,800 - engine.backtest_engine.backtester - WARNING - Unsupported signal type: SignalType.MOMENTUM
+2025-09-22 13:17:15,811 - research.research_agent - ERROR - Failed to test hypothesis: Indexing a Series with DataFrame is not supported, use the appropriate DataFrame column
+2025-09-22 13:17:15,815 - research.research_agent - ERROR - Failed to test hypothesis: 'vol_regime<low_thresh'
+2025-09-22 13:17:15,815 - research.research_agent - INFO - Research cycle completed: 0/0 strategies approved
+2025-09-22 13:17:15,859 - research.research_agent - INFO - Running TQQQ reference strategy implementation
+2025-09-22 13:17:18,899 - __main__ - ERROR - ❌ QuantEngine production run failed: 'vol_regime<low_thresh'
+2025-09-22 13:17:18,899 - __main__ - INFO - 🏁 QuantEngine production run completed
+2025-09-22 13:17:43,422 - __main__ - INFO - 🚀 Starting QuantEngine in PRODUCTION mode
+2025-09-22 13:17:43,424 - __main__ - INFO - 📊 Data will be sent to Firestore production database
+2025-09-22 13:17:55,664 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 13:17:55,665 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 13:17:55,672 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 13:17:55,672 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 13:18:50,664 - engine.feature_builder.feature_builder - ERROR - Failed to build features for SPY: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:18:50,682 - engine.feature_builder.feature_builder - ERROR - Failed to build features for QQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:18:50,699 - engine.feature_builder.feature_builder - ERROR - Failed to build features for IWM: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:18:50,717 - engine.feature_builder.feature_builder - ERROR - Failed to build features for VTI: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:18:50,734 - engine.feature_builder.feature_builder - ERROR - Failed to build features for TQQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:18:50,784 - research.research_agent - INFO - Starting research cycle with objectives: ['trend_following', 'volatility_targeting']
+2025-09-22 13:19:33,332 - research.research_agent - INFO - Generated 3 strategy hypotheses
+2025-09-22 13:19:33,339 - research.research_agent - ERROR - Failed to test hypothesis: 'fast'
+2025-09-22 13:19:33,342 - engine.backtest_engine.backtester - WARNING - Unsupported signal type: SignalType.MOMENTUM
+2025-09-22 13:19:33,360 - research.research_agent - ERROR - Failed to test hypothesis: Indexing a Series with DataFrame is not supported, use the appropriate DataFrame column
+2025-09-22 13:19:33,361 - engine.backtest_engine.backtester - WARNING - Expression condition not yet supported: vol_regime<low_thresh
+2025-09-22 13:19:33,368 - research.research_agent - ERROR - Failed to test hypothesis: Indexing a Series with DataFrame is not supported, use the appropriate DataFrame column
+2025-09-22 13:19:33,369 - research.research_agent - INFO - Research cycle completed: 0/0 strategies approved
+2025-09-22 13:19:33,403 - research.research_agent - INFO - Running TQQQ reference strategy implementation
+2025-09-22 13:19:36,657 - engine.backtest_engine.backtester - WARNING - Expression condition not yet supported: vol_regime<low_thresh
+2025-09-22 13:19:36,658 - engine.backtest_engine.backtester - INFO - Options overlays not yet implemented - using base positions
+2025-09-22 13:19:37,294 - engine.reporting_notes.report_generator - INFO - Generated research note: reports/tqqq_regime_puts_v1_research_note_20250922_131936.md
+2025-09-22 13:19:37,294 - research.research_agent - INFO - TQQQ reference strategy rejected
+2025-09-22 13:19:37,300 - __main__ - INFO - 🏁 QuantEngine production run completed
+2025-09-22 13:50:30,341 - __main__ - INFO - 🚀 Starting QuantEngine in PRODUCTION mode
+2025-09-22 13:50:30,341 - __main__ - INFO - 📊 Data will be sent to Firestore production database
+2025-09-22 13:50:42,114 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 13:50:42,115 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 13:50:42,128 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 13:50:42,129 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 13:51:30,155 - engine.feature_builder.feature_builder - ERROR - Failed to build features for SPY: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:51:30,174 - engine.feature_builder.feature_builder - ERROR - Failed to build features for QQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:51:30,201 - engine.feature_builder.feature_builder - ERROR - Failed to build features for IWM: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:51:30,223 - engine.feature_builder.feature_builder - ERROR - Failed to build features for VTI: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:51:30,247 - engine.feature_builder.feature_builder - ERROR - Failed to build features for TQQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:51:30,301 - research.research_agent - INFO - Starting research cycle with objectives: ['trend_following', 'volatility_targeting']
+2025-09-22 13:52:03,924 - research.research_agent - INFO - Generated 3 strategy hypotheses
+2025-09-22 13:52:03,929 - research.research_agent - ERROR - Failed to test hypothesis: 'fast'
+2025-09-22 13:52:03,932 - engine.backtest_engine.backtester - WARNING - Unsupported signal type: SignalType.MOMENTUM
+2025-09-22 13:52:03,941 - research.research_agent - ERROR - Failed to test hypothesis: Indexing a Series with DataFrame is not supported, use the appropriate DataFrame column
+2025-09-22 13:52:03,942 - engine.backtest_engine.backtester - WARNING - Expression condition not yet supported: vol_regime<low_thresh
+2025-09-22 13:52:03,949 - research.research_agent - ERROR - Failed to test hypothesis: Indexing a Series with DataFrame is not supported, use the appropriate DataFrame column
+2025-09-22 13:52:03,949 - research.research_agent - INFO - Research cycle completed: 0/0 strategies approved
+2025-09-22 13:52:03,986 - research.research_agent - INFO - Running TQQQ reference strategy implementation
+2025-09-22 13:52:07,018 - engine.backtest_engine.backtester - WARNING - Expression condition not yet supported: vol_regime<low_thresh
+2025-09-22 13:52:07,019 - engine.backtest_engine.backtester - INFO - Options overlays not yet implemented - using base positions
+2025-09-22 13:52:07,394 - engine.reporting_notes.report_generator - INFO - Generated research note: reports/tqqq_regime_puts_v1_research_note_20250922_135207.md
+2025-09-22 13:52:07,394 - research.research_agent - INFO - TQQQ reference strategy rejected
+2025-09-22 13:52:07,398 - __main__ - INFO - 🏁 QuantEngine production run completed
+2025-09-22 13:52:52,913 - __main__ - INFO - 🚀 Starting QuantEngine in PRODUCTION mode
+2025-09-22 13:52:52,914 - __main__ - INFO - 📊 Data will be sent to Firestore production database
+2025-09-22 13:53:04,299 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 13:53:04,300 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 13:53:04,307 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 13:53:04,307 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 13:53:49,838 - engine.feature_builder.feature_builder - ERROR - Failed to build features for SPY: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:53:49,857 - engine.feature_builder.feature_builder - ERROR - Failed to build features for QQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:53:49,899 - engine.feature_builder.feature_builder - ERROR - Failed to build features for IWM: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:53:49,933 - engine.feature_builder.feature_builder - ERROR - Failed to build features for VTI: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:53:49,949 - engine.feature_builder.feature_builder - ERROR - Failed to build features for TQQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 13:53:49,986 - research.research_agent - INFO - Starting research cycle with objectives: ['trend_following', 'volatility_targeting']
+2025-09-22 13:54:30,725 - research.research_agent - INFO - Generated 3 strategy hypotheses
+2025-09-22 13:54:30,731 - research.research_agent - ERROR - Failed to test hypothesis: 'fast'
+2025-09-22 13:54:30,738 - engine.backtest_engine.backtester - WARNING - Unsupported signal type: SignalType.MOMENTUM
+2025-09-22 13:54:30,760 - research.research_agent - ERROR - Failed to test hypothesis: Indexing a Series with DataFrame is not supported, use the appropriate DataFrame column
+2025-09-22 13:54:30,762 - engine.backtest_engine.backtester - WARNING - Expression condition not yet supported: vol_regime<low_thresh
+2025-09-22 13:54:30,770 - research.research_agent - ERROR - Failed to test hypothesis: Indexing a Series with DataFrame is not supported, use the appropriate DataFrame column
+2025-09-22 13:54:30,770 - research.research_agent - INFO - Research cycle completed: 0/0 strategies approved
+2025-09-22 13:54:30,911 - research.research_agent - INFO - Running TQQQ reference strategy implementation
+2025-09-22 13:54:33,700 - engine.backtest_engine.backtester - WARNING - Expression condition not yet supported: vol_regime<low_thresh
+2025-09-22 13:54:33,701 - engine.backtest_engine.backtester - INFO - Options overlays not yet implemented - using base positions
+2025-09-22 13:54:34,068 - engine.reporting_notes.report_generator - INFO - Generated research note: reports/tqqq_regime_puts_v1_research_note_20250922_135433.md
+2025-09-22 13:54:34,068 - research.research_agent - INFO - TQQQ reference strategy rejected
+2025-09-22 13:54:34,073 - __main__ - INFO - 🏁 QuantEngine production run completed
+2025-09-22 14:08:05,439 - __main__ - INFO - 🚀 Starting QuantEngine in PRODUCTION mode
+2025-09-22 14:08:05,439 - __main__ - INFO - 📊 Data will be sent to Firestore production database
+2025-09-22 14:08:17,387 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 14:08:17,387 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 14:08:17,392 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 14:08:17,392 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 14:09:12,117 - engine.feature_builder.feature_builder - ERROR - Failed to build features for SPY: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 14:09:12,147 - engine.feature_builder.feature_builder - ERROR - Failed to build features for QQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 14:09:12,166 - engine.feature_builder.feature_builder - ERROR - Failed to build features for IWM: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 14:09:12,184 - engine.feature_builder.feature_builder - ERROR - Failed to build features for VTI: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 14:09:12,202 - engine.feature_builder.feature_builder - ERROR - Failed to build features for TQQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-22 14:09:12,255 - research.research_agent - INFO - Starting research cycle with objectives: ['trend_following', 'volatility_targeting']
+2025-09-22 14:09:53,107 - research.research_agent - INFO - Generated 3 strategy hypotheses
+2025-09-22 14:09:53,113 - research.research_agent - ERROR - Failed to test hypothesis: 'fast'
+2025-09-22 14:09:53,117 - engine.backtest_engine.backtester - WARNING - Unsupported signal type: SignalType.MOMENTUM
+2025-09-22 14:09:53,129 - research.research_agent - ERROR - Failed to test hypothesis: Indexing a Series with DataFrame is not supported, use the appropriate DataFrame column
+2025-09-22 14:09:53,132 - engine.backtest_engine.backtester - WARNING - Expression condition not yet supported: vol_regime<low_thresh
+2025-09-22 14:09:53,137 - research.research_agent - ERROR - Failed to test hypothesis: Indexing a Series with DataFrame is not supported, use the appropriate DataFrame column
+2025-09-22 14:09:53,137 - research.research_agent - INFO - Research cycle completed: 0/0 strategies approved
+2025-09-22 14:09:53,195 - research.research_agent - INFO - Running TQQQ reference strategy implementation
+2025-09-22 14:09:56,244 - engine.backtest_engine.backtester - WARNING - Expression condition not yet supported: vol_regime<low_thresh
+2025-09-22 14:09:56,245 - engine.backtest_engine.backtester - INFO - Options overlays not yet implemented - using base positions
+2025-09-22 14:09:56,613 - engine.reporting_notes.report_generator - INFO - Generated research note: reports/tqqq_regime_puts_v1_research_note_20250922_140956.md
+2025-09-22 14:09:56,614 - research.research_agent - INFO - TQQQ reference strategy rejected
+2025-09-22 14:09:56,619 - __main__ - INFO - 🏁 QuantEngine production run completed
+2025-09-22 14:50:22,027 - __main__ - INFO - 🚀 Starting QuantEngine Targeted Research
+2025-09-22 14:50:22,027 - __main__ - INFO - 📊 Query: create a trade strategy report for NVDA over the next two quarters
+2025-09-22 14:50:22,027 - __main__ - INFO - 🎯 Running targeted research: create a trade strategy report for NVDA over the next two quarters
+2025-09-22 14:50:22,027 - __main__ - INFO - 📊 Research parameters: {'asset': 'NVDA', 'sector': None, 'timeframe': '6 months', 'research_type': 'analysis', 'original_query': 'create a trade strategy report for NVDA over the next two quarters'}
+2025-09-22 14:50:34,260 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 14:50:34,261 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 14:50:34,266 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 14:50:34,266 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 14:50:34,301 - __main__ - INFO - ✅ QuantEngine components initialized
+2025-09-22 14:50:34,301 - __main__ - INFO - 📈 Analyzing NVDA for 6 months
+2025-09-22 14:50:35,571 - __main__ - INFO - 📝 Generating stock report for NVDA
+2025-09-22 14:50:35,575 - __main__ - ERROR - Failed to analyze NVDA: unsupported format string passed to Series.__format__
+2025-09-22 14:50:35,576 - __main__ - ERROR - ❌ Research failed
+2025-09-22 14:50:35,576 - __main__ - INFO - 🏁 QuantEngine research completed
+2025-09-22 14:50:46,308 - __main__ - INFO - 🚀 Starting QuantEngine Targeted Research
+2025-09-22 14:50:46,308 - __main__ - INFO - 📊 Query: create a trade strategy report for NVDA over the next two quarters
+2025-09-22 14:50:46,308 - __main__ - INFO - 🎯 Running targeted research: create a trade strategy report for NVDA over the next two quarters
+2025-09-22 14:50:46,309 - __main__ - INFO - 📊 Research parameters: {'asset': 'NVDA', 'sector': None, 'timeframe': '6 months', 'research_type': 'analysis', 'original_query': 'create a trade strategy report for NVDA over the next two quarters'}
+2025-09-22 14:50:54,817 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 14:50:54,817 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 14:50:54,822 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 14:50:54,822 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 14:50:54,865 - __main__ - INFO - ✅ QuantEngine components initialized
+2025-09-22 14:50:54,865 - __main__ - INFO - 📈 Analyzing NVDA for 6 months
+2025-09-22 14:50:56,608 - __main__ - INFO - 📝 Generating stock report for NVDA
+2025-09-22 14:50:56,613 - __main__ - INFO - ✅ Report saved: reports/nvda_research_20250922_145056.md
+2025-09-22 14:50:56,613 - __main__ - INFO - ✅ Research completed successfully
+2025-09-22 14:50:56,613 - __main__ - INFO - 📄 Report generated: reports/nvda_research_20250922_145056.md
+2025-09-22 14:50:56,613 - __main__ - INFO - 🏁 QuantEngine research completed
+2025-09-22 14:55:55,319 - __main__ - INFO - 🚀 Starting QuantEngine Targeted Research
+2025-09-22 14:55:55,319 - __main__ - INFO - 📊 Query: analyze house prices for the next 6 months
+2025-09-22 14:55:55,319 - __main__ - INFO - 🎯 Running targeted research: analyze house prices for the next 6 months
+2025-09-22 14:55:55,319 - __main__ - INFO - 📊 Research parameters: {'asset': 'REAL_ESTATE', 'sector': 'real_estate', 'timeframe': '6 months', 'research_type': 'strategy', 'original_query': 'analyze house prices for the next 6 months'}
+2025-09-22 14:56:03,669 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 14:56:03,670 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 14:56:03,674 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 14:56:03,675 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 14:56:03,724 - __main__ - INFO - ✅ QuantEngine components initialized
+2025-09-22 14:56:03,724 - __main__ - INFO - 🏢 Analyzing real_estate sector for 6 months
+2025-09-22 14:56:07,062 - __main__ - INFO - 📝 Generating sector report for real_estate
+2025-09-22 14:56:07,067 - __main__ - ERROR - Failed to analyze real_estate sector: unsupported format string passed to Series.__format__
+2025-09-22 14:56:07,067 - __main__ - ERROR - ❌ Research failed
+2025-09-22 14:56:07,067 - __main__ - INFO - 🏁 QuantEngine research completed
+2025-09-22 14:56:18,753 - __main__ - INFO - 🚀 Starting QuantEngine Targeted Research
+2025-09-22 14:56:18,753 - __main__ - INFO - 📊 Query: analyze house prices for the next 6 months
+2025-09-22 14:56:18,753 - __main__ - INFO - 🎯 Running targeted research: analyze house prices for the next 6 months
+2025-09-22 14:56:18,753 - __main__ - INFO - 📊 Research parameters: {'asset': 'REAL_ESTATE', 'sector': 'real_estate', 'timeframe': '6 months', 'research_type': 'strategy', 'original_query': 'analyze house prices for the next 6 months'}
+2025-09-22 14:56:29,808 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 14:56:29,809 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 14:56:29,815 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 14:56:29,815 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 14:56:29,861 - __main__ - INFO - ✅ QuantEngine components initialized
+2025-09-22 14:56:29,861 - __main__ - INFO - 🏢 Analyzing real_estate sector for 6 months
+2025-09-22 14:56:32,489 - __main__ - INFO - 📝 Generating sector report for real_estate
+2025-09-22 14:56:32,505 - __main__ - INFO - ✅ Report saved: reports/real_estate_sector_research_20250922_145632.md
+2025-09-22 14:56:32,506 - __main__ - INFO - ✅ Research completed successfully
+2025-09-22 14:56:32,506 - __main__ - INFO - 📄 Report generated: reports/real_estate_sector_research_20250922_145632.md
+2025-09-22 14:56:32,506 - __main__ - INFO - 🏁 QuantEngine research completed
+2025-09-22 14:56:35,560 - __main__ - INFO - 🚀 Starting QuantEngine Targeted Research
+2025-09-22 14:56:35,561 - __main__ - INFO - 📊 Query: research REITs for Q1 2024
+2025-09-22 14:56:35,561 - __main__ - INFO - 🎯 Running targeted research: research REITs for Q1 2024
+2025-09-22 14:56:35,561 - __main__ - INFO - 📊 Research parameters: {'asset': 'REITS', 'sector': 'reits', 'timeframe': '3 months', 'research_type': 'strategy', 'original_query': 'research REITs for Q1 2024'}
+2025-09-22 14:56:40,196 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 14:56:40,196 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 14:56:40,198 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 14:56:40,198 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 14:56:40,220 - __main__ - INFO - ✅ QuantEngine components initialized
+2025-09-22 14:56:40,220 - __main__ - INFO - 🏢 Analyzing reits sector for 3 months
+2025-09-22 14:56:43,517 - __main__ - INFO - 📝 Generating sector report for reits
+2025-09-22 14:56:43,521 - __main__ - INFO - ✅ Report saved: reports/reits_sector_research_20250922_145643.md
+2025-09-22 14:56:43,521 - __main__ - INFO - ✅ Research completed successfully
+2025-09-22 14:56:43,521 - __main__ - INFO - 📄 Report generated: reports/reits_sector_research_20250922_145643.md
+2025-09-22 14:56:43,521 - __main__ - INFO - 🏁 QuantEngine research completed
+2025-09-22 17:40:58,969 - __main__ - INFO - 🚀 Starting QuantEngine Targeted Research
+2025-09-22 17:40:58,969 - __main__ - INFO - 📊 Query: create a trade strategy report for NVDA over the next two quarters
+2025-09-22 17:40:58,969 - __main__ - INFO - 🎯 Running targeted research: create a trade strategy report for NVDA over the next two quarters
+2025-09-22 17:40:58,970 - __main__ - INFO - 📊 Research parameters: {'asset': 'NVDA', 'sector': None, 'timeframe': '6 months', 'research_type': 'analysis', 'original_query': 'create a trade strategy report for NVDA over the next two quarters'}
+2025-09-22 17:41:09,919 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 17:41:09,920 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 17:41:09,929 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 17:41:09,930 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 17:41:10,144 - __main__ - INFO - ✅ QuantEngine components initialized
+2025-09-22 17:41:10,144 - __main__ - INFO - 📈 Analyzing NVDA for 6 months
+2025-09-22 17:41:11,700 - __main__ - INFO - 📝 Generating stock report for NVDA
+2025-09-22 17:41:11,705 - __main__ - INFO - ✅ Report saved: reports/nvda_research_20250922_174111.md
+2025-09-22 17:41:11,705 - __main__ - INFO - ✅ Research completed successfully
+2025-09-22 17:41:11,705 - __main__ - INFO - 📄 Report generated: reports/nvda_research_20250922_174111.md
+2025-09-22 17:41:11,705 - __main__ - INFO - 🏁 QuantEngine research completed
+2025-09-22 17:47:15,358 - __main__ - INFO - 🚀 Starting QuantEngine Targeted Research
+2025-09-22 17:47:15,358 - __main__ - INFO - 📊 Query: create a trade strategy report for NVDA over the next two quarters and identify any support / resistance levels to set as the key markers
+2025-09-22 17:47:15,358 - __main__ - INFO - 🎯 Running targeted research: create a trade strategy report for NVDA over the next two quarters and identify any support / resistance levels to set as the key markers
+2025-09-22 17:47:15,358 - __main__ - INFO - 📊 Research parameters: {'asset': 'NVDA', 'sector': None, 'timeframe': '6 months', 'research_type': 'analysis', 'original_query': 'create a trade strategy report for NVDA over the next two quarters and identify any support / resistance levels to set as the key markers'}
+2025-09-22 17:47:26,056 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 17:47:26,058 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 17:47:26,066 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 17:47:26,066 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 17:47:26,124 - __main__ - INFO - ✅ QuantEngine components initialized
+2025-09-22 17:47:26,124 - __main__ - INFO - 📈 Analyzing NVDA for 6 months
+2025-09-22 17:47:27,676 - __main__ - INFO - 📝 Generating stock report for NVDA
+2025-09-22 17:47:27,681 - __main__ - INFO - ✅ Report saved: reports/nvda_research_20250922_174727.md
+2025-09-22 17:47:27,681 - __main__ - INFO - ✅ Research completed successfully
+2025-09-22 17:47:27,681 - __main__ - INFO - 📄 Report generated: reports/nvda_research_20250922_174727.md
+2025-09-22 17:47:27,681 - __main__ - INFO - 🏁 QuantEngine research completed
+2025-09-22 18:24:48,096 - __main__ - INFO - 🚀 Starting QuantEngine Targeted Research
+2025-09-22 18:24:48,096 - __main__ - INFO - 📊 Query: create a trade strategy report for NVDA over the next two quarters
+2025-09-22 18:24:48,096 - __main__ - INFO - 🎯 Running targeted research: create a trade strategy report for NVDA over the next two quarters
+2025-09-22 18:24:48,096 - __main__ - INFO - 📊 Research parameters: {'asset': 'NVDA', 'sector': None, 'timeframe': '6 months', 'research_type': 'analysis', 'original_query': 'create a trade strategy report for NVDA over the next two quarters'}
+2025-09-22 18:24:59,005 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 18:24:59,006 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 18:24:59,010 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 18:24:59,010 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 18:24:59,036 - __main__ - INFO - ✅ QuantEngine components initialized
+2025-09-22 18:24:59,037 - __main__ - INFO - 📈 Analyzing NVDA for 6 months
+2025-09-22 18:25:00,590 - __main__ - INFO - 📝 Generating stock report for NVDA
+2025-09-22 18:25:00,594 - __main__ - INFO - 🔍 Analyzing support and resistance levels
+2025-09-22 18:25:00,594 - __main__ - ERROR - Failed to analyze NVDA: unhashable type: 'numpy.ndarray'
+2025-09-22 18:25:00,594 - __main__ - ERROR - ❌ Research failed
+2025-09-22 18:25:00,594 - __main__ - INFO - 🏁 QuantEngine research completed
+2025-09-22 18:25:07,554 - __main__ - INFO - 🚀 Starting QuantEngine Targeted Research
+2025-09-22 18:25:07,555 - __main__ - INFO - 📊 Query: create a trade strategy report for NVDA over the next two quarters
+2025-09-22 18:25:07,555 - __main__ - INFO - 🎯 Running targeted research: create a trade strategy report for NVDA over the next two quarters
+2025-09-22 18:25:07,555 - __main__ - INFO - 📊 Research parameters: {'asset': 'NVDA', 'sector': None, 'timeframe': '6 months', 'research_type': 'analysis', 'original_query': 'create a trade strategy report for NVDA over the next two quarters'}
+2025-09-22 18:25:11,718 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 18:25:11,718 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 18:25:11,725 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 18:25:11,725 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 18:25:11,748 - __main__ - INFO - ✅ QuantEngine components initialized
+2025-09-22 18:25:11,748 - __main__ - INFO - 📈 Analyzing NVDA for 6 months
+2025-09-22 18:25:14,127 - __main__ - INFO - 📝 Generating stock report for NVDA
+2025-09-22 18:25:14,132 - __main__ - INFO - 🔍 Analyzing support and resistance levels
+2025-09-22 18:25:14,136 - __main__ - ERROR - Failed to analyze NVDA: '<=' not supported between instances of 'float' and 'list'
+2025-09-22 18:25:14,137 - __main__ - ERROR - ❌ Research failed
+2025-09-22 18:25:14,137 - __main__ - INFO - 🏁 QuantEngine research completed
+2025-09-22 18:25:30,121 - __main__ - INFO - 🚀 Starting QuantEngine Targeted Research
+2025-09-22 18:25:30,121 - __main__ - INFO - 📊 Query: create a trade strategy report for NVDA over the next two quarters
+2025-09-22 18:25:30,121 - __main__ - INFO - 🎯 Running targeted research: create a trade strategy report for NVDA over the next two quarters
+2025-09-22 18:25:30,121 - __main__ - INFO - 📊 Research parameters: {'asset': 'NVDA', 'sector': None, 'timeframe': '6 months', 'research_type': 'analysis', 'original_query': 'create a trade strategy report for NVDA over the next two quarters'}
+2025-09-22 18:25:41,283 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 18:25:41,283 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 18:25:41,287 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 18:25:41,287 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 18:25:41,312 - __main__ - INFO - ✅ QuantEngine components initialized
+2025-09-22 18:25:41,312 - __main__ - INFO - 📈 Analyzing NVDA for 6 months
+2025-09-22 18:25:42,830 - __main__ - INFO - 📝 Generating stock report for NVDA
+2025-09-22 18:25:42,833 - __main__ - INFO - 🔍 Analyzing support and resistance levels
+2025-09-22 18:25:42,834 - __main__ - ERROR - Failed to analyze NVDA: float() argument must be a string or a real number, not 'list'
+2025-09-22 18:25:42,834 - __main__ - ERROR - ❌ Research failed
+2025-09-22 18:25:42,834 - __main__ - INFO - 🏁 QuantEngine research completed
+2025-09-22 18:26:01,657 - __main__ - INFO - 🚀 Starting QuantEngine Targeted Research
+2025-09-22 18:26:01,657 - __main__ - INFO - 📊 Query: create a trade strategy report for NVDA over the next two quarters
+2025-09-22 18:26:01,657 - __main__ - INFO - 🎯 Running targeted research: create a trade strategy report for NVDA over the next two quarters
+2025-09-22 18:26:01,657 - __main__ - INFO - 📊 Research parameters: {'asset': 'NVDA', 'sector': None, 'timeframe': '6 months', 'research_type': 'analysis', 'original_query': 'create a trade strategy report for NVDA over the next two quarters'}
+2025-09-22 18:26:12,548 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 18:26:12,549 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 18:26:12,555 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 18:26:12,555 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 18:26:12,588 - __main__ - INFO - ✅ QuantEngine components initialized
+2025-09-22 18:26:12,588 - __main__ - INFO - 📈 Analyzing NVDA for 6 months
+2025-09-22 18:26:15,122 - __main__ - INFO - 📝 Generating stock report for NVDA
+2025-09-22 18:26:15,130 - __main__ - INFO - 🔍 Analyzing support and resistance levels
+2025-09-22 18:26:15,131 - __main__ - ERROR - Failed to analyze NVDA: The truth value of a Series is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
+2025-09-22 18:26:15,131 - __main__ - ERROR - ❌ Research failed
+2025-09-22 18:26:15,131 - __main__ - INFO - 🏁 QuantEngine research completed
+2025-09-22 18:26:44,737 - __main__ - INFO - 🚀 Starting QuantEngine Targeted Research
+2025-09-22 18:26:44,737 - __main__ - INFO - 📊 Query: create a trade strategy report for NVDA over the next two quarters
+2025-09-22 18:26:44,737 - __main__ - INFO - 🎯 Running targeted research: create a trade strategy report for NVDA over the next two quarters
+2025-09-22 18:26:44,737 - __main__ - INFO - 📊 Research parameters: {'asset': 'NVDA', 'sector': None, 'timeframe': '6 months', 'research_type': 'analysis', 'original_query': 'create a trade strategy report for NVDA over the next two quarters'}
+2025-09-22 18:26:55,524 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 18:26:55,525 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 18:26:55,529 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 18:26:55,529 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 18:26:55,553 - __main__ - INFO - ✅ QuantEngine components initialized
+2025-09-22 18:26:55,553 - __main__ - INFO - 📈 Analyzing NVDA for 6 months
+2025-09-22 18:26:57,305 - __main__ - INFO - 📝 Generating stock report for NVDA
+2025-09-22 18:26:57,309 - __main__ - INFO - 🔍 Analyzing support and resistance levels
+2025-09-22 18:26:57,311 - __main__ - INFO - ✅ Report saved: reports/nvda_research_20250922_182657.md
+2025-09-22 18:26:57,312 - __main__ - INFO - ✅ Research completed successfully
+2025-09-22 18:26:57,312 - __main__ - INFO - 📄 Report generated: reports/nvda_research_20250922_182657.md
+2025-09-22 18:26:57,312 - __main__ - INFO - 🏁 QuantEngine research completed
+2025-09-22 18:29:25,307 - __main__ - INFO - 🚀 Starting QuantEngine Targeted Research
+2025-09-22 18:29:25,307 - __main__ - INFO - 📊 Query: create a trade strategy report for NVDA over the next two quarters
+2025-09-22 18:29:25,307 - __main__ - INFO - 🎯 Running targeted research: create a trade strategy report for NVDA over the next two quarters
+2025-09-22 18:29:25,307 - __main__ - INFO - 📊 Research parameters: {'asset': 'NVDA', 'sector': None, 'timeframe': '6 months', 'research_type': 'analysis', 'original_query': 'create a trade strategy report for NVDA over the next two quarters'}
+2025-09-22 18:29:36,170 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 18:29:36,171 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 18:29:36,176 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 18:29:36,176 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 18:29:36,235 - __main__ - INFO - ✅ QuantEngine components initialized
+2025-09-22 18:29:36,235 - __main__ - INFO - 📈 Analyzing NVDA for 6 months
+2025-09-22 18:29:37,925 - __main__ - INFO - 📝 Generating stock report for NVDA
+2025-09-22 18:29:37,929 - __main__ - INFO - 🔍 Analyzing support and resistance levels
+2025-09-22 18:29:37,932 - __main__ - INFO - ✅ Report saved: reports/nvda_research_20250922_182937.md
+2025-09-22 18:29:37,933 - __main__ - INFO - ✅ Research completed successfully
+2025-09-22 18:29:37,933 - __main__ - INFO - 📄 Report generated: reports/nvda_research_20250922_182937.md
+2025-09-22 18:29:37,933 - __main__ - INFO - 🏁 QuantEngine research completed
+2025-09-22 19:02:17,598 - __main__ - INFO - 🚀 Starting QuantEngine Targeted Research
+2025-09-22 19:02:17,599 - __main__ - INFO - 📊 Query: create a trade strategy report for AAPL over the next quarter
+2025-09-22 19:02:17,599 - __main__ - INFO - 🎯 Running targeted research: create a trade strategy report for AAPL over the next quarter
+2025-09-22 19:02:17,599 - __main__ - INFO - 📊 Research parameters: {'asset': 'AAPL', 'sector': None, 'timeframe': '3 months', 'research_type': 'analysis', 'original_query': 'create a trade strategy report for AAPL over the next quarter'}
+2025-09-22 19:02:28,291 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 19:02:28,293 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 19:02:28,300 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 19:02:28,300 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 19:02:28,355 - __main__ - INFO - ✅ QuantEngine components initialized
+2025-09-22 19:02:28,355 - __main__ - INFO - 📈 Analyzing AAPL for 3 months
+2025-09-22 19:02:29,732 - __main__ - INFO - 📝 Generating stock report for AAPL
+2025-09-22 19:02:29,735 - __main__ - INFO - 🔍 Analyzing support and resistance levels
+2025-09-22 19:02:29,737 - __main__ - INFO - ✅ Report saved: reports/aapl_research_20250922_190229.md
+2025-09-22 19:02:31,444 - __main__ - WARNING - ⚠️ Failed to publish to Firebase: 404
+2025-09-22 19:02:31,445 - __main__ - INFO - ✅ Research completed successfully
+2025-09-22 19:02:31,446 - __main__ - INFO - 📄 Report generated: reports/aapl_research_20250922_190229.md
+2025-09-22 19:02:31,446 - __main__ - INFO - 🏁 QuantEngine research completed
+2025-09-22 22:50:06,206 - __main__ - INFO - 🚀 Starting QuantEngine Targeted Research
+2025-09-22 22:50:06,206 - __main__ - INFO - 📊 Query: analyze house prices for the next 6 months
+2025-09-22 22:50:06,206 - __main__ - INFO - 🎯 Running targeted research: analyze house prices for the next 6 months
+2025-09-22 22:50:06,207 - __main__ - INFO - 📊 Research parameters: {'asset': 'REAL_ESTATE', 'sector': 'real_estate', 'timeframe': '6 months', 'research_type': 'strategy', 'original_query': 'analyze house prices for the next 6 months'}
+2025-09-22 22:50:17,013 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 22:50:17,015 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 22:50:17,022 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 22:50:17,022 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 22:50:17,055 - __main__ - INFO - ✅ QuantEngine components initialized
+2025-09-22 22:50:17,055 - __main__ - INFO - 🏢 Analyzing real_estate sector for 6 months
+2025-09-22 22:50:19,808 - __main__ - INFO - 📝 Generating sector report for real_estate
+2025-09-22 22:50:19,813 - __main__ - INFO - ✅ Report saved: reports/real_estate_sector_research_20250922_225019.md
+2025-09-22 22:50:19,814 - __main__ - INFO - ✅ Research completed successfully
+2025-09-22 22:50:19,814 - __main__ - INFO - 📄 Report generated: reports/real_estate_sector_research_20250922_225019.md
+2025-09-22 22:50:19,814 - __main__ - INFO - 🏁 QuantEngine research completed
+2025-09-23 08:22:59,670 - __main__ - INFO - 🚀 Starting QuantEngine Targeted Research
+2025-09-23 08:22:59,670 - __main__ - INFO - 📊 Query: analyze MSFT for the next month
+2025-09-23 08:22:59,670 - __main__ - INFO - 🎯 Running targeted research: analyze MSFT for the next month
+2025-09-23 08:22:59,670 - __main__ - INFO - 📊 Research parameters: {'asset': 'MSFT', 'sector': None, 'timeframe': '3 months', 'research_type': 'strategy', 'original_query': 'analyze MSFT for the next month'}
+2025-09-23 08:23:10,514 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-23 08:23:10,515 - data_broker - INFO - Falling back to SQLite database
+2025-09-23 08:23:10,519 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-23 08:23:10,519 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-23 08:23:10,568 - __main__ - INFO - ✅ QuantEngine components initialized
+2025-09-23 08:23:10,568 - __main__ - INFO - 📈 Analyzing MSFT for 3 months
+2025-09-23 08:23:13,114 - engine.data_ingestion.data_manager - INFO - ✅ Downloaded data for MSFT
+2025-09-23 08:23:13,114 - __main__ - INFO - 📝 Generating stock report for MSFT
+2025-09-23 08:23:13,118 - __main__ - INFO - 🔍 Analyzing support and resistance levels
+2025-09-23 08:23:13,120 - __main__ - INFO - ✅ Report saved: reports/msft_research_20250923_082313.md
+2025-09-23 08:23:14,821 - __main__ - WARNING - ⚠️ Failed to publish to Firebase: 404
+2025-09-23 08:23:14,822 - __main__ - INFO - ✅ Research completed successfully
+2025-09-23 08:23:14,822 - __main__ - INFO - 📄 Report generated: reports/msft_research_20250923_082313.md
+2025-09-23 08:23:14,822 - __main__ - INFO - 🏁 QuantEngine research completed
+2025-09-23 08:23:50,755 - __main__ - INFO - 🚀 Starting QuantEngine Targeted Research
+2025-09-23 08:23:50,755 - __main__ - INFO - 📊 Query: analyze GOOGL for the next quarter
+2025-09-23 08:23:50,755 - __main__ - INFO - 🎯 Running targeted research: analyze GOOGL for the next quarter
+2025-09-23 08:23:50,755 - __main__ - INFO - 📊 Research parameters: {'asset': 'GOOGL', 'sector': None, 'timeframe': '3 months', 'research_type': 'strategy', 'original_query': 'analyze GOOGL for the next quarter'}
+2025-09-23 08:24:01,447 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-23 08:24:01,447 - data_broker - INFO - Falling back to SQLite database
+2025-09-23 08:24:01,450 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-23 08:24:01,450 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-23 08:24:01,486 - __main__ - INFO - ✅ QuantEngine components initialized
+2025-09-23 08:24:01,486 - __main__ - INFO - 📈 Analyzing GOOGL for 3 months
+2025-09-23 08:24:03,162 - engine.data_ingestion.data_manager - INFO - ✅ Downloaded data for GOOGL
+2025-09-23 08:24:03,162 - __main__ - INFO - 📝 Generating stock report for GOOGL
+2025-09-23 08:24:03,164 - __main__ - INFO - 🔍 Analyzing support and resistance levels
+2025-09-23 08:24:03,166 - __main__ - INFO - ✅ Report saved: reports/googl_research_20250923_082403.md
+2025-09-23 08:24:03,366 - __main__ - WARNING - ⚠️ Failed to publish to Firebase: 404
+2025-09-23 08:24:03,366 - __main__ - INFO - ✅ Research completed successfully
+2025-09-23 08:24:03,366 - __main__ - INFO - 📄 Report generated: reports/googl_research_20250923_082403.md
+2025-09-23 08:24:03,366 - __main__ - INFO - 🏁 QuantEngine research completed
+2025-09-23 08:46:49,383 - __main__ - INFO - 🚀 Starting QuantEngine in PRODUCTION mode
+2025-09-23 08:46:49,384 - __main__ - INFO - 📊 Data will be sent to Firestore production database
+2025-09-23 08:47:00,138 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-23 08:47:00,139 - data_broker - INFO - Falling back to SQLite database
+2025-09-23 08:47:00,141 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-23 08:47:00,142 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-23 08:47:09,209 - engine.data_ingestion.data_manager - INFO - ✅ Downloaded data for SPY
+2025-09-23 08:47:19,041 - engine.data_ingestion.data_manager - INFO - ✅ Downloaded data for QQQ
+2025-09-23 08:47:29,929 - engine.data_ingestion.data_manager - INFO - ✅ Downloaded data for IWM
+2025-09-23 08:47:41,458 - engine.data_ingestion.data_manager - INFO - ✅ Downloaded data for VTI
+2025-09-23 08:47:52,193 - engine.data_ingestion.data_manager - INFO - ✅ Downloaded data for TQQQ
+2025-09-23 08:47:52,217 - engine.feature_builder.feature_builder - ERROR - Failed to build features for SPY: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-23 08:47:52,237 - engine.feature_builder.feature_builder - ERROR - Failed to build features for QQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-23 08:47:52,253 - engine.feature_builder.feature_builder - ERROR - Failed to build features for IWM: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-23 08:47:52,272 - engine.feature_builder.feature_builder - ERROR - Failed to build features for VTI: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-23 08:47:52,288 - engine.feature_builder.feature_builder - ERROR - Failed to build features for TQQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-23 08:47:52,329 - research.research_agent - INFO - Starting research cycle with objectives: ['trend_following', 'volatility_targeting']
+2025-09-23 08:48:00,409 - engine.data_ingestion.data_manager - INFO - ✅ Downloaded data for SPY
+2025-09-23 08:48:10,265 - engine.data_ingestion.data_manager - INFO - ✅ Downloaded data for QQQ
+2025-09-23 08:48:20,937 - engine.data_ingestion.data_manager - INFO - ✅ Downloaded data for IWM
+2025-09-23 08:48:30,976 - engine.data_ingestion.data_manager - INFO - ✅ Downloaded data for VTI
+2025-09-23 08:48:30,977 - research.research_agent - INFO - Generated 3 strategy hypotheses
+2025-09-23 08:48:30,982 - research.research_agent - ERROR - Failed to test hypothesis: 'fast'
+2025-09-23 08:48:30,984 - engine.backtest_engine.backtester - WARNING - Unsupported signal type: SignalType.MOMENTUM
+2025-09-23 08:48:30,994 - research.research_agent - ERROR - Failed to test hypothesis: Indexing a Series with DataFrame is not supported, use the appropriate DataFrame column
+2025-09-23 08:48:30,995 - engine.backtest_engine.backtester - WARNING - Expression condition not yet supported: vol_regime<low_thresh
+2025-09-23 08:48:31,000 - research.research_agent - ERROR - Failed to test hypothesis: Indexing a Series with DataFrame is not supported, use the appropriate DataFrame column
+2025-09-23 08:48:31,000 - research.research_agent - INFO - Research cycle completed: 0/0 strategies approved
+2025-09-23 08:48:31,067 - research.research_agent - INFO - Running TQQQ reference strategy implementation
+2025-09-23 08:48:33,716 - engine.data_ingestion.data_manager - INFO - ✅ Downloaded data for TQQQ
+2025-09-23 08:48:33,718 - engine.backtest_engine.backtester - WARNING - Expression condition not yet supported: vol_regime<low_thresh
+2025-09-23 08:48:33,719 - engine.backtest_engine.backtester - INFO - Options overlays not yet implemented - using base positions
+2025-09-23 08:48:34,186 - engine.reporting_notes.report_generator - INFO - Generated research note: reports/tqqq_regime_puts_v1_research_note_20250923_084833.md
+2025-09-23 08:48:34,186 - research.research_agent - INFO - TQQQ reference strategy rejected
+2025-09-23 08:48:34,190 - __main__ - INFO - 🏁 QuantEngine production run completed
+2025-09-23 09:54:56,615 - __main__ - INFO - 🚀 Starting QuantEngine in PRODUCTION mode
+2025-09-23 09:54:56,616 - __main__ - INFO - 📊 Data will be sent to Firestore production database
+2025-09-23 09:55:07,716 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-23 09:55:07,717 - data_broker - INFO - Falling back to SQLite database
+2025-09-23 09:55:07,721 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-23 09:55:07,721 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-23 09:55:17,766 - engine.data_ingestion.data_manager - INFO - ✅ Downloaded data for SPY
+2025-09-23 09:55:29,798 - engine.data_ingestion.data_manager - INFO - ✅ Downloaded data for QQQ
+2025-09-23 09:55:40,344 - engine.data_ingestion.data_manager - INFO - ✅ Downloaded data for IWM
+2025-09-23 09:55:50,648 - engine.data_ingestion.data_manager - INFO - ✅ Downloaded data for VTI
+2025-09-23 09:56:02,188 - engine.data_ingestion.data_manager - INFO - ✅ Downloaded data for TQQQ
+2025-09-23 09:56:02,207 - engine.feature_builder.feature_builder - ERROR - Failed to build features for SPY: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-23 09:56:02,225 - engine.feature_builder.feature_builder - ERROR - Failed to build features for QQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-23 09:56:02,247 - engine.feature_builder.feature_builder - ERROR - Failed to build features for IWM: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-23 09:56:02,268 - engine.feature_builder.feature_builder - ERROR - Failed to build features for VTI: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-23 09:56:02,371 - engine.feature_builder.feature_builder - ERROR - Failed to build features for TQQQ: Operands are not aligned. Do `left, right = left.align(right, axis=1, copy=False)` before operating.
+2025-09-23 09:56:02,415 - research.research_agent - INFO - Starting research cycle with objectives: ['trend_following', 'volatility_targeting']
+2025-09-23 09:56:11,161 - engine.data_ingestion.data_manager - INFO - ✅ Downloaded data for SPY
+2025-09-23 09:56:21,893 - engine.data_ingestion.data_manager - INFO - ✅ Downloaded data for QQQ
+2025-09-23 09:56:32,527 - engine.data_ingestion.data_manager - INFO - ✅ Downloaded data for IWM
+2025-09-23 09:56:43,263 - engine.data_ingestion.data_manager - INFO - ✅ Downloaded data for VTI
+2025-09-23 09:56:43,266 - research.research_agent - INFO - Generated 3 strategy hypotheses
+2025-09-23 09:56:43,277 - research.research_agent - ERROR - Failed to test hypothesis: 'fast'
+2025-09-23 09:56:43,280 - engine.backtest_engine.backtester - WARNING - Unsupported signal type: SignalType.MOMENTUM
+2025-09-23 09:56:43,298 - research.research_agent - ERROR - Failed to test hypothesis: Indexing a Series with DataFrame is not supported, use the appropriate DataFrame column
+2025-09-23 09:56:43,300 - engine.backtest_engine.backtester - WARNING - Expression condition not yet supported: vol_regime<low_thresh
+2025-09-23 09:56:43,311 - research.research_agent - ERROR - Failed to test hypothesis: Indexing a Series with DataFrame is not supported, use the appropriate DataFrame column
+2025-09-23 09:56:43,311 - research.research_agent - INFO - Research cycle completed: 0/0 strategies approved
+2025-09-23 09:56:43,556 - research.research_agent - INFO - Running TQQQ reference strategy implementation
+2025-09-23 09:56:46,263 - engine.data_ingestion.data_manager - INFO - ✅ Downloaded data for TQQQ
+2025-09-23 09:56:46,265 - engine.backtest_engine.backtester - WARNING - Expression condition not yet supported: vol_regime<low_thresh
+2025-09-23 09:56:46,266 - engine.backtest_engine.backtester - INFO - Options overlays not yet implemented - using base positions
+2025-09-23 09:56:46,680 - engine.reporting_notes.report_generator - INFO - Generated research note: reports/tqqq_regime_puts_v1_research_note_20250923_095646.md
+2025-09-23 09:56:46,680 - research.research_agent - INFO - TQQQ reference strategy rejected
+2025-09-23 09:56:46,684 - __main__ - INFO - 🏁 QuantEngine production run completed

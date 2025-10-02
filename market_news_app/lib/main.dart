@@ -4,14 +4,8 @@ import 'dart:convert';
 import 'package:market_news_app/models/report_data.dart';
 import 'package:market_news_app/screens/market_insights_screen.dart';
 import 'package:market_news_app/screens/market_intelligence_screen.dart';
-import 'package:market_news_app/screens/performance_dashboard_screen.dart';
-import 'package:market_news_app/screens/market_sentiment_detail_screen.dart';
-import 'package:market_news_app/screens/strategy_detail_screen.dart';
-import 'package:market_news_app/screens/economic_calendar_screen.dart';
-import 'package:market_news_app/screens/settings_screen.dart';
-import 'package:market_news_app/screens/bull_put_screener_screen.dart';
 import 'package:market_news_app/screens/quant_chat_screen.dart';
-import 'package:market_news_app/screens/opportunities_screen.dart';
+import 'package:market_news_app/widgets/scanner_opportunities_widget.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'screens/news_screen.dart';
 import 'dart:math' as math;
@@ -150,15 +144,11 @@ class _MainNavigationState extends State<MainNavigation> {
     final List<Widget> widgetOptions = <Widget>[
       DashboardScreen(),
       const MarketIntelligenceScreen(), // New intelligence-focused screen
-      const PerformanceDashboardScreen(), // Performance tracking screen
       _reportData != null
           ? MarketInsightsScreen(reportData: _reportData!)
           : const Center(child: CircularProgressIndicator()),
       NewsScreen(),
-      BullPutScreenerScreen(),
       const QuantChatScreen(), // New QuantEngine Chat
-      const OpportunitiesScreen(), // New Trading Opportunities
-      SettingsScreen(),
     ];
     return Scaffold(
       body: _error != null
@@ -188,10 +178,6 @@ class _MainNavigationState extends State<MainNavigation> {
             label: 'Intelligence',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.show_chart),
-            label: 'Performance',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.insights),
             label: 'Trade Ideas',
           ),
@@ -200,20 +186,8 @@ class _MainNavigationState extends State<MainNavigation> {
             label: 'News',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.trending_up),
-            label: 'Spreads',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.chat),
             label: 'Quant Chat',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.analytics),
-            label: 'Opportunities',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
           ),
         ],
         currentIndex: _selectedIndex,
@@ -351,6 +325,9 @@ class _SimplifiedDashboardState extends State<SimplifiedDashboard> {
               const SizedBox(height: 20),
               _buildIndicatorsCard(context),
               const SizedBox(height: 20),
+              // Add Scanner Opportunities Widget
+              const ScannerOpportunitiesWidget(),
+              const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -426,26 +403,139 @@ class _SimplifiedDashboardState extends State<SimplifiedDashboard> {
         ),
       );
     }
-    final last7 = vixData.take(7).toList();
-    final values = last7.map((v) => v.close).toList();
+    
+    // Get more data points (30 days instead of 7)
+    final last30 = vixData.take(30).toList();
+    final values = last30.map((v) => v.close).toList();
+    
+    // Calculate volatility metrics
+    final current = values.isNotEmpty ? values.first : 0.0;
+    final avg30 = values.isNotEmpty ? values.reduce((a, b) => a + b) / values.length : 0.0;
+    final high30 = values.isNotEmpty ? values.reduce((a, b) => a > b ? a : b) : 0.0;
+    final low30 = values.isNotEmpty ? values.reduce((a, b) => a < b ? a : b) : 0.0;
+    final change = values.length > 1 ? values[0] - values[1] : 0.0;
+    final changePercent = values.length > 1 ? (change / values[1]) * 100 : 0.0;
+    
+    // Determine volatility level
+    String volatilityLevel = 'NORMAL';
+    Color volatilityColor = Colors.blue;
+    if (current > 30) {
+      volatilityLevel = 'HIGH';
+      volatilityColor = Colors.red;
+    } else if (current < 15) {
+      volatilityLevel = 'LOW';
+      volatilityColor = Colors.green;
+    }
+    
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Volatility Trend (VIX, 7d)', style: Theme.of(context).textTheme.headlineSmall),
-            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Volatility Index (VIX)', style: Theme.of(context).textTheme.headlineSmall),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: volatilityColor.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    volatilityLevel,
+                    style: TextStyle(
+                      color: volatilityColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            
+            // Current VIX value with change
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      current.toStringAsFixed(2),
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: change >= 0 ? Colors.red : Colors.green,
+                      ),
+                    ),
+                    Text(
+                      '${change >= 0 ? '+' : ''}${change.toStringAsFixed(2)} (${changePercent >= 0 ? '+' : ''}${changePercent.toStringAsFixed(1)}%)',
+                      style: TextStyle(
+                        color: change >= 0 ? Colors.red : Colors.green,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text('30d Avg: ${avg30.toStringAsFixed(1)}', style: const TextStyle(fontSize: 12)),
+                    Text('High: ${high30.toStringAsFixed(1)}', style: const TextStyle(fontSize: 12, color: Colors.red)),
+                    Text('Low: ${low30.toStringAsFixed(1)}', style: const TextStyle(fontSize: 12, color: Colors.green)),
+                  ],
+                ),
+              ],
+            ),
+            
+            const SizedBox(height: 16),
+            
+            // Enhanced sparkline with more data points
             SizedBox(
-              height: 48,
+              height: 80,
               child: CustomPaint(
-                painter: _SparklinePainter(values),
+                painter: _EnhancedSparklinePainter(values),
                 child: Container(),
               ),
             ),
-            const SizedBox(height: 6),
-            if (values.isNotEmpty)
-              Text('Latest: ${values.first.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.bold)),
+            
+            const SizedBox(height: 8),
+            
+            // Volatility interpretation
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: volatilityColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: volatilityColor.withOpacity(0.3)),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    volatilityLevel == 'HIGH' ? Icons.warning : 
+                    volatilityLevel == 'LOW' ? Icons.check_circle : Icons.info,
+                    color: volatilityColor,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      volatilityLevel == 'HIGH' ? 'High volatility - Market stress, consider defensive strategies' :
+                      volatilityLevel == 'LOW' ? 'Low volatility - Market calm, good for risk-on strategies' :
+                      'Normal volatility - Standard market conditions',
+                      style: TextStyle(
+                        color: volatilityColor,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -623,6 +713,107 @@ class _SparklinePainter extends CustomPainter {
     }
     canvas.drawPoints(PointMode.lines, points, paint);
   }
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+}
+
+class _EnhancedSparklinePainter extends CustomPainter {
+  final List<double> values;
+  
+  _EnhancedSparklinePainter(this.values);
+  
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (values.isEmpty) return;
+    
+    final minV = values.reduce(math.min);
+    final maxV = values.reduce(math.max);
+    final range = (maxV - minV).abs() < 1e-3 ? 1.0 : (maxV - minV);
+    
+    // Create gradient for the line
+    final gradient = LinearGradient(
+      colors: [
+        Colors.blue.withOpacity(0.8),
+        Colors.orange.withOpacity(0.8),
+        Colors.red.withOpacity(0.8),
+      ],
+      stops: const [0.0, 0.5, 1.0],
+    );
+    
+    // Draw area under the curve
+    final areaPaint = Paint()
+      ..shader = gradient.createShader(Rect.fromLTWH(0, 0, size.width, size.height))
+      ..style = PaintingStyle.fill;
+    
+    final areaPath = Path();
+    areaPath.moveTo(0, size.height);
+    
+    for (int i = 0; i < values.length; i++) {
+      final x = i * size.width / (values.length - 1);
+      final y = size.height - ((values[i] - minV) / range * size.height);
+      areaPath.lineTo(x, y);
+    }
+    
+    areaPath.lineTo(size.width, size.height);
+    areaPath.close();
+    canvas.drawPath(areaPath, areaPaint);
+    
+    // Draw the main line
+    final linePaint = Paint()
+      ..color = Colors.blue
+      ..strokeWidth = 2.5
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+    
+    final points = <Offset>[];
+    for (int i = 0; i < values.length; i++) {
+      final x = i * size.width / (values.length - 1);
+      final y = size.height - ((values[i] - minV) / range * size.height);
+      points.add(Offset(x, y));
+    }
+    
+    canvas.drawPoints(PointMode.lines, points, linePaint);
+    
+    // Draw data points
+    final pointPaint = Paint()
+      ..color = Colors.blue
+      ..style = PaintingStyle.fill;
+    
+    for (int i = 0; i < points.length; i++) {
+      if (i % 5 == 0 || i == points.length - 1) { // Show every 5th point and the last point
+        canvas.drawCircle(points[i], 3, pointPaint);
+      }
+    }
+    
+    // Draw current value indicator
+    if (points.isNotEmpty) {
+      final currentPoint = points.first;
+      final indicatorPaint = Paint()
+        ..color = Colors.red
+        ..style = PaintingStyle.fill;
+      
+      canvas.drawCircle(currentPoint, 4, indicatorPaint);
+      
+      // Draw current value text
+      final textPainter = TextPainter(
+        text: TextSpan(
+          text: values.first.toStringAsFixed(1),
+          style: const TextStyle(
+            color: Colors.red,
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout();
+      textPainter.paint(
+        canvas,
+        Offset(currentPoint.dx - textPainter.width / 2, currentPoint.dy - 15),
+      );
+    }
+  }
+  
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

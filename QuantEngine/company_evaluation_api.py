@@ -1054,10 +1054,20 @@ class CompanyEvaluator:
                     recent_lows.iloc[i] < recent_lows.iloc[i+2]):
                     support_levels.append(float(recent_lows.iloc[i]))
             
-            # Add 52-week low
-            low_52w = float(lows.min())
-            if low_52w not in support_levels:
-                support_levels.append(low_52w)
+            # Add moving averages as support levels (more relevant than 52-week low)
+            current_price = float(closes.iloc[-1])
+            sma_20 = float(closes.rolling(20).mean().iloc[-1])
+            sma_50 = float(closes.rolling(50).mean().iloc[-1])
+            
+            if sma_20 < current_price:
+                support_levels.append(sma_20)
+            if sma_50 < current_price:
+                support_levels.append(sma_50)
+            
+            # Add recent significant low (last 20 days)
+            recent_low_20 = float(lows.tail(20).min())
+            if recent_low_20 < current_price:
+                support_levels.append(recent_low_20)
             
             # Sort and deduplicate (within 2% threshold)
             support_levels = sorted(set(support_levels), reverse=True)
@@ -1090,10 +1100,20 @@ class CompanyEvaluator:
                     recent_highs.iloc[i] > recent_highs.iloc[i+2]):
                     resistance_levels.append(float(recent_highs.iloc[i]))
             
-            # Add 52-week high
-            high_52w = float(highs.max())
-            if high_52w not in resistance_levels:
-                resistance_levels.append(high_52w)
+            # Add moving averages as resistance levels (more relevant than 52-week high)
+            current_price = float(closes.iloc[-1])
+            sma_20 = float(closes.rolling(20).mean().iloc[-1])
+            sma_50 = float(closes.rolling(50).mean().iloc[-1])
+            
+            if sma_20 > current_price:
+                resistance_levels.append(sma_20)
+            if sma_50 > current_price:
+                resistance_levels.append(sma_50)
+            
+            # Add recent significant high (last 20 days)
+            recent_high_20 = float(highs.tail(20).max())
+            if recent_high_20 > current_price:
+                resistance_levels.append(recent_high_20)
             
             # Sort and deduplicate (within 2% threshold)
             resistance_levels = sorted(set(resistance_levels))
@@ -1140,12 +1160,16 @@ class CompanyEvaluator:
             volumes = self.history['Volume']
             
             current_price = float(closes.iloc[-1])
-            high_52w = float(self.history['High'].max())
-            low_52w = float(self.history['Low'].min())
             
-            # Check if near 52-week high/low
-            near_high = (current_price / high_52w) > 0.98
-            near_low = (current_price / low_52w) < 1.02
+            # Use recent highs/lows instead of 52-week extremes
+            highs = self.history['High']
+            lows = self.history['Low']
+            recent_high_20 = float(highs.tail(20).max())
+            recent_low_20 = float(lows.tail(20).min())
+            
+            # Check if near recent highs/lows (more relevant for trading)
+            near_high = (current_price / recent_high_20) > 0.98
+            near_low = (current_price / recent_low_20) < 1.02
             
             # Volume trend
             avg_volume = float(volumes.rolling(20).mean().iloc[-1])
@@ -1164,10 +1188,10 @@ class CompanyEvaluator:
                 potential = 'MID-RANGE - No immediate breakout/breakdown'
             
             return {
-                'high_52w': round(high_52w, 2),
-                'low_52w': round(low_52w, 2),
-                'distance_from_high_pct': round(((current_price / high_52w) - 1) * 100, 2),
-                'distance_from_low_pct': round(((current_price / low_52w) - 1) * 100, 2),
+                'recent_high_20': round(recent_high_20, 2),
+                'recent_low_20': round(recent_low_20, 2),
+                'distance_from_high_pct': round(((current_price / recent_high_20) - 1) * 100, 2),
+                'distance_from_low_pct': round(((current_price / recent_low_20) - 1) * 100, 2),
                 'volume_surge': volume_surge,
                 'potential': potential
             }

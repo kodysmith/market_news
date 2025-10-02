@@ -1,0 +1,228 @@
+{
+  "calibration_results": {
+    "AAPL": {
+      "ticker": "AAPL",
+      "period": "2020-01-01 to present",
+      "total_days": 1445,
+      "signals_generated": 60,
+      "performance": {
+        "total_return": -17.23,
+        "win_rate": 65.0,
+        "avg_return": -0.29,
+        "total_trades": 60,
+        "winning_trades": 39,
+        "losing_trades": 21
+      },
+      "accuracy": {
+        "OVERSOLD_ENTRY": {
+          "accuracy": 91.67,
+          "total_signals": 12,
+          "profitable_signals": 11
+        },
+        "OVERBOUGHT_ENTRY": {
+          "accuracy": 55.0,
+          "total_signals": 40,
+          "profitable_signals": 22
+        },
+        "EXTREME_OVERBOUGHT": {
+          "accuracy": 100.0,
+          "total_signals": 8,
+          "profitable_signals": 8
+        }
+      },
+      "rsi_stats": {
+        "mean": 54.17,
+        "std": 12.13,
+        "min": 20.06,
+        "max": 82.04,
+        "overbought_days": 151,
+        "oversold_days": 22,
+        "extreme_overbought_days": 8,
+        "extreme_oversold_days": 0
+      },
+      "calibrated_confidence": 64.9
+    },
+    "MSFT": {
+      "ticker": "MSFT",
+      "period": "2020-01-01 to present",
+      "total_days": 1445,
+      "signals_generated": 52,
+      "performance": {
+        "total_return": -460.11,
+        "win_rate": 34.62,
+        "avg_return": -8.85,
+        "total_trades": 52,
+        "winning_trades": 18,
+        "losing_trades": 34
+      },
+      "accuracy": {
+        "OVERBOUGHT_ENTRY": {
+          "accuracy": 70.45,
+          "total_signals": 44,
+          "profitable_signals": 31
+        },
+        "OVERSOLD_ENTRY": {
+          "accuracy": 85.71,
+          "total_signals": 7,
+          "profitable_signals": 6
+        },
+        "EXTREME_OVERBOUGHT": {
+          "accuracy": 100.0,
+          "total_signals": 1,
+          "profitable_signals": 1
+        }
+      },
+      "rsi_stats": {
+        "mean": 54.5,
+        "std": 11.5,
+        "min": 24.71,
+        "max": 81.74,
+        "overbought_days": 153,
+        "oversold_days": 15,
+        "extreme_overbought_days": 1,
+        "extreme_oversold_days": 0
+      },
+      "calibrated_confidence": 30.2
+    },
+    "GOOGL": {
+      "ticker": "GOOGL",
+      "period": "2020-01-01 to present",
+      "total_days": 1445,
+      "signals_generated": 69,
+      "performance": {
+        "total_return": -233.73,
+        "win_rate": 50.72,
+        "avg_return": -3.39,
+        "total_trades": 69,
+        "winning_trades": 35,
+        "losing_trades": 34
+      },
+      "accuracy": {
+        "EXTREME_OVERBOUGHT": {
+          "accuracy": 50.0,
+          "total_signals": 16,
+          "profitable_signals": 8
+        },
+        "OVERSOLD_ENTRY": {
+          "accuracy": 84.62,
+          "total_signals": 13,
+          "profitable_signals": 11
+        },
+        "OVERBOUGHT_ENTRY": {
+          "accuracy": 62.5,
+          "total_signals": 40,
+          "profitable_signals": 25
+        }
+      },
+      "rsi_stats": {
+        "mean": 54.36,
+        "std": 11.61,
+        "min": 24.95,
+        "max": 88.49,
+        "overbought_days": 115,
+        "oversold_days": 22,
+        "extreme_overbought_days": 16,
+        "extreme_oversold_days": 0
+      },
+      "calibrated_confidence": 49.0
+    },
+    "TSLA": {
+      "ticker": "TSLA",
+      "period": "2020-01-01 to present",
+      "total_days": 1445,
+      "signals_generated": 98,
+      "performance": {
+        "total_return": 123.93,
+        "win_rate": 64.29,
+        "avg_return": 1.26,
+        "total_trades": 98,
+        "winning_trades": 63,
+        "losing_trades": 35
+      },
+      "accuracy": {
+        "EXTREME_OVERBOUGHT": {
+          "accuracy": 63.83,
+          "total_signals": 47,
+          "profitable_signals": 30
+        },
+        "OVERBOUGHT_ENTRY": {
+          "accuracy": 48.28,
+          "total_signals": 29,
+          "profitable_signals": 14
+        },
+        "OVERSOLD_ENTRY": {
+          "accuracy": 72.22,
+          "total_signals": 18,
+          "profitable_signals": 13
+        },
+        "EXTREME_OVERSOLD": {
+          "accuracy": 100.0,
+          "total_signals": 4,
+          "profitable_signals": 4
+        }
+      },
+      "rsi_stats": {
+        "mean": 53.0,
+        "std": 13.68,
+        "min": 16.56,
+        "max": 94.2,
+        "overbought_days": 162,
+        "oversold_days": 68,
+        "extreme_overbought_days": 47,
+        "extreme_oversold_days": 4
+      },
+      "calibrated_confidence": 64.9
+    },
+    "NVDA": {
+      "ticker": "NVDA",
+      "period": "2020-01-01 to present",
+      "total_days": 1445,
+      "signals_generated": 84,
+      "performance": {
+        "total_return": -5732.44,
+        "win_rate": 21.43,
+        "avg_return": -68.24,
+        "total_trades": 84,
+        "winning_trades": 18,
+        "losing_trades": 66
+      },
+      "accuracy": {
+        "OVERBOUGHT_ENTRY": {
+          "accuracy": 60.0,
+          "total_signals": 45,
+          "profitable_signals": 27
+        },
+        "EXTREME_OVERBOUGHT": {
+          "accuracy": 64.71,
+          "total_signals": 34,
+          "profitable_signals": 22
+        },
+        "OVERSOLD_ENTRY": {
+          "accuracy": 100.0,
+          "total_signals": 5,
+          "profitable_signals": 5
+        }
+      },
+      "rsi_stats": {
+        "mean": 56.14,
+        "std": 12.2,
+        "min": 26.37,
+        "max": 89.17,
+        "overbought_days": 207,
+        "oversold_days": 11,
+        "extreme_overbought_days": 35,
+        "extreme_oversold_days": 0
+      },
+      "calibrated_confidence": 0
+    }
+  },
+  "overall_metrics": {
+    "avg_win_rate": 47.21,
+    "avg_return": -15.9,
+    "avg_confidence": 41.8,
+    "total_tickers": 5,
+    "best_performer": "AAPL",
+    "worst_performer": "NVDA"
+  },
+  "calibration_timestamp": "2025-10-01T16:01:01.346549"
+}

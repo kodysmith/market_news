@@ -25,8 +25,16 @@ interface MarketSentiment {
     name: string;
     ticker: string;
     price: string;
+    change?: number;
+    changePercent?: number;
     direction: string;
+    weight?: number;
+    score?: number;
   }>;
+  weightedScore?: number;
+  confidence?: number;
+  bullishCount?: number;
+  totalCount?: number;
 }
 
 interface TopStrategy {
@@ -140,10 +148,11 @@ async function getVixData(): Promise<VixData[]> {
   }
 }
 
-// Get market sentiment analysis (FMP primary, Yahoo fallback for indices)
+// Enhanced market sentiment analysis with multiple data sources and weighted scoring
 async function getMarketSentiment(): Promise<MarketSentiment> {
   let indices = [];
-  // Try FMP first
+  
+  // Try FMP first for comprehensive data
   try {
     const indicesResponse = await axios.get('https://financialmodelingprep.com/api/v3/quotes/index', {
       params: { apikey: FMP_API_KEY }
@@ -152,28 +161,52 @@ async function getMarketSentiment(): Promise<MarketSentiment> {
     if (!Array.isArray(indices) || indices.length === 0) throw new Error('No indices from FMP');
   } catch (e) {
     console.error('FMP indices failed, falling back to Yahoo:', e.message || e);
-    // Yahoo fallback for S&P 500, Nasdaq, VIX
+    // Enhanced Yahoo fallback with more data sources
     try {
-      const [spResp, ndqResp, vixResp] = await Promise.all([
+      const [spResp, ndqResp, vixResp, iwmResp, tnxResp, dxyResp] = await Promise.all([
         axios.get('https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?range=1d&interval=1d'),
         axios.get('https://query1.finance.yahoo.com/v8/finance/chart/%5EIXIC?range=1d&interval=1d'),
         axios.get('https://query1.finance.yahoo.com/v8/finance/chart/%5EVIX?range=1d&interval=1d'),
+        axios.get('https://query1.finance.yahoo.com/v8/finance/chart/%5EIWM?range=1d&interval=1d'), // Russell 2000
+        axios.get('https://query1.finance.yahoo.com/v8/finance/chart/%5ETNX?range=1d&interval=1d'), // 10Y Treasury
+        axios.get('https://query1.finance.yahoo.com/v8/finance/chart/DX-Y.NYB?range=1d&interval=1d'), // Dollar Index
       ]);
       indices = [
         {
           symbol: '^GSPC',
           price: spResp.data.chart.result[0].meta.regularMarketPrice,
-          change: spResp.data.chart.result[0].meta.regularMarketChange
+          change: spResp.data.chart.result[0].meta.regularMarketChange,
+          changePercent: spResp.data.chart.result[0].meta.regularMarketChangePercent
         },
         {
           symbol: '^IXIC',
           price: ndqResp.data.chart.result[0].meta.regularMarketPrice,
-          change: ndqResp.data.chart.result[0].meta.regularMarketChange
+          change: ndqResp.data.chart.result[0].meta.regularMarketChange,
+          changePercent: ndqResp.data.chart.result[0].meta.regularMarketChangePercent
         },
         {
           symbol: '^VIX',
           price: vixResp.data.chart.result[0].meta.regularMarketPrice,
-          change: vixResp.data.chart.result[0].meta.regularMarketChange
+          change: vixResp.data.chart.result[0].meta.regularMarketChange,
+          changePercent: vixResp.data.chart.result[0].meta.regularMarketChangePercent
+        },
+        {
+          symbol: '^IWM',
+          price: iwmResp.data.chart.result[0].meta.regularMarketPrice,
+          change: iwmResp.data.chart.result[0].meta.regularMarketChange,
+          changePercent: iwmResp.data.chart.result[0].meta.regularMarketChangePercent
+        },
+        {
+          symbol: '^TNX',
+          price: tnxResp.data.chart.result[0].meta.regularMarketPrice,
+          change: tnxResp.data.chart.result[0].meta.regularMarketChange,
+          changePercent: tnxResp.data.chart.result[0].meta.regularMarketChangePercent
+        },
+        {
+          symbol: 'DX-Y.NYB',
+          price: dxyResp.data.chart.result[0].meta.regularMarketPrice,
+          change: dxyResp.data.chart.result[0].meta.regularMarketChange,
+          changePercent: dxyResp.data.chart.result[0].meta.regularMarketChangePercent
         }
       ];
     } catch (err) {
@@ -182,45 +215,117 @@ async function getMarketSentiment(): Promise<MarketSentiment> {
     }
   }
 
+  // Enhanced data extraction with fallbacks
   const spyData = indices.find((idx: any) => idx.symbol === '^GSPC');
   const nasdaqData = indices.find((idx: any) => idx.symbol === '^IXIC');
   const vixData = indices.find((idx: any) => idx.symbol === '^VIX');
+  const iwmData = indices.find((idx: any) => idx.symbol === '^IWM');
+  const tnxData = indices.find((idx: any) => idx.symbol === '^TNX');
+  const dxyData = indices.find((idx: any) => idx.symbol === 'DX-Y.NYB');
 
-  // Simple sentiment calculation based on major indices
-  let bullishCount = 0;
-  let totalCount = 0;
-
+  // Enhanced weighted sentiment calculation
   const indicators = [
     {
       name: 'S&P 500',
       ticker: '^GSPC',
       price: spyData ? `$${spyData.price.toFixed(2)}` : 'N/A',
-      direction: spyData && spyData.change > 0 ? 'UP' : 'DOWN'
+      change: spyData?.change || 0,
+      changePercent: spyData?.changePercent || 0,
+      direction: spyData && spyData.change > 0 ? 'UP' : 'DOWN',
+      weight: 0.25, // 25% weight
+      score: spyData ? (spyData.change > 0 ? 1 : -1) : 0
     },
     {
       name: 'Nasdaq',
       ticker: '^IXIC',
       price: nasdaqData ? `$${nasdaqData.price.toFixed(2)}` : 'N/A',
-      direction: nasdaqData && nasdaqData.change > 0 ? 'UP' : 'DOWN'
+      change: nasdaqData?.change || 0,
+      changePercent: nasdaqData?.changePercent || 0,
+      direction: nasdaqData && nasdaqData.change > 0 ? 'UP' : 'DOWN',
+      weight: 0.20, // 20% weight
+      score: nasdaqData ? (nasdaqData.change > 0 ? 1 : -1) : 0
+    },
+    {
+      name: 'Russell 2000',
+      ticker: '^IWM',
+      price: iwmData ? `$${iwmData.price.toFixed(2)}` : 'N/A',
+      change: iwmData?.change || 0,
+      changePercent: iwmData?.changePercent || 0,
+      direction: iwmData && iwmData.change > 0 ? 'UP' : 'DOWN',
+      weight: 0.15, // 15% weight
+      score: iwmData ? (iwmData.change > 0 ? 1 : -1) : 0
     },
     {
       name: 'VIX',
       ticker: '^VIX',
       price: vixData ? `${vixData.price.toFixed(2)}` : 'N/A',
-      direction: vixData && vixData.change < 0 ? 'UP' : 'DOWN' // VIX inverse to market
+      change: vixData?.change || 0,
+      changePercent: vixData?.changePercent || 0,
+      direction: vixData && vixData.change < 0 ? 'UP' : 'DOWN', // VIX inverse to market
+      weight: 0.20, // 20% weight
+      score: vixData ? (vixData.change < 0 ? 1 : -1) : 0 // Inverted for VIX
+    },
+    {
+      name: '10Y Treasury',
+      ticker: '^TNX',
+      price: tnxData ? `${tnxData.price.toFixed(2)}%` : 'N/A',
+      change: tnxData?.change || 0,
+      changePercent: tnxData?.changePercent || 0,
+      direction: tnxData && tnxData.change < 0 ? 'UP' : 'DOWN', // Lower yields = bullish
+      weight: 0.10, // 10% weight
+      score: tnxData ? (tnxData.change < 0 ? 1 : -1) : 0 // Inverted for yields
+    },
+    {
+      name: 'Dollar Index',
+      ticker: 'DX-Y.NYB',
+      price: dxyData ? `${dxyData.price.toFixed(2)}` : 'N/A',
+      change: dxyData?.change || 0,
+      changePercent: dxyData?.changePercent || 0,
+      direction: dxyData && dxyData.change < 0 ? 'UP' : 'DOWN', // Weaker dollar = bullish for stocks
+      weight: 0.10, // 10% weight
+      score: dxyData ? (dxyData.change < 0 ? 1 : -1) : 0 // Inverted for dollar
     }
   ];
+
+  // Calculate weighted sentiment score
+  let weightedScore = 0;
+  let totalWeight = 0;
+  let bullishCount = 0;
+  let totalCount = 0;
 
   indicators.forEach(indicator => {
     if (indicator.direction === 'UP') bullishCount++;
     totalCount++;
+    
+    weightedScore += indicator.score * indicator.weight;
+    totalWeight += indicator.weight;
   });
 
-  const sentiment = bullishCount >= totalCount / 2 ? 'BULLISH' : 'BEARISH';
+  // Normalize weighted score to [-1, 1] range
+  const normalizedScore = totalWeight > 0 ? weightedScore / totalWeight : 0;
+  
+  // Enhanced sentiment determination with confidence levels
+  let sentiment: string;
+  let confidence: number;
+  
+  if (normalizedScore > 0.3) {
+    sentiment = 'BULLISH';
+    confidence = Math.min(0.9, 0.5 + Math.abs(normalizedScore) * 0.5);
+  } else if (normalizedScore < -0.3) {
+    sentiment = 'BEARISH';
+    confidence = Math.min(0.9, 0.5 + Math.abs(normalizedScore) * 0.5);
+  } else {
+    sentiment = 'NEUTRAL';
+    confidence = 0.3 + Math.abs(normalizedScore) * 0.4;
+  }
 
   return {
     sentiment,
-    indicators
+    indicators,
+    weightedScore: normalizedScore,
+    confidence,
+    bullishCount,
+    totalCount
   };
 }
 
@@ -2021,6 +2126,118 @@ app.post('/publish-opportunities', async (req, res) => {
     console.error('Error publishing opportunities:', error);
     res.status(500).json({ 
       error: 'Failed to publish opportunities',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// Publish improved scanner data endpoint
+app.post('/publish-scanner-data', async (req, res) => {
+  try {
+    const { 
+      opportunities, 
+      scan_timestamp, 
+      total_tickers, 
+      successful_scans, 
+      failed_scans, 
+      summary 
+    } = req.body;
+
+    if (!opportunities || !Array.isArray(opportunities)) {
+      return res.status(400).json({ error: 'Invalid scanner data' });
+    }
+
+    console.log(`🚀 Publishing improved scanner data: ${opportunities.length} opportunities`);
+
+    // Use existing trading_opportunities collection instead of new one
+    const batch = admin.firestore().batch();
+    
+    for (const opp of opportunities) {
+      const docRef = admin.firestore().collection('trading_opportunities').doc();
+      batch.set(docRef, {
+        ...opp,
+        created_at: admin.firestore.FieldValue.serverTimestamp(),
+        published: true,
+        data_source: 'improved_scanner',
+        scan_type: 'production_scanner'
+      });
+    }
+
+    await batch.commit();
+
+    // Store scan summary in existing collection
+    await admin.firestore().collection('scan_summaries').add({
+      scan_timestamp,
+      total_tickers,
+      successful_scans,
+      failed_scans,
+      summary,
+      opportunities_published: opportunities.length,
+      created_at: admin.firestore.FieldValue.serverTimestamp(),
+      published: true,
+      scan_type: 'production_scanner'
+    });
+
+    console.log(`✅ Published improved scanner data successfully`);
+    
+    res.json({
+      success: true,
+      message: `Published ${opportunities.length} scanner opportunities`,
+      timestamp: new Date().toISOString(),
+      summary
+    });
+
+  } catch (error) {
+    console.error('Error publishing scanner data:', error);
+    res.status(500).json({ 
+      error: 'Failed to publish scanner data',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// Get scanner opportunities for mobile app
+app.get('/scanner-opportunities', async (req, res) => {
+  try {
+    console.log('📱 Fetching scanner opportunities for mobile app');
+
+    // Get scanner opportunities from trading_opportunities collection
+    const opportunitiesSnapshot = await admin.firestore()
+      .collection('trading_opportunities')
+      .where('published', '==', true)
+      .where('data_source', '==', 'improved_scanner')
+      .orderBy('created_at', 'desc')
+      .limit(20)
+      .get();
+
+    const opportunities = opportunitiesSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    // Get latest scan summary
+    const summarySnapshot = await admin.firestore()
+      .collection('scan_summaries')
+      .where('scan_type', '==', 'production_scanner')
+      .orderBy('created_at', 'desc')
+      .limit(1)
+      .get();
+
+    const latestSummary = summarySnapshot.empty ? null : summarySnapshot.docs[0].data();
+
+    console.log(`✅ Retrieved ${opportunities.length} scanner opportunities`);
+
+    res.json({
+      success: true,
+      opportunities,
+      summary: latestSummary,
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error('Error fetching scanner opportunities:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch scanner opportunities',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
   }

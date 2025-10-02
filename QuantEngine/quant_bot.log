@@ -7500,3 +7500,1911 @@ connector: <aiohttp.connector.TCPConnector object at 0x1305638c0>
 2025-09-22 10:09:28,182 - QuantBot - INFO - Received signal 2, initiating shutdown...
 2025-09-22 10:09:28,373 - QuantBot - INFO - Received signal 2, initiating shutdown...
 2025-09-22 10:09:28,626 - QuantBot - INFO - Received signal 2, initiating shutdown...
+2025-09-23 08:17:49,671 - QuantBot - INFO - 🚀 Starting QuantEngine Autonomous Trading System
+2025-09-23 08:17:49,671 - QuantBot - INFO - ============================================================
+2025-09-23 08:17:49,684 - QuantBot - INFO - 🤖 QuantBot initialized
+2025-09-23 08:17:49,684 - QuantBot - INFO - 🔄 Starting 24/7 autonomous operation
+2025-09-23 08:17:49,685 - QuantBot - INFO - 🚀 Starting QuantBot autonomous trading system
+2025-09-23 08:17:49,685 - QuantBot - INFO - 🔧 Initializing bot components...
+2025-09-23 08:17:50,379 - engine.data_ingestion.live_data_manager - INFO - 🔴 LiveDataManager initialized
+2025-09-23 08:17:51,626 - QuantBot - INFO - ✅ All components initialized successfully
+2025-09-23 08:17:51,626 - engine.data_ingestion.live_data_manager - INFO - ✅ Live data session initialized
+2025-09-23 08:17:51,833 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data.db
+2025-09-23 08:17:51,834 - data_broker - INFO - QuantBotDataBroker: Using SQLite (Development Mode) - /Users/kody/base/MarketNews/QuantEngine/quantbot_data.db
+2025-09-23 08:17:51,834 - QuantBot - INFO - 🔄 Starting main autonomous loop
+2025-09-23 08:17:51,834 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 08:18:28,048 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 08:18:28,539 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 08:18:28,548 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 08:18:28,548 - QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-23 08:18:28,548 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 08:18:30,626 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 08:18:30,627 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 08:18:30,627 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 08:18:30,627 - QuantBot - INFO - 🎭 Checking market regime...
+2025-09-23 08:18:41,438 - engine.research.regime_detector - INFO - 🎭 Detected regime: ranging (confidence: 66.7%)
+2025-09-23 08:18:41,439 - QuantBot - INFO - 📈 Market regime changed: unknown → ranging
+2025-09-23 08:18:41,439 - QuantBot - INFO - 🔄 Adapting to regime change: {'regime': 'ranging', 'confidence': 0.6666666666666667, 'indicators': {'correlation_spread': 0.0, 'trend_strength': 0.0, 'volatility': 0.0, 'momentum': 0.0, 'volume_trend': 0.0, 'put_call_ratio': 0.0, 'vix_level': 0.0}, 'secondary_regimes': ['bull_market', 'bear_market', 'high_volatility', 'low_volatility', 'risk_on', 'risk_off', 'trending'], 'regime_score': 1.0, 'timestamp': '2025-09-23T08:18:41.438697', 'market_data_quality': 'poor'}
+2025-09-23 08:18:41,439 - QuantBot - INFO - ✅ Strategies adapted to new regime
+2025-09-23 08:18:41,442 - data_broker - INFO - 💾 Saved market analysis to database
+2025-09-23 08:18:41,442 - QuantBot - INFO - ✅ Current regime: ranging (confidence: 66.7%)
+2025-09-23 08:18:41,442 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 08:18:51,232 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 08:18:51,232 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 08:18:51,232 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 08:18:51,234 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 08:18:51,234 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 08:18:51,236 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 08:18:51,236 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 08:18:51,237 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 08:18:51,237 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 08:18:51,237 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 08:18:51,237 - QuantBot - INFO - 🧪 Researching new strategies...
+2025-09-23 08:18:51,237 - engine.research.strategy_optimizer - INFO - 🧪 Researching strategies for ranging regime
+2025-09-23 08:18:51,789 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,790 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,790 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,790 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,790 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,790 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,790 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,790 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,790 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,790 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,790 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,790 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,790 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,790 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,790 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,790 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,790 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,790 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,790 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,790 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 08:18:51,794 - engine.research.strategy_optimizer - INFO - ✅ Generated 37 new strategies
+2025-09-23 08:18:51,794 - QuantBot - INFO - ✅ Strategy portfolio: 0 active strategies
+2025-09-23 08:19:21,795 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 08:19:57,984 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 08:19:58,523 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 08:19:58,528 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 08:19:58,529 - QuantBot - INFO - 📰 Market sentiment: 0.30 (from 20 articles)
+2025-09-23 08:19:58,529 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 08:20:00,520 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 08:20:00,520 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 08:20:00,520 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 08:20:30,522 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 08:21:06,737 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 08:21:07,287 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 08:21:07,292 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 08:21:07,293 - QuantBot - INFO - 📰 Market sentiment: 0.30 (from 20 articles)
+2025-09-23 08:21:07,293 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 08:21:08,750 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 08:21:08,750 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 08:21:08,750 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 08:21:39,238 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 08:22:15,754 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 08:22:16,270 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 08:22:16,299 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 08:22:16,299 - QuantBot - INFO - 📰 Market sentiment: 0.30 (from 20 articles)
+2025-09-23 08:22:16,299 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 08:22:18,108 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 08:22:18,108 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 08:22:18,108 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 08:22:48,110 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 08:23:24,290 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 08:23:24,936 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 08:23:24,941 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 08:23:24,941 - QuantBot - INFO - 📰 Market sentiment: 0.30 (from 20 articles)
+2025-09-23 08:23:24,942 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 08:23:26,632 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 08:23:26,641 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 08:23:26,641 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 08:23:56,643 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 08:24:32,850 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 08:24:33,277 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 08:24:33,280 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 08:24:33,280 - QuantBot - INFO - 📰 Market sentiment: 0.30 (from 20 articles)
+2025-09-23 08:24:33,280 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 08:24:34,731 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 08:24:34,731 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 08:24:34,731 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 08:24:34,731 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 08:24:42,443 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 08:24:42,444 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 08:24:42,444 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 08:24:42,445 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 08:24:42,445 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 08:24:42,447 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 08:24:42,447 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 08:24:42,447 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 08:24:42,447 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 08:24:42,447 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 08:25:12,450 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 08:25:48,677 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 08:25:49,207 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 08:25:49,211 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 08:25:49,211 - QuantBot - INFO - 📰 Market sentiment: 0.30 (from 20 articles)
+2025-09-23 08:25:49,211 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 08:25:50,923 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 08:25:50,923 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 08:25:50,923 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 08:26:20,925 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 08:26:57,095 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 08:26:57,591 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 08:26:57,596 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 08:26:57,596 - QuantBot - INFO - 📰 Market sentiment: 0.35 (from 20 articles)
+2025-09-23 08:26:57,596 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 08:26:58,988 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 08:26:58,988 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 08:26:58,989 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 08:27:28,990 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 08:28:05,157 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 08:28:05,682 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 08:28:05,688 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 08:28:05,688 - QuantBot - INFO - 📰 Market sentiment: 0.35 (from 20 articles)
+2025-09-23 08:28:05,688 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 08:28:07,203 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 08:28:07,203 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 08:28:07,203 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 08:28:37,205 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 08:29:13,371 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 08:29:13,897 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 08:29:13,903 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 08:29:13,903 - QuantBot - INFO - 📰 Market sentiment: 0.35 (from 20 articles)
+2025-09-23 08:29:13,903 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 08:29:15,620 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 08:29:15,620 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 08:29:15,620 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 08:29:45,622 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 08:30:21,776 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 08:30:22,389 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 08:30:22,393 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 08:30:22,394 - QuantBot - INFO - 📰 Market sentiment: 0.35 (from 20 articles)
+2025-09-23 08:30:22,394 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 08:30:24,380 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 08:30:24,380 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 08:30:24,380 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 08:30:24,380 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 08:30:32,049 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 08:30:32,049 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 08:30:32,049 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 08:30:32,050 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 08:30:32,050 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 08:30:32,054 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 08:30:32,054 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 08:30:32,054 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 08:30:32,054 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 08:30:32,054 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 08:31:05,667 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 08:31:41,863 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 08:31:42,599 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 08:31:42,603 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 08:31:42,603 - QuantBot - INFO - 📰 Market sentiment: 0.35 (from 20 articles)
+2025-09-23 08:31:42,603 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 08:31:44,200 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 08:31:44,200 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 08:31:44,200 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 08:32:14,201 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 08:32:50,461 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 08:32:50,972 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 08:32:50,976 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 08:32:50,977 - QuantBot - INFO - 📰 Market sentiment: 0.35 (from 20 articles)
+2025-09-23 08:32:50,977 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 08:32:52,565 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 08:32:52,566 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 08:32:52,566 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 08:33:22,567 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 08:33:58,743 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 08:33:59,283 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 08:33:59,288 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 08:33:59,288 - QuantBot - INFO - 📰 Market sentiment: 0.35 (from 20 articles)
+2025-09-23 08:33:59,288 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 08:34:00,945 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 08:34:00,945 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 08:34:00,945 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 08:34:00,945 - QuantBot - INFO - 🎭 Checking market regime...
+2025-09-23 08:34:12,738 - engine.research.regime_detector - INFO - 🎭 Detected regime: ranging (confidence: 66.7%)
+2025-09-23 08:34:12,744 - data_broker - INFO - 💾 Saved market analysis to database
+2025-09-23 08:34:12,744 - QuantBot - INFO - ✅ Current regime: ranging (confidence: 66.7%)
+2025-09-23 08:34:42,749 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 08:35:19,000 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 08:35:19,544 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 08:35:19,550 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 08:35:19,550 - QuantBot - INFO - 📰 Market sentiment: 0.35 (from 20 articles)
+2025-09-23 08:35:19,550 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 08:35:21,146 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 08:35:21,146 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 08:35:21,146 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 08:35:51,150 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 08:40:49,201 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 08:40:49,717 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 08:40:49,722 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 08:40:49,722 - QuantBot - INFO - 📰 Market sentiment: 0.35 (from 20 articles)
+2025-09-23 08:40:49,722 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 08:40:51,350 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 08:40:51,351 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 08:40:51,351 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 08:40:51,351 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 08:41:36,039 - engine.data_ingestion.live_data_manager - WARNING - Failed to fetch GDP: 
+2025-09-23 08:41:37,582 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for /: 'dict' and 'int'
+2025-09-23 08:41:37,583 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 08:41:37,584 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 08:41:37,586 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 08:41:37,587 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 08:41:37,593 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 08:41:37,593 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 08:41:37,593 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 08:41:37,593 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 08:41:37,593 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 08:42:07,595 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 08:42:43,733 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 08:42:44,181 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 08:42:44,186 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 08:42:44,186 - QuantBot - INFO - 📰 Market sentiment: 0.35 (from 20 articles)
+2025-09-23 08:42:44,186 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 08:42:45,802 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 08:42:45,802 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 08:42:45,802 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 08:42:45,802 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 08:42:53,574 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 08:42:53,574 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 08:42:53,575 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 08:42:53,575 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 08:42:53,575 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 08:42:53,578 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 08:42:53,579 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 08:42:53,579 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 08:42:53,579 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 08:42:53,579 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 08:43:23,580 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 08:43:59,721 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 08:44:00,150 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 08:44:00,156 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 08:44:00,157 - QuantBot - INFO - 📰 Market sentiment: 0.35 (from 20 articles)
+2025-09-23 08:44:00,157 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 08:44:02,149 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 08:44:02,150 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 08:44:02,150 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 08:44:32,151 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 08:45:08,436 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 08:45:09,151 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 08:45:09,155 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 08:45:09,155 - QuantBot - INFO - 📰 Market sentiment: 0.35 (from 20 articles)
+2025-09-23 08:45:09,155 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 08:45:11,047 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 08:45:11,047 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 08:45:11,047 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 08:45:41,049 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 08:46:01,236 - QuantBot - INFO - Received signal 2, initiating shutdown...
+2025-09-23 08:46:05,155 - QuantBot - INFO - Received signal 2, initiating shutdown...
+2025-09-23 08:46:05,559 - QuantBot - INFO - Received signal 2, initiating shutdown...
+2025-09-23 08:46:05,784 - QuantBot - INFO - Received signal 2, initiating shutdown...
+2025-09-23 08:46:06,018 - QuantBot - INFO - Received signal 2, initiating shutdown...
+2025-09-23 08:46:17,188 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 08:46:17,798 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 08:46:17,803 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 08:46:17,803 - QuantBot - INFO - 📰 Market sentiment: 0.35 (from 20 articles)
+2025-09-23 08:46:17,803 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 08:46:20,711 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 08:46:20,712 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 08:46:20,712 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 08:46:50,712 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 08:47:26,850 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 08:47:27,281 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 08:47:27,284 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 08:47:27,284 - QuantBot - INFO - 📰 Market sentiment: 0.35 (from 20 articles)
+2025-09-23 08:47:27,285 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 08:47:28,944 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 08:47:28,944 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 08:47:28,944 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 08:47:58,945 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 08:48:35,085 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 08:48:35,524 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 08:48:35,530 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 08:48:35,530 - QuantBot - INFO - 📰 Market sentiment: 0.35 (from 20 articles)
+2025-09-23 08:48:35,530 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 08:48:37,039 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 08:48:37,039 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 08:48:37,039 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 08:48:37,039 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 08:48:45,092 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 08:48:45,092 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 08:48:45,092 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 08:48:45,093 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 08:48:45,093 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 08:48:45,094 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 08:48:45,094 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 08:48:45,094 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 08:48:45,094 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 08:48:45,094 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 08:49:15,112 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 09:54:47,803 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 09:54:48,262 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 09:54:48,269 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 09:54:48,270 - QuantBot - INFO - 📰 Market sentiment: 0.30 (from 20 articles)
+2025-09-23 09:54:48,270 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 09:54:50,159 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 09:54:50,159 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 09:54:50,159 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 09:54:50,160 - QuantBot - INFO - 🎭 Checking market regime...
+2025-09-23 09:55:00,632 - engine.research.regime_detector - INFO - 🎭 Detected regime: ranging (confidence: 66.7%)
+2025-09-23 09:55:00,637 - data_broker - INFO - 💾 Saved market analysis to database
+2025-09-23 09:55:00,637 - QuantBot - INFO - ✅ Current regime: ranging (confidence: 66.7%)
+2025-09-23 09:55:30,640 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 09:56:06,781 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 09:56:07,201 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 09:56:07,205 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 09:56:07,205 - QuantBot - INFO - 📰 Market sentiment: 0.30 (from 20 articles)
+2025-09-23 09:56:07,205 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 09:56:08,565 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 09:56:08,565 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 09:56:08,565 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 09:56:08,565 - QuantBot - INFO - 🎭 Checking market regime...
+2025-09-23 09:56:18,976 - engine.research.regime_detector - INFO - 🎭 Detected regime: ranging (confidence: 66.7%)
+2025-09-23 09:56:18,977 - data_broker - INFO - 💾 Saved market analysis to database
+2025-09-23 09:56:18,977 - QuantBot - INFO - ✅ Current regime: ranging (confidence: 66.7%)
+2025-09-23 09:56:18,977 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 09:56:29,036 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 09:56:29,037 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 09:56:29,037 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 09:56:29,037 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 09:56:29,037 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 09:56:29,040 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 09:56:29,040 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 09:56:29,040 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 09:56:29,040 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 09:56:29,040 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 09:56:29,040 - QuantBot - INFO - 🧪 Researching new strategies...
+2025-09-23 09:56:29,041 - engine.research.strategy_optimizer - INFO - 🧪 Researching strategies for ranging regime
+2025-09-23 09:56:29,047 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,050 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,051 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 09:56:29,057 - engine.research.strategy_optimizer - INFO - ✅ Generated 45 new strategies
+2025-09-23 09:56:29,057 - QuantBot - INFO - ✅ Strategy portfolio: 0 active strategies
+2025-09-23 09:56:59,063 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 09:57:35,193 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 09:57:35,608 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 09:57:35,612 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 09:57:35,612 - QuantBot - INFO - 📰 Market sentiment: 0.30 (from 20 articles)
+2025-09-23 09:57:35,613 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 09:57:36,969 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 09:57:36,969 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 09:57:36,969 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 09:58:06,971 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 09:58:43,127 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 09:58:43,582 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 09:58:43,608 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 09:58:43,609 - QuantBot - INFO - 📰 Market sentiment: 0.30 (from 20 articles)
+2025-09-23 09:58:43,611 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 09:58:45,583 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 09:58:45,584 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 09:58:45,584 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 09:59:15,585 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 09:59:51,793 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 09:59:52,192 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 09:59:52,198 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 09:59:52,198 - QuantBot - INFO - 📰 Market sentiment: 0.30 (from 20 articles)
+2025-09-23 09:59:52,198 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 09:59:53,604 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 09:59:53,604 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 09:59:53,604 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 10:00:23,606 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 10:00:59,771 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 10:01:00,190 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 10:01:00,194 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 10:01:00,194 - QuantBot - INFO - 📰 Market sentiment: 0.30 (from 20 articles)
+2025-09-23 10:01:00,194 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 10:01:01,884 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 10:01:01,884 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 10:01:01,884 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 10:16:32,145 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 10:31:02,890 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 10:31:02,899 - engine.data_ingestion.live_data_manager - ERROR - Error fetching live news: Cannot connect to host financialmodelingprep.com:443 ssl:default [nodename nor servname provided, or not known]
+2025-09-23 10:31:02,899 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 10:31:02,904 - engine.data_ingestion.live_data_manager - WARNING - Failed to fetch GDP: Cannot connect to host api.stlouisfed.org:443 ssl:default [nodename nor servname provided, or not known]
+2025-09-23 10:31:02,906 - engine.data_ingestion.live_data_manager - WARNING - Failed to fetch UNRATE: Cannot connect to host api.stlouisfed.org:443 ssl:default [nodename nor servname provided, or not known]
+2025-09-23 10:31:02,908 - engine.data_ingestion.live_data_manager - WARNING - Failed to fetch CPIAUCSL: Cannot connect to host api.stlouisfed.org:443 ssl:default [nodename nor servname provided, or not known]
+2025-09-23 10:31:02,910 - engine.data_ingestion.live_data_manager - WARNING - Failed to fetch FEDFUNDS: Cannot connect to host api.stlouisfed.org:443 ssl:default [nodename nor servname provided, or not known]
+2025-09-23 10:31:02,911 - engine.data_ingestion.live_data_manager - WARNING - Failed to fetch PAYEMS: Cannot connect to host api.stlouisfed.org:443 ssl:default [nodename nor servname provided, or not known]
+2025-09-23 10:31:02,912 - engine.data_ingestion.live_data_manager - WARNING - Failed to fetch INDPRO: Cannot connect to host api.stlouisfed.org:443 ssl:default [nodename nor servname provided, or not known]
+2025-09-23 10:31:02,913 - engine.data_ingestion.live_data_manager - WARNING - Failed to fetch HOUST: Cannot connect to host api.stlouisfed.org:443 ssl:default [nodename nor servname provided, or not known]
+2025-09-23 10:31:02,914 - engine.data_ingestion.live_data_manager - WARNING - Failed to fetch DGS10: Cannot connect to host api.stlouisfed.org:443 ssl:default [nodename nor servname provided, or not known]
+2025-09-23 10:31:02,917 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 10:31:02,917 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 10:31:02,917 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 10:31:02,917 - QuantBot - INFO - 🎭 Checking market regime...
+2025-09-23 10:39:30,585 - engine.research.regime_detector - INFO - 🎭 Detected regime: ranging (confidence: 66.7%)
+2025-09-23 10:39:30,588 - data_broker - INFO - 💾 Saved market analysis to database
+2025-09-23 10:39:30,588 - QuantBot - INFO - ✅ Current regime: ranging (confidence: 66.7%)
+2025-09-23 10:39:30,588 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 10:39:40,803 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 10:39:40,804 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 10:39:40,804 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 10:39:40,805 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 10:39:40,806 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 10:39:40,810 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 10:39:40,810 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 10:39:40,810 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 10:39:40,810 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 10:39:40,810 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 10:41:01,923 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 10:41:38,091 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 10:41:38,677 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 10:41:38,682 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 10:41:38,682 - QuantBot - INFO - 📰 Market sentiment: 0.23 (from 20 articles)
+2025-09-23 10:41:38,683 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 10:41:40,750 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 10:41:40,750 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 10:41:40,750 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 10:41:40,750 - QuantBot - INFO - 🎭 Checking market regime...
+2025-09-23 10:41:51,242 - engine.research.regime_detector - INFO - 🎭 Detected regime: ranging (confidence: 66.7%)
+2025-09-23 10:41:51,246 - data_broker - INFO - 💾 Saved market analysis to database
+2025-09-23 10:41:51,246 - QuantBot - INFO - ✅ Current regime: ranging (confidence: 66.7%)
+2025-09-23 10:41:51,246 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 10:42:00,953 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 10:42:00,953 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 10:42:00,954 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 10:42:00,955 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 10:42:00,955 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 10:42:00,957 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 10:42:00,958 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 10:42:00,958 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 10:42:00,958 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 10:42:00,958 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 10:42:30,959 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 10:43:07,158 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 10:43:07,680 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 10:43:07,686 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 10:43:07,686 - QuantBot - INFO - 📰 Market sentiment: 0.23 (from 20 articles)
+2025-09-23 10:43:07,686 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 10:43:09,227 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 10:43:09,227 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 10:43:09,228 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 10:43:39,228 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 10:48:40,900 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 10:48:41,575 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 10:48:41,586 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 10:48:41,586 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 10:48:41,586 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 10:48:47,288 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 10:48:47,289 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 10:48:47,289 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 10:49:17,291 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 10:49:53,460 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 10:49:53,946 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 10:49:53,951 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 10:49:53,951 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 10:49:53,951 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 10:49:55,589 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 10:49:55,589 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 10:49:55,589 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 10:49:55,589 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 10:50:03,278 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 10:50:03,279 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 10:50:03,279 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 10:50:03,281 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 10:50:03,281 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 10:50:03,284 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 10:50:03,284 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 10:50:03,284 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 10:50:03,284 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 10:50:03,284 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 10:50:33,286 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 10:51:09,442 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 10:51:09,921 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 10:51:09,926 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 10:51:09,927 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 10:51:09,927 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 10:51:11,680 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 10:51:11,680 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 10:51:11,680 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 10:57:37,712 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 10:58:13,963 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 10:58:14,636 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 10:58:14,642 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 10:58:14,642 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 10:58:14,642 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 10:58:16,588 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 10:58:16,588 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 10:58:16,588 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 10:58:16,588 - QuantBot - INFO - 🎭 Checking market regime...
+2025-09-23 10:58:27,005 - engine.research.regime_detector - INFO - 🎭 Detected regime: ranging (confidence: 66.7%)
+2025-09-23 10:58:27,007 - data_broker - INFO - 💾 Saved market analysis to database
+2025-09-23 10:58:27,007 - QuantBot - INFO - ✅ Current regime: ranging (confidence: 66.7%)
+2025-09-23 10:58:27,007 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 10:58:36,666 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 10:58:36,666 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 10:58:36,666 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 10:58:36,667 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 10:58:36,667 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 10:58:36,671 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 10:58:36,671 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 10:58:36,671 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 10:58:36,671 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 10:58:36,671 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 10:58:36,671 - QuantBot - INFO - 🧪 Researching new strategies...
+2025-09-23 10:58:36,671 - engine.research.strategy_optimizer - INFO - 🧪 Researching strategies for ranging regime
+2025-09-23 10:58:36,674 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,676 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,676 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,676 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,676 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,684 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,684 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,684 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,684 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,684 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,684 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,684 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,684 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,684 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,684 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,684 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,684 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,684 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,684 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,684 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,684 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,684 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,684 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,684 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,684 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,684 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,684 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,684 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,685 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,686 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,686 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,686 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 10:58:36,690 - engine.research.strategy_optimizer - INFO - ✅ Generated 32 new strategies
+2025-09-23 10:58:36,690 - QuantBot - INFO - ✅ Strategy portfolio: 0 active strategies
+2025-09-23 10:59:06,691 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 10:59:43,024 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 10:59:43,691 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 10:59:43,699 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 10:59:43,699 - QuantBot - INFO - 📰 Market sentiment: 0.33 (from 20 articles)
+2025-09-23 10:59:43,699 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 10:59:45,941 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 10:59:45,941 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 10:59:45,941 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:00:15,942 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:00:52,145 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:00:52,677 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:00:52,682 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:00:52,682 - QuantBot - INFO - 📰 Market sentiment: 0.33 (from 20 articles)
+2025-09-23 11:00:52,682 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:00:54,221 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:00:54,221 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:00:54,221 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:01:24,222 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:02:00,396 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:02:00,908 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:02:00,912 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:02:00,912 - QuantBot - INFO - 📰 Market sentiment: 0.33 (from 20 articles)
+2025-09-23 11:02:00,912 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:02:03,007 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:02:03,007 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:02:03,007 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:02:33,009 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:04:52,264 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:04:53,107 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:04:53,111 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:04:53,111 - QuantBot - INFO - 📰 Market sentiment: 0.33 (from 20 articles)
+2025-09-23 11:04:53,111 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:04:55,083 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:04:55,084 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:04:55,084 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:05:25,089 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:06:01,290 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:06:01,832 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:06:01,836 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:06:01,836 - QuantBot - INFO - 📰 Market sentiment: 0.33 (from 20 articles)
+2025-09-23 11:06:01,837 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:06:04,278 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:06:04,278 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:06:04,278 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:06:04,278 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 11:06:12,465 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 11:06:12,465 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 11:06:12,465 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 11:06:12,466 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 11:06:12,467 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 11:06:12,469 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 11:06:12,469 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 11:06:12,469 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 11:06:12,469 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 11:06:12,469 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 11:06:42,471 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:07:18,629 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:07:19,152 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:07:19,158 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:07:19,158 - QuantBot - INFO - 📰 Market sentiment: 0.33 (from 20 articles)
+2025-09-23 11:07:19,158 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:07:22,395 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:07:22,395 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:07:22,395 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:07:52,397 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:08:28,598 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:08:29,116 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:08:29,123 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:08:29,123 - QuantBot - INFO - 📰 Market sentiment: 0.33 (from 20 articles)
+2025-09-23 11:08:29,123 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:08:31,185 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:08:31,185 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:08:31,186 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:09:01,187 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:09:38,920 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:09:39,447 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:09:39,454 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:09:39,454 - QuantBot - INFO - 📰 Market sentiment: 0.33 (from 20 articles)
+2025-09-23 11:09:39,455 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:09:41,079 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:09:41,079 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:09:41,079 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:11:15,193 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:37:30,844 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:37:31,934 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:37:31,995 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:37:31,995 - QuantBot - INFO - 📰 Market sentiment: 0.33 (from 20 articles)
+2025-09-23 11:37:31,996 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:37:35,022 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:37:35,022 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:37:35,022 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:37:35,022 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 11:37:42,861 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 11:37:42,862 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 11:37:42,863 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 11:37:42,864 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 11:37:42,864 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 11:37:42,868 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 11:37:42,868 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 11:37:42,868 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 11:37:42,868 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 11:37:42,868 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 11:38:12,865 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:38:49,069 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:38:49,702 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:38:49,710 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:38:49,711 - QuantBot - INFO - 📰 Market sentiment: 0.33 (from 20 articles)
+2025-09-23 11:38:49,711 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:38:51,837 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:38:51,837 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:38:51,838 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:38:51,838 - QuantBot - INFO - 🎭 Checking market regime...
+2025-09-23 11:39:02,361 - engine.research.regime_detector - INFO - 🎭 Detected regime: ranging (confidence: 66.7%)
+2025-09-23 11:39:02,363 - data_broker - INFO - 💾 Saved market analysis to database
+2025-09-23 11:39:02,363 - QuantBot - INFO - ✅ Current regime: ranging (confidence: 66.7%)
+2025-09-23 11:39:02,363 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 11:39:12,322 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 11:39:12,323 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 11:39:12,323 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 11:39:12,324 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 11:39:12,324 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 11:39:12,328 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 11:39:12,328 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 11:39:12,328 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 11:39:12,328 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 11:39:12,328 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 11:39:42,328 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:40:18,765 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:40:19,229 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:40:19,235 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:40:19,235 - QuantBot - INFO - 📰 Market sentiment: 0.33 (from 20 articles)
+2025-09-23 11:40:19,235 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:40:21,566 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:40:21,566 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:40:21,566 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:40:51,567 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:41:27,794 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:41:28,714 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:41:28,719 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:41:28,720 - QuantBot - INFO - 📰 Market sentiment: 0.33 (from 20 articles)
+2025-09-23 11:41:28,720 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:41:30,917 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:41:30,917 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:41:30,917 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:42:00,918 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:42:37,290 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:42:37,833 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:42:37,839 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:42:37,839 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 11:42:37,839 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:42:39,782 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:42:39,782 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:42:39,782 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:43:09,783 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:43:46,042 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:43:46,656 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:43:46,662 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:43:46,662 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 11:43:46,662 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:43:48,554 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:43:48,554 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:43:48,555 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:44:18,555 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:44:54,705 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:44:55,215 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:44:55,221 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:44:55,221 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 11:44:55,221 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:44:57,370 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:44:57,370 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:44:57,370 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:44:57,370 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 11:45:05,787 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 11:45:05,788 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 11:45:05,788 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 11:45:05,790 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 11:45:05,790 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 11:45:05,795 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 11:45:05,795 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 11:45:05,795 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 11:45:05,795 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 11:45:05,795 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 11:45:35,798 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:46:11,994 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:46:12,522 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:46:12,532 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:46:12,532 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 11:46:12,532 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:46:16,706 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:46:16,706 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:46:16,706 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:46:46,707 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:47:23,051 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:47:24,068 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:47:24,073 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:47:24,073 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 11:47:24,073 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:47:26,817 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:47:26,817 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:47:26,817 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:47:56,818 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:48:33,113 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:48:33,641 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:48:33,648 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:48:33,648 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 11:48:33,648 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:48:36,739 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:48:36,741 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:48:36,741 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:49:06,776 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:49:43,079 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:49:43,569 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:49:43,573 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:49:43,573 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 11:49:43,573 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:49:45,915 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:49:45,915 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:49:45,916 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:50:15,916 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:50:54,423 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:50:55,209 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:50:55,215 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:50:55,215 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 11:50:55,215 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:50:57,042 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:50:57,042 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:50:57,042 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:50:57,042 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 11:51:06,316 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 11:51:06,317 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 11:51:06,317 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 11:51:06,318 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 11:51:06,318 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 11:51:06,322 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 11:51:06,322 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 11:51:06,322 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 11:51:06,322 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 11:51:06,322 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 11:51:36,326 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:52:12,501 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:52:12,992 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:52:12,998 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:52:12,998 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 11:52:12,998 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:52:15,054 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:52:15,055 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:52:15,055 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:52:45,082 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:53:21,289 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:53:21,920 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:53:21,926 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:53:21,926 - QuantBot - INFO - 📰 Market sentiment: 0.23 (from 20 articles)
+2025-09-23 11:53:21,926 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:53:25,074 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:53:25,074 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:53:25,074 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:53:55,078 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:54:31,224 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:54:31,701 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:54:31,710 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:54:31,710 - QuantBot - INFO - 📰 Market sentiment: 0.23 (from 20 articles)
+2025-09-23 11:54:31,710 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:54:33,921 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:54:33,921 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:54:33,921 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:54:33,921 - QuantBot - INFO - 🎭 Checking market regime...
+2025-09-23 11:54:44,310 - engine.research.regime_detector - INFO - 🎭 Detected regime: ranging (confidence: 66.7%)
+2025-09-23 11:54:44,313 - data_broker - INFO - 💾 Saved market analysis to database
+2025-09-23 11:54:44,313 - QuantBot - INFO - ✅ Current regime: ranging (confidence: 66.7%)
+2025-09-23 11:55:14,314 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:55:50,745 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:55:51,240 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:55:51,244 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:55:51,244 - QuantBot - INFO - 📰 Market sentiment: 0.23 (from 20 articles)
+2025-09-23 11:55:51,244 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:55:52,969 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:55:52,969 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:55:52,969 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:56:22,970 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:56:59,212 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:56:59,849 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:56:59,854 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:56:59,854 - QuantBot - INFO - 📰 Market sentiment: 0.23 (from 20 articles)
+2025-09-23 11:56:59,854 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:57:02,180 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:57:02,180 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:57:02,180 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:57:02,180 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 11:57:10,190 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 11:57:10,190 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 11:57:10,190 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 11:57:10,191 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 11:57:10,191 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 11:57:10,193 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 11:57:10,193 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 11:57:10,193 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 11:57:10,193 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 11:57:10,193 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 11:57:40,195 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:58:16,693 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:58:24,799 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:58:24,804 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:58:24,804 - QuantBot - INFO - 📰 Market sentiment: 0.23 (from 20 articles)
+2025-09-23 11:58:24,804 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:58:26,778 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:58:26,779 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:58:26,779 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 11:58:26,779 - QuantBot - INFO - 🧪 Researching new strategies...
+2025-09-23 11:58:26,780 - engine.research.strategy_optimizer - INFO - 🧪 Researching strategies for ranging regime
+2025-09-23 11:58:26,788 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,791 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,792 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,793 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,793 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,793 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,793 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,793 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,793 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,793 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,793 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,793 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,793 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,793 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,793 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,793 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,794 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,794 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,794 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,794 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,794 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,794 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,794 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,794 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,794 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,794 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,794 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,794 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 11:58:26,799 - engine.research.strategy_optimizer - INFO - ✅ Generated 32 new strategies
+2025-09-23 11:58:26,799 - QuantBot - INFO - ✅ Strategy portfolio: 0 active strategies
+2025-09-23 11:58:56,801 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 11:59:34,004 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 11:59:34,611 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 11:59:34,616 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 11:59:34,616 - QuantBot - INFO - 📰 Market sentiment: 0.23 (from 20 articles)
+2025-09-23 11:59:34,617 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 11:59:37,780 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 11:59:37,781 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 11:59:37,781 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:00:07,781 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:00:43,959 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:00:44,487 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:00:44,491 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:00:44,491 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 12:00:44,491 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:00:46,084 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:00:46,084 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:00:46,085 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:01:16,086 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:01:52,259 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:01:52,775 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:01:52,781 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:01:52,781 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 12:01:52,781 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:01:54,450 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:01:54,450 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:01:54,450 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:02:24,452 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:03:00,601 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:03:01,182 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:03:01,187 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:03:01,187 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 12:03:01,187 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:03:02,901 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:03:02,901 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:03:02,901 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:03:02,902 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 12:03:10,439 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 12:03:10,442 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 12:03:10,443 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 12:03:10,444 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 12:03:10,444 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 12:03:10,449 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 12:03:10,449 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 12:03:10,449 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 12:03:10,449 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 12:03:10,449 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 12:03:40,452 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:04:17,869 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:04:18,406 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:04:18,412 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:04:18,412 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 12:04:18,412 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:04:20,269 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:04:20,270 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:04:20,270 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:04:50,271 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:05:26,462 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:05:26,987 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:05:26,991 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:05:26,991 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 12:05:26,991 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:05:29,176 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:05:29,176 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:05:29,177 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:05:59,178 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:06:52,129 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:06:53,561 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:06:53,565 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:06:53,565 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 12:06:53,565 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:06:55,859 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:06:55,859 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:06:55,859 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:07:25,860 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:08:02,023 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:08:02,492 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:08:02,497 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:08:02,498 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 12:08:02,498 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:08:04,886 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:08:04,886 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:08:04,886 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:08:04,887 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 12:08:12,588 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 12:08:12,590 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 12:08:12,590 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 12:08:12,591 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 12:08:12,591 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 12:08:12,598 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 12:08:12,598 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 12:08:12,599 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 12:08:12,599 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 12:08:12,599 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 12:08:42,601 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:09:18,944 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:09:19,614 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:09:19,618 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:09:19,618 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 12:09:19,619 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:09:21,770 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:09:21,770 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:09:21,770 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:09:51,773 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:10:28,157 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:10:29,063 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:10:29,071 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:10:29,071 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 12:10:29,071 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:10:33,748 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:10:33,748 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:10:33,748 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:10:33,748 - QuantBot - INFO - 🎭 Checking market regime...
+2025-09-23 12:10:44,446 - engine.research.regime_detector - INFO - 🎭 Detected regime: ranging (confidence: 66.7%)
+2025-09-23 12:10:44,450 - data_broker - INFO - 💾 Saved market analysis to database
+2025-09-23 12:10:44,450 - QuantBot - INFO - ✅ Current regime: ranging (confidence: 66.7%)
+2025-09-23 12:11:14,451 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:11:50,640 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:11:51,154 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:11:51,159 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:11:51,159 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 12:11:51,159 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:11:53,189 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:11:53,189 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:11:53,189 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:12:23,214 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:12:59,652 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:13:00,330 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:13:00,336 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:13:00,336 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 12:13:00,336 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:13:02,039 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:13:02,039 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:13:02,039 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:13:32,043 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:14:08,294 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:14:08,851 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:14:08,856 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:14:08,856 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 12:14:08,856 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:14:11,567 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:14:11,567 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:14:11,567 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:14:11,568 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 12:14:19,348 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 12:14:19,349 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 12:14:19,349 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 12:14:19,350 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 12:14:19,350 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 12:14:19,354 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 12:14:19,354 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 12:14:19,355 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 12:14:19,355 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 12:14:19,355 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 12:14:49,356 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:15:34,214 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:15:40,880 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:15:40,887 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:15:40,887 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 12:15:40,888 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:15:44,191 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:15:44,191 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:15:44,191 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:16:14,193 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:17:37,595 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:17:38,213 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:17:38,219 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:17:38,219 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 12:17:38,219 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:17:41,454 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:17:41,454 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:17:41,454 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:18:11,456 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:18:58,266 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:18:58,807 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:18:58,809 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:18:58,809 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 12:18:58,809 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:19:01,328 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:19:01,328 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:19:01,328 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:19:31,331 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:20:09,339 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:20:10,741 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:20:10,745 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:20:10,745 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 12:20:10,745 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:20:13,033 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:20:13,033 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:20:13,033 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:20:13,033 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 12:20:20,980 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 12:20:20,980 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 12:20:20,980 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 12:20:20,981 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 12:20:20,981 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 12:20:20,983 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 12:20:20,983 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 12:20:20,983 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 12:20:20,983 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 12:20:20,983 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 12:20:50,985 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:21:27,148 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:21:27,652 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:21:27,656 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:21:27,656 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 12:21:27,656 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:21:30,111 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:21:30,111 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:21:30,111 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:22:00,113 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:22:36,286 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:22:36,818 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:22:36,826 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:22:36,826 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 12:22:36,826 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:22:38,495 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:22:38,495 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:22:38,495 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:23:08,497 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:23:44,671 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:23:45,203 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:23:45,205 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:23:45,206 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 12:23:45,206 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:23:47,720 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:23:47,722 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:23:47,723 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:24:17,726 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:24:54,031 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:24:54,680 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:24:54,685 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:24:54,685 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 12:24:54,685 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:24:56,583 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:24:56,583 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:24:56,583 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:25:26,584 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:26:02,814 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:26:03,335 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:26:03,339 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:26:03,339 - QuantBot - INFO - 📰 Market sentiment: 0.28 (from 20 articles)
+2025-09-23 12:26:03,339 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:26:05,418 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:26:05,418 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:26:05,418 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:26:05,418 - QuantBot - INFO - 🎭 Checking market regime...
+2025-09-23 12:26:16,060 - engine.research.regime_detector - INFO - 🎭 Detected regime: ranging (confidence: 66.7%)
+2025-09-23 12:26:16,063 - data_broker - INFO - 💾 Saved market analysis to database
+2025-09-23 12:26:16,063 - QuantBot - INFO - ✅ Current regime: ranging (confidence: 66.7%)
+2025-09-23 12:26:16,063 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 12:26:26,062 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 12:26:26,063 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 12:26:26,063 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 12:26:26,064 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 12:26:26,064 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 12:26:26,070 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 12:26:26,070 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 12:26:26,070 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 12:26:26,070 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 12:26:26,070 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 12:26:56,071 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:27:32,278 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:27:32,821 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:27:32,826 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:27:32,826 - QuantBot - INFO - 📰 Market sentiment: 0.15 (from 20 articles)
+2025-09-23 12:27:32,826 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:27:36,514 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:27:36,514 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:27:36,514 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:28:06,515 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:28:42,724 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:28:43,369 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:28:43,383 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:28:43,383 - QuantBot - INFO - 📰 Market sentiment: 0.15 (from 20 articles)
+2025-09-23 12:28:43,384 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:28:45,137 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:28:45,137 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:28:45,137 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:29:15,165 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:29:52,037 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:29:52,683 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:29:52,725 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:29:52,728 - QuantBot - INFO - 📰 Market sentiment: 0.15 (from 20 articles)
+2025-09-23 12:29:52,728 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:29:54,316 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:29:54,316 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:29:54,316 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:30:24,317 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:31:00,490 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:31:01,058 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:31:01,062 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:31:01,062 - QuantBot - INFO - 📰 Market sentiment: 0.15 (from 20 articles)
+2025-09-23 12:31:01,062 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:31:02,940 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:31:02,940 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:31:02,940 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:31:32,942 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:32:47,196 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:32:49,364 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:32:49,374 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:32:49,374 - QuantBot - INFO - 📰 Market sentiment: 0.15 (from 20 articles)
+2025-09-23 12:32:49,374 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:32:51,326 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:32:51,326 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:32:51,326 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:32:51,326 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 12:32:58,920 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 12:32:58,921 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 12:32:58,921 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 12:32:58,922 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 12:32:58,922 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 12:32:58,923 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 12:32:58,924 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 12:32:58,924 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 12:32:58,924 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 12:32:58,924 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 12:33:28,925 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:34:10,732 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:34:11,294 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:34:11,300 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:34:11,300 - QuantBot - INFO - 📰 Market sentiment: 0.15 (from 20 articles)
+2025-09-23 12:34:11,300 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:34:13,131 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:34:13,131 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:34:13,131 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:34:43,133 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:35:19,448 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:35:20,626 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:35:20,634 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:35:20,634 - QuantBot - INFO - 📰 Market sentiment: 0.15 (from 20 articles)
+2025-09-23 12:35:20,634 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:35:22,694 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:35:22,694 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:35:22,694 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:35:52,791 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:36:28,971 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:36:29,822 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:36:29,828 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:36:29,828 - QuantBot - INFO - 📰 Market sentiment: 0.15 (from 20 articles)
+2025-09-23 12:36:29,828 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:36:32,125 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:36:32,125 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:36:32,125 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:37:02,127 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:37:38,782 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:37:39,277 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:37:39,280 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:37:39,280 - QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-23 12:37:39,280 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:37:41,249 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:37:41,249 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:37:41,249 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:37:41,249 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 12:37:49,332 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 12:37:49,333 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 12:37:49,333 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 12:37:49,334 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 12:37:49,334 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 12:37:49,335 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 12:37:49,335 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 12:37:49,335 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 12:37:49,336 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 12:37:49,336 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 12:38:19,338 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:38:55,583 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:38:56,109 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:38:56,115 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:38:56,115 - QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-23 12:38:56,115 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:38:57,931 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:38:57,931 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:38:57,931 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:39:27,933 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:40:04,367 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:40:04,913 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:40:04,918 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:40:04,918 - QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-23 12:40:04,918 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:40:06,872 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:40:06,872 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:40:06,872 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:40:36,893 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:41:21,230 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:41:21,708 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:41:21,712 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:41:21,712 - QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-23 12:41:21,712 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:41:23,713 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:41:23,713 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:41:23,713 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:41:23,713 - QuantBot - INFO - 🎭 Checking market regime...
+2025-09-23 12:41:34,067 - engine.research.regime_detector - INFO - 🎭 Detected regime: ranging (confidence: 66.7%)
+2025-09-23 12:41:34,070 - data_broker - INFO - 💾 Saved market analysis to database
+2025-09-23 12:41:34,070 - QuantBot - INFO - ✅ Current regime: ranging (confidence: 66.7%)
+2025-09-23 12:42:04,073 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:42:40,269 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:42:40,838 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:42:40,843 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:42:40,843 - QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-23 12:42:40,843 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:42:42,943 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:42:42,943 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:42:42,943 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:42:42,943 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 12:42:50,958 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 12:42:50,959 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 12:42:50,959 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 12:42:50,960 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 12:42:50,960 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 12:42:50,962 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 12:42:50,962 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 12:42:50,962 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 12:42:50,962 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 12:42:50,962 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 12:43:20,969 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:43:58,007 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:43:58,567 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:43:58,572 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:43:58,572 - QuantBot - INFO - 📰 Market sentiment: 0.25 (from 20 articles)
+2025-09-23 12:43:58,572 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:44:00,470 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:44:00,471 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:44:00,471 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:44:30,473 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:45:07,705 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:45:08,612 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:45:08,617 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:45:08,617 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 12:45:08,617 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:45:10,971 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:45:10,971 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:45:10,971 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:45:40,973 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:46:17,168 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:46:17,757 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:46:17,761 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:46:17,761 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 12:46:17,761 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:46:19,745 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:46:19,746 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:46:19,746 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:46:49,752 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:47:26,001 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:47:26,634 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:47:26,639 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:47:26,639 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 12:47:26,639 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:47:29,079 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:47:29,079 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:47:29,079 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:47:59,081 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:48:35,271 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:48:36,087 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:48:36,095 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:48:36,095 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 12:48:36,095 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:48:37,953 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:48:37,953 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:48:37,953 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:48:37,953 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 12:48:46,019 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 12:48:46,020 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 12:48:46,020 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 12:48:46,020 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 12:48:46,022 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 12:48:46,047 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 12:48:46,053 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 12:48:46,053 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 12:48:46,053 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 12:48:46,053 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 12:49:16,056 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:49:52,224 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:49:52,743 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:49:52,750 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:49:52,750 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 12:49:52,750 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:49:55,070 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:49:55,070 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:49:55,070 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:50:25,073 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:51:01,265 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:51:01,743 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:51:01,750 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:51:01,750 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 12:51:01,750 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:51:06,529 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:51:06,529 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:51:06,529 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:51:36,531 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:52:12,893 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:52:13,491 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:52:13,498 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:52:13,498 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 12:52:13,498 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:52:15,437 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:52:15,437 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:52:15,437 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:52:40,126 - QuantBot - INFO - Received signal 15, initiating shutdown...
+2025-09-23 12:52:45,440 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:53:21,671 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:53:22,197 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:53:22,209 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:53:22,209 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 12:53:22,209 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:53:24,342 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:53:24,342 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:53:24,342 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:53:54,345 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:54:30,566 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:54:31,098 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:54:31,104 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:54:31,104 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 12:54:31,104 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:54:32,910 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:54:32,911 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:54:32,911 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:54:32,911 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 12:54:40,810 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 12:54:40,811 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 12:54:40,812 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 12:54:40,814 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 12:54:40,814 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 12:54:40,821 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 12:54:40,821 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 12:54:40,821 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 12:54:40,821 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 12:54:40,821 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 12:55:10,824 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:55:47,067 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:55:47,642 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:55:47,650 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:55:47,650 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 12:55:47,650 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:55:49,536 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:55:49,537 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:55:49,537 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:56:19,538 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:56:55,715 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:56:56,354 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:56:56,359 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:56:56,359 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 12:56:56,359 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:56:58,291 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:56:58,292 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:56:58,292 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:56:58,292 - QuantBot - INFO - 🎭 Checking market regime...
+2025-09-23 12:57:08,726 - engine.research.regime_detector - INFO - 🎭 Detected regime: ranging (confidence: 66.7%)
+2025-09-23 12:57:08,731 - data_broker - INFO - 💾 Saved market analysis to database
+2025-09-23 12:57:08,732 - QuantBot - INFO - ✅ Current regime: ranging (confidence: 66.7%)
+2025-09-23 12:57:38,733 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:58:14,938 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:58:15,554 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:58:15,561 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:58:15,561 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 12:58:15,561 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:58:17,795 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:58:17,795 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:58:17,796 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:58:47,798 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 12:59:24,009 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 12:59:25,288 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 12:59:25,295 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 12:59:25,295 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 12:59:25,295 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 12:59:27,328 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 12:59:27,328 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 12:59:27,328 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 12:59:27,328 - QuantBot - INFO - 🧪 Researching new strategies...
+2025-09-23 12:59:27,330 - engine.research.strategy_optimizer - INFO - 🧪 Researching strategies for ranging regime
+2025-09-23 12:59:27,359 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,362 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,362 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,362 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,362 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,362 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,362 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,362 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,362 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,362 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,362 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,362 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,362 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,362 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,362 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,362 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,362 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,362 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,363 - engine.research.strategy_optimizer - WARNING - Strategy evaluation failed: 'dict' object has no attribute 'universe'
+2025-09-23 12:59:27,369 - engine.research.strategy_optimizer - INFO - ✅ Generated 22 new strategies
+2025-09-23 12:59:27,369 - QuantBot - INFO - ✅ Strategy portfolio: 0 active strategies
+2025-09-23 12:59:57,372 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 13:00:33,609 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 13:00:34,216 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 13:00:34,220 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 13:00:34,220 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 13:00:34,221 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 13:00:36,249 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 13:00:36,249 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 13:00:36,250 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 13:00:36,250 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 13:00:44,094 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 13:00:44,095 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 13:00:44,096 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 13:00:44,097 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 13:00:44,097 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 13:00:44,101 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 13:00:44,102 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 13:00:44,102 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 13:00:44,102 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 13:00:44,102 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 13:01:14,105 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 13:01:50,419 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 13:01:50,993 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 13:01:50,998 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 13:01:50,999 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 13:01:50,999 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 13:01:52,875 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 13:01:52,875 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 13:01:52,875 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 13:02:22,878 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 13:02:59,251 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 13:02:59,951 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 13:02:59,959 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 13:02:59,959 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 13:02:59,959 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 13:03:01,807 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 13:03:01,808 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 13:03:01,808 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 13:03:31,811 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 13:04:10,760 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 13:04:12,543 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 13:04:12,576 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 13:04:12,576 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 13:04:12,576 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 13:04:14,586 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 13:04:14,586 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 13:04:14,586 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 13:04:44,617 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 13:05:21,502 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 13:05:22,254 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 13:05:22,262 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 13:05:22,263 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 13:05:22,263 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 13:05:25,038 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 13:05:25,038 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 13:05:25,038 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 13:05:55,097 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 13:06:31,292 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 13:06:31,856 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 13:06:31,861 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 13:06:31,861 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 13:06:31,861 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 13:06:33,951 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 13:06:33,951 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 13:06:33,951 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 13:06:33,951 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 13:06:41,994 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 13:06:41,995 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 13:06:41,996 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 13:06:41,998 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 13:06:41,998 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 13:06:42,004 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 13:06:42,004 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 13:06:42,004 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 13:06:42,004 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 13:06:42,004 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 13:07:12,014 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 13:07:48,396 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 13:07:49,212 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 13:07:49,224 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 13:07:49,225 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 13:07:49,225 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 13:07:50,896 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 13:07:50,896 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 13:07:50,896 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 13:08:20,899 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 13:08:57,455 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 13:08:58,962 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 13:09:01,092 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 13:09:01,363 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 13:09:01,443 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 13:09:06,464 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 13:09:06,465 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 13:09:06,465 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 13:09:36,469 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 13:10:14,426 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 13:10:16,119 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 13:10:16,583 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 13:10:16,583 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 13:10:16,583 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 13:10:18,727 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 13:10:18,727 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 13:10:18,728 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 13:10:48,784 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 13:11:25,254 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 13:11:25,917 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 13:11:25,928 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 13:11:25,928 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 13:11:25,928 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 13:11:27,468 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 13:11:27,468 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 13:11:27,468 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 13:11:57,471 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 13:12:37,931 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 13:12:39,033 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 13:12:39,091 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 13:12:39,094 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 13:12:39,097 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 13:12:41,136 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 13:12:41,136 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 13:12:41,136 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 13:12:41,136 - QuantBot - INFO - 🎭 Checking market regime...
+2025-09-23 13:12:51,683 - engine.research.regime_detector - INFO - 🎭 Detected regime: ranging (confidence: 66.7%)
+2025-09-23 13:12:51,690 - data_broker - INFO - 💾 Saved market analysis to database
+2025-09-23 13:12:51,691 - QuantBot - INFO - ✅ Current regime: ranging (confidence: 66.7%)
+2025-09-23 13:12:51,691 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 13:13:02,002 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 13:13:02,002 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 13:13:02,003 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 13:13:02,005 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 13:13:02,005 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 13:13:02,026 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 13:13:02,027 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 13:13:02,027 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 13:13:02,027 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 13:13:02,027 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 13:13:32,031 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 13:14:09,908 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 13:14:11,117 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 13:14:11,159 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 13:14:11,159 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 13:14:11,159 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 13:14:13,172 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 13:14:13,172 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 13:14:13,172 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 13:14:43,176 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 13:15:20,177 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 13:15:21,016 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 13:15:21,059 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 13:15:21,059 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 13:15:21,059 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 13:15:23,477 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 13:15:23,478 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 13:15:23,478 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 13:15:53,558 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 13:16:30,006 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 13:16:30,702 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 13:16:30,712 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 13:16:30,713 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 13:16:30,713 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 13:16:32,516 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 13:16:32,517 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 13:16:32,517 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 13:17:02,889 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 13:17:39,664 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 13:17:40,588 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 13:17:40,596 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 13:17:40,596 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 13:17:40,596 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 13:17:42,804 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 13:17:42,805 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 13:17:42,805 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 13:17:42,805 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-09-23 13:17:50,503 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-09-23 13:17:50,506 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-09-23 13:17:50,506 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'numpy.float64' object has no attribute 'get'
+2025-09-23 13:17:50,508 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-09-23 13:17:50,508 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-09-23 13:17:50,526 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-09-23 13:17:50,526 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-09-23 13:17:50,527 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-09-23 13:17:50,527 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-09-23 13:17:50,528 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-09-23 13:18:20,549 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 13:19:00,549 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 13:19:02,087 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 13:19:02,123 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 13:19:02,125 - QuantBot - INFO - 📰 Market sentiment: 0.10 (from 20 articles)
+2025-09-23 13:19:02,125 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 13:19:04,725 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 13:19:04,726 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 13:19:04,726 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 13:19:34,774 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 13:20:11,567 - engine.data_ingestion.live_data_manager - ERROR - Failed to update real-time data: 'LiveDataManager' object has no attribute 'quote_cache'
+2025-09-23 13:20:16,635 - QuantBot - INFO - 📈 Fetched 20 live news items
+2025-09-23 13:20:16,879 - data_broker - INFO - 💾 Saved 20 news items to database
+2025-09-23 13:20:16,880 - QuantBot - INFO - 📰 Market sentiment: 0.15 (from 20 articles)
+2025-09-23 13:20:16,881 - QuantBot - INFO - 📅 Updating economic calendar data...
+2025-09-23 13:20:19,160 - data_broker - INFO - 💾 Saved 3 economic calendar events to database
+2025-09-23 13:20:19,161 - QuantBot - INFO - 💾 Saved 3 economic calendar events
+2025-09-23 13:20:19,162 - QuantBot - INFO - ✅ Market data updated
+2025-09-23 13:20:49,165 - QuantBot - INFO - 📊 Updating market data...
+2025-09-23 13:21:03,866 - QuantBot - INFO - Received signal 2, initiating shutdown...

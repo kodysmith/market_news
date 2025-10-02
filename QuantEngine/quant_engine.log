@@ -1,0 +1,75 @@
+2025-09-22 13:01:50,530 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 13:01:50,530 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 13:01:50,530 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 13:01:50,530 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 13:03:26,661 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 13:03:26,662 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 13:03:26,663 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 13:03:26,663 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 13:03:58,003 - data_broker - ERROR - Failed to initialize Firebase: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2025-09-22 13:03:58,004 - data_broker - INFO - Falling back to SQLite database
+2025-09-22 13:03:58,005 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data_fallback.db
+2025-09-22 13:03:58,005 - data_broker - INFO - QuantBotDataBroker: Using Firestore (Production Mode)
+2025-09-22 13:03:58,488 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for SPY: Binder Error: Referenced column "ticker" not found in FROM clause!
+Candidate bindings: "('ticker'"
+
+LINE 4:                 SELECT ticker, date, open, high, low, close, volume, adj_close...
+                               ^
+2025-09-22 13:04:30,014 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for SPY: 'date'
+2025-09-22 13:04:30,030 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for SPY: 'date'
+2025-09-22 13:04:51,053 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for SPY: Not implemented Error: Unable to transform python value of type '<class 'pandas.core.series.Series'>' to DuckDB LogicalType
+2025-09-22 13:04:51,072 - engine.data_ingestion.data_manager - ERROR - Failed to cache data for SPY: Not implemented Error: Unable to transform python value of type '<class 'pandas.core.series.Series'>' to DuckDB LogicalType
+2025-09-22 13:05:08,256 - engine.data_ingestion.data_manager - WARNING - Failed to insert row for SPY: Conversion Error: invalid date field format: "Ticker
+   2024-01-02
+Name: 0, dtype: datetime64[ns]", expected format is (YYYY-MM-DD)
+2025-09-22 13:05:08,260 - engine.data_ingestion.data_manager - WARNING - Failed to insert row for SPY: Conversion Error: invalid date field format: "Ticker
+   2024-01-03
+Name: 1, dtype: datetime64[ns]", expected format is (YYYY-MM-DD)
+2025-09-22 13:05:08,263 - engine.data_ingestion.data_manager - WARNING - Failed to insert row for SPY: Conversion Error: invalid date field format: "Ticker
+   2024-01-04
+Name: 2, dtype: datetime64[ns]", expected format is (YYYY-MM-DD)
+2025-09-22 13:05:08,283 - engine.data_ingestion.data_manager - WARNING - Failed to insert row for SPY: Conversion Error: invalid date field format: "Ticker
+   2024-01-02
+Name: 0, dtype: datetime64[ns]", expected format is (YYYY-MM-DD)
+2025-09-22 13:05:08,285 - engine.data_ingestion.data_manager - WARNING - Failed to insert row for SPY: Conversion Error: invalid date field format: "Ticker
+   2024-01-03
+Name: 1, dtype: datetime64[ns]", expected format is (YYYY-MM-DD)
+2025-09-22 13:05:08,288 - engine.data_ingestion.data_manager - WARNING - Failed to insert row for SPY: Conversion Error: invalid date field format: "Ticker
+   2024-01-04
+Name: 2, dtype: datetime64[ns]", expected format is (YYYY-MM-DD)
+2025-09-22 13:05:27,956 - engine.data_ingestion.data_manager - WARNING - Failed to insert row for SPY: Conversion Error: invalid date field format: "Ticker
+   2024-01-02
+Name: 0, dtype: datetime64[ns]", expected format is (YYYY-MM-DD)
+2025-09-22 13:05:27,959 - engine.data_ingestion.data_manager - WARNING - Failed to insert row for SPY: Conversion Error: invalid date field format: "Ticker
+   2024-01-03
+Name: 1, dtype: datetime64[ns]", expected format is (YYYY-MM-DD)
+2025-09-22 13:05:27,962 - engine.data_ingestion.data_manager - WARNING - Failed to insert row for SPY: Conversion Error: invalid date field format: "Ticker
+   2024-01-04
+Name: 2, dtype: datetime64[ns]", expected format is (YYYY-MM-DD)
+2025-09-22 13:05:27,980 - engine.data_ingestion.data_manager - WARNING - Failed to insert row for SPY: Conversion Error: invalid date field format: "Ticker
+   2024-01-02
+Name: 0, dtype: datetime64[ns]", expected format is (YYYY-MM-DD)
+2025-09-22 13:05:27,982 - engine.data_ingestion.data_manager - WARNING - Failed to insert row for SPY: Conversion Error: invalid date field format: "Ticker
+   2024-01-03
+Name: 1, dtype: datetime64[ns]", expected format is (YYYY-MM-DD)
+2025-09-22 13:05:27,985 - engine.data_ingestion.data_manager - WARNING - Failed to insert row for SPY: Conversion Error: invalid date field format: "Ticker
+   2024-01-04
+Name: 2, dtype: datetime64[ns]", expected format is (YYYY-MM-DD)
+2025-09-22 13:05:43,904 - engine.data_ingestion.data_manager - WARNING - Failed to insert row for SPY: Conversion Error: invalid timestamp field format: "Ticker
+   2025-09-22 13:05:43.890236
+Name: 0, dtype: datetime64[ns]", expected format is (YYYY-MM-DD HH:MM:SS[.US][±HH[:MM[:SS]]| ZONE])
+2025-09-22 13:05:43,912 - engine.data_ingestion.data_manager - WARNING - Failed to insert row for SPY: Conversion Error: invalid timestamp field format: "Ticker
+   2025-09-22 13:05:43.890236
+Name: 1, dtype: datetime64[ns]", expected format is (YYYY-MM-DD HH:MM:SS[.US][±HH[:MM[:SS]]| ZONE])
+2025-09-22 13:05:43,915 - engine.data_ingestion.data_manager - WARNING - Failed to insert row for SPY: Conversion Error: invalid timestamp field format: "Ticker
+   2025-09-22 13:05:43.890236
+Name: 2, dtype: datetime64[ns]", expected format is (YYYY-MM-DD HH:MM:SS[.US][±HH[:MM[:SS]]| ZONE])
+2025-09-22 13:05:43,935 - engine.data_ingestion.data_manager - WARNING - Failed to insert row for SPY: Conversion Error: invalid timestamp field format: "Ticker
+   2025-09-22 13:05:43.931648
+Name: 0, dtype: datetime64[ns]", expected format is (YYYY-MM-DD HH:MM:SS[.US][±HH[:MM[:SS]]| ZONE])
+2025-09-22 13:05:43,938 - engine.data_ingestion.data_manager - WARNING - Failed to insert row for SPY: Conversion Error: invalid timestamp field format: "Ticker
+   2025-09-22 13:05:43.931648
+Name: 1, dtype: datetime64[ns]", expected format is (YYYY-MM-DD HH:MM:SS[.US][±HH[:MM[:SS]]| ZONE])
+2025-09-22 13:05:43,941 - engine.data_ingestion.data_manager - WARNING - Failed to insert row for SPY: Conversion Error: invalid timestamp field format: "Ticker
+   2025-09-22 13:05:43.931648
+Name: 2, dtype: datetime64[ns]", expected format is (YYYY-MM-DD HH:MM:SS[.US][±HH[:MM[:SS]]| ZONE])

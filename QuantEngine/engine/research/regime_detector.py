@@ -57,10 +57,26 @@ class MarketRegimeDetector:
         self.regime_history = []
         self.regime_transition_matrix = {}
 
-        # Market indicators
+        # Enhanced market indicators
         self.indicators = [
+            # Core indicators
             'trend_strength', 'volatility', 'momentum', 'volume_trend',
-            'correlation_spread', 'put_call_ratio', 'vix_level'
+            # Multi-timeframe indicators
+            'short_trend', 'medium_trend', 'long_trend',
+            'short_volatility', 'medium_volatility',
+            'short_momentum', 'medium_momentum', 'long_momentum',
+            'short_volume_trend', 'medium_volume_trend',
+            # Market structure indicators
+            'correlation_spread', 'put_call_ratio',
+            'vix_level', 'vix_momentum', 'vix_combined',
+            # Macro indicators
+            'yield_10y', 'yield_curve', 'yield_momentum',
+            'dollar_strength', 'dollar_momentum',
+            'gold_level', 'oil_level',
+            # Sector indicators
+            'tech_performance', 'financial_performance', 'energy_performance',
+            # Sentiment indicators
+            'economic_score', 'sentiment_score'
         ]
 
     async def detect_regime(self, market_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -111,66 +127,221 @@ class MarketRegimeDetector:
 
     async def calculate_regime_indicators(self, market_data: Dict[str, Any]) -> Dict[str, float]:
         """
-        Calculate comprehensive market regime indicators
+        Calculate comprehensive market regime indicators with multi-timeframe analysis
 
         Returns normalized indicators between -1 and 1
         """
 
         indicators = {}
 
-        # 1. Trend Strength (20-day return)
+        # Multi-timeframe trend analysis
         if 'spy' in market_data and 'prices' in market_data['spy']:
             prices = market_data['spy']['prices']
+            
+            # 1. Short-term trend (5-day)
+            if len(prices) >= 5:
+                short_trend = (prices[-1] - prices[-5]) / prices[-5]
+                indicators['short_trend'] = self.normalize_indicator(short_trend, -0.05, 0.05)
+            
+            # 2. Medium-term trend (20-day)
             if len(prices) >= 20:
-                trend_return = (prices[-1] - prices[-20]) / prices[-20]
-                indicators['trend_strength'] = self.normalize_indicator(trend_return, -0.1, 0.1)
+                medium_trend = (prices[-1] - prices[-20]) / prices[-20]
+                indicators['medium_trend'] = self.normalize_indicator(medium_trend, -0.1, 0.1)
+            
+            # 3. Long-term trend (50-day)
+            if len(prices) >= 50:
+                long_trend = (prices[-1] - prices[-50]) / prices[-50]
+                indicators['long_trend'] = self.normalize_indicator(long_trend, -0.2, 0.2)
+            
+            # 4. Combined trend strength (weighted average)
+            trend_weights = {'short_trend': 0.4, 'medium_trend': 0.4, 'long_trend': 0.2}
+            trend_strength = 0
+            total_weight = 0
+            for trend_name, weight in trend_weights.items():
+                if trend_name in indicators:
+                    trend_strength += indicators[trend_name] * weight
+                    total_weight += weight
+            indicators['trend_strength'] = trend_strength / max(total_weight, 1)
 
-        # 2. Volatility (20-day realized vol)
-        if 'spy' in market_data and 'prices' in market_data['spy']:
-            prices = market_data['spy']['prices']
+            # 5. Multi-timeframe volatility analysis
             if len(prices) >= 20:
-                returns = np.diff(np.log(prices[-20:]))
-                volatility = np.std(returns)
-                indicators['volatility'] = self.normalize_indicator(volatility, 0.01, 0.06)
+                # Short-term volatility (5-day)
+                if len(prices) >= 5:
+                    short_returns = np.diff(np.log(prices[-5:]))
+                    short_vol = np.std(short_returns)
+                    indicators['short_volatility'] = self.normalize_indicator(short_vol, 0.005, 0.03)
+                
+                # Medium-term volatility (20-day)
+                medium_returns = np.diff(np.log(prices[-20:]))
+                medium_vol = np.std(medium_returns)
+                indicators['medium_volatility'] = self.normalize_indicator(medium_vol, 0.01, 0.06)
+                
+                # Combined volatility score
+                vol_weights = {'short_volatility': 0.3, 'medium_volatility': 0.7}
+                volatility_score = 0
+                vol_total_weight = 0
+                for vol_name, weight in vol_weights.items():
+                    if vol_name in indicators:
+                        volatility_score += indicators[vol_name] * weight
+                        vol_total_weight += weight
+                indicators['volatility'] = volatility_score / max(vol_total_weight, 1)
 
-        # 3. Momentum (MACD-like indicator)
-        if 'spy' in market_data and 'prices' in market_data['spy']:
-            prices = market_data['spy']['prices']
-            if len(prices) >= 26:
-                fast_ma = np.mean(prices[-12:])  # 12-day MA
-                slow_ma = np.mean(prices[-26:])  # 26-day MA
-                momentum = (fast_ma - slow_ma) / slow_ma
-                indicators['momentum'] = self.normalize_indicator(momentum, -0.05, 0.05)
+            # 6. Enhanced momentum (multiple timeframes)
+            if len(prices) >= 50:
+                # Short momentum (5 vs 12-day MA)
+                if len(prices) >= 12:
+                    short_ma = np.mean(prices[-5:])
+                    medium_ma = np.mean(prices[-12:])
+                    short_momentum = (short_ma - medium_ma) / medium_ma
+                    indicators['short_momentum'] = self.normalize_indicator(short_momentum, -0.02, 0.02)
+                
+                # Medium momentum (12 vs 26-day MA)
+                if len(prices) >= 26:
+                    medium_ma = np.mean(prices[-12:])
+                    long_ma = np.mean(prices[-26:])
+                    medium_momentum = (medium_ma - long_ma) / long_ma
+                    indicators['medium_momentum'] = self.normalize_indicator(medium_momentum, -0.03, 0.03)
+                
+                # Long momentum (26 vs 50-day MA)
+                if len(prices) >= 50:
+                    long_ma = np.mean(prices[-26:])
+                    very_long_ma = np.mean(prices[-50:])
+                    long_momentum = (long_ma - very_long_ma) / very_long_ma
+                    indicators['long_momentum'] = self.normalize_indicator(long_momentum, -0.05, 0.05)
+                
+                # Combined momentum score
+                momentum_weights = {'short_momentum': 0.5, 'medium_momentum': 0.3, 'long_momentum': 0.2}
+                momentum_score = 0
+                momentum_total_weight = 0
+                for mom_name, weight in momentum_weights.items():
+                    if mom_name in indicators:
+                        momentum_score += indicators[mom_name] * weight
+                        momentum_total_weight += weight
+                indicators['momentum'] = momentum_score / max(momentum_total_weight, 1)
 
-        # 4. Volume Trend (relative to 20-day average)
-        if 'spy' in market_data and 'volumes' in market_data['spy']:
-            volumes = market_data['spy']['volumes']
-            if len(volumes) >= 20:
-                current_volume = volumes[-1]
-                avg_volume = np.mean(volumes[-20:])
-                volume_trend = (current_volume - avg_volume) / avg_volume
-                indicators['volume_trend'] = self.normalize_indicator(volume_trend, -0.5, 0.5)
+            # 7. Enhanced volume analysis (multiple timeframes)
+            if 'volumes' in market_data['spy']:
+                volumes = market_data['spy']['volumes']
+                if len(volumes) >= 20:
+                    # Short-term volume trend (5-day)
+                    if len(volumes) >= 5:
+                        short_vol_avg = np.mean(volumes[-5:])
+                        current_volume = volumes[-1]
+                        short_vol_trend = (current_volume - short_vol_avg) / short_vol_avg
+                        indicators['short_volume_trend'] = self.normalize_indicator(short_vol_trend, -0.3, 0.3)
+                    
+                    # Medium-term volume trend (20-day)
+                    medium_vol_avg = np.mean(volumes[-20:])
+                    current_volume = volumes[-1]
+                    medium_vol_trend = (current_volume - medium_vol_avg) / medium_vol_avg
+                    indicators['medium_volume_trend'] = self.normalize_indicator(medium_vol_trend, -0.5, 0.5)
+                    
+                    # Combined volume trend
+                    vol_trend_weights = {'short_volume_trend': 0.6, 'medium_volume_trend': 0.4}
+                    volume_trend_score = 0
+                    vol_trend_total_weight = 0
+                    for vol_trend_name, weight in vol_trend_weights.items():
+                        if vol_trend_name in indicators:
+                            volume_trend_score += indicators[vol_trend_name] * weight
+                            vol_trend_total_weight += weight
+                    indicators['volume_trend'] = volume_trend_score / max(vol_trend_total_weight, 1)
 
-        # 5. Correlation Spread (between sectors)
+        # 8. Enhanced correlation analysis (multiple assets)
         correlation_spread = await self.calculate_correlation_spread(market_data)
         indicators['correlation_spread'] = correlation_spread
 
-        # 6. Put/Call Ratio (if available)
+        # 9. Put/Call Ratio (if available)
         if 'options' in market_data and 'put_call_ratio' in market_data['options']:
             pcr = market_data['options']['put_call_ratio']
             indicators['put_call_ratio'] = self.normalize_indicator(pcr, 0.5, 1.5)
 
-        # 7. VIX Level (fear gauge)
+        # 10. Enhanced VIX analysis (multiple timeframes)
         if 'vix' in market_data:
-            vix = market_data['vix'].get('level', 20)
-            indicators['vix_level'] = self.normalize_indicator(vix, 10, 40)
+            vix_level = market_data['vix'].get('level', 20)
+            vix_change = market_data['vix'].get('change', 0)
+            
+            # VIX level (fear gauge)
+            indicators['vix_level'] = self.normalize_indicator(vix_level, 10, 40)
+            
+            # VIX momentum (change in VIX)
+            indicators['vix_momentum'] = self.normalize_indicator(vix_change, -5, 5)
+            
+            # Combined VIX score (level + momentum)
+            vix_score = (indicators['vix_level'] * 0.7 + indicators['vix_momentum'] * 0.3)
+            indicators['vix_combined'] = vix_score
 
-        # 8. Economic indicators
+        # 11. Treasury yield analysis (if available)
+        if 'treasury' in market_data:
+            treasury_data = market_data['treasury']
+            
+            # 10Y yield level
+            if 'yield_10y' in treasury_data:
+                yield_10y = treasury_data['yield_10y']
+                indicators['yield_10y'] = self.normalize_indicator(yield_10y, 1.0, 6.0)
+            
+            # Yield curve (10Y - 2Y spread)
+            if 'yield_10y' in treasury_data and 'yield_2y' in treasury_data:
+                yield_spread = treasury_data['yield_10y'] - treasury_data['yield_2y']
+                indicators['yield_curve'] = self.normalize_indicator(yield_spread, -1.0, 3.0)
+            
+            # Yield momentum (change in yields)
+            if 'yield_change' in treasury_data:
+                yield_change = treasury_data['yield_change']
+                indicators['yield_momentum'] = self.normalize_indicator(yield_change, -0.5, 0.5)
+
+        # 12. Dollar strength analysis (if available)
+        if 'dollar' in market_data:
+            dollar_data = market_data['dollar']
+            
+            # Dollar index level
+            if 'dxy_level' in dollar_data:
+                dxy = dollar_data['dxy_level']
+                indicators['dollar_strength'] = self.normalize_indicator(dxy, 90, 110)
+            
+            # Dollar momentum
+            if 'dxy_change' in dollar_data:
+                dxy_change = dollar_data['dxy_change']
+                indicators['dollar_momentum'] = self.normalize_indicator(dxy_change, -2, 2)
+
+        # 13. Commodity analysis (if available)
+        if 'commodities' in market_data:
+            comm_data = market_data['commodities']
+            
+            # Gold level (safe haven)
+            if 'gold' in comm_data:
+                gold = comm_data['gold']
+                indicators['gold_level'] = self.normalize_indicator(gold, 1500, 2500)
+            
+            # Oil level (inflation/economic indicator)
+            if 'oil' in comm_data:
+                oil = comm_data['oil']
+                indicators['oil_level'] = self.normalize_indicator(oil, 50, 150)
+
+        # 14. Sector rotation analysis (if available)
+        if 'sectors' in market_data:
+            sector_data = market_data['sectors']
+            
+            # Technology sector performance
+            if 'technology' in sector_data:
+                tech_perf = sector_data['technology']
+                indicators['tech_performance'] = self.normalize_indicator(tech_perf, -0.1, 0.1)
+            
+            # Financial sector performance
+            if 'financials' in sector_data:
+                fin_perf = sector_data['financials']
+                indicators['financial_performance'] = self.normalize_indicator(fin_perf, -0.1, 0.1)
+            
+            # Energy sector performance
+            if 'energy' in sector_data:
+                energy_perf = sector_data['energy']
+                indicators['energy_performance'] = self.normalize_indicator(energy_perf, -0.1, 0.1)
+
+        # 15. Economic indicators (enhanced)
         if 'economic' in market_data:
             economic_score = self.calculate_economic_score(market_data['economic'])
             indicators['economic_score'] = economic_score
 
-        # 9. Sentiment indicators
+        # 16. Sentiment indicators (enhanced)
         if 'sentiment' in market_data:
             sentiment_score = self.calculate_sentiment_score(market_data['sentiment'])
             indicators['sentiment_score'] = sentiment_score
@@ -300,9 +471,9 @@ class MarketRegimeDetector:
             return 0.0
 
     def classify_regime(self, indicators: Dict[str, float]) -> Dict[str, Any]:
-        """Classify market regime based on indicators"""
+        """Enhanced regime classification with weighted scoring"""
 
-        # Regime scoring system
+        # Enhanced regime scoring system with weights
         regime_scores = {
             'bull_market': 0.0,
             'bear_market': 0.0,
@@ -311,47 +482,118 @@ class MarketRegimeDetector:
             'risk_on': 0.0,
             'risk_off': 0.0,
             'trending': 0.0,
-            'ranging': 0.0
+            'ranging': 0.0,
+            'growth_market': 0.0,
+            'value_market': 0.0,
+            'inflation_market': 0.0,
+            'deflation_market': 0.0
         }
 
-        # Trend-based classification
-        trend = indicators.get('trend_strength', 0)
-        if trend > 0.3:
+        # Enhanced trend-based classification with multi-timeframe analysis
+        short_trend = indicators.get('short_trend', 0)
+        medium_trend = indicators.get('medium_trend', 0)
+        long_trend = indicators.get('long_trend', 0)
+        trend_strength = indicators.get('trend_strength', 0)
+        
+        # Weighted trend analysis
+        trend_score = (short_trend * 0.4 + medium_trend * 0.4 + long_trend * 0.2)
+        
+        if trend_score > 0.3:
+            regime_scores['bull_market'] += 3
+            regime_scores['trending'] += 2
+        elif trend_score > 0.1:
             regime_scores['bull_market'] += 2
             regime_scores['trending'] += 1
-        elif trend > 0:
+        elif trend_score > 0:
             regime_scores['bull_market'] += 1
-        elif trend < -0.3:
+        elif trend_score < -0.3:
+            regime_scores['bear_market'] += 3
+            regime_scores['trending'] += 2
+        elif trend_score < -0.1:
             regime_scores['bear_market'] += 2
             regime_scores['trending'] += 1
-        elif trend < 0:
+        elif trend_score < 0:
             regime_scores['bear_market'] += 1
+        else:
+            regime_scores['ranging'] += 2
 
-        # Volatility-based classification
-        vol = indicators.get('volatility', 0)
-        if vol > 0.5:
+        # Enhanced volatility classification with multi-timeframe analysis
+        short_vol = indicators.get('short_volatility', 0)
+        medium_vol = indicators.get('medium_volatility', 0)
+        volatility = indicators.get('volatility', 0)
+        
+        # Weighted volatility analysis
+        vol_score = (short_vol * 0.3 + medium_vol * 0.7)
+        
+        if vol_score > 0.5:
+            regime_scores['high_volatility'] += 3
+        elif vol_score > 0.2:
             regime_scores['high_volatility'] += 2
-        elif vol > 0.2:
+        elif vol_score > 0:
             regime_scores['high_volatility'] += 1
-        elif vol < -0.5:
+        elif vol_score < -0.5:
+            regime_scores['low_volatility'] += 3
+        elif vol_score < -0.2:
             regime_scores['low_volatility'] += 2
-        elif vol < -0.2:
+        elif vol_score < 0:
             regime_scores['low_volatility'] += 1
 
-        # Risk-based classification
-        vix = indicators.get('vix_level', 0)
+        # Enhanced risk-based classification with macro indicators
+        vix_level = indicators.get('vix_level', 0)
+        vix_momentum = indicators.get('vix_momentum', 0)
         correlation = indicators.get('correlation_spread', 0)
         sentiment = indicators.get('sentiment_score', 0)
-
-        risk_score = (vix + correlation + sentiment) / 3
+        yield_curve = indicators.get('yield_curve', 0)
+        dollar_strength = indicators.get('dollar_strength', 0)
+        
+        # Weighted risk score
+        risk_score = (
+            vix_level * 0.25 +           # VIX level (fear gauge)
+            vix_momentum * 0.15 +        # VIX momentum
+            correlation * 0.20 +         # Market correlation
+            sentiment * 0.20 +           # Market sentiment
+            yield_curve * 0.10 +         # Yield curve (economic outlook)
+            dollar_strength * 0.10       # Dollar strength (risk appetite)
+        )
+        
         if risk_score > 0.3:
+            regime_scores['risk_off'] += 3
+        elif risk_score > 0.1:
             regime_scores['risk_off'] += 2
         elif risk_score > 0:
             regime_scores['risk_off'] += 1
         elif risk_score < -0.3:
+            regime_scores['risk_on'] += 3
+        elif risk_score < -0.1:
             regime_scores['risk_on'] += 2
         elif risk_score < 0:
             regime_scores['risk_on'] += 1
+
+        # Enhanced market type classification
+        tech_perf = indicators.get('tech_performance', 0)
+        fin_perf = indicators.get('financial_performance', 0)
+        energy_perf = indicators.get('energy_performance', 0)
+        gold_level = indicators.get('gold_level', 0)
+        oil_level = indicators.get('oil_level', 0)
+        
+        # Growth vs Value market
+        if tech_perf > 0.1 and fin_perf < 0.1:
+            regime_scores['growth_market'] += 2
+        elif fin_perf > 0.1 and tech_perf < 0.1:
+            regime_scores['value_market'] += 2
+        elif tech_perf > 0 and fin_perf > 0:
+            regime_scores['growth_market'] += 1
+            regime_scores['value_market'] += 1
+        
+        # Inflation vs Deflation market
+        if oil_level > 0.3 and gold_level > 0.3:
+            regime_scores['inflation_market'] += 2
+        elif oil_level < -0.3 and gold_level < -0.3:
+            regime_scores['deflation_market'] += 2
+        elif oil_level > 0 or gold_level > 0:
+            regime_scores['inflation_market'] += 1
+        elif oil_level < 0 or gold_level < 0:
+            regime_scores['deflation_market'] += 1
 
         # Momentum-based classification
         momentum = indicators.get('momentum', 0)

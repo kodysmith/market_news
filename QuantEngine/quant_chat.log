@@ -1,0 +1,13 @@
+2025-09-22 10:26:51,093 - QuantChat - INFO - 🚀 Initializing QuantEngine Chat Interface
+2025-09-22 10:26:51,093 - chat_interface - INFO - 🤖 QuantResearchChat initialized
+2025-09-22 10:26:51,093 - chat_interface - INFO - 🔧 Initializing QuantEngine components...
+2025-09-22 10:26:51,093 - engine.data_ingestion.live_data_manager - INFO - 🔴 LiveDataManager initialized
+2025-09-22 10:26:51,094 - data_broker - INFO - ✅ Database initialized at /Users/kody/base/MarketNews/QuantEngine/quantbot_data.db
+2025-09-22 10:26:51,094 - data_broker - INFO - QuantBotDataBroker: Using SQLite (Development Mode) - /Users/kody/base/MarketNews/QuantEngine/quantbot_data.db
+2025-09-22 10:26:51,094 - engine.data_ingestion.live_data_manager - INFO - ✅ Live data session initialized
+2025-09-22 10:26:51,094 - chat_interface - INFO - ✅ All components initialized successfully
+2025-09-22 10:26:51,094 - QuantChat - INFO - ✅ Basic Chat Interface initialized
+2025-09-22 10:27:02,201 - chat_interface - INFO - 🔍 Processing question: evaluate the housing market price over 6 months
+2025-09-22 10:27:10,191 - engine.research.regime_detector - INFO - 🎭 Detected regime: ranging (confidence: 66.7%)
+2025-09-22 10:31:40,497 - asyncio - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x118bf0590>
