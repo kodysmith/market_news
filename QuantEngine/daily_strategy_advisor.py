@@ -54,7 +54,7 @@ class DailyStrategyAdvisor:
         
         # Initialize LLM
         try:
-            self.llm = OllamaLLM(model="llama3.2:latest")
+            self.llm = OllamaLLM(model="qwen2.5:72b")
             logger.info("✅ LLM integration initialized")
         except Exception as e:
             logger.warning(f"⚠️ LLM not available: {e}")

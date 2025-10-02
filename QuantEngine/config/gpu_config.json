@@ -1,0 +1,25 @@
+{
+  "gpu": {
+    "enabled": true,
+    "device": "cuda:0",
+    "memory_fraction": 0.8,
+    "mixed_precision": true
+  },
+  "llm": {
+    "enabled": true,
+    "provider": "ollama",
+    "model": "qwen2.5:72b",
+    "host": "http://localhost:11434",
+    "max_tokens": 2048,
+    "temperature": 0.3,
+    "timeout": 30
+  },
+  "analysis": {
+    "enable_sentiment_analysis": true,
+    "enable_technical_analysis": true,
+    "enable_fundamental_analysis": true,
+    "enable_macro_analysis": true,
+    "enable_news_analysis": true,
+    "confidence_threshold": 0.7
+  }
+}

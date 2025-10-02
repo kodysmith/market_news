@@ -26,7 +26,7 @@ def run_command(cmd):
 class OllamaLLM:
     """Ollama LLM integration for conversational responses"""
     
-    def __init__(self, model: str = "llama3.2:latest", host: str = "http://localhost:11434"):
+    def __init__(self, model: str = "qwen2.5:72b", host: str = "http://localhost:11434"):
         self.model = model
         self.host = host
         self.api_url = f"{self.host}/api/generate"
