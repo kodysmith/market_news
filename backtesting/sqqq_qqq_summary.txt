@@ -1,0 +1,72 @@
+
+======================================================================
+SQQQ-QQQ WHEEL STRATEGY BACKTEST SUMMARY
+======================================================================
+
+BACKTEST PARAMETERS
+----------------------------------------------------------------------
+Initial Capital:                $100,000
+Backtest Period:                2020-01-02 to 2024-12-31
+Total Days:                     1258
+Years:                          5.00
+
+PERFORMANCE METRICS
+----------------------------------------------------------------------
+Final Portfolio Value:          $189,235.30
+Total Return:                   89.24%
+CAGR (Annualized):             13.62%
+Annualized Volatility:          16.97%
+
+Risk-Adjusted Returns:
+  Sharpe Ratio:                 0.837
+  Sortino Ratio:                1.293
+  Calmar Ratio:                 0.571
+
+Maximum Drawdown:               -23.83%
+
+DAILY STATISTICS
+----------------------------------------------------------------------
+Best Day:                       15.40% on 2020-02-24
+Worst Day:                      -3.92% on 2022-09-13
+Positive Days:                  691 (55.4%)
+Negative Days:                  557 (44.6%)
+
+MONTHLY STATISTICS
+----------------------------------------------------------------------
+Average Monthly Return:         1.18%
+Positive Months:                36
+Negative Months:                24
+
+TRADING ACTIVITY
+----------------------------------------------------------------------
+Total Trades:                   263
+Put Assignments:                18
+Call Assignments:               15
+
+Trade Breakdown:
+  SELL_PUT                           65
+  BUY_SQQQ_CALL                      50
+  SELL_SQQQ_CALL                     50
+  CLOSE_PUT                          47
+  PUT_ASSIGNED                       18
+  SELL_CALL                          18
+  CALL_ASSIGNED                      15
+
+PREMIUM & PROFIT ANALYSIS
+----------------------------------------------------------------------
+Total Premium Collected:        $84,918.97
+  Put Premium:                  $60,011.24
+  Call Premium:                 $24,907.74
+
+SQQQ Hedge P&L:                 $5,234.52
+
+FINAL POSITIONS
+----------------------------------------------------------------------
+Cash:                           $36,443.60
+QQQ Shares Held:                300
+Open Put Positions:             47
+Open Call Positions:            3
+
+======================================================================
+Report Generated: 2025-10-08 20:01:03
+======================================================================
