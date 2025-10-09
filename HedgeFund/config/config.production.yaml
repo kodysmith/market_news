@@ -1,0 +1,25 @@
+# Production Configuration
+# Overrides for live trading (CAREFUL!)
+
+environment: production
+
+broker:
+  alpaca_paper_mode: false  # LIVE TRADING
+  alpaca_base_url: https://api.alpaca.markets  # LIVE API
+  ib_port: 4002  # Live trading port
+
+database:
+  postgres_database: trading_production
+  
+  # Production Redis (may be different server)
+  redis_host: production-redis.example.com
+
+monitoring:
+  log_level: INFO
+  enable_pagerduty: true
+  enable_email_alerts: true
+  enable_sentry: true
+
+# IMPORTANT: All sensitive credentials MUST come from environment variables or AWS Secrets Manager
+# Never commit production API keys to Git!
+
