@@ -45,7 +45,11 @@ class MarketDataService:
         self.alpaca_available = False
         if config.alpaca_api_key:
             try:
-                from alpaca.data.historical import StockHistoricalDataClient
+                # Use the correct client for live quotes
+                from alpaca.data.live import StockDataStream
+                from alpaca.data.requests import StockLatestQuoteRequest
+                from alpaca.data import StockHistoricalDataClient
+                
                 self.alpaca_data = StockHistoricalDataClient(
                     config.alpaca_api_key,
                     config.alpaca_secret_key
@@ -107,10 +111,24 @@ class MarketDataService:
     
     def _get_price_alpaca(self, symbol: str) -> Decimal:
         """Get price from Alpaca"""
-        quote = self.alpaca_data.get_latest_quote(symbol)
-        # Use mid price
-        mid_price = (quote.bid_price + quote.ask_price) / 2.0
-        return Decimal(str(round(mid_price, 2)))
+        try:
+            from alpaca.data.requests import StockLatestQuoteRequest
+            
+            # Get latest quote using the correct method
+            request = StockLatestQuoteRequest(symbol_or_symbols=symbol)
+            quotes = self.alpaca_data.get_stock_latest_quote(request)
+            
+            if symbol in quotes:
+                quote = quotes[symbol]
+                # Use mid price
+                mid_price = (quote.bid_price + quote.ask_price) / 2.0
+                return Decimal(str(round(mid_price, 2)))
+            else:
+                raise ValueError(f"No quote data for {symbol}")
+        except Exception as e:
+            logger.warning(f"Alpaca quote failed for {symbol}: {e}, falling back to yfinance")
+            # Fall back to yfinance
+            return self._get_price_yfinance(symbol)
     
     def _get_price_yfinance(self, symbol: str) -> Decimal:
         """Get price from yfinance"""

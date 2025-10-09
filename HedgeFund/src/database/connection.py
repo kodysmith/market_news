@@ -268,3 +268,4 @@ if __name__ == "__main__":
         print("   2. Install Redis: apt install redis-server")
         print("   3. Run schema: psql -U postgres < src/database/schema.sql")
 
+

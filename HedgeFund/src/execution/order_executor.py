@@ -12,10 +12,11 @@ Coordinates the entire execution flow:
 
 from typing import List, Optional, Tuple
 from decimal import Decimal
-from datetime import datetime
+from datetime import datetime, time as dt_time
 import logging
 import time
 import uuid
+import pytz
 
 from ..common.models import Signal, Order, Fill, TradeExecution, OrderStatus, OrderAction
 from ..risk.risk_manager import RiskManager
@@ -58,7 +59,38 @@ class OrderExecutor:
         self.orders_rejected = 0
         self.failovers = 0
         
+        # Market hours configuration (US Eastern Time)
+        self.timezone = pytz.timezone('US/Eastern')
+        self.market_open = dt_time(9, 30)  # 9:30 AM ET
+        self.market_close = dt_time(16, 0)  # 4:00 PM ET
+        self.check_market_hours = True  # Can be disabled for testing
+        
         logger.info("OrderExecutor initialized")
+    
+    def _is_market_open(self) -> bool:
+        """
+        Check if market is currently open for trading
+        
+        Returns:
+            True if market is open, False otherwise
+        """
+        now = datetime.now(self.timezone)
+        current_time = now.time()
+        
+        # Check if weekend
+        if now.weekday() >= 5:  # Saturday=5, Sunday=6
+            logger.debug(f"Market closed: Weekend (day {now.weekday()})")
+            return False
+        
+        # Check if within market hours
+        if current_time < self.market_open or current_time > self.market_close:
+            logger.debug(f"Market closed: Outside trading hours ({current_time} not between {self.market_open}-{self.market_close})")
+            return False
+        
+        # TODO: Check for market holidays using a calendar library
+        # For now, assume all weekdays are trading days
+        
+        return True
     
     def execute_signal(self,
                       signal: Signal,
@@ -67,11 +99,12 @@ class OrderExecutor:
         Execute a trading signal
         
         Complete flow:
-        1. Convert signal to order
-        2. Validate with risk manager
-        3. Submit to broker
-        4. Handle fill
-        5. Log to audit trail
+        1. Check market hours
+        2. Convert signal to order
+        3. Validate with risk manager
+        4. Submit to broker
+        5. Handle fill
+        6. Log to audit trail
         
         Args:
             signal: Trading signal to execute
@@ -82,10 +115,16 @@ class OrderExecutor:
         """
         logger.info(f"Executing signal: {signal.id} - {signal.action.value} {signal.asset}")
         
-        # Step 1: Convert signal to order
+        # Step 1: Check market hours (safety check)
+        if self.check_market_hours and not self._is_market_open():
+            logger.warning(f"Signal rejected: Market is closed. Trading hours: {self.market_open} - {self.market_close} ET")
+            self.orders_rejected += 1
+            return None
+        
+        # Step 2: Convert signal to order
         order = self._signal_to_order(signal)
         
-        # Step 2: Risk validation
+        # Step 3: Risk validation
         approved, reason = self.risk_manager.validate_signal(signal, portfolio_state)
         
         if not approved:
@@ -382,4 +421,5 @@ if __name__ == "__main__":
     print(f"\n🏥 Health check: {executor.health_check()}")
     
     print("\n✅ Order executor working correctly!")
+
 

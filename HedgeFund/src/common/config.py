@@ -37,7 +37,7 @@ class StrategyConfig(BaseModel):
     # Put selling parameters
     put_delta_target: float = Field(default=-0.30, ge=-1.0, le=0.0)
     put_dte: int = Field(default=14, ge=1, le=90)
-    position_size_pct: float = Field(default=0.01, ge=0.001, le=0.05)
+    position_size_pct: float = Field(default=0.01, ge=0.001, le=0.50)  # Allow up to 50% for flexibility
     profit_target_pct: float = Field(default=0.50, ge=0.0, le=1.0)
     
     # Covered call parameters

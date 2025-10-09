@@ -33,16 +33,20 @@ class NAVCalculator:
     
     def __init__(self,
                  pricer: OptionsPricer,
-                 db_connection=None):
+                 db_connection=None,
+                 broker_client=None):
         """
         Initialize NAV calculator
         
         Args:
             pricer: Options pricing engine
             db_connection: Database connection (optional)
+            broker_client: Broker client for real account sync (optional)
         """
         self.pricer = pricer
         self.db = db_connection
+        self.broker_client = broker_client
+        self.use_broker_nav = True  # Prefer real broker NAV
         
         # NAV history for tracking
         self.nav_history: List[Dict] = []
@@ -57,6 +61,10 @@ class NAVCalculator:
         """
         Calculate current NAV
         
+        Priority:
+        1. Use broker's real account equity (if available)
+        2. Fall back to mark-to-market calculation
+        
         Args:
             cash: Current cash balance
             positions: All current positions
@@ -69,6 +77,29 @@ class NAVCalculator:
         timestamp = timestamp or datetime.now()
         
         logger.info(f"Calculating NAV at {timestamp}")
+        
+        # Try to get real NAV from broker first
+        if self.use_broker_nav and self.broker_client:
+            try:
+                account = self.broker_client.get_account()
+                if account and 'equity' in account:
+                    broker_nav = account['equity']
+                    broker_cash = account.get('cash', Decimal('0'))
+                    broker_portfolio_value = account.get('portfolio_value', Decimal('0'))
+                    
+                    logger.info(f"✅ Using real Alpaca NAV: ${broker_nav:,.2f} (Cash: ${broker_cash:,.2f}, Positions: ${broker_portfolio_value:,.2f})")
+                    
+                    return {
+                        'nav': broker_nav,
+                        'cash': broker_cash,
+                        'total_positions_value': broker_portfolio_value - broker_cash,
+                        'equity_value': broker_portfolio_value - broker_cash,
+                        'options_value': Decimal('0'),
+                        'timestamp': timestamp,
+                        'source': 'alpaca_broker'
+                    }
+            except Exception as e:
+                logger.warning(f"Failed to get NAV from broker, using local calculation: {e}")
         
         # Initialize components
         components = {
@@ -408,4 +439,5 @@ if __name__ == "__main__":
     print(f"\n🏥 Health check: {nav_calc.health_check()}")
     
     print("\n✅ NAV calculator working correctly!")
+
 

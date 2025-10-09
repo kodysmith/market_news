@@ -115,3 +115,4 @@ class ConnectionError(BrokerError):
     """Connection to broker failed"""
     pass
 
+

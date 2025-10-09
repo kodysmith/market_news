@@ -20,7 +20,7 @@ strategy:
   # Put selling
   put_delta_target: -0.30
   put_dte: 14
-  position_size_pct: 0.01
+  position_size_pct: 0.10  # 10% per trade (was 0.01 = 1%, too small!)
   profit_target_pct: 0.50
   
   # Covered calls

@@ -112,3 +112,4 @@ print(f"30-delta put strike: ${strike}")
 
 *Status as of: Starting Week 1 completion*
 
+

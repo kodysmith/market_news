@@ -63,10 +63,14 @@ class SignalGenerator:
         
         # Check if market day (skip weekends)
         if current_date.weekday() >= 5:  # Saturday=5, Sunday=6
+            logger.debug(f"Weekend day, skipping: {current_date.date()}")
             return signals
         
         # Get portfolio state
         portfolio = position_manager.get_portfolio_state()
+        
+        logger.debug(f"Signal generation for {current_date.date()} (weekday={current_date.weekday()})")
+        logger.debug(f"  Portfolio: NAV=${portfolio['nav']:,.2f}, Cash=${portfolio['cash']:,.2f}")
         
         # 1. Check profit targets on existing positions
         profit_signals = self.check_profit_targets(
@@ -77,12 +81,18 @@ class SignalGenerator:
         
         # 2. Generate new put sales (if Monday and capital available)
         if current_date.weekday() == 0:  # Monday
+            print(f"   🎯 MONDAY DETECTED! ({current_date.date()}) - Generating put sales...")
+            logger.info(f"Monday detected! Generating put sales...")
             put_signals = self.generate_put_sales(
                 current_date,
                 market_data_service,
                 position_manager
             )
+            print(f"   📊 Generated {len(put_signals)} put signals")
+            logger.info(f"  Generated {len(put_signals)} put signals")
             signals.extend(put_signals)
+        else:
+            logger.debug(f"Not Monday (weekday={current_date.weekday()}), skipping put sales")
         
         # 3. Handle assignments (shares → covered calls)
         assignment_signals = self.handle_assignments(
@@ -123,7 +133,20 @@ class SignalGenerator:
             return signals
         
         # Calculate position size
-        available_capital = portfolio['cash'] * Decimal(str(self.config.position_size_pct))
+        cash = portfolio.get('cash', Decimal('0.0'))
+        nav = portfolio.get('nav', cash)
+        
+        print(f"      Cash: ${cash:,.2f}, NAV: ${nav:,.2f}")
+        
+        # Debug logging
+        if cash == 0:
+            logger.warning(f"Portfolio has no cash! Portfolio state: {portfolio}")
+            return signals
+        
+        # Use available cash directly (not just a percentage)
+        # This allows trading based on actual capital available
+        available_capital = cash
+        print(f"      Available capital: ${available_capital:,.2f}")
         
         for asset in self.config.assets:
             try:
@@ -131,8 +154,22 @@ class SignalGenerator:
                 spot_price = market_data_service.get_price(asset)
                 iv = market_data_service.get_iv(asset)
                 
+                # Validate data
+                if spot_price == 0 or spot_price is None:
+                    logger.warning(f"Invalid spot price for {asset}: {spot_price}")
+                    continue
+                
+                if iv == 0 or iv is None:
+                    logger.warning(f"Invalid IV for {asset}: {iv}, using default 0.25")
+                    iv = Decimal('0.25')
+                
                 # Calculate option parameters
                 T = self.config.put_dte / 365.0
+                
+                if T <= 0:
+                    logger.warning(f"Invalid time to expiration: {T}")
+                    continue
+                
                 strike = self.pricer.strike_for_delta(
                     'p',
                     float(spot_price),
@@ -152,15 +189,28 @@ class SignalGenerator:
                 # Calculate number of contracts
                 # Each contract controls 100 shares, requires collateral = strike * 100
                 collateral_per_contract = strike * Decimal('100')
+                
+                if collateral_per_contract == 0:
+                    logger.error(f"Collateral is 0! Strike={strike}, spot={spot_price}")
+                    continue
+                
+                if available_capital == 0:
+                    logger.error(f"Available capital is 0!")
+                    continue
+                
                 max_contracts = int(available_capital / collateral_per_contract)
                 
-                # Apply limits
-                max_contracts = min(
-                    max_contracts,
-                    self.config.allocations.get(asset, 0.25) * 10  # Scale by allocation
-                )
+                # Apply asset allocation (e.g., SPY gets 40% of trades)
+                asset_allocation = self.config.allocations.get(asset, 0.25)
+                max_contracts_for_asset = int(max_contracts * asset_allocation)
                 
-                if max_contracts < 1:
+                # Also apply absolute limits
+                max_contracts_for_asset = max(1, min(max_contracts_for_asset, 10))  # Between 1-10 contracts
+                
+                print(f"      {asset}: Strike=${strike:.2f}, Premium=${premium:.2f}, Contracts={max_contracts_for_asset}")
+                
+                if max_contracts_for_asset < 1:
+                    print(f"         ⚠️  Not enough capital for {asset} (max_contracts={max_contracts_for_asset})")
                     logger.debug(f"Not enough capital for {asset} put")
                     continue
                 
@@ -170,7 +220,7 @@ class SignalGenerator:
                     timestamp=current_date,
                     asset=asset,
                     action=OrderAction.SELL_PUT,
-                    quantity=max_contracts,
+                    quantity=max_contracts_for_asset,
                     strike=strike,
                     expiration=current_date.date() + timedelta(days=self.config.put_dte),
                     option_type='P',
@@ -181,8 +231,8 @@ class SignalGenerator:
                     reasoning=f"Weekly {self.config.put_delta_target:.0%} delta put sale at {self.config.put_dte}DTE",
                     strategy_component="income_generation",
                     priority=5,
-                    expected_delta=Decimal(str(self.config.put_delta_target)) * Decimal(str(max_contracts)) * Decimal('100'),
-                    capital_required=collateral_per_contract * Decimal(str(max_contracts))
+                    expected_delta=Decimal(str(self.config.put_delta_target)) * Decimal(str(max_contracts_for_asset)) * Decimal('100'),
+                    capital_required=collateral_per_contract * Decimal(str(max_contracts_for_asset))
                 )
                 
                 signals.append(signal)

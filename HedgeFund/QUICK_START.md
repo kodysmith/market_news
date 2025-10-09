@@ -351,3 +351,4 @@ Month 48: $75M AUM, considering soft close
 *Quick Start Guide v1.0*  
 *Part of Complete Hedge Fund Launch Package*
 
+

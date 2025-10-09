@@ -87,10 +87,11 @@ class TradingEngine:
             audit_logger=None  # Will add after creating it
         )
         
-        # Reporting
+        # Reporting (with broker for real account sync)
         self.nav_calculator = NAVCalculator(
             pricer=self.pricer,
-            db_connection=None
+            db_connection=None,
+            broker_client=self.broker  # Sync with real Alpaca account
         )
         
         self.audit_logger = AuditLogger(db_connection=None)
@@ -390,4 +391,5 @@ if __name__ == "__main__":
     
     print("\n✅ Trading Engine working correctly!")
     print("\n💡 To run live: engine.run_live()")
+
 

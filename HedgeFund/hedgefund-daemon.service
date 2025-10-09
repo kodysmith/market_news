@@ -1,0 +1,49 @@
+# Systemd service file for 24/7 Hedge Fund Paper Trading
+# Installation: sudo cp hedgefund-daemon.service /etc/systemd/system/
+#              sudo systemctl daemon-reload
+#              sudo systemctl enable hedgefund-daemon
+#              sudo systemctl start hedgefund-daemon
+
+[Unit]
+Description=Hedge Fund Paper Trading Daemon
+After=network.target network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=kody
+Group=kody
+WorkingDirectory=/mnt/4tb/stock_scanner/market_news/HedgeFund
+
+# Use virtual environment python
+ExecStart=/mnt/4tb/stock_scanner/market_news/venv/bin/python /mnt/4tb/stock_scanner/market_news/HedgeFund/src/daemon/paper_trading_daemon.py
+
+# Auto-restart on failure
+Restart=always
+RestartSec=10
+
+# Restart on clean exit too (for updates)
+# RestartForceExitStatus=0
+
+# Give it time to shutdown gracefully
+TimeoutStopSec=30
+
+# Resource limits
+LimitNOFILE=65536
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=hedgefund-daemon
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+
+# Environment variables (can also use EnvironmentFile)
+Environment="PYTHONUNBUFFERED=1"
+Environment="ENV=paper"
+
+[Install]
+WantedBy=multi-user.target
+

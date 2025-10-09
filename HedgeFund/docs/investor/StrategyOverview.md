@@ -413,3 +413,4 @@ Address: [Fund address TBD]
 *Last Updated: October 2025*  
 *For Qualified Investors Only*
 
+

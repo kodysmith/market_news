@@ -1,0 +1,652 @@
+2025-10-09 00:23:00,214 - __main__ - INFO - ======================================================================
+2025-10-09 00:23:00,214 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:23:00,215 - __main__ - INFO - ======================================================================
+2025-10-09 00:23:00,215 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:23:00,215 - __main__ - ERROR - ❌ Initialization failed: load_config() got an unexpected keyword argument 'env'
+2025-10-09 00:23:00,215 - __main__ - ERROR - Failed to initialize. Retrying in 60 seconds...
+2025-10-09 00:23:36,321 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:00,239 - __main__ - INFO - ======================================================================
+2025-10-09 00:24:00,239 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:24:00,239 - __main__ - INFO - ======================================================================
+2025-10-09 00:24:00,239 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:24:00,239 - __main__ - ERROR - ❌ Initialization failed: load_config() got an unexpected keyword argument 'env'
+2025-10-09 00:24:00,239 - __main__ - ERROR - Failed to initialize. Retrying in 60 seconds...
+2025-10-09 00:24:08,865 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:09,649 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:10,640 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:10,946 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:11,105 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:11,281 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:11,781 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:11,811 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:11,841 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:11,871 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:11,901 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:11,930 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:11,960 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:11,989 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:12,021 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:12,051 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:12,081 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:12,111 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:12,141 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:12,171 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:12,201 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:12,231 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:12,260 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:12,291 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:12,321 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:12,352 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:12,381 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:12,413 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:24:31,664 - __main__ - INFO - ======================================================================
+2025-10-09 00:24:31,664 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:24:31,664 - __main__ - INFO - ======================================================================
+2025-10-09 00:24:31,664 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:24:31,666 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:24:31,666 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:24:31,686 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:24:31,686 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:24:31,686 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:24:31,687 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:24:31,687 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:24:31,687 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:24:31,687 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:24:31,687 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:24:31,687 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:24:31,687 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:24:31,687 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:24:31,687 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:24:31,687 - __main__ - ERROR - ❌ Initialization failed: 'TradingEngine' object has no attribute 'initialize'
+2025-10-09 00:24:31,687 - __main__ - ERROR - Failed to initialize. Retrying in 60 seconds...
+2025-10-09 00:24:41,040 - __main__ - INFO - 📡 Received signal 15. Shutting down gracefully...
+2025-10-09 00:25:00,284 - __main__ - INFO - ======================================================================
+2025-10-09 00:25:00,284 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:25:00,284 - __main__ - INFO - ======================================================================
+2025-10-09 00:25:00,284 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:25:00,284 - __main__ - ERROR - ❌ Initialization failed: load_config() got an unexpected keyword argument 'env'
+2025-10-09 00:25:00,284 - __main__ - ERROR - Failed to initialize. Retrying in 60 seconds...
+2025-10-09 00:25:31,736 - __main__ - INFO - ======================================================================
+2025-10-09 00:25:31,736 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:25:31,736 - __main__ - INFO - ======================================================================
+2025-10-09 00:25:31,736 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:25:31,741 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:25:31,741 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:25:31,741 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:25:31,741 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:25:31,741 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:25:31,741 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:25:31,741 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:25:31,741 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:25:31,741 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:25:31,741 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:25:31,741 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:25:31,741 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:25:31,741 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:25:31,741 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:25:31,741 - __main__ - ERROR - ❌ Initialization failed: 'TradingEngine' object has no attribute 'initialize'
+2025-10-09 00:25:31,741 - __main__ - ERROR - Failed to initialize. Retrying in 60 seconds...
+2025-10-09 00:25:59,485 - __main__ - INFO - ======================================================================
+2025-10-09 00:25:59,485 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:25:59,485 - __main__ - INFO - ======================================================================
+2025-10-09 00:25:59,485 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:25:59,488 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:25:59,488 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:25:59,507 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:25:59,507 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:25:59,507 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:25:59,507 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:25:59,507 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:25:59,507 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:25:59,507 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:25:59,507 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:25:59,507 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:25:59,507 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:25:59,507 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:25:59,507 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:25:59,507 - __main__ - ERROR - ❌ Initialization failed: 'TradingEngine' object has no attribute 'initialize'
+2025-10-09 00:25:59,507 - __main__ - ERROR - Failed to initialize. Retrying in 60 seconds...
+2025-10-09 00:26:31,801 - __main__ - INFO - ======================================================================
+2025-10-09 00:26:31,802 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:26:31,802 - __main__ - INFO - ======================================================================
+2025-10-09 00:26:31,802 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:26:31,805 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:26:31,805 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:26:31,805 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:26:31,805 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:26:31,805 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:26:31,805 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:26:31,805 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:26:31,805 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:26:31,805 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:26:31,805 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:26:31,805 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:26:31,805 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:26:31,805 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:26:31,805 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:26:31,805 - __main__ - ERROR - ❌ Initialization failed: 'TradingEngine' object has no attribute 'initialize'
+2025-10-09 00:26:31,805 - __main__ - ERROR - Failed to initialize. Retrying in 60 seconds...
+2025-10-09 00:26:59,568 - __main__ - INFO - ======================================================================
+2025-10-09 00:26:59,568 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:26:59,568 - __main__ - INFO - ======================================================================
+2025-10-09 00:26:59,568 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:26:59,570 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:26:59,570 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:26:59,570 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:26:59,570 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:26:59,570 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:26:59,570 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:26:59,570 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:26:59,570 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:26:59,570 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:26:59,570 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:26:59,570 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:26:59,570 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:26:59,570 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:26:59,570 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:26:59,570 - __main__ - ERROR - ❌ Initialization failed: 'TradingEngine' object has no attribute 'initialize'
+2025-10-09 00:26:59,570 - __main__ - ERROR - Failed to initialize. Retrying in 60 seconds...
+2025-10-09 00:27:11,398 - __main__ - INFO - 📡 Received signal 15. Shutting down gracefully...
+2025-10-09 00:27:31,827 - __main__ - INFO - ======================================================================
+2025-10-09 00:27:31,827 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:27:31,827 - __main__ - INFO - ======================================================================
+2025-10-09 00:27:31,827 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:27:31,829 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:27:31,829 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:27:31,829 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:27:31,829 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:27:31,829 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:27:31,829 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:27:31,829 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:27:31,829 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:27:31,829 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:27:31,829 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:27:31,829 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:27:31,829 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:27:31,829 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:27:31,829 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:27:31,829 - __main__ - ERROR - ❌ Initialization failed: 'TradingEngine' object has no attribute 'initialize'
+2025-10-09 00:27:31,829 - __main__ - ERROR - Failed to initialize. Retrying in 60 seconds...
+2025-10-09 00:27:59,631 - __main__ - INFO - ======================================================================
+2025-10-09 00:27:59,631 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:27:59,631 - __main__ - INFO - ======================================================================
+2025-10-09 00:27:59,631 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:27:59,633 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:27:59,633 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:27:59,633 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:27:59,633 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:27:59,633 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:27:59,633 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:27:59,633 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:27:59,633 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:27:59,633 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:27:59,633 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:27:59,633 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:27:59,633 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:27:59,633 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:27:59,633 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:27:59,633 - __main__ - ERROR - ❌ Initialization failed: 'TradingEngine' object has no attribute 'initialize'
+2025-10-09 00:27:59,633 - __main__ - ERROR - Failed to initialize. Retrying in 60 seconds...
+2025-10-09 00:28:31,888 - __main__ - INFO - ======================================================================
+2025-10-09 00:28:31,888 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:28:31,888 - __main__ - INFO - ======================================================================
+2025-10-09 00:28:31,888 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:28:31,890 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:28:31,890 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:28:31,891 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:28:31,891 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:28:31,891 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:28:31,891 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:28:31,891 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:28:31,891 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:28:31,891 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:28:31,891 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:28:31,891 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:28:31,891 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:28:31,891 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:28:31,891 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:28:31,891 - __main__ - ERROR - ❌ Initialization failed: 'TradingEngine' object has no attribute 'initialize'
+2025-10-09 00:28:31,891 - __main__ - ERROR - Failed to initialize. Retrying in 60 seconds...
+2025-10-09 00:28:59,692 - __main__ - INFO - ======================================================================
+2025-10-09 00:28:59,692 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:28:59,692 - __main__ - INFO - ======================================================================
+2025-10-09 00:28:59,692 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:28:59,695 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:28:59,695 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:28:59,695 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:28:59,695 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:28:59,695 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:28:59,695 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:28:59,695 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:28:59,695 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:28:59,695 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:28:59,695 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:28:59,695 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:28:59,695 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:28:59,695 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:28:59,695 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:28:59,695 - __main__ - ERROR - ❌ Initialization failed: 'TradingEngine' object has no attribute 'initialize'
+2025-10-09 00:28:59,695 - __main__ - ERROR - Failed to initialize. Retrying in 60 seconds...
+2025-10-09 00:29:31,948 - __main__ - INFO - ======================================================================
+2025-10-09 00:29:31,948 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:29:31,948 - __main__ - INFO - ======================================================================
+2025-10-09 00:29:31,948 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:29:31,950 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:29:31,950 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:29:31,951 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:29:31,951 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:29:31,951 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:29:31,951 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:29:31,951 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:29:31,951 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:29:31,951 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:29:31,951 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:29:31,951 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:29:31,951 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:29:31,951 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:29:31,951 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:29:31,951 - __main__ - ERROR - ❌ Initialization failed: 'TradingEngine' object has no attribute 'initialize'
+2025-10-09 00:29:31,951 - __main__ - ERROR - Failed to initialize. Retrying in 60 seconds...
+2025-10-09 00:29:48,030 - __main__ - INFO - 📡 Received signal 15. Shutting down gracefully...
+2025-10-09 00:29:48,030 - __main__ - INFO - 📡 Received signal 15. Shutting down gracefully...
+2025-10-09 00:29:51,639 - __main__ - INFO - ======================================================================
+2025-10-09 00:29:51,639 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:29:51,639 - __main__ - INFO - ======================================================================
+2025-10-09 00:29:51,639 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:29:51,641 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:29:51,641 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:29:51,660 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:29:51,660 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:29:51,660 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:29:51,660 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:29:51,660 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:29:51,660 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:29:51,660 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:29:51,660 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:29:51,660 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:29:51,660 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:29:51,660 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:29:51,660 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:29:51,660 - __main__ - ERROR - ❌ Initialization failed: 'TradingEngine' object has no attribute 'initialize'
+2025-10-09 00:29:51,660 - __main__ - ERROR - Failed to initialize. Retrying in 60 seconds...
+2025-10-09 00:29:58,754 - __main__ - INFO - ======================================================================
+2025-10-09 00:29:58,754 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:29:58,754 - __main__ - INFO - ======================================================================
+2025-10-09 00:29:58,754 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:29:58,756 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:29:58,756 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:29:58,775 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:29:58,776 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:29:58,776 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:29:58,776 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:29:58,776 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:29:58,776 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:29:58,776 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:29:58,776 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:29:58,776 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:29:58,776 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:29:58,776 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:29:58,776 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:29:58,776 - __main__ - ERROR - ❌ Initialization failed: 'TradingEngine' object has no attribute 'initialize'
+2025-10-09 00:29:58,776 - __main__ - ERROR - Failed to initialize. Retrying in 60 seconds...
+2025-10-09 00:30:16,456 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:30:19,576 - __main__ - WARNING - Force exit!
+2025-10-09 00:30:19,576 - __main__ - INFO - 🛑 Tasks cancelled, shutting down...
+2025-10-09 00:30:19,576 - __main__ - INFO - 🛑 Shutting down daemon...
+2025-10-09 00:30:19,576 - __main__ - ERROR - Error during shutdown: 'TradingEngine' object has no attribute 'shutdown'
+2025-10-09 00:30:25,750 - __main__ - INFO - ======================================================================
+2025-10-09 00:30:25,750 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:30:25,750 - __main__ - INFO - ======================================================================
+2025-10-09 00:30:25,750 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:30:25,752 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:30:25,752 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:30:25,771 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:30:25,771 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:30:25,771 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:30:25,771 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:30:25,772 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:30:25,772 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:30:25,772 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:30:25,772 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:30:25,772 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:30:25,772 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:30:25,772 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:30:25,772 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:30:25,772 - __main__ - ERROR - ❌ Initialization failed: 'TradingEngine' object has no attribute 'initialize'
+2025-10-09 00:30:25,772 - __main__ - ERROR - Failed to initialize. Retrying in 60 seconds...
+2025-10-09 00:30:41,640 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:30:51,720 - __main__ - INFO - ======================================================================
+2025-10-09 00:30:51,720 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:30:51,720 - __main__ - INFO - ======================================================================
+2025-10-09 00:30:51,721 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:30:51,723 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:30:51,723 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:30:51,723 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:30:51,723 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:30:51,723 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:30:51,723 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:30:51,723 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:30:51,723 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:30:51,723 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:30:51,723 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:30:51,723 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:30:51,723 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:30:51,723 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:30:51,723 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:30:51,723 - __main__ - ERROR - ❌ Initialization failed: 'TradingEngine' object has no attribute 'initialize'
+2025-10-09 00:30:51,723 - __main__ - ERROR - Failed to initialize. Retrying in 60 seconds...
+2025-10-09 00:31:23,017 - __main__ - WARNING - Force exit!
+2025-10-09 00:31:23,017 - __main__ - INFO - 🛑 Tasks cancelled, shutting down...
+2025-10-09 00:31:23,017 - __main__ - INFO - 🛑 Shutting down daemon...
+2025-10-09 00:31:23,017 - __main__ - ERROR - Error during shutdown: 'TradingEngine' object has no attribute 'shutdown'
+2025-10-09 00:31:24,501 - __main__ - INFO - ======================================================================
+2025-10-09 00:31:24,501 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:31:24,501 - __main__ - INFO - ======================================================================
+2025-10-09 00:31:24,501 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:31:24,504 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:31:24,504 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:31:24,524 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:31:24,524 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:31:24,524 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:31:24,524 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:31:24,524 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:31:24,524 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:31:24,524 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:31:24,524 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:31:24,524 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:31:24,524 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:31:24,524 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:31:24,524 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:31:25,161 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:31:25.161060", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "53bb15c281d1f1ec42a84d18312df37e882698ed322edc8d12fe444cd54acd3f"}
+2025-10-09 00:31:25,161 - __main__ - INFO - Engine health: {'market_data': True, 'position_manager': True, 'signal_generator': True, 'risk_manager': True, 'broker': True, 'order_executor': True, 'nav_calculator': True, 'audit_logger': True, 'overall': True}
+2025-10-09 00:31:25,161 - __main__ - INFO - ✅ Trading engine initialized successfully
+2025-10-09 00:31:25,417 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:31:25.417201", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "0218c92495faf4f24f9df72a54317450db473da5bfe3204ee651c8b128ddd584"}
+2025-10-09 00:31:25,417 - __main__ - ERROR - Health check failed: 'bool' object has no attribute 'get'
+2025-10-09 00:31:44,553 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:31:47,561 - __main__ - WARNING - Force exit!
+2025-10-09 00:31:47,561 - __main__ - INFO - Main loop cancelled
+2025-10-09 00:31:47,561 - __main__ - INFO - 🛑 Shutting down daemon...
+2025-10-09 00:31:47,561 - src.main.trading_engine - INFO - 🛑 Stopping Trading Engine...
+2025-10-09 00:31:47,562 - src.main.trading_engine - INFO -   Final NAV: $100,000.00
+2025-10-09 00:31:47,562 - src.main.trading_engine - INFO -   Total orders: 0
+2025-10-09 00:31:47,562 - src.main.trading_engine - INFO -   Fill rate: 0.0%
+2025-10-09 00:31:47,562 - src.main.trading_engine - INFO - ✅ Trading Engine stopped
+2025-10-09 00:31:47,562 - __main__ - INFO - ✅ Engine shutdown complete
+2025-10-09 00:31:47,562 - __main__ - INFO - ✅ Daemon stopped gracefully
+2025-10-09 00:31:51,780 - __main__ - INFO - ======================================================================
+2025-10-09 00:31:51,780 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:31:51,780 - __main__ - INFO - ======================================================================
+2025-10-09 00:31:51,780 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:31:51,782 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:31:51,782 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:31:51,783 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:31:51,783 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:31:51,783 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:31:51,783 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:31:51,783 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:31:51,783 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:31:51,783 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:31:51,783 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:31:51,783 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:31:51,783 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:31:51,783 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:31:51,783 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:31:51,783 - __main__ - ERROR - ❌ Initialization failed: 'TradingEngine' object has no attribute 'initialize'
+2025-10-09 00:31:51,783 - __main__ - ERROR - Failed to initialize. Retrying in 60 seconds...
+2025-10-09 00:31:57,503 - __main__ - INFO - 📡 Received signal 15. Shutting down gracefully...
+2025-10-09 00:32:02,114 - __main__ - INFO - ======================================================================
+2025-10-09 00:32:02,114 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:32:02,114 - __main__ - INFO - ======================================================================
+2025-10-09 00:32:02,114 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:32:02,117 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:32:02,117 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:32:02,136 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:32:02,136 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:32:02,136 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:32:02,136 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:32:02,136 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:32:02,136 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:32:02,136 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:32:02,136 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:32:02,136 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:32:02,136 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:32:02,136 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:32:02,136 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:32:02,757 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:32:02.757622", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "53bb15c281d1f1ec42a84d18312df37e882698ed322edc8d12fe444cd54acd3f"}
+2025-10-09 00:32:02,757 - __main__ - INFO - Engine health: {'market_data': True, 'position_manager': True, 'signal_generator': True, 'risk_manager': True, 'broker': True, 'order_executor': True, 'nav_calculator': True, 'audit_logger': True, 'overall': True}
+2025-10-09 00:32:02,757 - __main__ - INFO - ✅ Trading engine initialized successfully
+2025-10-09 00:32:02,999 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:32:02.999924", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "0218c92495faf4f24f9df72a54317450db473da5bfe3204ee651c8b128ddd584"}
+2025-10-09 00:32:03,000 - __main__ - ERROR - Health check failed: 'bool' object has no attribute 'get'
+2025-10-09 00:32:34,860 - __main__ - INFO - 📡 Received signal 15. Shutting down gracefully...
+2025-10-09 00:32:38,468 - __main__ - INFO - ======================================================================
+2025-10-09 00:32:38,468 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:32:38,468 - __main__ - INFO - ======================================================================
+2025-10-09 00:32:38,469 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:32:38,471 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:32:38,471 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:32:38,489 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:32:38,489 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:32:38,489 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:32:38,489 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:32:38,489 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:32:38,489 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:32:38,489 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:32:38,489 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:32:38,489 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:32:38,489 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:32:38,489 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:32:38,489 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:32:39,121 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:32:39.121709", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "53bb15c281d1f1ec42a84d18312df37e882698ed322edc8d12fe444cd54acd3f"}
+2025-10-09 00:32:39,121 - __main__ - INFO - Engine health: {'market_data': True, 'position_manager': True, 'signal_generator': True, 'risk_manager': True, 'broker': True, 'order_executor': True, 'nav_calculator': True, 'audit_logger': True, 'overall': True}
+2025-10-09 00:32:39,121 - __main__ - INFO - ✅ Trading engine initialized successfully
+2025-10-09 00:32:39,360 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:32:39.360425", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "0218c92495faf4f24f9df72a54317450db473da5bfe3204ee651c8b128ddd584"}
+2025-10-09 00:32:39,360 - __main__ - ERROR - Health check failed: 'bool' object has no attribute 'get'
+2025-10-09 00:32:39,903 - __main__ - INFO - 📡 Received signal 15. Shutting down gracefully...
+2025-10-09 00:32:44,510 - __main__ - INFO - ======================================================================
+2025-10-09 00:32:44,510 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:32:44,510 - __main__ - INFO - ======================================================================
+2025-10-09 00:32:44,510 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:32:44,512 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:32:44,512 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:32:44,530 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:32:44,530 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:32:44,530 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:32:44,530 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:32:44,530 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:32:44,530 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:32:44,530 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:32:44,530 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:32:44,530 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:32:44,530 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:32:44,531 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:32:44,531 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:32:45,148 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:32:45.148276", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "53bb15c281d1f1ec42a84d18312df37e882698ed322edc8d12fe444cd54acd3f"}
+2025-10-09 00:32:45,148 - __main__ - INFO - Engine health: {'market_data': True, 'position_manager': True, 'signal_generator': True, 'risk_manager': True, 'broker': True, 'order_executor': True, 'nav_calculator': True, 'audit_logger': True, 'overall': True}
+2025-10-09 00:32:45,148 - __main__ - INFO - ✅ Trading engine initialized successfully
+2025-10-09 00:32:45,386 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:32:45.386392", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "0218c92495faf4f24f9df72a54317450db473da5bfe3204ee651c8b128ddd584"}
+2025-10-09 00:32:45,386 - __main__ - ERROR - Health check failed: 'bool' object has no attribute 'get'
+2025-10-09 00:32:45,599 - __main__ - INFO - 📡 Received signal 15. Shutting down gracefully...
+2025-10-09 00:32:50,212 - __main__ - INFO - ======================================================================
+2025-10-09 00:32:50,212 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:32:50,212 - __main__ - INFO - ======================================================================
+2025-10-09 00:32:50,213 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:32:50,215 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:32:50,215 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:32:50,233 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:32:50,233 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:32:50,233 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:32:50,233 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:32:50,234 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:32:50,234 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:32:50,234 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:32:50,234 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:32:50,234 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:32:50,234 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:32:50,234 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:32:50,234 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:32:50,841 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:32:50.841711", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "53bb15c281d1f1ec42a84d18312df37e882698ed322edc8d12fe444cd54acd3f"}
+2025-10-09 00:32:50,841 - __main__ - INFO - Engine health: {'market_data': True, 'position_manager': True, 'signal_generator': True, 'risk_manager': True, 'broker': True, 'order_executor': True, 'nav_calculator': True, 'audit_logger': True, 'overall': True}
+2025-10-09 00:32:50,841 - __main__ - INFO - ✅ Trading engine initialized successfully
+2025-10-09 00:32:51,081 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:32:51.081145", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "0218c92495faf4f24f9df72a54317450db473da5bfe3204ee651c8b128ddd584"}
+2025-10-09 00:32:51,081 - __main__ - ERROR - Health check failed: 'bool' object has no attribute 'get'
+2025-10-09 00:33:51,385 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:33:51.385430", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "ede8dec3cee9a8db966dd67c8aa438733ca2a1e8e5a52db039229000fccfdf7e"}
+2025-10-09 00:33:51,385 - __main__ - ERROR - Health check failed: 'bool' object has no attribute 'get'
+2025-10-09 00:33:55,724 - __main__ - INFO - 📡 Received signal 15. Shutting down gracefully...
+2025-10-09 00:37:58,481 - __main__ - INFO - ======================================================================
+2025-10-09 00:37:58,481 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:37:58,481 - __main__ - INFO - ======================================================================
+2025-10-09 00:37:58,481 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:37:58,483 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:37:58,483 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:37:58,502 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:37:58,502 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:37:58,502 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:37:58,502 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:37:58,502 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:37:58,502 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:37:58,502 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:37:58,502 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:37:58,502 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:37:58,502 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:37:58,502 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:37:58,502 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:37:59,115 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:37:59.115294", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "53bb15c281d1f1ec42a84d18312df37e882698ed322edc8d12fe444cd54acd3f"}
+2025-10-09 00:37:59,115 - __main__ - INFO - Engine health: {'market_data': True, 'position_manager': True, 'signal_generator': True, 'risk_manager': True, 'broker': True, 'order_executor': True, 'nav_calculator': True, 'audit_logger': True, 'overall': True}
+2025-10-09 00:37:59,115 - __main__ - INFO - ✅ Trading engine initialized successfully
+2025-10-09 00:37:59,355 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:37:59.355042", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "0218c92495faf4f24f9df72a54317450db473da5bfe3204ee651c8b128ddd584"}
+2025-10-09 00:37:59,355 - __main__ - ERROR - Health check failed: 'bool' object has no attribute 'get'
+2025-10-09 00:38:59,655 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:38:59.655235", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "ede8dec3cee9a8db966dd67c8aa438733ca2a1e8e5a52db039229000fccfdf7e"}
+2025-10-09 00:38:59,655 - __main__ - ERROR - Health check failed: 'bool' object has no attribute 'get'
+2025-10-09 00:39:59,954 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:39:59.954225", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "c14a9656f6b1eb9e0e1a05a03dbeb1c57cc7acf16331cc6a082361345b8f6136"}
+2025-10-09 00:39:59,954 - __main__ - ERROR - Health check failed: 'bool' object has no attribute 'get'
+2025-10-09 00:40:08,616 - __main__ - INFO - 📡 Received signal 15. Shutting down gracefully...
+2025-10-09 00:40:11,316 - __main__ - INFO - ======================================================================
+2025-10-09 00:40:11,316 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:40:11,316 - __main__ - INFO - ======================================================================
+2025-10-09 00:40:11,316 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:40:11,318 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:40:11,318 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:40:11,339 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:40:11,339 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:40:11,339 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:40:11,339 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:40:11,339 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:40:11,339 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:40:11,339 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:40:11,339 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:40:11,339 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:40:11,339 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:40:11,339 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:40:11,339 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:40:11,949 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:40:11.948963", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "53bb15c281d1f1ec42a84d18312df37e882698ed322edc8d12fe444cd54acd3f"}
+2025-10-09 00:40:11,949 - __main__ - INFO - Engine health: {'market_data': True, 'position_manager': True, 'signal_generator': True, 'risk_manager': True, 'broker': True, 'order_executor': True, 'nav_calculator': True, 'audit_logger': True, 'overall': True}
+2025-10-09 00:40:11,949 - __main__ - INFO - ✅ Trading engine initialized successfully
+2025-10-09 00:40:12,188 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:40:12.188066", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "0218c92495faf4f24f9df72a54317450db473da5bfe3204ee651c8b128ddd584"}
+2025-10-09 00:40:15,769 - __main__ - INFO - 📡 Received signal 15. Shutting down gracefully...
+2025-10-09 00:40:18,471 - __main__ - INFO - ======================================================================
+2025-10-09 00:40:18,471 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:40:18,471 - __main__ - INFO - ======================================================================
+2025-10-09 00:40:18,471 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:40:18,473 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:40:18,473 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:40:18,492 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:40:18,492 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:40:18,492 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:40:18,492 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:40:18,492 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:40:18,492 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:40:18,492 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:40:18,492 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:40:18,492 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:40:18,492 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:40:18,492 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:40:18,492 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:40:19,120 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:40:19.120571", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "53bb15c281d1f1ec42a84d18312df37e882698ed322edc8d12fe444cd54acd3f"}
+2025-10-09 00:40:19,120 - __main__ - INFO - Engine health: {'market_data': True, 'position_manager': True, 'signal_generator': True, 'risk_manager': True, 'broker': True, 'order_executor': True, 'nav_calculator': True, 'audit_logger': True, 'overall': True}
+2025-10-09 00:40:19,120 - __main__ - INFO - ✅ Trading engine initialized successfully
+2025-10-09 00:40:19,364 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:40:19.364107", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "0218c92495faf4f24f9df72a54317450db473da5bfe3204ee651c8b128ddd584"}
+2025-10-09 00:40:41,145 - __main__ - INFO - 📡 Received signal 15. Shutting down gracefully...
+2025-10-09 00:40:43,813 - __main__ - INFO - ======================================================================
+2025-10-09 00:40:43,813 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:40:43,813 - __main__ - INFO - ======================================================================
+2025-10-09 00:40:43,813 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:40:43,815 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:40:43,815 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:40:43,835 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:40:43,836 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:40:43,836 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:40:43,836 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:40:43,836 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:40:43,836 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:40:43,836 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:40:43,836 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:40:43,836 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:40:43,836 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:40:43,836 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:40:43,836 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:40:44,467 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:40:44.467858", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "53bb15c281d1f1ec42a84d18312df37e882698ed322edc8d12fe444cd54acd3f"}
+2025-10-09 00:40:44,467 - __main__ - INFO - Engine health: {'market_data': True, 'position_manager': True, 'signal_generator': True, 'risk_manager': True, 'broker': True, 'order_executor': True, 'nav_calculator': True, 'audit_logger': True, 'overall': True}
+2025-10-09 00:40:44,468 - __main__ - INFO - ✅ Trading engine initialized successfully
+2025-10-09 00:40:44,717 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:40:44.717422", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "0218c92495faf4f24f9df72a54317450db473da5bfe3204ee651c8b128ddd584"}
+2025-10-09 00:40:45,809 - __main__ - INFO - ======================================================================
+2025-10-09 00:40:45,809 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:40:45,809 - __main__ - INFO - ======================================================================
+2025-10-09 00:40:45,809 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:40:45,811 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:40:45,811 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:40:45,830 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:40:45,830 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:40:45,830 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:40:45,830 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:40:45,830 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:40:45,830 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:40:45,830 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:40:45,830 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:40:45,830 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:40:45,830 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:40:45,830 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:40:45,830 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:40:46,481 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:40:46.481757", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "53bb15c281d1f1ec42a84d18312df37e882698ed322edc8d12fe444cd54acd3f"}
+2025-10-09 00:40:46,481 - __main__ - INFO - Engine health: {'market_data': True, 'position_manager': True, 'signal_generator': True, 'risk_manager': True, 'broker': True, 'order_executor': True, 'nav_calculator': True, 'audit_logger': True, 'overall': True}
+2025-10-09 00:40:46,481 - __main__ - INFO - ✅ Trading engine initialized successfully
+2025-10-09 00:40:46,723 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:40:46.722971", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "0218c92495faf4f24f9df72a54317450db473da5bfe3204ee651c8b128ddd584"}
+2025-10-09 00:41:17,652 - __main__ - INFO - 📡 Received signal 2. Shutting down gracefully...
+2025-10-09 00:41:21,011 - __main__ - WARNING - Force exit!
+2025-10-09 00:41:21,012 - __main__ - INFO - Main loop cancelled
+2025-10-09 00:41:21,012 - __main__ - INFO - 🛑 Shutting down daemon...
+2025-10-09 00:41:21,012 - src.main.trading_engine - INFO - 🛑 Stopping Trading Engine...
+2025-10-09 00:41:21,012 - src.main.trading_engine - INFO -   Final NAV: $100,000.00
+2025-10-09 00:41:21,012 - src.main.trading_engine - INFO -   Total orders: 0
+2025-10-09 00:41:21,012 - src.main.trading_engine - INFO -   Fill rate: 0.0%
+2025-10-09 00:41:21,012 - src.main.trading_engine - INFO - ✅ Trading Engine stopped
+2025-10-09 00:41:21,012 - __main__ - INFO - ✅ Engine shutdown complete
+2025-10-09 00:41:21,012 - __main__ - INFO - ✅ Daemon stopped gracefully
+2025-10-09 00:41:23,161 - __main__ - INFO - 📡 Received signal 15. Shutting down gracefully...
+2025-10-09 00:41:25,842 - __main__ - INFO - ======================================================================
+2025-10-09 00:41:25,842 - __main__ - INFO - 24/7 PAPER TRADING DAEMON STARTING
+2025-10-09 00:41:25,842 - __main__ - INFO - ======================================================================
+2025-10-09 00:41:25,842 - __main__ - INFO - 🚀 Initializing Paper Trading Daemon...
+2025-10-09 00:41:25,844 - __main__ - INFO - Config loaded: paper
+2025-10-09 00:41:25,844 - src.main.trading_engine - INFO - Initializing Trading Engine...
+2025-10-09 00:41:25,862 - src.data.market_data_service - INFO - Alpaca market data initialized
+2025-10-09 00:41:25,862 - src.strategies.position_manager - INFO - PositionManager initialized
+2025-10-09 00:41:25,862 - src.strategies.signal_generator - INFO - SignalGenerator initialized for assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:41:25,862 - src.risk.risk_manager - INFO - RiskManager initialized
+2025-10-09 00:41:25,862 - src.execution.alpaca_client - INFO - Alpaca client initialized (paper)
+2025-10-09 00:41:25,862 - src.execution.order_executor - INFO - OrderExecutor initialized
+2025-10-09 00:41:25,862 - src.reporting.nav_calculator - INFO - NAVCalculator initialized
+2025-10-09 00:41:25,862 - src.reporting.audit_logger - INFO - AuditLogger initialized
+2025-10-09 00:41:25,862 - src.main.trading_engine - INFO - ✅ Trading Engine initialized successfully
+2025-10-09 00:41:25,862 - src.main.trading_engine - INFO -   Initial capital: $100,000
+2025-10-09 00:41:25,862 - src.main.trading_engine - INFO -   Assets: ['SPY', 'QQQ', 'DIA', 'IWM']
+2025-10-09 00:41:25,862 - src.main.trading_engine - INFO -   Mode: paper
+2025-10-09 00:41:26,479 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:41:26.479485", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "53bb15c281d1f1ec42a84d18312df37e882698ed322edc8d12fe444cd54acd3f"}
+2025-10-09 00:41:26,479 - __main__ - INFO - Engine health: {'market_data': True, 'position_manager': True, 'signal_generator': True, 'risk_manager': True, 'broker': True, 'order_executor': True, 'nav_calculator': True, 'audit_logger': True, 'overall': True}
+2025-10-09 00:41:26,479 - __main__ - INFO - ✅ Trading engine initialized successfully
+2025-10-09 00:41:26,720 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:41:26.720536", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "0218c92495faf4f24f9df72a54317450db473da5bfe3204ee651c8b128ddd584"}
+2025-10-09 00:42:27,019 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:42:27.019881", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "ede8dec3cee9a8db966dd67c8aa438733ca2a1e8e5a52db039229000fccfdf7e"}
+2025-10-09 00:43:27,323 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:43:27.323866", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "c14a9656f6b1eb9e0e1a05a03dbeb1c57cc7acf16331cc6a082361345b8f6136"}
+2025-10-09 00:44:27,635 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:44:27.635495", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "2d57d4798fd243cedb299810349abc41ea65d5f35f0e134ede6566d2c91e807b"}
+2025-10-09 00:45:27,930 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:45:27.930035", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "660e7e6119fb5c11469434a2d2ce38da1002cf679b100b55e6122d5f3d207c72"}
+2025-10-09 00:46:28,232 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:46:28.232643", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "43489ac440cd2ede1d43ecb645ae49660fc244bb091cd0eb1a01fbb96c65a847"}
+2025-10-09 00:47:28,525 - src.reporting.audit_logger - INFO - {"timestamp": "2025-10-09T00:47:28.525920", "log_type": "SYSTEM", "event": "health_check", "severity": "INFO", "event_data": {"test": "health_check"}, "hash": "7154497409dd5301f240c58c3d1d9486c0bd1ed058a0b4adf106ce356d26ee85"}
