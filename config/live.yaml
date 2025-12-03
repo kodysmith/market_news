@@ -1,0 +1,44 @@
+mode: live
+
+# Trading parameters
+target_assets:
+  - SPY
+  - QQQ
+  - TQQQ
+
+base_weights:
+  SPY: 0.33
+  QQQ: 0.33
+  TQQQ: 0.34
+
+# Transaction costs (real broker)
+commission_rate: 0.0  # Broker-specific
+slippage_rate: 0.0    # Broker-specific
+
+# Initial capital (from broker account)
+initial_capital: 0  # Will be read from broker
+
+# Hedging
+enable_hedging: false
+hedge_delta: -0.5
+hedge_coverage: 1.0
+
+# Risk limits (stricter for live)
+max_position_size: 0.4  # 40% max per position
+max_portfolio_var: 0.015  # 1.5% daily VaR
+max_leverage: 1.0
+
+# Data cache
+cache_duration: 60
+
+# Supabase
+supabase:
+  url: ""  # Set via SUPABASE_URL env var
+  key: ""  # Set via SUPABASE_KEY env var
+
+# Broker configuration (loaded from env or Secret Manager)
+broker:
+  name: alpaca
+  api_key: ""  # Set via ALPACA_API_KEY env var
+  api_secret: ""  # Set via ALPACA_API_SECRET env var
+  base_url: ""  # Set via ALPACA_BASE_URL env var

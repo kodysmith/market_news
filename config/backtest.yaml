@@ -1,0 +1,33 @@
+mode: backtest
+
+# Data configuration
+data_path: data/
+output_dir: data/results/
+
+# Trading parameters
+target_assets:
+  - SPY
+  - QQQ
+  - TQQQ
+
+base_weights:
+  SPY: 0.33
+  QQQ: 0.33
+  TQQQ: 0.34
+
+# Transaction costs
+commission_rate: 0.001  # 0.1%
+slippage_rate: 0.0005   # 0.05%
+
+# Initial capital
+initial_capital: 100000
+
+# Hedging
+enable_hedging: false
+hedge_delta: -0.5
+hedge_coverage: 1.0
+
+# Risk limits
+max_position_size: 0.5  # 50% max per position
+max_portfolio_var: 0.02  # 2% daily VaR
+max_leverage: 1.0        # No leverage

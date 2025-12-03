@@ -1,0 +1,56 @@
+# Docker ignore file
+
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Data and results
+data/results/
+*.csv
+*.db
+*.log
+
+# Documentation
+*.md
+!README_TRADING_SYSTEM.md
+
+# Archive
+archive/
+
+# Firebase
+firebase/
+
+# Market news app
+market_news_app/
+
+# QuantEngine (if not needed)
+QuantEngine/
+
+# Other projects
+buffett_screener/
+options_scanner/
+screeners/
+strategies/
+tools/
+apis/
