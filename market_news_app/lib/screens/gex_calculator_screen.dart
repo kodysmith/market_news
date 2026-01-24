@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:market_news_app/services/gex_service.dart';
 import 'package:market_news_app/models/gex_data.dart';
+import '../widgets/asset_selector_widget.dart';
+import '../widgets/asset_selection_provider.dart';
 import '../main.dart' show apiBaseUrl;
 
 class GexCalculatorScreen extends StatefulWidget {
@@ -11,43 +13,73 @@ class GexCalculatorScreen extends StatefulWidget {
 }
 
 class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
-  String _selectedTicker = 'SPY';
-  List<String> _availableTickers = ['SPY', 'SPX', 'QQQ'];
   GexCalculation? _gexData;
   GexSummary? _summaryData;
   bool _isLoading = false;
-  bool _isLoadingTickers = false;
   String? _error;
   bool _showSummary = false;
 
   @override
   void initState() {
     super.initState();
-    _loadTickers();
     _loadGexData();
+    // Load GEX tickers from API and add to service
+    _loadGexTickers();
   }
-
-  Future<void> _loadTickers() async {
-    setState(() {
-      _isLoadingTickers = true;
-    });
+  
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Set up listener after context is available
+    final service = AssetSelectionProvider.of(context);
+    service.addListener(_onAssetChanged);
+  }
+  
+  @override
+  void dispose() {
+    try {
+      final service = AssetSelectionProvider.of(context);
+      service.removeListener(_onAssetChanged);
+    } catch (e) {
+      // Context might not be available during dispose
+    }
+    super.dispose();
+  }
+  
+  void _onAssetChanged() {
+    // Reload GEX data when asset changes
+    if (mounted) {
+      setState(() {
+        _showSummary = false;
+      });
+      _loadGexData();
+    }
+  }
+  
+  String get _selectedTicker {
+    try {
+      return AssetSelectionProvider.of(context).selectedAsset;
+    } catch (e) {
+      return 'SPY'; // Fallback
+    }
+  }
+  
+  Future<void> _loadGexTickers() async {
     try {
       final tickers = await GexService.getGexTickers();
-      if (mounted) {
-        setState(() {
-          _availableTickers = tickers;
-          if (tickers.isNotEmpty && !tickers.contains(_selectedTicker)) {
-            _selectedTicker = tickers.first;
+      // Add API tickers to service (access in didChangeDependencies or build)
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        try {
+          final service = AssetSelectionProvider.of(context);
+          for (final ticker in tickers) {
+            service.addAsset(ticker);
           }
-          _isLoadingTickers = false;
-        });
-      }
+        } catch (e) {
+          // Context not available yet
+        }
+      });
     } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoadingTickers = false;
-        });
-      }
+      // Silently fail - service already has default tickers
     }
   }
 
@@ -166,52 +198,13 @@ class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedTicker,
-                    decoration: const InputDecoration(
-                      labelText: 'Ticker',
-                      border: OutlineInputBorder(),
-                    ),
-                    items: _availableTickers
-                        .map((ticker) => DropdownMenuItem(
-                              value: ticker,
-                              child: Text(ticker),
-                            ))
-                        .toList(),
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() {
-                          _selectedTicker = value;
-                          _showSummary = false;
-                        });
-                        _loadGexData();
-                      }
-                    },
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Custom Ticker',
-                      border: OutlineInputBorder(),
-                      hintText: 'Enter ticker',
-                    ),
-                    onFieldSubmitted: (value) {
-                      if (value.isNotEmpty) {
-                        setState(() {
-                          _selectedTicker = value.toUpperCase();
-                          _showSummary = false;
-                        });
-                        _loadGexData();
-                      }
-                    },
-                  ),
-                ),
-              ],
+            AssetSelectorWidget(
+              onAssetChanged: (asset) {
+                setState(() {
+                  _showSummary = false;
+                });
+                _loadGexData();
+              },
             ),
             const SizedBox(height: 12),
             Row(
@@ -445,12 +438,20 @@ class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
             SizedBox(
               height: 300,
               child: CustomPaint(
-                painter: GexChartPainter(data, annotations),
+                painter: GexChartPainter(
+                  data, 
+                  annotations,
+                  _gexData?.cumulativeGex ?? [],
+                ),
                 child: Container(),
               ),
             ),
             const SizedBox(height: 12),
             _buildChartLegend(annotations),
+            if (_gexData?.gammaSlope != null) ...[
+              const SizedBox(height: 16),
+              _buildGammaSlopeIndicator(_gexData!.gammaSlope!),
+            ],
           ],
         ),
       ),
@@ -467,6 +468,8 @@ class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
           _buildLegendItem('Flip Line', Colors.red, Icons.remove),
         _buildLegendItem('Put Wall', Colors.orange, Icons.arrow_downward),
         _buildLegendItem('Call Wall', Colors.blue, Icons.arrow_upward),
+        if (_gexData?.cumulativeGex.isNotEmpty ?? false)
+          _buildLegendItem('Cumulative GEX', Colors.purple, Icons.show_chart),
       ],
     );
   }
@@ -479,6 +482,103 @@ class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
         const SizedBox(width: 4),
         Text(label, style: TextStyle(fontSize: 12, color: color)),
       ],
+    );
+  }
+
+  Widget _buildGammaSlopeIndicator(GammaSlope slope) {
+    Color bucketColor;
+    IconData bucketIcon;
+    
+    switch (slope.slopeBucket) {
+      case 'STABILIZING':
+        bucketColor = Colors.green;
+        bucketIcon = Icons.trending_up;
+        break;
+      case 'ACCELERATIVE':
+        bucketColor = Colors.red;
+        bucketIcon = Icons.trending_down;
+        break;
+      default:
+        bucketColor = Colors.orange;
+        bucketIcon = Icons.trending_flat;
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(12.0),
+      decoration: BoxDecoration(
+        color: bucketColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: bucketColor.withOpacity(0.3)),
+      ),
+      child: Row(
+        children: [
+          Icon(bucketIcon, color: bucketColor, size: 24),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      'Gamma Slope: ',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+                    Text(
+                      slope.slopeAtSpot.toStringAsFixed(2),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: bucketColor,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: bucketColor.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        slope.slopeBucket,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: bucketColor,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        slope.interpretation,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Tooltip(
+            message: 'Gamma Slope measures how dealer hedging pressure changes as price moves.\n'
+                'Negative slope = moves accelerate.\n'
+                'Positive slope = moves stabilize.',
+            child: Icon(Icons.info_outline, size: 18, color: Colors.grey.shade600),
+          ),
+        ],
+      ),
     );
   }
 
@@ -569,8 +669,9 @@ class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
         onTap: () {
+          final service = AssetSelectionProvider.of(context);
+          service.setAsset(ticker.ticker);
           setState(() {
-            _selectedTicker = ticker.ticker;
             _showSummary = false;
           });
           _loadGexData();
@@ -682,8 +783,9 @@ class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
 class GexChartPainter extends CustomPainter {
   final List<GexByStrike> data;
   final ChartAnnotations annotations;
+  final List<CumulativeGexPoint> cumulativeGex;
 
-  GexChartPainter(this.data, this.annotations);
+  GexChartPainter(this.data, this.annotations, this.cumulativeGex);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -717,6 +819,70 @@ class GexChartPainter extends CustomPainter {
       zeroPaint,
     );
 
+    // Find min/max for cumulative GEX to scale the curve
+    double minCumGex = 0.0;
+    double maxCumGex = 0.0;
+    if (cumulativeGex.isNotEmpty) {
+      minCumGex = cumulativeGex.map((d) => d.cumulativeGex).reduce((a, b) => a < b ? a : b);
+      maxCumGex = cumulativeGex.map((d) => d.cumulativeGex).reduce((a, b) => a > b ? a : b);
+    }
+    final cumGexRange = maxCumGex - minCumGex;
+    final zeroCumY = cumGexRange > 0 
+        ? padding + chartHeight - ((0 - minCumGex) / cumGexRange * chartHeight)
+        : padding + chartHeight / 2;
+
+    // Draw cumulative gamma curve
+    // Uses its own scale (cumulative values are typically much larger)
+    if (cumulativeGex.isNotEmpty && cumGexRange > 0) {
+      final segments = <Path>[];
+      final colors = <Color>[];
+      
+      for (int i = 0; i < cumulativeGex.length - 1; i++) {
+        final point1 = cumulativeGex[i];
+        final point2 = cumulativeGex[i + 1];
+        
+        if (point1.strike < minStrike || point2.strike > maxStrike) continue;
+        
+        // Calculate positions using cumulative GEX's own scale
+        final x1 = padding + ((point1.strike - minStrike) / strikeRange * chartWidth);
+        final y1 = padding + chartHeight - ((point1.cumulativeGex - minCumGex) / cumGexRange * chartHeight);
+        final x2 = padding + ((point2.strike - minStrike) / strikeRange * chartWidth);
+        final y2 = padding + chartHeight - ((point2.cumulativeGex - minCumGex) / cumGexRange * chartHeight);
+        
+        final segmentPath = Path()
+          ..moveTo(x1, y1)
+          ..lineTo(x2, y2);
+        segments.add(segmentPath);
+        
+        // Color based on sign of cumulative GEX
+        final avgCumGex = (point1.cumulativeGex + point2.cumulativeGex) / 2;
+        colors.add(avgCumGex >= 0 ? Colors.green.shade700 : Colors.red.shade700);
+      }
+      
+      // Draw segments with appropriate colors (thicker line for visibility)
+      for (int i = 0; i < segments.length; i++) {
+        final segmentPaint = Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 3.0
+          ..color = colors[i];
+        canvas.drawPath(segments[i], segmentPaint);
+      }
+      
+      // Draw zero line for cumulative GEX (if it crosses zero)
+      if (minCumGex < 0 && maxCumGex > 0) {
+        final zeroCumY = padding + chartHeight - ((0 - minCumGex) / cumGexRange * chartHeight);
+        final zeroCumPaint = Paint()
+          ..color = Colors.grey.withOpacity(0.5)
+          ..strokeWidth = 1
+          ..style = PaintingStyle.stroke;
+        canvas.drawLine(
+          Offset(padding, zeroCumY),
+          Offset(size.width - padding, zeroCumY),
+          zeroCumPaint,
+        );
+      }
+    }
+
     // Draw bars
     final barWidth = chartWidth / data.length;
     for (int i = 0; i < data.length; i++) {
@@ -728,7 +894,7 @@ class GexChartPainter extends CustomPainter {
           : zeroY;
 
       final barPaint = Paint()
-        ..color = item.gex >= 0 ? Colors.green : Colors.red
+        ..color = item.gex >= 0 ? Colors.green.withOpacity(0.6) : Colors.red.withOpacity(0.6)
         ..style = PaintingStyle.fill;
       canvas.drawRect(
         Rect.fromLTWH(x, barY, barWidth * 0.8, barHeight),

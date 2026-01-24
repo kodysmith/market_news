@@ -17,6 +17,7 @@ from dataclasses import dataclass, asdict
 from typing import List, Dict, Optional, Tuple, Any
 from datetime import datetime, date, timedelta
 from collections import defaultdict
+from enum import Enum
 import json
 import os
 import math
@@ -24,11 +25,196 @@ import logging
 
 import numpy as np
 from scipy.stats import norm
+from pytz import timezone
 
 logger = logging.getLogger(__name__)
 
 # Risk-free rate (approximate, can be made configurable)
 RISK_FREE_RATE = 0.05
+
+# ===============================
+# Market Phase Detection
+# ===============================
+
+class MarketPhase(str, Enum):
+    """Market trading phase"""
+    PRE_MARKET = "PRE_MARKET"
+    OPEN_VOLATILITY = "OPEN_VOLATILITY"
+    STRUCTURAL = "STRUCTURAL"
+    POWER_HOUR = "POWER_HOUR"
+    CLOSING_GAMMA = "CLOSING_GAMMA"
+    AFTER_HOURS = "AFTER_HOURS"
+
+
+@dataclass
+class NextWindow:
+    """Next valid trading window"""
+    label: str  # "Today 10:15 ET" or "Tomorrow 10:15 ET"
+    phase: str  # "STRUCTURAL" | "POWER_HOUR"
+    startsAt: str  # ISO timestamp
+
+
+def detect_market_phase(now: Optional[datetime] = None) -> MarketPhase:
+    """
+    Detect current market phase based on time.
+    
+    Phases:
+    - PRE_MARKET: 4:00 AM - 9:30 AM ET
+    - OPEN_VOLATILITY: 9:30 AM - 10:15 AM ET
+    - STRUCTURAL: 10:15 AM - 2:30 PM ET
+    - POWER_HOUR: 2:30 PM - 3:45 PM ET
+    - CLOSING_GAMMA: 3:45 PM - 4:00 PM ET
+    - AFTER_HOURS: 4:00 PM - 4:00 AM ET (next day)
+    
+    Args:
+        now: Optional datetime (defaults to current time in ET)
+    
+    Returns:
+        MarketPhase enum
+    """
+    eastern = timezone('US/Eastern')
+    if now is None:
+        now_et = datetime.now(eastern)
+    else:
+        # Convert to ET if needed
+        if now.tzinfo is None:
+            now_et = eastern.localize(now)
+        else:
+            now_et = now.astimezone(eastern)
+    
+    # Check if it's a weekday (Monday=0, Friday=4)
+    day_of_week = now_et.weekday()
+    if day_of_week >= 5:  # Saturday or Sunday
+        return MarketPhase.AFTER_HOURS
+    
+    hour = now_et.hour
+    minute = now_et.minute
+    time_minutes = hour * 60 + minute
+    
+    # Define phase boundaries (in minutes from midnight)
+    pre_market_end = 9 * 60 + 30  # 9:30 AM
+    open_volatility_end = 10 * 60 + 15  # 10:15 AM
+    structural_end = 14 * 60 + 30  # 2:30 PM
+    power_hour_end = 15 * 60 + 45  # 3:45 PM
+    market_close = 16 * 60  # 4:00 PM
+    
+    if time_minutes < pre_market_end:
+        return MarketPhase.PRE_MARKET
+    elif time_minutes < open_volatility_end:
+        return MarketPhase.OPEN_VOLATILITY
+    elif time_minutes < structural_end:
+        return MarketPhase.STRUCTURAL
+    elif time_minutes < power_hour_end:
+        return MarketPhase.POWER_HOUR
+    elif time_minutes < market_close:
+        return MarketPhase.CLOSING_GAMMA
+    else:
+        return MarketPhase.AFTER_HOURS
+
+
+def compute_next_window(current_phase: MarketPhase, now: Optional[datetime] = None) -> NextWindow:
+    """
+    Compute the next valid trading window.
+    
+    Args:
+        current_phase: Current market phase
+        now: Optional datetime (defaults to current time in ET)
+    
+    Returns:
+        NextWindow with label, phase, and startsAt timestamp
+    """
+    eastern = timezone('US/Eastern')
+    if now is None:
+        now_et = datetime.now(eastern)
+    else:
+        if now.tzinfo is None:
+            now_et = eastern.localize(now)
+        else:
+            now_et = now.astimezone(eastern)
+    
+    today = now_et.date()
+    day_of_week = now_et.weekday()
+    
+    if current_phase in [MarketPhase.PRE_MARKET, MarketPhase.OPEN_VOLATILITY]:
+        # Next window is today's STRUCTURAL phase (10:15 AM)
+        next_start = eastern.localize(datetime.combine(today, datetime.min.time().replace(hour=10, minute=15)))
+        if next_start <= now_et:
+            # Already past 10:15, use today's POWER_HOUR (2:30 PM)
+            next_start = eastern.localize(datetime.combine(today, datetime.min.time().replace(hour=14, minute=30)))
+            if next_start <= now_et:
+                # Already past 2:30, use tomorrow's STRUCTURAL
+                days_ahead = 1
+                if day_of_week == 4:  # Friday
+                    days_ahead = 3  # Monday
+                next_date = today + timedelta(days=days_ahead)
+                next_start = eastern.localize(datetime.combine(next_date, datetime.min.time().replace(hour=10, minute=15)))
+                return NextWindow(
+                    label=f"Tomorrow {next_start.strftime('%I:%M %p')} ET" if days_ahead == 1 else f"Monday {next_start.strftime('%I:%M %p')} ET",
+                    phase="STRUCTURAL",
+                    startsAt=next_start.isoformat()
+                )
+            return NextWindow(
+                label=f"Today {next_start.strftime('%I:%M %p')} ET",
+                phase="POWER_HOUR",
+                startsAt=next_start.isoformat()
+            )
+        return NextWindow(
+            label=f"Today {next_start.strftime('%I:%M %p')} ET",
+            phase="STRUCTURAL",
+            startsAt=next_start.isoformat()
+        )
+    
+    elif current_phase == MarketPhase.STRUCTURAL:
+        # Next window is today's POWER_HOUR (2:30 PM)
+        next_start = eastern.localize(datetime.combine(today, datetime.min.time().replace(hour=14, minute=30)))
+        if next_start <= now_et:
+            # Already past 2:30, use tomorrow's STRUCTURAL
+            days_ahead = 1
+            if day_of_week == 4:  # Friday
+                days_ahead = 3  # Monday
+            next_date = today + timedelta(days=days_ahead)
+            next_start = eastern.localize(datetime.combine(next_date, datetime.min.time().replace(hour=10, minute=15)))
+            return NextWindow(
+                label=f"Tomorrow {next_start.strftime('%I:%M %p')} ET" if days_ahead == 1 else f"Monday {next_start.strftime('%I:%M %p')} ET",
+                phase="STRUCTURAL",
+                startsAt=next_start.isoformat()
+            )
+        return NextWindow(
+            label=f"Today {next_start.strftime('%I:%M %p')} ET",
+            phase="POWER_HOUR",
+            startsAt=next_start.isoformat()
+        )
+    
+    elif current_phase == MarketPhase.POWER_HOUR:
+        # Next window is tomorrow's STRUCTURAL (10:15 AM)
+        days_ahead = 1
+        if day_of_week == 4:  # Friday
+            days_ahead = 3  # Monday
+        next_date = today + timedelta(days=days_ahead)
+        next_start = eastern.localize(datetime.combine(next_date, datetime.min.time().replace(hour=10, minute=15)))
+        return NextWindow(
+            label=f"Tomorrow {next_start.strftime('%I:%M %p')} ET" if days_ahead == 1 else f"Monday {next_start.strftime('%I:%M %p')} ET",
+            phase="STRUCTURAL",
+            startsAt=next_start.isoformat()
+        )
+    
+    else:  # CLOSING_GAMMA or AFTER_HOURS
+        # Next window is tomorrow's STRUCTURAL (10:15 AM)
+        days_ahead = 1
+        if day_of_week >= 4:  # Friday or weekend
+            if day_of_week == 4:  # Friday
+                days_ahead = 3  # Monday
+            elif day_of_week == 5:  # Saturday
+                days_ahead = 2  # Monday
+            elif day_of_week == 6:  # Sunday
+                days_ahead = 1  # Monday
+        next_date = today + timedelta(days=days_ahead)
+        next_start = eastern.localize(datetime.combine(next_date, datetime.min.time().replace(hour=10, minute=15)))
+        return NextWindow(
+            label=f"Tomorrow {next_start.strftime('%I:%M %p')} ET" if days_ahead == 1 else f"Monday {next_start.strftime('%I:%M %p')} ET",
+            phase="STRUCTURAL",
+            startsAt=next_start.isoformat()
+        )
 
 
 # ===============================
@@ -1514,6 +1700,212 @@ def rank_and_filter(
     return ideas[:max_ideas]
 
 
+def calculate_unlock_distance(context: MarketContext, config: Dict[str, Any]) -> float:
+    """
+    Calculate distance to unlock conditions.
+    
+    Returns a normalized score (0-1) where 1 = very close to unlock, 0 = far from unlock.
+    """
+    distance = 0.0
+    
+    # Distance to flip line
+    if context.flipLine is not None:
+        flip_tolerance = config.get("flipLineTolerance", 0.002)
+        spot_to_flip = abs(context.spot - context.flipLine) / context.spot
+        if spot_to_flip <= flip_tolerance * 2:  # Within 2x tolerance
+            distance += 0.4 * (1.0 - min(1.0, spot_to_flip / (flip_tolerance * 2)))
+    
+    # GEX proximity to neutral
+    if context.gexState == "NEGATIVE":
+        # Closer to neutral = better
+        distance += 0.3  # Assume some progress toward neutral
+    elif context.gexState == "POSITIVE":
+        distance += 0.5  # Already positive
+    
+    # DePin risk proximity
+    if context.depinRisk is not None:
+        depin_threshold = config.get("depinRiskThreshold", {})
+        elevated = depin_threshold.get("elevated", 50)
+        if context.depinRisk < elevated:
+            distance += 0.3 * (1.0 - context.depinRisk / elevated)
+    
+    return min(1.0, distance)
+
+
+def score_preview_idea(
+    idea: TradeIdea,
+    context: MarketContext,
+    config: Dict[str, Any]
+) -> float:
+    """
+    Score a preview idea based on unlock proximity and quality.
+    
+    Components:
+    - 60% unlockScore: Distance to unlock conditions
+    - 25% quality/liquidity: Same as regular liquidity score
+    - 15% strategy desirability: Based on strategy preferences
+    
+    Returns:
+        Score (0-1)
+    """
+    preview_config = config.get("preview", {})
+    unlock_weight = preview_config.get("unlockScoreWeight", 0.60)
+    quality_weight = preview_config.get("qualityScoreWeight", 0.25)
+    strategy_weight = preview_config.get("strategyScoreWeight", 0.15)
+    
+    # Unlock score (60%)
+    unlock_score = calculate_unlock_distance(context, config)
+    
+    # Quality/liquidity score (25%)
+    if idea.best:
+        quality_score = idea.best.liquidityGrade
+        # Convert grade to numeric (A=1.0, B=0.75, C=0.5, D=0.25)
+        grade_map = {"A": 1.0, "B": 0.75, "C": 0.5, "D": 0.25}
+        quality_numeric = grade_map.get(quality_score, 0.5)
+    else:
+        quality_numeric = 0.5
+    
+    # Strategy desirability (15%)
+    strategy_prefs = config.get("strategyPreferences", {})
+    preferred_strategies = strategy_prefs.get("aboveFlipLine", []) + strategy_prefs.get("belowFlipLine", [])
+    strategy_score = 1.0 if idea.strategy in preferred_strategies else 0.7
+    
+    # Weighted composite
+    total_score = (
+        unlock_weight * unlock_score +
+        quality_weight * quality_numeric +
+        strategy_weight * strategy_score
+    )
+    
+    return total_score
+
+
+def generate_preview_candidates(
+    context: MarketContext,
+    quotes: List[OptionQuote],
+    config: Optional[Dict[str, Any]] = None,
+    current_phase: Optional[MarketPhase] = None,
+    next_window: Optional[NextWindow] = None
+) -> List[TradeIdea]:
+    """
+    Generate preview candidates for the next valid trading window.
+    
+    Preview ideas are structures that:
+    - Pass liquidity + sanity filters
+    - Are blocked primarily by time phase, or are "near unlock" by regime thresholds
+    - Can be explained with a "what must happen" list
+    
+    Args:
+        context: Market context
+        quotes: Option quotes
+        config: Optional config (loads from file if None)
+        current_phase: Current market phase
+        next_window: Next window info
+    
+    Returns:
+        List of TradeIdea with status="PREVIEW"
+    """
+    if config is None:
+        config = load_trade_ideas_config(context.symbol)
+    
+    if current_phase is None:
+        current_phase = detect_market_phase()
+    
+    if next_window is None:
+        next_window = compute_next_window(current_phase)
+    
+    preview_config = config.get("preview", {})
+    if not preview_config.get("enabled", True):
+        return []
+    
+    max_preview = preview_config.get("maxPreviewIdeas", 3)
+    
+    # Generate ideas using same logic but mark as PREVIEW
+    # We'll generate ideas that would be allowed but are blocked by time or regime
+    
+    # Check what would be allowed if we bypassed time restrictions
+    allowed_strategies = get_allowed_strategies(context, config)
+    
+    # If no strategies allowed even without time restrictions, check for "near unlock"
+    preview_ideas = []
+    
+    # Check for TIME_LOCKED candidates (would be allowed but current phase forbids)
+    if current_phase in [MarketPhase.PRE_MARKET, MarketPhase.OPEN_VOLATILITY, MarketPhase.CLOSING_GAMMA, MarketPhase.AFTER_HOURS]:
+        # Generate ideas that would be allowed in STRUCTURAL phase
+        # Temporarily mark as allowed to generate them
+        temp_ideas = generate_trade_ideas(context, quotes, config)
+        for idea in temp_ideas:
+            idea.status = "PREVIEW"
+            idea.allowed = False
+            idea.blockReason = "TIME_LOCKED"
+            idea.nextWindow = {
+                "label": next_window.label,
+                "phase": next_window.phase,
+                "startsAt": next_window.startsAt
+            }
+            # Update label to indicate preview
+            idea.label = f"{idea.label} — Preview for {next_window.label}"
+            preview_ideas.append(idea)
+    
+    # Check for REGIME_NEAR_UNLOCK candidates
+    # These are ideas that fail 1-2 regime conditions but are close
+    spot_above_flip = is_spot_above_flip_line(context, config)
+    depin_confirmed = is_depin_risk_confirmed(context, config)
+    depin_elevated = is_depin_risk_elevated(context, config)
+    
+    # If spot is very close to flip line, generate preview ideas
+    if context.flipLine is not None:
+        flip_tolerance = config.get("flipLineTolerance", 0.002)
+        spot_to_flip_pct = abs(context.spot - context.flipLine) / context.spot
+        if spot_to_flip_pct <= flip_tolerance * 3:  # Within 3x tolerance
+            # Generate ideas for both sides of flip
+            # Temporarily adjust context to simulate being above/below flip
+            temp_context_above = MarketContext(
+                symbol=context.symbol,
+                asOf=context.asOf,
+                spot=context.spot,
+                volatilityRegime=context.volatilityRegime,
+                trendRegime=context.trendRegime,
+                liquidityState=context.liquidityState,
+                putWall=context.putWall,
+                callWall=context.callWall,
+                flipLine=context.flipLine,
+                rangePts=context.rangePts,
+                depinRisk=context.depinRisk,
+                pinConfidence=context.pinConfidence,
+                gexState="POSITIVE",  # Simulate positive GEX
+                gexSlope=context.gexSlope,
+                earningsClusterScore=context.earningsClusterScore,
+                macroEventNext24h=context.macroEventNext24h,
+                megaCapEarningsNext24h=context.megaCapEarningsNext24h,
+                actionFilter=context.actionFilter
+            )
+            temp_ideas = generate_trade_ideas(temp_context_above, quotes, config)
+            for idea in temp_ideas[:2]:  # Limit to 2
+                idea.status = "PREVIEW"
+                idea.allowed = False
+                idea.blockReason = "REGIME_NEAR_UNLOCK"
+                idea.nextWindow = {
+                    "label": next_window.label,
+                    "phase": next_window.phase,
+                    "startsAt": next_window.startsAt
+                }
+                idea.label = f"{idea.label} — Preview (requires spot > {context.flipLine:.2f})"
+                preview_ideas.append(idea)
+    
+    # Score preview ideas
+    for idea in preview_ideas:
+        preview_score = score_preview_idea(idea, context, config)
+        # Update idea's best score with preview score
+        if idea.best:
+            idea.best.score = preview_score
+    
+    # Rank and filter
+    preview_ideas.sort(key=lambda i: i.best.score if i.best else 0.0, reverse=True)
+    
+    return preview_ideas[:max_preview]
+
+
 # ===============================
 # Main Entry Point
 # ===============================
@@ -2241,4 +2633,51 @@ def generate_trade_ideas(
                 ideas.append(trade_idea)
     
     # Rank and filter final ideas
-    return rank_and_filter(ideas, config)
+    final_ideas = rank_and_filter(ideas, config)
+    
+    # Mark all as UNLOCKED
+    for idea in final_ideas:
+        idea.status = "UNLOCKED"
+        idea.allowed = True
+    
+    return final_ideas
+
+
+def generate_trade_ideas_with_preview(
+    context: MarketContext,
+    quotes: List[OptionQuote],
+    config: Optional[Dict[str, Any]] = None
+) -> Dict[str, Any]:
+    """
+    Generate both unlocked and preview trade ideas.
+    
+    Returns:
+        Dict with:
+        - unlocked: List[TradeIdea] - Actionable ideas
+        - preview: List[TradeIdea] - Preview candidates
+        - nextWindow: NextWindow - Next valid trading window
+        - currentPhase: str - Current market phase
+    """
+    if config is None:
+        config = load_trade_ideas_config(context.symbol)
+    
+    # Detect current phase and compute next window
+    current_phase = detect_market_phase()
+    next_window = compute_next_window(current_phase)
+    
+    # Generate unlocked ideas
+    unlocked = generate_trade_ideas(context, quotes, config)
+    
+    # Generate preview candidates
+    preview = generate_preview_candidates(context, quotes, config, current_phase, next_window)
+    
+    return {
+        "unlocked": unlocked,
+        "preview": preview,
+        "nextWindow": {
+            "label": next_window.label,
+            "phase": next_window.phase,
+            "startsAt": next_window.startsAt
+        },
+        "currentPhase": current_phase.value
+    }

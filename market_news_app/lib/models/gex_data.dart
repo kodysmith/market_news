@@ -7,6 +7,8 @@ class GexCalculation {
   final GexMetrics metrics;
   final GexBreakdown breakdown;
   final List<GexByStrike> gexByStrike;
+  final List<CumulativeGexPoint> cumulativeGex;
+  final GammaSlope? gammaSlope;
   final ChartAnnotations chartAnnotations;
   final double timestamp;
 
@@ -16,6 +18,8 @@ class GexCalculation {
     required this.metrics,
     required this.breakdown,
     required this.gexByStrike,
+    required this.cumulativeGex,
+    this.gammaSlope,
     required this.chartAnnotations,
     required this.timestamp,
   });
@@ -30,6 +34,13 @@ class GexCalculation {
               ?.map((item) => GexByStrike.fromJson(item))
               .toList() ??
           [],
+      cumulativeGex: (json['cumulative_gex'] as List?)
+              ?.map((item) => CumulativeGexPoint.fromJson(item))
+              .toList() ??
+          [],
+      gammaSlope: json['gamma_slope'] != null
+          ? GammaSlope.fromJson(json['gamma_slope'])
+          : null,
       chartAnnotations: ChartAnnotations.fromJson(json['chart_annotations'] ?? {}),
       timestamp: (json['timestamp'] as num?)?.toDouble() ?? 0.0,
     );
@@ -158,6 +169,46 @@ class GexSummary {
           ? (json['errors'] as List).map((e) => Map<String, dynamic>.from(e)).toList()
           : null,
       timestamp: (json['timestamp'] as num?)?.toDouble() ?? 0.0,
+    );
+  }
+}
+
+class CumulativeGexPoint {
+  final double strike;
+  final double cumulativeGex;
+
+  CumulativeGexPoint({
+    required this.strike,
+    required this.cumulativeGex,
+  });
+
+  factory CumulativeGexPoint.fromJson(Map<String, dynamic> json) {
+    return CumulativeGexPoint(
+      strike: (json['strike'] as num?)?.toDouble() ?? 0.0,
+      cumulativeGex: (json['cumulative_gex'] as num?)?.toDouble() ?? 0.0,
+    );
+  }
+}
+
+class GammaSlope {
+  final double slopeAtSpot;
+  final double? slopeAtFlip;
+  final String slopeBucket;
+  final String interpretation;
+
+  GammaSlope({
+    required this.slopeAtSpot,
+    this.slopeAtFlip,
+    required this.slopeBucket,
+    required this.interpretation,
+  });
+
+  factory GammaSlope.fromJson(Map<String, dynamic> json) {
+    return GammaSlope(
+      slopeAtSpot: (json['slope_at_spot'] as num?)?.toDouble() ?? 0.0,
+      slopeAtFlip: (json['slope_at_flip'] as num?)?.toDouble(),
+      slopeBucket: json['slope_bucket'] ?? 'NEUTRAL',
+      interpretation: json['interpretation'] ?? 'Neutral',
     );
   }
 }

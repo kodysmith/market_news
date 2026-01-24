@@ -44,43 +44,70 @@ class TradeIdeasService {
         
         // Handle different response formats
         if (decoded is Map<String, dynamic>) {
-          // New format (object with ideas/ideasByTimeframe + diagnostics)
+          // New format with unlocked/preview structure
+          final result = <String, dynamic>{
+            'diagnostics': decoded['diagnostics'] ?? <String, dynamic>{},
+          };
+          
+          // Parse unlocked ideas (can be list or map by timeframe)
+          if (decoded.containsKey('unlocked')) {
+            final unlockedData = decoded['unlocked'];
+            if (unlockedData is List) {
+              result['unlocked'] = (unlockedData as List)
+                  .map((json) => TradeIdea.fromJson(json as Map<String, dynamic>))
+                  .toList();
+            } else if (unlockedData is Map) {
+              final unlockedByTimeframe = <String, List<TradeIdea>>{};
+              for (final entry in (unlockedData as Map<String, dynamic>).entries) {
+                unlockedByTimeframe[entry.key] = (entry.value as List)
+                    .map((json) => TradeIdea.fromJson(json as Map<String, dynamic>))
+                    .toList();
+              }
+              result['unlockedByTimeframe'] = unlockedByTimeframe;
+            }
+          }
+          
+          // Parse preview ideas
+          if (decoded.containsKey('preview')) {
+            result['preview'] = (decoded['preview'] as List)
+                .map((json) => TradeIdea.fromJson(json as Map<String, dynamic>))
+                .toList();
+          }
+          
+          // Parse next window
+          if (decoded.containsKey('nextWindow')) {
+            result['nextWindow'] = decoded['nextWindow'] as Map<String, dynamic>;
+          }
+          
+          // Parse current phase
+          if (decoded.containsKey('currentPhase')) {
+            result['currentPhase'] = decoded['currentPhase'] as String;
+          }
+          
+          // Backward compatibility: also parse old format if present
           if (decoded.containsKey('ideasByTimeframe')) {
-            // Multiple timeframes
             final ideasByTimeframe = decoded['ideasByTimeframe'] as Map<String, dynamic>;
             final ideasByTimeframeMap = <String, List<TradeIdea>>{};
-            
             for (final entry in ideasByTimeframe.entries) {
               ideasByTimeframeMap[entry.key] = (entry.value as List)
                   .map((json) => TradeIdea.fromJson(json as Map<String, dynamic>))
                   .toList();
             }
-            
-            return {
-              'ideasByTimeframe': ideasByTimeframeMap,
-              'diagnostics': decoded['diagnostics'] ?? <String, dynamic>{},
-            };
+            result['ideasByTimeframe'] = ideasByTimeframeMap;
           } else if (decoded.containsKey('ideas')) {
-            // Single timeframe
-            return {
-              'ideas': (decoded['ideas'] as List)
-                  .map((json) => TradeIdea.fromJson(json as Map<String, dynamic>))
-                  .toList(),
-              'diagnostics': decoded['diagnostics'] ?? <String, dynamic>{},
-            };
-          } else {
-            // Map but no 'ideas' key - treat as empty
-            return {
-              'ideas': <TradeIdea>[],
-              'diagnostics': decoded,
-            };
+            result['ideas'] = (decoded['ideas'] as List)
+                .map((json) => TradeIdea.fromJson(json as Map<String, dynamic>))
+                .toList();
           }
+          
+          return result;
         } else if (decoded is List) {
           // Old format (array) - for backward compatibility
           return {
-            'ideas': decoded
+            'unlocked': decoded
                 .map((json) => TradeIdea.fromJson(json as Map<String, dynamic>))
                 .toList(),
+            'preview': <TradeIdea>[],
             'diagnostics': <String, dynamic>{},
           };
         } else {

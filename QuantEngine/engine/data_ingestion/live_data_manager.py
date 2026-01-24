@@ -24,9 +24,17 @@ from pathlib import Path
 import time
 from dataclasses import dataclass
 from dotenv import load_dotenv
+import sys
 
 # Load environment variables
 load_dotenv()
+
+# Add utils to path for API cache
+utils_path = Path(__file__).parent.parent.parent.parent / 'utils'
+if str(utils_path) not in sys.path:
+    sys.path.insert(0, str(utils_path))
+
+from api_cache import APICache
 
 logger = logging.getLogger(__name__)
 
@@ -74,7 +82,10 @@ class LiveDataManager:
         self.fmp_last_request = 0
         self.fmp_rate_limit = 1.0  # FMP: 1000 calls/day
 
-        # Data cache
+        # API cache with 10-second TTL
+        self.api_cache = APICache(default_ttl=10)
+
+        # Data cache (legacy, kept for backward compatibility)
         self.price_cache = {}
         self.news_cache = []
         self.options_cache = {}
@@ -82,7 +93,7 @@ class LiveDataManager:
         # Session management
         self.http_session = None
 
-        logger.info("🔴 LiveDataManager initialized")
+        logger.info("🔴 LiveDataManager initialized with API caching")
 
     async def initialize(self):
         """Initialize async HTTP session"""
@@ -100,7 +111,7 @@ class LiveDataManager:
 
     async def get_live_quotes(self, symbols: List[str]) -> Dict[str, LiveQuote]:
         """
-        Get real-time quotes from Yahoo Finance
+        Get real-time quotes from Yahoo Finance with caching
 
         Args:
             symbols: List of stock symbols
@@ -114,29 +125,36 @@ class LiveDataManager:
         quotes = {}
 
         try:
-            # Rate limiting for Yahoo Finance
-            current_time = time.time()
-            if current_time - self.yf_last_request < self.yf_rate_limit:
-                await asyncio.sleep(self.yf_rate_limit - (current_time - self.yf_last_request))
-
             # Import and use their existing Yahoo Finance integration
-            import sys
-            sys.path.append('../..')  # Add parent directory to path
+            from pathlib import Path
+
+            options_scanner_path = Path(__file__).parent.parent.parent.parent / 'options_scanner'
+            if str(options_scanner_path) not in sys.path:
+                sys.path.insert(0, str(options_scanner_path))
 
             try:
-                # Try to import from options_scanner directory
-                import sys
-                from pathlib import Path
-
-                options_scanner_path = Path(__file__).parent.parent.parent.parent / 'options_scanner'
-                if str(options_scanner_path) not in sys.path:
-                    sys.path.insert(0, str(options_scanner_path))
-
                 from fetch_yahoo_finance import YahooFinanceFetcher
                 yf_fetcher = YahooFinanceFetcher()
 
                 for symbol in symbols:
                     try:
+                        # Generate cache key for Yahoo Finance quote
+                        yf_url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}"
+                        cache_key = self.api_cache.generate_key(yf_url)
+                        
+                        # Check cache first
+                        cached_quote = self.api_cache.get(cache_key)
+                        if cached_quote is not None:
+                            quotes[symbol] = cached_quote
+                            self.price_cache[symbol] = cached_quote
+                            logger.debug(f"Cache HIT for {symbol} quote")
+                            continue
+
+                        # Rate limiting for Yahoo Finance
+                        current_time = time.time()
+                        if current_time - self.yf_last_request < self.yf_rate_limit:
+                            await asyncio.sleep(self.yf_rate_limit - (current_time - self.yf_last_request))
+
                         # Get real-time quote data
                         quote_data = await asyncio.get_event_loop().run_in_executor(
                             None, yf_fetcher.fetch_quote_data, symbol
@@ -155,6 +173,12 @@ class LiveDataManager:
                             )
                             quotes[symbol] = quote
                             self.price_cache[symbol] = quote
+                            
+                            # Cache the result
+                            self.api_cache.set(cache_key, quote, ttl=10)
+                            logger.debug(f"Cache SET for {symbol} quote")
+
+                        self.yf_last_request = time.time()
 
                     except Exception as e:
                         logger.warning(f"Failed to fetch {symbol} from Yahoo: {e}")
@@ -167,6 +191,22 @@ class LiveDataManager:
 
                 for symbol in symbols:
                     try:
+                        # Generate cache key
+                        yf_url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}"
+                        cache_key = self.api_cache.generate_key(yf_url)
+                        
+                        # Check cache first
+                        cached_quote = self.api_cache.get(cache_key)
+                        if cached_quote is not None:
+                            quotes[symbol] = cached_quote
+                            self.price_cache[symbol] = cached_quote
+                            continue
+
+                        # Rate limiting
+                        current_time = time.time()
+                        if current_time - self.yf_last_request < self.yf_rate_limit:
+                            await asyncio.sleep(self.yf_rate_limit - (current_time - self.yf_last_request))
+
                         ticker = yf.Ticker(symbol)
                         info = ticker.info
 
@@ -180,11 +220,14 @@ class LiveDataManager:
                         )
                         quotes[symbol] = quote
                         self.price_cache[symbol] = quote
+                        
+                        # Cache the result
+                        self.api_cache.set(cache_key, quote, ttl=10)
+                        
+                        self.yf_last_request = time.time()
 
                     except Exception as e:
                         logger.warning(f"Failed to fetch {symbol} from yfinance: {e}")
-
-            self.yf_last_request = time.time()
 
         except Exception as e:
             logger.error(f"Error fetching live quotes: {e}")
@@ -194,7 +237,7 @@ class LiveDataManager:
     async def get_intraday_data(self, symbol: str, interval: str = '5m',
                                bars: int = 100) -> pd.DataFrame:
         """
-        Get intraday data from Alpha Vantage
+        Get intraday data from Alpha Vantage with caching
 
         Args:
             symbol: Stock symbol
@@ -209,12 +252,7 @@ class LiveDataManager:
             return pd.DataFrame()
 
         try:
-            # Rate limiting
-            current_time = time.time()
-            if current_time - self.av_last_request < self.av_rate_limit:
-                await asyncio.sleep(self.av_rate_limit - (current_time - self.av_last_request))
-
-            # Alpha Vantage intraday API
+            # Generate cache key
             url = "https://www.alphavantage.co/query"
             params = {
                 "function": "TIME_SERIES_INTRADAY",
@@ -223,6 +261,18 @@ class LiveDataManager:
                 "apikey": self.alpha_vantage_key,
                 "outputsize": "compact"
             }
+            cache_key = self.api_cache.generate_key(url, params, self.alpha_vantage_key)
+            
+            # Check cache first
+            cached_df = self.api_cache.get(cache_key)
+            if cached_df is not None:
+                logger.debug(f"Cache HIT for {symbol} intraday data")
+                return cached_df
+
+            # Rate limiting
+            current_time = time.time()
+            if current_time - self.av_last_request < self.av_rate_limit:
+                await asyncio.sleep(self.av_rate_limit - (current_time - self.av_last_request))
 
             async with self.http_session.get(url, params=params) as response:
                 if response.status == 200:
@@ -249,6 +299,10 @@ class LiveDataManager:
                         df = df.sort_values('timestamp').tail(bars)  # Get most recent bars
                         df.set_index('timestamp', inplace=True)
 
+                        # Cache the result
+                        self.api_cache.set(cache_key, df, ttl=10)
+                        logger.debug(f"Cache SET for {symbol} intraday data")
+
                         self.av_last_request = time.time()
                         return df
 
@@ -259,7 +313,7 @@ class LiveDataManager:
 
     async def get_live_news(self, limit: int = 50) -> List[NewsItem]:
         """
-        Get live news from FMP API with sentiment analysis
+        Get live news from FMP API with sentiment analysis and caching
 
         Args:
             limit: Maximum number of news items to retrieve
@@ -272,15 +326,30 @@ class LiveDataManager:
             return []
 
         try:
+            # Generate cache key
+            url = "https://financialmodelingprep.com/api/v4/general_news"
+            params = {
+                "page": 0,
+                "limit": limit,
+                "apikey": self.fmp_api_key
+            }
+            cache_key = self.api_cache.generate_key(url, params, self.fmp_api_key)
+            
+            # Check cache first
+            cached_news = self.api_cache.get(cache_key)
+            if cached_news is not None:
+                logger.debug(f"Cache HIT for FMP news (limit={limit})")
+                return cached_news
+
             # Rate limiting
             current_time = time.time()
             if current_time - self.fmp_last_request < self.fmp_rate_limit:
                 await asyncio.sleep(self.fmp_rate_limit - (current_time - self.fmp_last_request))
 
             # FMP News API
-            url = f"https://financialmodelingprep.com/api/v4/general_news?page=0&limit={limit}&apikey={self.fmp_api_key}"
+            full_url = f"{url}?page=0&limit={limit}&apikey={self.fmp_api_key}"
 
-            async with self.http_session.get(url) as response:
+            async with self.http_session.get(full_url) as response:
                 if response.status == 200:
                     news_data = await response.json()
 
@@ -307,8 +376,10 @@ class LiveDataManager:
                         )
                         news_items.append(news_item)
 
-                    # Cache news items
+                    # Cache news items (both in API cache and legacy cache)
                     self.news_cache = news_items[:100]  # Keep last 100 items
+                    self.api_cache.set(cache_key, news_items, ttl=10)
+                    logger.debug(f"Cache SET for FMP news (limit={limit})")
 
                     self.fmp_last_request = time.time()
                     return news_items

@@ -285,8 +285,8 @@ def get_option_chain_snapshot(
     """
     Fetch option chain snapshot from Massive API.
     
-    For futures/indices (SPX, NDX, etc.), adds $ prefix if not already present.
-    Massive API requires $ prefix for futures options chains.
+    For index options (SPX, NDX, etc.), uses I: prefix.
+    Massive API requires I: prefix for index options chains (e.g., I:SPX).
     
     Args:
         api_key: Massive API key
@@ -299,13 +299,21 @@ def get_option_chain_snapshot(
     Returns:
         API response dict with 'results' list of option contracts
     """
-    # List of futures/indices that need $ prefix
-    futures_indices = ["SPX", "NDX", "DJX", "RUT", "VIX"]
+    # List of indices that need I: prefix for Massive API
+    index_options = ["SPX", "NDX", "DJX", "RUT", "XSP"]
+    # VIX might use different format, keep separate
+    futures_indices = ["VIX"]
     
     underlying_upper = underlying.upper()
     
-    # Add $ prefix for futures/indices
-    if underlying_upper in futures_indices and not underlying_upper.startswith("$"):
+    # Add I: prefix for index options (Massive API format)
+    if underlying_upper in index_options:
+        if underlying_upper.startswith("I:"):
+            underlying_for_api = underlying_upper
+        else:
+            underlying_for_api = f"I:{underlying_upper}"
+    elif underlying_upper in futures_indices and not underlying_upper.startswith("$"):
+        # Some futures might still use $ prefix
         underlying_for_api = f"${underlying_upper}"
     else:
         underlying_for_api = underlying_upper
@@ -600,7 +608,7 @@ def get_spot_from_yfinance(ticker: str) -> Optional[float]:
     """Fetch spot price from Yahoo Finance (works for indices like SPX)"""
     try:
         # For indices, use ^ prefix
-        yf_symbol = f"^{ticker}" if ticker in ["SPX", "NDX", "DJI", "RUT"] else ticker
+        yf_symbol = f"^{ticker}" if ticker in ["SPX", "NDX", "DJI", "RUT", "XSP"] else ticker
         ticker_obj = yf.Ticker(yf_symbol)
         info = ticker_obj.info
         
@@ -679,7 +687,7 @@ def get_spot_price(
         if spot:
             return spot
     
-    is_index = ticker in ["SPX", "NDX", "DJI", "RUT", "VIX"]
+    is_index = ticker in ["SPX", "NDX", "DJI", "RUT", "VIX", "XSP"]
     
     if is_index:
         spot = get_spot_from_yfinance(ticker)
@@ -1235,6 +1243,126 @@ def compute_flip_line(
         "flip_price": flip_price,
         "net_series": cumulative_series,  # Now shows cumulative GEX by strike
         "net_gex_at_spot": net_gex_at_spot
+    }
+
+
+def compute_cumulative_gex(gex_by_strike: Dict[float, float]) -> List[Tuple[float, float]]:
+    """
+    Compute cumulative gamma exposure by strike.
+    
+    Returns list of (strike, cumulative_gex) tuples sorted by strike.
+    This is the same computation as in compute_flip_line, extracted for reuse.
+    
+    Args:
+        gex_by_strike: Dictionary mapping strike -> GEX value
+    
+    Returns:
+        List of (strike, cumulative_gex) tuples sorted by strike
+    """
+    if not gex_by_strike:
+        return []
+    
+    strikes = sorted(gex_by_strike.keys())
+    cumulative = []
+    running_sum = 0.0
+    
+    for strike in strikes:
+        running_sum += gex_by_strike[strike]
+        cumulative.append((strike, running_sum))
+    
+    return cumulative
+
+
+def compute_gamma_slope(
+    cumulative_gex: List[Tuple[float, float]], 
+    spot: float, 
+    flip_line: Optional[float] = None
+) -> Dict[str, Any]:
+    """
+    Compute gamma slope (first derivative of cumulative gamma).
+    
+    The slope indicates how hedging pressure changes with price movement:
+    - Positive slope: Moves stabilize (pinning effect)
+    - Negative slope: Moves accelerate (destabilizing)
+    - Near zero: Neutral
+    
+    Args:
+        cumulative_gex: List of (strike, cumulative_gex) tuples
+        spot: Current spot price
+        flip_line: Optional flip line price for slope calculation at that level
+    
+    Returns:
+        Dict with slope_at_spot, slope_at_flip, slope_bucket, and interpretation
+    """
+    if len(cumulative_gex) < 2:
+        return {
+            "slope_at_spot": 0.0,
+            "slope_at_flip": None,
+            "slope_bucket": "NEUTRAL",
+            "interpretation": "Neutral"
+        }
+    
+    # Find points around spot price for slope calculation
+    slope_at_spot = 0.0
+    slope_at_flip = None
+    
+    # Calculate slope at spot using nearby points
+    for i in range(len(cumulative_gex) - 1):
+        strike1, cum1 = cumulative_gex[i]
+        strike2, cum2 = cumulative_gex[i + 1]
+        
+        if strike1 <= spot <= strike2:
+            # Linear interpolation for slope
+            if strike2 != strike1:
+                slope_at_spot = (cum2 - cum1) / (strike2 - strike1)
+            else:
+                slope_at_spot = 0.0
+            break
+    else:
+        # Spot outside range - use nearest segment
+        if spot < cumulative_gex[0][0]:
+            # Use first two points
+            strike1, cum1 = cumulative_gex[0]
+            strike2, cum2 = cumulative_gex[1]
+            if strike2 != strike1:
+                slope_at_spot = (cum2 - cum1) / (strike2 - strike1)
+        else:
+            # Use last two points
+            strike1, cum1 = cumulative_gex[-2]
+            strike2, cum2 = cumulative_gex[-1]
+            if strike2 != strike1:
+                slope_at_spot = (cum2 - cum1) / (strike2 - strike1)
+    
+    # Calculate slope at flip line if provided
+    if flip_line is not None:
+        for i in range(len(cumulative_gex) - 1):
+            strike1, cum1 = cumulative_gex[i]
+            strike2, cum2 = cumulative_gex[i + 1]
+            
+            if strike1 <= flip_line <= strike2:
+                if strike2 != strike1:
+                    slope_at_flip = (cum2 - cum1) / (strike2 - strike1)
+                else:
+                    slope_at_flip = 0.0
+                break
+    
+    # Bucket classification
+    SLOPE_THRESHOLD = 0.1  # Threshold for significant slope
+    if slope_at_spot > SLOPE_THRESHOLD:
+        bucket = "STABILIZING"
+        interpretation = "Moves stabilize"
+    elif slope_at_spot < -SLOPE_THRESHOLD:
+        bucket = "ACCELERATIVE"
+        interpretation = "Moves accelerate"
+    else:
+        bucket = "NEUTRAL"
+        interpretation = "Neutral"
+    
+    return {
+        "slope_at_spot": slope_at_spot,
+        "slope_at_flip": slope_at_flip,
+        "slope_bucket": bucket,
+        "interpretation": interpretation
     }
 
 

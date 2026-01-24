@@ -11,6 +11,9 @@ class TradeIdea {
   final String mode; // "INTRADAY_ONLY" | "OVERNIGHT_ALLOWED" | "HEDGE_REQUIRED"
   final String confidence; // "HIGH" | "MEDIUM" | "LOW"
   final List<String> reasons;
+  final String status; // "UNLOCKED" | "PREVIEW"
+  final String? blockReason; // "TIME_LOCKED" | "REGIME_BLOCKED" | "REGIME_NEAR_UNLOCK" | "IMPLEMENTATION_LOCKED"
+  final Map<String, dynamic>? nextWindow; // NextWindow info for preview ideas
   final bool preMarket; // True if market is closed
   final String? marketStatusNote; // Warning message for pre-market ideas
   final List<ReferenceExecution> executions;
@@ -27,6 +30,9 @@ class TradeIdea {
     required this.mode,
     required this.confidence,
     required this.reasons,
+    this.status = 'UNLOCKED',
+    this.blockReason,
+    this.nextWindow,
     this.preMarket = false,
     this.marketStatusNote,
     required this.executions,
@@ -45,6 +51,9 @@ class TradeIdea {
       mode: json['mode'] ?? 'OVERNIGHT_ALLOWED',
       confidence: json['confidence'] ?? 'MEDIUM',
       reasons: (json['reasons'] as List?)?.map((e) => e.toString()).toList() ?? [],
+      status: json['status'] ?? 'UNLOCKED',
+      blockReason: json['blockReason'],
+      nextWindow: json['nextWindow'] != null ? Map<String, dynamic>.from(json['nextWindow']) : null,
       preMarket: json['preMarket'] ?? false,
       marketStatusNote: json['marketStatusNote'],
       executions: (json['executions'] as List?)
@@ -68,6 +77,9 @@ class TradeIdea {
       'mode': mode,
       'confidence': confidence,
       'reasons': reasons,
+      'status': status,
+      'blockReason': blockReason,
+      'nextWindow': nextWindow,
       'preMarket': preMarket,
       'marketStatusNote': marketStatusNote,
       'executions': executions.map((e) => e.toJson()).toList(),

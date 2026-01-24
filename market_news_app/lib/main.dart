@@ -9,6 +9,8 @@ import 'package:market_news_app/screens/gex_calculator_screen.dart';
 import 'package:market_news_app/screens/intrinsic_value_screen.dart';
 import 'package:market_news_app/screens/decision_cockpit_screen.dart';
 import 'package:market_news_app/widgets/scanner_opportunities_widget.dart';
+import 'package:market_news_app/widgets/asset_selection_provider.dart';
+import 'package:market_news_app/services/asset_selection_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'screens/news_screen.dart';
 import 'screens/trade_ideas_screen.dart';
@@ -80,7 +82,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Market News',
       theme: ThemeData.dark(),
-      home: const MainNavigation(),
+      home: AssetSelectionProvider(
+        service: AssetSelectionService(),
+        child: const MainNavigation(),
+      ),
     );
   }
 }

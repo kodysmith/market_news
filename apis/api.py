@@ -4,9 +4,17 @@ import sys
 from flask_cors import CORS
 import subprocess
 import time
+from pathlib import Path
 
 # Add parent directory to path for QuantEngine imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# Add utils to path for API cache
+utils_path = Path(__file__).parent.parent / 'utils'
+if str(utils_path) not in sys.path:
+    sys.path.insert(0, str(utils_path))
+
+from api_cache import APICache
 
 from QuantEngine.intrinsic_value_calculator import IntrinsicValueCalculator, calculate_intrinsic_value, batch_calculate
 from QuantEngine.intrinsic_value_database import (
@@ -19,6 +27,9 @@ from QuantEngine.volatility_analyzer import VolatilityAnalyzer, analyze_volatili
 
 app = Flask(__name__)
 CORS(app)  # This will allow all domains. For production, restrict origins!
+
+# Initialize API cache with 10-second TTL
+api_cache = APICache(default_ttl=10)
 
 REPORT_PATH = 'data/report.json'
 REFRESH_INTERVAL = 30 * 60  # 30 minutes in seconds
@@ -551,6 +562,23 @@ def calculate_gex():
         # Get diagnostics from metrics
         diagnostics = metrics.get("diagnostics", {})
         
+        # Compute cumulative GEX and gamma slope
+        from gex_calculator import compute_cumulative_gex, compute_gamma_slope
+        
+        # Build gex_by_strike dict from agg DataFrame
+        gex_by_strike_dict = dict(zip(agg["strike"], agg["gex"]))
+        cumulative_gex_list = compute_cumulative_gex(gex_by_strike_dict)
+        
+        # Format cumulative_gex for API response
+        cumulative_gex_array = [
+            {"strike": strike, "cumulative_gex": cum_gex}
+            for strike, cum_gex in cumulative_gex_list
+        ]
+        
+        # Compute gamma slope
+        flip_line = metrics.get("flip_line")
+        gamma_slope = compute_gamma_slope(cumulative_gex_list, spot_price, flip_line)
+        
         # Format response with cumulative_gex included in gex_by_strike
         return jsonify({
             "ticker": ticker,
@@ -565,6 +593,8 @@ def calculate_gex():
                 "put_contracts": len(df[df["type"] == "put"])
             },
             "gex_by_strike": agg.to_dict('records'),
+            "cumulative_gex": cumulative_gex_array,
+            "gamma_slope": gamma_slope,
             "chart_annotations": chart_annotations,
             "diagnostics": {
                 "calls_in_target": diagnostics.get("calls_in_target", 0),
@@ -1109,18 +1139,17 @@ def cockpit_state():
     - Transition detection (near flip, flip moving)
     
     Query params:
-        ticker: Stock ticker (SPY, QQQ, IWM) - default: SPY
+        ticker: Stock ticker (any valid ticker symbol) - default: SPY
     
     Returns:
         JSON with regime, volatility, structure, action_filter, and net_series
     """
     ticker = request.args.get('ticker', 'SPY').upper()
     
-    # Validate ticker
-    supported_tickers = ['SPY', 'QQQ', 'IWM']
-    if ticker not in supported_tickers:
+    # Basic ticker validation (format only, not restricted list)
+    if not ticker or len(ticker) > 5 or not ticker.isalnum():
         return jsonify({
-            "error": f"Unsupported ticker. Use one of: {', '.join(supported_tickers)}"
+            "error": "Invalid ticker format. Ticker must be 1-5 alphanumeric characters."
         }), 400
     
     try:
@@ -1321,7 +1350,7 @@ def trade_ideas_allowed():
     ranked by risk-adjusted ROI using GEX walls and options chain.
     
     Query params:
-        ticker: Stock ticker (SPY, QQQ, IWM) - default: SPY
+        ticker: Stock ticker (any valid ticker symbol) - default: SPY
         max_ideas: Maximum number of ideas to return per timeframe (default: 3)
         timeframe: Timeframe selection - 'thisWeek', 'thisMonth', 'thisYear', or 'all' (default: 'all')
         min_dte: Optional override for minimum DTE (overrides timeframe)
@@ -1330,17 +1359,16 @@ def trade_ideas_allowed():
     Returns:
         JSON object with ideas grouped by timeframe (or single array if timeframe specified)
     """
-    ticker = request.args.get('ticker', 'SPY').upper()
+    ticker = request.args.get('ticker', 'SPY').upper().strip()
     max_ideas = int(request.args.get('max_ideas', 3))
     timeframe = request.args.get('timeframe', 'all')  # 'all', 'thisWeek', 'thisMonth', 'thisYear'
     min_dte_override = request.args.get('min_dte', type=int)
     max_dte_override = request.args.get('max_dte', type=int)
     
-    # Validate ticker
-    supported_tickers = ['SPY', 'QQQ', 'IWM']
-    if ticker not in supported_tickers:
+    # Basic ticker validation (format only, not restricted list)
+    if not ticker or len(ticker) > 5 or not ticker.isalnum():
         return jsonify({
-            "error": f"Unsupported ticker. Use one of: {', '.join(supported_tickers)}"
+            "error": "Invalid ticker format. Ticker must be 1-5 alphanumeric characters."
         }), 400
     
     try:
@@ -1349,6 +1377,7 @@ def trade_ideas_allowed():
             MarketContext,
             enhance_contract_with_pricing,
             generate_trade_ideas,
+            generate_trade_ideas_with_preview,
             load_trade_ideas_config
         )
         from QuantEngine.gex_calculator import (
@@ -1816,6 +1845,12 @@ def trade_ideas_allowed():
                     f'Check: delta targets, wall buffers, liquidity requirements',
                 ]
         
+        # Generate preview candidates (once, not per timeframe)
+        preview_result = generate_trade_ideas_with_preview(context, quotes, trade_config)
+        preview_ideas = preview_result.get('preview', [])
+        next_window = preview_result.get('nextWindow', {})
+        current_phase = preview_result.get('currentPhase', 'UNKNOWN')
+        
         # Convert to JSON-serializable format
         from QuantEngine.trade_ideas_engine import TradeIdea
         def idea_to_dict(idea: TradeIdea) -> dict:
@@ -1829,6 +1864,9 @@ def trade_ideas_allowed():
                 'mode': idea.mode,
                 'confidence': idea.confidence,
                 'reasons': idea.reasons,
+                'status': idea.status,
+                'blockReason': idea.blockReason,
+                'nextWindow': idea.nextWindow,
                 'preMarket': idea.preMarket,
                 'marketStatusNote': idea.marketStatusNote,
                 'executions': [
@@ -1964,10 +2002,31 @@ def cockpit_events():
         fmp_key = config.get('FMP_API_KEY', '')
         if fmp_key:
             try:
-                earnings_url = f"https://financialmodelingprep.com/api/v3/earning_calendar?from={today}&to={end_date}&apikey={fmp_key}"
-                resp = requests.get(earnings_url, timeout=10)
-                if resp.status_code == 200:
-                    earnings_data = resp.json()
+                earnings_url = "https://financialmodelingprep.com/api/v3/earning_calendar"
+                params = {
+                    'from': today,
+                    'to': end_date,
+                    'apikey': fmp_key
+                }
+                
+                # Generate cache key and check cache
+                cache_key = api_cache.generate_key(earnings_url, params, fmp_key)
+                cached_earnings = api_cache.get(cache_key)
+                
+                if cached_earnings is not None:
+                    earnings_data = cached_earnings
+                else:
+                    # Make API call
+                    full_url = f"{earnings_url}?from={today}&to={end_date}&apikey={fmp_key}"
+                    resp = requests.get(full_url, timeout=10)
+                    if resp.status_code == 200:
+                        earnings_data = resp.json()
+                        # Cache the result
+                        api_cache.set(cache_key, earnings_data, ttl=10)
+                    else:
+                        earnings_data = []
+                
+                if earnings_data:
                     for earning in earnings_data:
                         ticker = earning.get('symbol', '')
                         if ticker in spy_top_holdings:

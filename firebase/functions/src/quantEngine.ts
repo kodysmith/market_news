@@ -2,6 +2,7 @@ import { onRequest } from 'firebase-functions/v2/https';
 import { setGlobalOptions } from 'firebase-functions/v2';
 import * as admin from 'firebase-admin';
 import axios from 'axios';
+import { getCache, cachedRequest } from './utils/apiCache';
 
 // Set global options for all functions
 setGlobalOptions({
@@ -11,6 +12,9 @@ setGlobalOptions({
 });
 
 // Firebase Admin is already initialized in index.ts
+
+// Initialize API cache with 10-second TTL
+const apiCache = getCache(10);
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -224,9 +228,19 @@ export const scanMarket = onRequest({
 
 async function getStockData(ticker: string): Promise<StockData> {
   try {
-    // Use Yahoo Finance API
-    const response = await axios.get(`https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?range=1d&interval=1d`);
-    const result = response.data.chart.result[0];
+    // Use Yahoo Finance API with caching
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?range=1d&interval=1d`;
+    
+    const response = await cachedRequest(
+      () => axios.get(url),
+      apiCache,
+      url,
+      undefined,
+      undefined,
+      10
+    );
+    
+    const result = response.chart.result[0];
     const meta = result.meta;
     const quotes = result.indicators.quote[0];
     
@@ -253,9 +267,19 @@ async function getStockData(ticker: string): Promise<StockData> {
 
 async function getTechnicalAnalysis(ticker: string): Promise<TechnicalAnalysis> {
   try {
-    // Get historical data from Yahoo Finance
-    const response = await axios.get(`https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?range=3mo&interval=1d`);
-    const result = response.data.chart.result[0];
+    // Get historical data from Yahoo Finance with caching
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?range=3mo&interval=1d`;
+    
+    const response = await cachedRequest(
+      () => axios.get(url),
+      apiCache,
+      url,
+      undefined,
+      undefined,
+      10
+    );
+    
+    const result = response.chart.result[0];
     const quotes = result.indicators.quote[0];
     
     const prices = quotes.close.filter((price: number) => price !== null);

@@ -102,5 +102,12 @@
     "blockIfActionFilterBlocked": true,
     "blockOvernightIfEarningsOrMacro": true
   },
+  "preview": {
+    "enabled": true,
+    "maxPreviewIdeas": 3,
+    "unlockScoreWeight": 0.60,
+    "qualityScoreWeight": 0.25,
+    "strategyScoreWeight": 0.15
+  },
   "maxIdeasToShow": 3
 }

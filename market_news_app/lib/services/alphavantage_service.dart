@@ -3,23 +3,46 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../models/bull_put_spread.dart';
 import '../models/option_chain.dart';
+import '../utils/api_cache.dart';
 
 class AlphaVantageService {
   static const String _baseUrl = 'https://www.alphavantage.co/query';
   static String get _apiKey => dotenv.env['ALPHAVANTAGE_API_KEY'] ?? '';
+  
+  // Initialize API cache with 10-second TTL
+  static final _cache = getCache(defaultTTL: 10);
 
   // Get current stock price
   static Future<double?> getCurrentPrice(String symbol) async {
     try {
-      final response = await http.get(
-        Uri.parse('$_baseUrl?function=GLOBAL_QUOTE&symbol=$symbol&apikey=$_apiKey'),
-      );
+      final url = '$_baseUrl?function=GLOBAL_QUOTE&symbol=$symbol&apikey=$_apiKey';
+      final params = {
+        'function': 'GLOBAL_QUOTE',
+        'symbol': symbol,
+        'apikey': _apiKey,
+      };
+      
+      // Generate cache key
+      final cacheKey = _cache.generateKey(_baseUrl, params, _apiKey);
+      
+      // Check cache first
+      final cachedPrice = _cache.get<double>(cacheKey);
+      if (cachedPrice != null) {
+        return cachedPrice;
+      }
+      
+      final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final quote = data['Global Quote'];
         if (quote != null) {
-          return double.tryParse(quote['05. price'] ?? '0');
+          final price = double.tryParse(quote['05. price'] ?? '0');
+          if (price != null) {
+            // Cache the result
+            _cache.set(cacheKey, price, ttl: 10);
+          }
+          return price;
         }
       }
     } catch (e) {
@@ -51,9 +74,23 @@ class AlphaVantageService {
   // Get real-time options data (requires Alpha Vantage premium)
   static Future<OptionsChain?> _getRealTimeOptions(String symbol) async {
     try {
-      final response = await http.get(
-        Uri.parse('https://www.alphavantage.co/query?function=REALTIME_OPTIONS&symbol=$symbol&apikey=$_apiKey'),
-      );
+      final url = 'https://www.alphavantage.co/query?function=REALTIME_OPTIONS&symbol=$symbol&apikey=$_apiKey';
+      final params = {
+        'function': 'REALTIME_OPTIONS',
+        'symbol': symbol,
+        'apikey': _apiKey,
+      };
+      
+      // Generate cache key
+      final cacheKey = _cache.generateKey('https://www.alphavantage.co/query', params, _apiKey);
+      
+      // Check cache first
+      final cachedOptions = _cache.get<OptionsChain>(cacheKey);
+      if (cachedOptions != null) {
+        return cachedOptions;
+      }
+      
+      final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -100,13 +137,17 @@ class AlphaVantageService {
             }
           }
 
-          return OptionsChain(
+          final optionsChain = OptionsChain(
             symbol: symbol,
             underlyingPrice: await getCurrentPrice(symbol) ?? 0.0,
             lastUpdated: DateTime.now(),
             calls: calls,
             puts: puts,
           );
+          
+          // Cache the result
+          _cache.set(cacheKey, optionsChain, ttl: 10);
+          return optionsChain;
         }
       }
 

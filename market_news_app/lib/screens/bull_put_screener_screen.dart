@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../models/bull_put_spread.dart';
 import '../services/yahoo_finance_service.dart';
+import '../widgets/asset_selector_widget.dart';
+import '../widgets/asset_selection_provider.dart';
 
 class BullPutScreenerScreen extends StatefulWidget {
   const BullPutScreenerScreen({super.key});
@@ -15,18 +17,49 @@ class _BullPutScreenerScreenState extends State<BullPutScreenerScreen> {
   List<BullPutSpread> _spreads = [];
   bool _isLoading = false;
   String? _error;
-  String _selectedSymbol = 'SPY';
   int _maxDTE = 45;
   double _minIVRank = 50.0;
   double _minYield = 0.33;
   double _minExpectedValue = 0.0; // Only show positive EV trades
 
-  final List<String> _symbols = ['SPY', 'QQQ', 'IWM', 'NVDA', 'TSLA', 'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'META'];
-
   @override
   void initState() {
     super.initState();
     _fetchBullPutSpreads();
+  }
+  
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Set up listener after context is available
+    final service = AssetSelectionProvider.of(context);
+    service.addListener(_onAssetChanged);
+  }
+  
+  @override
+  void dispose() {
+    try {
+      final service = AssetSelectionProvider.of(context);
+      service.removeListener(_onAssetChanged);
+    } catch (e) {
+      // Context might not be available during dispose
+    }
+    super.dispose();
+  }
+  
+  void _onAssetChanged() {
+    // Reload spreads when asset changes
+    if (mounted) {
+      _fetchBullPutSpreads();
+    }
+  }
+  
+  String get _selectedSymbol {
+    try {
+      return AssetSelectionProvider.of(context).selectedAsset;
+    } catch (e) {
+      return 'SPY'; // Fallback
+    }
   }
 
   Future<void> _fetchBullPutSpreads() async {
@@ -320,17 +353,11 @@ class _BullPutScreenerScreenState extends State<BullPutScreenerScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Symbol', style: TextStyle(fontWeight: FontWeight.bold)),
-                    DropdownButton<String>(
-                      value: _selectedSymbol,
-                      isExpanded: true,
-                      items: _symbols.map((symbol) {
-                        return DropdownMenuItem(value: symbol, child: Text(symbol));
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedSymbol = value!;
-                        });
+                    const Text('Symbol', style: TextStyle(fontWeight: FontWeight.bold)),
+                    AssetSelectorWidget(
+                      compact: true,
+                      showQuickButtons: false,
+                      onAssetChanged: (asset) {
                         _fetchBullPutSpreads();
                       },
                     ),

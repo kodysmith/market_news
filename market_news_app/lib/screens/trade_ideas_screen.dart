@@ -1,6 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../models/trade_idea.dart';
 import '../services/trade_ideas_service.dart';
+import '../widgets/asset_selector_widget.dart';
+import '../widgets/asset_selection_provider.dart';
 import 'decision_cockpit_screen.dart';
 
 /// Trade Ideas Screen - Regime-Aware Allowed-Only Trade Ideas
@@ -14,10 +18,11 @@ class TradeIdeasScreen extends StatefulWidget {
 class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
   List<TradeIdea> _ideas = [];
   Map<String, List<TradeIdea>>? _ideasByTimeframe;
+  List<TradeIdea> _previewIdeas = [];
+  Map<String, dynamic>? _nextWindow;
+  String? _currentPhase;
   bool _isLoading = true;
   String? _error;
-  String _selectedTicker = 'SPY';
-  final List<String> _tickers = ['SPY', 'QQQ', 'IWM'];
   String _selectedTimeframe = 'all';  // 'all', 'thisWeek', 'thisMonth', 'thisYear'
   final List<String> _timeframes = ['all', 'thisWeek', 'thisMonth', 'thisYear'];
   int? _customMinDte;
@@ -30,6 +35,40 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
   void initState() {
     super.initState();
     _loadTradeIdeas();
+  }
+  
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Set up listener after context is available
+    final service = AssetSelectionProvider.of(context);
+    service.addListener(_onAssetChanged);
+  }
+  
+  @override
+  void dispose() {
+    try {
+      final service = AssetSelectionProvider.of(context);
+      service.removeListener(_onAssetChanged);
+    } catch (e) {
+      // Context might not be available during dispose
+    }
+    super.dispose();
+  }
+  
+  void _onAssetChanged() {
+    // Reload trade ideas when asset changes
+    if (mounted) {
+      _loadTradeIdeas();
+    }
+  }
+  
+  String get _selectedTicker {
+    try {
+      return AssetSelectionProvider.of(context).selectedAsset;
+    } catch (e) {
+      return 'SPY'; // Fallback
+    }
   }
 
   Future<void> _loadTradeIdeas() async {
@@ -51,13 +90,33 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
       );
       
       setState(() {
-        if (result.containsKey('ideasByTimeframe')) {
+        // Parse unlocked ideas
+        if (result.containsKey('unlockedByTimeframe')) {
+          _ideasByTimeframe = result['unlockedByTimeframe'] as Map<String, List<TradeIdea>>;
+          _ideas = [];
+        } else if (result.containsKey('unlocked')) {
+          _ideas = result['unlocked'] as List<TradeIdea>;
+          _ideasByTimeframe = null;
+        } else if (result.containsKey('ideasByTimeframe')) {
+          // Backward compatibility
           _ideasByTimeframe = result['ideasByTimeframe'] as Map<String, List<TradeIdea>>;
           _ideas = [];
-        } else {
+        } else if (result.containsKey('ideas')) {
+          // Backward compatibility
           _ideas = result['ideas'] as List<TradeIdea>;
           _ideasByTimeframe = null;
+        } else {
+          _ideas = [];
+          _ideasByTimeframe = null;
         }
+        
+        // Parse preview ideas
+        _previewIdeas = result['preview'] as List<TradeIdea>? ?? [];
+        
+        // Parse next window and current phase
+        _nextWindow = result['nextWindow'] as Map<String, dynamic>?;
+        _currentPhase = result['currentPhase'] as String?;
+        
         _diagnostics = result['diagnostics'] as Map<String, dynamic>?;
         _isLoading = false;
       });
@@ -84,10 +143,27 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          // Controls bar
-          Container(
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _error != null
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Error: $_error', style: const TextStyle(color: Colors.red)),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: _loadTradeIdeas,
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  ),
+                )
+              : Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Controls bar
+                      Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             color: const Color(0xFF161B22),
             child: Column(
@@ -95,33 +171,10 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
                 // First row: Ticker and Timeframe
                 Row(
                   children: [
-                    const Text(
-                      'Symbol: ',
-                      style: TextStyle(color: Colors.white70, fontSize: 14, fontFamily: 'JetBrains Mono'),
-                    ),
-                    const SizedBox(width: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF0D1117),
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: Colors.white24),
-                      ),
-                      child: DropdownButton<String>(
-                        value: _selectedTicker,
-                        dropdownColor: const Color(0xFF161B22),
-                        underline: const SizedBox(),
-                        style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold, fontFamily: 'JetBrains Mono'),
-                        items: _tickers.map((ticker) {
-                          return DropdownMenuItem(value: ticker, child: Text(ticker));
-                        }).toList(),
-                        onChanged: (value) {
-                          if (value != null) {
-                            setState(() {
-                              _selectedTicker = value;
-                            });
-                            _loadTradeIdeas();
-                          }
+                    Expanded(
+                      child: AssetSelectorWidget(
+                        onAssetChanged: (asset) {
+                          _loadTradeIdeas();
                         },
                       ),
                     ),
@@ -249,9 +302,13 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
               ],
             ),
           ),
-          Expanded(child: _buildBody()),
+          Expanded(
+            child: SingleChildScrollView(
+              child: _buildBody(),
+            ),
+          ),
         ],
-      ),
+                  ),
     );
   }
 
@@ -287,24 +344,23 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
       );
     }
 
-    // Check if we have ideas (either single list or by timeframe)
-    final hasIdeas = _ideas.isNotEmpty || (_ideasByTimeframe != null && _ideasByTimeframe!.values.any((list) => list.isNotEmpty));
+    // Check if we have unlocked ideas (either single list or by timeframe)
+    final hasUnlockedIdeas = _ideas.isNotEmpty || (_ideasByTimeframe != null && _ideasByTimeframe!.values.any((list) => list.isNotEmpty));
     
-    if (!hasIdeas) {
-      return _buildEmptyState();
-    }
-
     return RefreshIndicator(
       onRefresh: _loadTradeIdeas,
-      child: _ideasByTimeframe != null
-          ? _buildTimeframeView()
-          : ListView.builder(
-              padding: const EdgeInsets.all(12),
-              itemCount: _ideas.length,
-              itemBuilder: (context, index) {
-                return _buildTradeIdeaCard(_ideas[index]);
-              },
-            ),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Section A: Unlocked Now
+            _buildUnlockedSection(hasUnlockedIdeas),
+            
+            // Section B: Preview Next Window
+            _buildPreviewSection(),
+          ],
+        ),
+      ),
     );
   }
   
@@ -353,6 +409,311 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
           ],
         );
       },
+    );
+  }
+
+  Widget _buildUnlockedSection(bool hasUnlockedIdeas) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Header
+          const Text(
+            'Unlocked Now',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'JetBrains Mono',
+            ),
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'These setups are permitted under current regime and time window.',
+            style: TextStyle(
+              color: Colors.white70,
+              fontSize: 12,
+              fontFamily: 'JetBrains Mono',
+            ),
+          ),
+          const SizedBox(height: 16),
+          
+          // Content
+          if (!hasUnlockedIdeas)
+            _buildEmptyState()
+          else if (_ideasByTimeframe != null)
+            _buildTimeframeView()
+          else
+            ..._ideas.map((idea) => _buildTradeIdeaCard(idea)),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildPreviewSection() {
+    if (_previewIdeas.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF161B22),
+        border: Border(
+          top: BorderSide(color: Colors.white.withOpacity(0.1)),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Header
+          const Text(
+            'Preview Next Window',
+            style: TextStyle(
+              color: Colors.white70,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'JetBrains Mono',
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Planning view — candidates for the next valid trading window. Not actionable yet.${_nextWindow != null ? '\nNext window: ${_nextWindow!['label'] ?? 'Unknown'}' : ''}',
+            style: const TextStyle(
+              color: Colors.white54,
+              fontSize: 12,
+              fontFamily: 'JetBrains Mono',
+            ),
+          ),
+          const SizedBox(height: 16),
+          
+          // Preview ideas
+          ..._previewIdeas.map((idea) => _buildPreviewCard(idea)),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildPreviewCard(TradeIdea idea) {
+    final isExpanded = _expandedCards[idea.id] ?? false;
+    
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFF0D1117).withOpacity(0.5),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.white.withOpacity(0.1)),
+      ),
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            _expandedCards[idea.id] = !isExpanded;
+          });
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header with PREVIEW badge
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: const Text(
+                      'PREVIEW',
+                      style: TextStyle(
+                        color: Colors.white54,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'JetBrains Mono',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  if (idea.blockReason != null)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        idea.blockReason!.replaceAll('_', ' '),
+                        style: const TextStyle(
+                          color: Colors.orange,
+                          fontSize: 10,
+                          fontFamily: 'JetBrains Mono',
+                        ),
+                      ),
+                    ),
+                  const Spacer(),
+                  Icon(
+                    isExpanded ? Icons.expand_less : Icons.expand_more,
+                    color: Colors.white54,
+                    size: 20,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              
+              // Strategy label
+              Text(
+                idea.label,
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 14,
+                  fontFamily: 'JetBrains Mono',
+                ),
+              ),
+              
+              // Next window info
+              if (idea.nextWindow != null) ...[
+                const SizedBox(height: 4),
+                Text(
+                  'Expected entry: ${idea.nextWindow!['label'] ?? 'Unknown'}',
+                  style: const TextStyle(
+                    color: Colors.white54,
+                    fontSize: 11,
+                    fontFamily: 'JetBrains Mono',
+                  ),
+                ),
+              ],
+              
+              // Unlock conditions
+              if (idea.blockReason == 'REGIME_NEAR_UNLOCK' && idea.contextSnapshot != null) ...[
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Watch Trigger:',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'JetBrains Mono',
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      if (idea.contextSnapshot!.flipLine != null)
+                        Text(
+                          'Unlock if spot > ${idea.contextSnapshot!.flipLine!.toStringAsFixed(2)} and GEX turns Neutral',
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 11,
+                            fontFamily: 'JetBrains Mono',
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+              
+              // Expanded view
+              if (isExpanded) ...[
+                const SizedBox(height: 12),
+                const Divider(color: Colors.white24),
+                const SizedBox(height: 8),
+                Text(
+                  'What must happen to unlock:',
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'JetBrains Mono',
+                  ),
+                ),
+                const SizedBox(height: 8),
+                ...idea.reasons.map((reason) => Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('• ', style: TextStyle(color: Colors.white54, fontSize: 12)),
+                      Expanded(
+                        child: Text(
+                          reason,
+                          style: const TextStyle(
+                            color: Colors.white54,
+                            fontSize: 11,
+                            fontFamily: 'JetBrains Mono',
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
+                
+                // Show strikes but hide prices (or show with stale label)
+                if (idea.executions.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  const Divider(color: Colors.white24),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Potential structures (indicative — refresh at open):',
+                    style: const TextStyle(
+                      color: Colors.white54,
+                      fontSize: 11,
+                      fontStyle: FontStyle.italic,
+                      fontFamily: 'JetBrains Mono',
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  ...idea.executions.take(2).map((exec) => _buildPreviewExecution(exec)),
+                ],
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildPreviewExecution(ReferenceExecution exec) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '${exec.dte} DTE — ${exec.expiry}',
+            style: const TextStyle(
+              color: Colors.white54,
+              fontSize: 10,
+              fontFamily: 'JetBrains Mono',
+            ),
+          ),
+          const SizedBox(height: 4),
+          ...exec.legs.map((leg) => Padding(
+            padding: const EdgeInsets.only(bottom: 2),
+            child: Text(
+              '${leg.action} ${leg.type} ${leg.strike.toStringAsFixed(0)} (Δ${leg.delta?.toStringAsFixed(2) ?? 'N/A'})',
+              style: const TextStyle(
+                color: Colors.white54,
+                fontSize: 10,
+                fontFamily: 'JetBrains Mono',
+              ),
+            ),
+          )),
+        ],
+      ),
     );
   }
 

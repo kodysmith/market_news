@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/cockpit_service.dart';
+import '../widgets/asset_selector_widget.dart';
+import '../widgets/asset_selection_provider.dart';
 
 /// Decision Cockpit - Compact Single-Screen Trading State View
 class DecisionCockpitScreen extends StatefulWidget {
@@ -14,14 +16,46 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
   CockpitEventsData? _events;
   bool _isLoading = true;
   String? _error;
-  String _selectedTicker = 'SPY';
   bool _eventsExpanded = false;
-  final List<String> _tickers = ['SPY', 'QQQ', 'IWM'];
 
   @override
   void initState() {
     super.initState();
     _loadData();
+  }
+  
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Set up listener after context is available
+    final service = AssetSelectionProvider.of(context);
+    service.addListener(_onAssetChanged);
+  }
+  
+  @override
+  void dispose() {
+    try {
+      final service = AssetSelectionProvider.of(context);
+      service.removeListener(_onAssetChanged);
+    } catch (e) {
+      // Context might not be available during dispose
+    }
+    super.dispose();
+  }
+  
+  void _onAssetChanged() {
+    // Reload data when asset changes
+    if (mounted) {
+      _loadData();
+    }
+  }
+  
+  String get _selectedTicker {
+    try {
+      return AssetSelectionProvider.of(context).selectedAsset;
+    } catch (e) {
+      return 'SPY'; // Fallback
+    }
   }
 
   Future<void> _loadData() async {
@@ -131,27 +165,41 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
       ),
       child: Row(
         children: [
-          // Ticker dropdown
-          _buildTickerDropdown(),
-          const SizedBox(width: 12),
-          // Event badges
-          Expanded(child: _buildEventBadges()),
-          // Vol badge
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: volColor.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Text(
-              'VOL${vol.directionSymbol}',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: volColor, fontFamily: 'JetBrains Mono'),
-            ),
+          // Ticker dropdown - fixed width
+          SizedBox(
+            width: 120,
+            child: _buildTickerDropdown(),
           ),
           const SizedBox(width: 12),
-          GestureDetector(
-            onTap: _loadData,
-            child: const Icon(Icons.refresh, color: Colors.white54, size: 24),
+          // Event badges - flexible, scrollable
+          Flexible(
+            flex: 2,
+            child: _buildEventBadges(),
+          ),
+          const SizedBox(width: 8),
+          // Vol badge - fixed width, no shrink
+          Flexible(
+            flex: 0,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: volColor.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                'VOL${vol.directionSymbol}',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: volColor, fontFamily: 'JetBrains Mono'),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          // Refresh icon - fixed width, no shrink
+          Flexible(
+            flex: 0,
+            child: GestureDetector(
+              onTap: _loadData,
+              child: const Icon(Icons.refresh, color: Colors.white54, size: 24),
+            ),
           ),
         ],
       ),
@@ -159,26 +207,12 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
   }
 
   Widget _buildTickerDropdown() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      decoration: BoxDecoration(
-        color: const Color(0xFF21262D),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: DropdownButton<String>(
-        value: _selectedTicker,
-        dropdownColor: const Color(0xFF21262D),
-        underline: const SizedBox(),
-        isDense: true,
-        style: const TextStyle(color: Colors.white, fontFamily: 'JetBrains Mono', fontWeight: FontWeight.bold, fontSize: 18),
-        items: _tickers.map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
-        onChanged: (v) {
-          if (v != null && v != _selectedTicker) {
-            setState(() => _selectedTicker = v);
-            _loadData();
-          }
-        },
-      ),
+    return AssetSelectorWidget(
+      compact: true,
+      showQuickButtons: false,
+      onAssetChanged: (asset) {
+        _loadData();
+      },
     );
   }
 
@@ -191,6 +225,7 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: badges.take(3).map((badge) {
           final color = Color(CockpitEvent(
             type: badge.type, title: '', date: '', time: '', impact: '', source: '',
@@ -233,9 +268,9 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: accentColor.withOpacity(0.1),
+        color: accentColor.withOpacity(0.08),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: accentColor.withOpacity(0.3), width: 2),
+        border: Border.all(color: accentColor.withOpacity(0.25), width: 1.5),
       ),
       child: Column(
         children: [
@@ -243,23 +278,30 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: accentColor.withOpacity(0.3),
+                  color: accentColor.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: accentColor, width: 2),
+                  border: Border.all(color: accentColor, width: 1.5),
                 ),
                 child: Text(
                   regime.label,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: accentColor, fontFamily: 'JetBrains Mono'),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: accentColor, fontFamily: 'JetBrains Mono'),
                 ),
               ),
               if (regime.transition) ...[
                 const SizedBox(width: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(color: Colors.amber.withOpacity(0.3), borderRadius: BorderRadius.circular(4)),
-                  child: const Text('⚠ NEAR FLIP', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.amber)),
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(color: Colors.amber.withOpacity(0.3), width: 1),
+                  ),
+                  child: const Text(
+                    '⚠ NEAR FLIP',
+                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.amber, fontFamily: 'JetBrains Mono'),
+                  ),
                 ),
               ],
               const Spacer(),
@@ -600,19 +642,20 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
       decoration: BoxDecoration(
-        color: Colors.black26,
+        color: Colors.white.withOpacity(0.05),
         borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.white.withOpacity(0.1)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(heroIcon, color: Colors.white.withOpacity(0.7), size: 22),
-          const SizedBox(width: 10),
+          Icon(heroIcon, color: Colors.white.withOpacity(0.6), size: 18),
+          const SizedBox(width: 8),
           Text(
             heroText,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Colors.white, fontFamily: 'JetBrains Mono', letterSpacing: 0.5),
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white70, fontFamily: 'JetBrains Mono', letterSpacing: 0.3),
           ),
         ],
       ),
@@ -854,7 +897,7 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
     final filter = _state!.actionFilter;
     
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: const Color(0xFF161B22),
         borderRadius: BorderRadius.circular(12),
@@ -863,15 +906,23 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text('ACTION FILTER', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF8B949E), fontFamily: 'JetBrains Mono')),
-          const SizedBox(height: 10),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              ...filter.allowed.take(4).map((a) => _buildChip(a, true)),
-              ...filter.forbidden.take(4).map((f) => _buildChip(f, false)),
-            ],
-          ),
+          const SizedBox(height: 12),
+          // Allowed filters
+          if (filter.allowed.isNotEmpty) ...[
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: filter.allowed.map((a) => _buildChip(a, true)).toList(),
+            ),
+            if (filter.forbidden.isNotEmpty) const SizedBox(height: 12),
+          ],
+          // Forbidden filters
+          if (filter.forbidden.isNotEmpty)
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: filter.forbidden.map((f) => _buildChip(f, false)).toList(),
+            ),
         ],
       ),
     );
@@ -880,16 +931,33 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
   Widget _buildChip(String text, bool isAllowed) {
     final color = isAllowed ? const Color(0xFF3FB950) : const Color(0xFFF85149);
     final prefix = isAllowed ? '✓' : '✗';
-    final shortText = text.length > 16 ? '${text.substring(0, 14)}...' : text;
     
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withOpacity(0.3)),
+    return Tooltip(
+      message: text,
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.12),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: color.withOpacity(0.3)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(prefix, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: color, fontFamily: 'JetBrains Mono')),
+            const SizedBox(width: 6),
+            Flexible(
+              child: Text(
+                text,
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: color, fontFamily: 'JetBrains Mono'),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ),
+          ],
+        ),
       ),
-      child: Text('$prefix $shortText', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: color, fontFamily: 'JetBrains Mono')),
     );
   }
 

@@ -1,14 +1,29 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../utils/api_cache.dart';
 
 class YahooFinanceService {
   static const String _baseUrl = 'https://query1.finance.yahoo.com/v8/finance/chart';
   
+  // Initialize API cache with 10-second TTL
+  static final _cache = getCache(defaultTTL: 10);
+  
   // Get current stock price
   static Future<double?> getCurrentPrice(String symbol) async {
     try {
+      final url = '$_baseUrl/$symbol';
+      
+      // Generate cache key
+      final cacheKey = _cache.generateKey(url, null, null);
+      
+      // Check cache first
+      final cachedPrice = _cache.get<double>(cacheKey);
+      if (cachedPrice != null) {
+        return cachedPrice;
+      }
+      
       final response = await http.get(
-        Uri.parse('$_baseUrl/$symbol'),
+        Uri.parse(url),
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
         },
@@ -20,7 +35,12 @@ class YahooFinanceService {
         final meta = result?['meta'];
         
         if (meta != null) {
-          return (meta['regularMarketPrice'] ?? meta['previousClose'])?.toDouble();
+          final price = (meta['regularMarketPrice'] ?? meta['previousClose'])?.toDouble();
+          if (price != null) {
+            // Cache the result
+            _cache.set(cacheKey, price, ttl: 10);
+          }
+          return price;
         }
       }
     } catch (e) {
@@ -38,6 +58,15 @@ class YahooFinanceService {
         'https://query1.finance.yahoo.com/v7/finance/options/$symbol',
         'https://query2.finance.yahoo.com/v6/finance/options/$symbol',
       ];
+      
+      // Generate cache key for first endpoint (they should return same data)
+      final cacheKey = _cache.generateKey(endpoints[0], null, null);
+      
+      // Check cache first
+      final cachedOptions = _cache.get<Map<String, dynamic>>(cacheKey);
+      if (cachedOptions != null) {
+        return cachedOptions;
+      }
       
       for (final endpoint in endpoints) {
         try {
@@ -59,6 +88,8 @@ class YahooFinanceService {
             
             if (result != null) {
               print('✅ Successfully fetched options data from Yahoo Finance');
+              // Cache the result
+              _cache.set(cacheKey, result, ttl: 10);
               return result;
             }
           } else {

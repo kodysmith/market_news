@@ -3,9 +3,13 @@ import * as admin from 'firebase-admin';
 import axios from 'axios';
 import * as cors from 'cors';
 import * as express from 'express';
+import { getCache, cachedRequest } from './utils/apiCache';
 
 // Initialize Firebase Admin
 admin.initializeApp();
+
+// Initialize API cache with 10-second TTL
+const apiCache = getCache(10);
 
 const app = express();
 app.use(cors({ origin: true }));
@@ -154,23 +158,44 @@ async function getMarketSentiment(): Promise<MarketSentiment> {
   
   // Try FMP first for comprehensive data
   try {
-    const indicesResponse = await axios.get('https://financialmodelingprep.com/api/v3/quotes/index', {
-      params: { apikey: FMP_API_KEY }
-    });
-    indices = indicesResponse.data || [];
+    const fmpUrl = 'https://financialmodelingprep.com/api/v3/quotes/index';
+    const fmpParams = { apikey: FMP_API_KEY };
+    
+    indices = await cachedRequest(
+      () => axios.get(fmpUrl, { params: fmpParams }),
+      apiCache,
+      fmpUrl,
+      fmpParams,
+      FMP_API_KEY,
+      10
+    );
+    
     if (!Array.isArray(indices) || indices.length === 0) throw new Error('No indices from FMP');
   } catch (e) {
     console.error('FMP indices failed, falling back to Yahoo:', e.message || e);
     // Enhanced Yahoo fallback with more data sources
     try {
-      const [spResp, ndqResp, vixResp, iwmResp, tnxResp, dxyResp] = await Promise.all([
-        axios.get('https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?range=1d&interval=1d'),
-        axios.get('https://query1.finance.yahoo.com/v8/finance/chart/%5EIXIC?range=1d&interval=1d'),
-        axios.get('https://query1.finance.yahoo.com/v8/finance/chart/%5EVIX?range=1d&interval=1d'),
-        axios.get('https://query1.finance.yahoo.com/v8/finance/chart/%5EIWM?range=1d&interval=1d'), // Russell 2000
-        axios.get('https://query1.finance.yahoo.com/v8/finance/chart/%5ETNX?range=1d&interval=1d'), // 10Y Treasury
-        axios.get('https://query1.finance.yahoo.com/v8/finance/chart/DX-Y.NYB?range=1d&interval=1d'), // Dollar Index
-      ]);
+      const yahooUrls = [
+        'https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?range=1d&interval=1d',
+        'https://query1.finance.yahoo.com/v8/finance/chart/%5EIXIC?range=1d&interval=1d',
+        'https://query1.finance.yahoo.com/v8/finance/chart/%5EVIX?range=1d&interval=1d',
+        'https://query1.finance.yahoo.com/v8/finance/chart/%5EIWM?range=1d&interval=1d',
+        'https://query1.finance.yahoo.com/v8/finance/chart/%5ETNX?range=1d&interval=1d',
+        'https://query1.finance.yahoo.com/v8/finance/chart/DX-Y.NYB?range=1d&interval=1d'
+      ];
+      
+      const [spResp, ndqResp, vixResp, iwmResp, tnxResp, dxyResp] = await Promise.all(
+        yahooUrls.map(url => 
+          cachedRequest(
+            () => axios.get(url),
+            apiCache,
+            url,
+            undefined,
+            undefined,
+            10
+          )
+        )
+      );
       indices = [
         {
           symbol: '^GSPC',
