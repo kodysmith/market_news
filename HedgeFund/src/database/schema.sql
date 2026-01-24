@@ -496,3 +496,4 @@ GRANT SELECT ON ALL TABLES IN SCHEMA public TO trading_readonly;
 COMMENT ON DATABASE trading_dev IS 'Trading system database - development environment';
 
 
+

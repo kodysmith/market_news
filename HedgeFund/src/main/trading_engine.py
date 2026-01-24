@@ -203,16 +203,35 @@ class TradingEngine:
             
             logger.info(f"  NAV: ${self.current_nav:,.2f}")
             logger.info(f"  Components:")
-            logger.info(f"    Cash: ${nav_result['components']['cash']:,.2f}")
-            logger.info(f"    Equity: ${nav_result['components']['equity_value']:,.2f}")
-            logger.info(f"    Options: ${nav_result['components']['options_value']:,.2f}")
+            
+            # Handle different NAV result formats
+            if 'components' in nav_result:
+                # Local calculation format
+                logger.info(f"    Cash: ${nav_result['components']['cash']:,.2f}")
+                logger.info(f"    Equity: ${nav_result['components']['equity_value']:,.2f}")
+                logger.info(f"    Options: ${nav_result['components']['options_value']:,.2f}")
+                components = nav_result['components']
+            else:
+                # Broker NAV format (from Alpaca)
+                logger.info(f"    Cash: ${nav_result.get('cash', 0):,.2f}")
+                logger.info(f"    Positions: ${nav_result.get('total_positions_value', 0):,.2f}")
+                logger.info(f"    Source: {nav_result.get('source', 'unknown')}")
+                # Create components dict for logging
+                components = {
+                    'cash': str(nav_result.get('cash', 0)),
+                    'equity_value': str(nav_result.get('total_positions_value', 0)),
+                    'options_value': '0.0',
+                    'short_options_liability': '0.0',
+                    'long_options_value': '0.0',
+                    'total_positions_value': str(nav_result.get('total_positions_value', 0))
+                }
             
             # Step 7: Log to audit trail
             logger.info("📝 Step 6: Logging to audit trail...")
             self.audit_logger.log_nav_calculation(
                 nav=self.current_nav,
                 methodology='black_scholes',
-                components=nav_result['components'],
+                components=components,
                 verified_by='system'
             )
             

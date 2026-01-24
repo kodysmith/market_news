@@ -1222,3 +1222,4 @@ def certify_daily_logs(date: date, cco_signature: str):
 *Technical Specification*
 
 
+

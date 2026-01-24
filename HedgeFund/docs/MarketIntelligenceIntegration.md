@@ -373,3 +373,4 @@ class MarketIntelligenceService:
 - **Performance**: Hedge adjustments improve Sharpe ratio by 10-20%
 - **Cost Savings**: Reduce unnecessary hedging costs during calm periods by 30%
 
+

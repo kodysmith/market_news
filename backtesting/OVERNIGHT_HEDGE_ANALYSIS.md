@@ -279,3 +279,5 @@ The small additional complexity (862 extra trades) is **easily worth it** for:
 **Strategy**: SQQQ-QQQ Wheel with Overnight Put Protection  
 **Status**: ✅ PRODUCTION READY (after paper trading validation)
 
+
+

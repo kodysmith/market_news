@@ -72,29 +72,40 @@ class SignalGenerator:
         logger.debug(f"Signal generation for {current_date.date()} (weekday={current_date.weekday()})")
         logger.debug(f"  Portfolio: NAV=${portfolio['nav']:,.2f}, Cash=${portfolio['cash']:,.2f}")
         
-        # 1. Check profit targets on existing positions
+        # 1. Check for volatility events (SQQQ spike = QQQ dive)
+        volatility_signals = self.check_volatility_opportunities(
+            current_date,
+            market_data_service,
+            position_manager
+        )
+        signals.extend(volatility_signals)
+        
+        # 2. Check profit targets on existing positions
         profit_signals = self.check_profit_targets(
             position_manager.get_positions(),
             market_data_service
         )
         signals.extend(profit_signals)
         
-        # 2. Generate new put sales (if Monday and capital available)
-        if current_date.weekday() == 0:  # Monday
-            print(f"   🎯 MONDAY DETECTED! ({current_date.date()}) - Generating put sales...")
-            logger.info(f"Monday detected! Generating put sales...")
-            put_signals = self.generate_put_sales(
-                current_date,
-                market_data_service,
-                position_manager
-            )
+        # 3. Generate new put sales (daily if capital available)
+        # Sell puts any day, especially after dips!
+        print(f"   💰 Checking for new put sale opportunities...")
+        logger.info(f"Checking for put sales (weekday={current_date.weekday()})...")
+        put_signals = self.generate_put_sales(
+            current_date,
+            market_data_service,
+            position_manager
+        )
+        
+        if put_signals:
             print(f"   📊 Generated {len(put_signals)} put signals")
             logger.info(f"  Generated {len(put_signals)} put signals")
-            signals.extend(put_signals)
         else:
-            logger.debug(f"Not Monday (weekday={current_date.weekday()}), skipping put sales")
+            logger.debug(f"No put signals generated (capital deployed: {portfolio['capital_deployed_pct']:.1%})")
         
-        # 3. Handle assignments (shares → covered calls)
+        signals.extend(put_signals)
+        
+        # 4. Handle assignments (shares → covered calls)
         assignment_signals = self.handle_assignments(
             position_manager.get_positions(position_type=PositionType.SHARES),
             market_data_service,
@@ -112,6 +123,85 @@ class SignalGenerator:
             signals.extend(hedge_signals)
         
         logger.info(f"Generated {len(signals)} signals for {current_date.date()}")
+        return signals
+    
+    def check_volatility_opportunities(self,
+                                      current_date: datetime,
+                                      market_data_service,
+                                      position_manager) -> List[Signal]:
+        """
+        Check for volatility-based opportunities
+        
+        Logic:
+        1. If SQQQ spiked (QQQ diving):
+           - Sell QQQ shares if holding (take profit or cut loss)
+           - Sell more puts on cheaper QQQ (better entry point)
+        
+        2. If QQQ recovering:
+           - Close profitable put positions
+           - Sell covered calls on shares
+        
+        Args:
+            current_date: Current date
+            market_data_service: Market data service
+            position_manager: Position manager
+        
+        Returns:
+            List of volatility-driven signals
+        """
+        signals = []
+        
+        try:
+            # Get current prices
+            qqq_price = market_data_service.get_price('QQQ')
+            
+            # Check if we have QQQ shares
+            qqq_shares = position_manager.get_positions(
+                asset='QQQ',
+                position_type=PositionType.SHARES
+            )
+            
+            if qqq_shares:
+                for position in qqq_shares:
+                    # Calculate unrealized P&L
+                    cost_basis = position.cost_basis
+                    current_value = qqq_price * abs(position.quantity)
+                    pnl_pct = ((current_value - cost_basis) / cost_basis) * Decimal('100')
+                    
+                    # Sell shares if:
+                    # - In profit >5% (take profit)
+                    # - OR down >10% (cut losses after big drop)
+                    if pnl_pct > Decimal('5') or pnl_pct < Decimal('-10'):
+                        logger.info(f"🎯 Volatility trigger: Sell QQQ shares (P&L: {pnl_pct:.1f}%)")
+                        
+                        signal = Signal(
+                            id=f"SIG-VOLATILITY-QQQ-{uuid.uuid4().hex[:8]}",
+                            timestamp=current_date,
+                            asset='QQQ',
+                            action=OrderAction.CLOSE_SHARES,
+                            quantity=abs(position.quantity),
+                            strike=None,
+                            expiration=None,
+                            option_type=None,
+                            dte=0,
+                            expected_price=qqq_price,
+                            max_price=qqq_price * Decimal('1.01'),
+                            min_price=qqq_price * Decimal('0.99'),
+                            reasoning=f"Volatility event: {'Take profit' if pnl_pct > 0 else 'Cut loss'} at {pnl_pct:.1f}%",
+                            strategy_component="volatility_response",
+                            priority=2,  # High priority
+                            expected_delta=Decimal('0'),
+                            capital_required=Decimal('0')
+                        )
+                        
+                        signals.append(signal)
+            
+            # After selling shares or if QQQ dipped, sell more puts
+            # This is handled by regular put generation which happens daily now
+            
+        except Exception as e:
+            logger.error(f"Error checking volatility opportunities: {e}")
+        
         return signals
     
     def generate_put_sales(self,

@@ -11,6 +11,7 @@ import 'package:market_news_app/screens/decision_cockpit_screen.dart';
 import 'package:market_news_app/widgets/scanner_opportunities_widget.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'screens/news_screen.dart';
+import 'screens/trade_ideas_screen.dart';
 import 'dart:math' as math;
 import 'package:market_news_app/models/vix_data.dart';
 import 'dart:ui';
@@ -154,9 +155,7 @@ class _MainNavigationState extends State<MainNavigation> {
     final List<Widget> widgetOptions = <Widget>[
       const DecisionCockpitScreen(), // Decision Cockpit - Single-Screen Trading State View
       const MarketIntelligenceScreen(), // New intelligence-focused screen
-      _reportData != null
-          ? MarketInsightsScreen(reportData: _reportData!)
-          : const Center(child: CircularProgressIndicator()),
+      const TradeIdeasScreen(), // Trade Ideas (Allowed Only) - Regime-Aware
       NewsScreen(),
       const GexCalculatorScreen(), // GEX Calculator - Detailed GEX Analysis
       const IntrinsicValueScreen(), // Intrinsic Value Calculator

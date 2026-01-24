@@ -52,3 +52,55 @@
 2025-10-09 00:41:25,243 WARN For [program:hedgefund-daemon], redirect_stderr=true but stderr_logfile has also been set to a filename, the filename has been ignored
 2025-10-09 00:41:25,244 INFO spawned: 'hedgefund-daemon' with pid 660544
 2025-10-09 00:41:26,479 INFO success: hedgefund-daemon entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-10-09 15:50:05,228 WARN For [program:hedgefund-daemon], redirect_stderr=true but stderr_logfile has also been set to a filename, the filename has been ignored
+2025-10-09 15:50:05,229 WARN exited: hedgefund-daemon (terminated by SIGKILL; not expected)
+2025-10-09 15:50:05,231 INFO spawned: 'hedgefund-daemon' with pid 989465
+2025-10-09 15:50:06,470 INFO success: hedgefund-daemon entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-10-09 15:50:31,612 WARN received SIGTERM indicating exit request
+2025-10-09 15:50:31,612 INFO waiting for hedgefund-daemon to die
+2025-10-09 15:50:33,271 WARN For [program:hedgefund-daemon], redirect_stderr=true but stderr_logfile has also been set to a filename, the filename has been ignored
+2025-10-09 15:50:33,272 INFO RPC interface 'supervisor' initialized
+2025-10-09 15:50:33,272 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2025-10-09 15:50:33,273 INFO daemonizing the supervisord process
+2025-10-09 15:50:33,273 INFO supervisord started with pid 989846
+2025-10-09 15:50:34,275 INFO spawned: 'hedgefund-daemon' with pid 989848
+2025-10-09 15:50:34,616 INFO waiting for hedgefund-daemon to die
+2025-10-09 15:50:35,319 INFO success: hedgefund-daemon entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-10-09 15:50:37,618 INFO waiting for hedgefund-daemon to die
+2025-10-09 15:50:40,621 INFO waiting for hedgefund-daemon to die
+2025-10-09 15:50:41,622 WARN killing 'hedgefund-daemon' (989465) with SIGKILL
+2025-10-09 15:50:41,629 WARN stopped: hedgefund-daemon (terminated by SIGKILL)
+2025-10-09 15:51:16,689 WARN received SIGTERM indicating exit request
+2025-10-09 15:51:16,689 INFO waiting for hedgefund-daemon to die
+2025-10-09 15:51:17,540 WARN For [program:hedgefund-daemon], redirect_stderr=true but stderr_logfile has also been set to a filename, the filename has been ignored
+2025-10-09 15:51:17,541 INFO RPC interface 'supervisor' initialized
+2025-10-09 15:51:17,541 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2025-10-09 15:51:17,542 INFO daemonizing the supervisord process
+2025-10-09 15:51:17,542 INFO supervisord started with pid 990451
+2025-10-09 15:51:18,544 INFO spawned: 'hedgefund-daemon' with pid 990454
+2025-10-09 15:51:19,588 INFO success: hedgefund-daemon entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-10-09 15:51:19,693 INFO waiting for hedgefund-daemon to die
+2025-10-09 15:51:22,696 INFO waiting for hedgefund-daemon to die
+2025-10-09 15:51:25,699 INFO waiting for hedgefund-daemon to die
+2025-10-09 15:51:26,701 WARN killing 'hedgefund-daemon' (989848) with SIGKILL
+2025-10-09 15:51:27,707 WARN stopped: hedgefund-daemon (terminated by SIGKILL)
+2025-10-09 15:51:46,120 WARN received SIGTERM indicating exit request
+2025-10-09 15:51:46,120 INFO waiting for hedgefund-daemon to die
+2025-10-09 15:51:49,123 INFO waiting for hedgefund-daemon to die
+2025-10-09 15:51:52,126 INFO waiting for hedgefund-daemon to die
+2025-10-09 15:51:55,129 INFO waiting for hedgefund-daemon to die
+2025-10-09 15:51:56,130 WARN killing 'hedgefund-daemon' (990454) with SIGKILL
+2025-10-09 15:51:57,138 WARN stopped: hedgefund-daemon (terminated by SIGKILL)
+2025-10-09 15:52:13,151 WARN For [program:hedgefund-daemon], redirect_stderr=true but stderr_logfile has also been set to a filename, the filename has been ignored
+2025-10-09 15:52:13,153 INFO RPC interface 'supervisor' initialized
+2025-10-09 15:52:13,153 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2025-10-09 15:52:13,153 INFO daemonizing the supervisord process
+2025-10-09 15:52:13,153 INFO supervisord started with pid 990971
+2025-10-09 15:52:14,155 INFO spawned: 'hedgefund-daemon' with pid 990974
+2025-10-09 15:52:15,200 INFO success: hedgefund-daemon entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-10-26 10:33:05,431 WARN exited: hedgefund-daemon (terminated by SIGKILL; not expected)
+2025-10-26 10:33:06,681 INFO spawned: 'hedgefund-daemon' with pid 3479808
+2025-10-26 10:33:07,705 INFO success: hedgefund-daemon entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-10-26 10:33:18,045 WARN exited: hedgefund-daemon (terminated by SIGKILL; not expected)
+2025-10-26 10:33:19,653 INFO spawned: 'hedgefund-daemon' with pid 3479988
+2025-10-26 10:33:20,890 INFO success: hedgefund-daemon entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)

@@ -63,3 +63,4 @@ echo "Note: Daemon will check systems every 60 seconds"
 echo "      and execute trades at 9:30 AM ET on trading days"
 echo "================================================"
 
+

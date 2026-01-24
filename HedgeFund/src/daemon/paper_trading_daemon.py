@@ -191,16 +191,15 @@ class PaperTradingDaemon:
             
             # Log results
             logger.info("📈 Trading Cycle Results:")
-            logger.info(f"   NAV: ${result['nav']:,.2f}")
-            logger.info(f"   Cash: ${result['cash']:,.2f}")
-            logger.info(f"   Positions: {result['num_positions']}")
-            logger.info(f"   Signals Generated: {result['signals_generated']}")
-            logger.info(f"   Trades Executed: {result['trades_executed']}")
-            logger.info(f"   Status: {result['status']}")
+            logger.info(f"   NAV: ${result.get('nav', 0):,.2f}")
+            logger.info(f"   Signals Generated: {result.get('signals_generated', 0)}")
+            logger.info(f"   Trades Executed: {result.get('trades_executed', 0)}")
+            logger.info(f"   Status: {result.get('status', 'unknown')}")
             
-            if result['errors']:
-                logger.warning(f"   Errors: {len(result['errors'])}")
-                for error in result['errors'][:5]:  # Show first 5
+            errors = result.get('errors', [])
+            if errors:
+                logger.warning(f"   Errors: {len(errors)}")
+                for error in errors[:5]:  # Show first 5
                     logger.warning(f"     - {error}")
             
             logger.info("=" * 70)

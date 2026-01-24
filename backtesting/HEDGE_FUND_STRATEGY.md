@@ -386,3 +386,5 @@ With proper infrastructure, team, and marketing, this can attract **$50M+ AUM** 
 *Backtest Period: 2020-2025*  
 *Strategy: Adaptive QQQ Wheel with Event Hedging*
 
+
+
