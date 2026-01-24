@@ -1,0 +1,16 @@
+2025-10-01 22:00:25,178 - INFO - 🎮 Using GPU: NVIDIA GeForce RTX 3090
+2025-10-01 22:00:25,178 - WARNING - Failed to connect to Ollama: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
+2025-10-01 22:00:25,178 - INFO - 🚀 Enhanced Scanner GPU initialized
+2025-10-01 22:00:25,178 - INFO - 🎮 GPU Enabled: True
+2025-10-01 22:00:25,178 - INFO - 🤖 LLM Enabled: True
+2025-10-01 22:32:36,745 - INFO - 🎮 Using GPU: NVIDIA GeForce RTX 3090
+2025-10-01 22:32:36,755 - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-10-01 22:32:36,756 - WARNING - Failed to connect to Ollama: 'name'
+2025-10-01 22:32:36,756 - INFO - 🚀 Enhanced Scanner GPU initialized
+2025-10-01 22:32:36,756 - INFO - 🎮 GPU Enabled: True
+2025-10-01 22:32:36,756 - INFO - 🤖 LLM Enabled: True
+2025-10-01 22:32:36,756 - INFO - 🚀 Starting enhanced market scan for 16 tickers
+2025-10-01 22:32:36,756 - INFO - 🔍 Scanning 16 tickers with GPU acceleration
+2025-10-01 22:32:42,075 - ERROR - $VIX: possibly delisted; no price data found  (period=1mo)
+2025-10-01 22:32:42,734 - INFO - 🎮 Running GPU-accelerated technical analysis
+2025-10-01 22:32:43,737 - INFO - 📊 Scan complete - results saved to reports/enhanced_scan_20251001_223243.json

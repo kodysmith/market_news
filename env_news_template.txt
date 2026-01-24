@@ -1,0 +1,22 @@
+# News Intelligence Bot API Keys
+# Copy this file to .env and add your API keys
+
+# Financial Modeling Prep (Already have this)
+FMP_API_KEY=your_fmp_key_here
+
+# NewsAPI.org - Free tier: 100 requests/day
+# Sign up: https://newsapi.org/register
+# Free tier is sufficient for hedge fund use
+NEWSAPI_KEY=your_newsapi_key_here
+
+# Alpha Vantage (Optional)
+# Sign up: https://www.alphavantage.co/support/#api-key
+# Free tier: 25 requests/day
+ALPHAVANTAGE_API_KEY=your_alphavantage_key_here
+
+# Anthropic Claude API (Optional but recommended)
+# Sign up: https://console.anthropic.com/
+# Free tier available, or use fallback summarization
+ANTHROPIC_API_KEY=your_anthropic_key_here
+
+

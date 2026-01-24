@@ -9408,3 +9408,58 @@ connector: <aiohttp.connector.TCPConnector object at 0x1305638c0>
 2025-09-23 13:20:19,162 - QuantBot - INFO - ✅ Market data updated
 2025-09-23 13:20:49,165 - QuantBot - INFO - 📊 Updating market data...
 2025-09-23 13:21:03,866 - QuantBot - INFO - Received signal 2, initiating shutdown...
+2025-10-01 22:54:14,330 - QuantBot - INFO - 📊 QuantBot Status Report
+2025-10-01 22:54:14,330 - QuantBot - INFO - ========================================
+2025-10-01 22:54:14,330 - QuantBot - INFO - 🤖 Bot Status: Not running
+2025-10-01 22:54:14,330 - QuantBot - INFO - 💡 Use 'python3 run_quant_bot.py' to start the bot
+2025-10-01 22:54:14,330 - QuantBot - INFO - 
+📋 Recent Activity:
+2025-10-01 22:54:16,922 - QuantBot - INFO - 🚀 Starting QuantEngine Autonomous Trading System
+2025-10-01 22:54:16,922 - QuantBot - INFO - ============================================================
+2025-10-01 22:54:16,933 - QuantBot - INFO - 🤖 QuantBot initialized
+2025-10-01 22:54:16,933 - QuantBot - INFO - 🎯 Running in DEMO MODE (limited functionality)
+2025-10-01 22:54:16,933 - QuantBot - INFO - 🔧 Initializing bot components...
+2025-10-01 22:54:17,235 - numexpr.utils - INFO - Note: NumExpr detected 32 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 8.
+2025-10-01 22:54:17,235 - numexpr.utils - INFO - NumExpr defaulting to 8 threads.
+2025-10-01 22:54:17,337 - engine.data_ingestion.live_data_manager - INFO - 🔴 LiveDataManager initialized
+2025-10-01 22:54:17,843 - QuantBot - INFO - ✅ All components initialized successfully
+2025-10-01 22:54:17,844 - root - WARNING - Firebase not available, using SQLite only
+2025-10-01 22:54:17,844 - data_broker - INFO - ✅ Database initialized at /mnt/4tb/stock_scanner/market_news/QuantEngine/quantbot_data.db
+2025-10-01 22:54:17,844 - data_broker - INFO - QuantBotDataBroker: Using SQLite (Development Mode) - /mnt/4tb/stock_scanner/market_news/QuantEngine/quantbot_data.db
+2025-10-01 22:54:17,844 - QuantBot - INFO - 🎭 Running QuantBot demo simulation...
+2025-10-01 22:54:17,844 - QuantBot - INFO -    🔧 Initializing components...
+2025-10-01 22:54:19,847 - QuantBot - INFO -    📊 Connecting to data feeds...
+2025-10-01 22:54:22,848 - QuantBot - INFO -    🎭 Detecting market regime...
+2025-10-01 22:54:24,850 - QuantBot - INFO -    ✅ Detected: Bull Market (confidence: 78%)
+2025-10-01 22:54:24,850 - QuantBot - INFO -    🧪 Researching strategies...
+2025-10-01 22:54:27,852 - QuantBot - INFO -    ✅ Generated 3 new strategies (avg Sharpe: 1.45)
+2025-10-01 22:54:27,852 - QuantBot - INFO -    🔍 Scanning opportunities...
+2025-10-01 22:54:29,854 - QuantBot - INFO - 🔍 Scanning for opportunities...
+2025-10-01 22:54:29,854 - engine.data_ingestion.live_data_manager - INFO - ✅ Live data session initialized
+2025-10-01 22:54:37,936 - QuantBot - WARNING - Error calculating economic score: unsupported operand type(s) for *: 'dict' and 'int'
+2025-10-01 22:54:37,936 - engine.research.opportunity_scanner - INFO - 🔍 Scanning for trading opportunities...
+2025-10-01 22:54:37,936 - engine.research.opportunity_scanner - WARNING - News dislocation scan failed: 'float' object has no attribute 'get'
+2025-10-01 22:54:37,937 - engine.research.opportunity_scanner - INFO - 💾 Saved 0 opportunities to opportunity_cache.json
+2025-10-01 22:54:37,937 - engine.research.opportunity_scanner - INFO - ✅ Discovered 0 valid opportunities
+2025-10-01 22:54:38,045 - data_broker - INFO - 💾 Saved 3 opportunities to SQLite
+2025-10-01 22:54:38,045 - QuantBot - INFO - ✅ Found 3 valid opportunities
+2025-10-01 22:54:38,045 - QuantBot - INFO -   🏆 #1: breakout_trading on SPY (EV: 2.30%)
+2025-10-01 22:54:38,045 - QuantBot - INFO -   🏆 #2: mean_reversion on QQQ (EV: 1.80%)
+2025-10-01 22:54:38,045 - QuantBot - INFO -   🏆 #3: volume_breakout on TQQQ (EV: 3.50%)
+2025-10-01 22:54:38,045 - QuantBot - INFO -    ✅ Found 3 trading opportunities (avg EV: 1.8%)
+2025-10-01 22:54:38,045 - QuantBot - INFO -    📈 Generating reports...
+2025-10-01 22:54:39,046 - QuantBot - INFO - 🎉 Demo simulation complete!
+2025-10-01 22:54:39,046 - QuantBot - INFO - 
+2025-10-01 22:54:39,046 - QuantBot - INFO - In full production mode, QuantBot would:
+2025-10-01 22:54:39,046 - QuantBot - INFO - • Run continuously 24/7
+2025-10-01 22:54:39,046 - QuantBot - INFO - • Process real market data and news
+2025-10-01 22:54:39,046 - QuantBot - INFO - • Adapt strategies to live market conditions
+2025-10-01 22:54:39,046 - QuantBot - INFO - • Execute trades through connected brokers
+2025-10-01 22:54:39,046 - QuantBot - INFO - • Learn from performance and improve over time
+2025-10-01 22:54:39,046 - QuantBot - INFO - 🛑 Shutting down QuantBot Runner...
+2025-10-01 22:54:39,047 - QuantBot - INFO - ✅ QuantBot Runner shutdown complete
+2025-10-01 22:54:39,047 - asyncio - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x7fc8970bbf50>
+2025-10-01 22:54:39,047 - asyncio - ERROR - Unclosed connector
+connections: ['[(<aiohttp.client_proto.ResponseHandler object at 0x7fc896f203b0>, 118083.020163857)]']
+connector: <aiohttp.connector.TCPConnector object at 0x7fc8989b6900>

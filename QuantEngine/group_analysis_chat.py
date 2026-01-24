@@ -607,11 +607,41 @@ class GroupAnalysisChat:
         else:
             return 'Very High'
     
+    def _get_basic_group_info(self, parsed_question: Dict[str, Any]) -> Dict[str, Any]:
+        """Get basic group information without real-time data"""
+        basic_info = {}
+        
+        # Process predefined groups
+        for group in parsed_question['groups']:
+            if group in self.group_definitions:
+                group_info = self.group_definitions[group]
+                basic_info[group] = {
+                    'description': group_info['description'],
+                    'stocks': group_info['stocks'][:10],  # Top 10 stocks
+                    'characteristics': group_info.get('characteristics', [])
+                }
+        
+        # Process custom stocks
+        if parsed_question['custom_stocks']:
+            basic_info['custom'] = {
+                'description': f"Custom group of {len(parsed_question['custom_stocks'])} stocks",
+                'stocks': parsed_question['custom_stocks'],
+                'characteristics': ['Custom selection']
+            }
+        
+        return basic_info
+    
     async def generate_group_analysis(self, parsed_question: Dict[str, Any]) -> Dict[str, Any]:
         """Generate comprehensive group analysis using LLM"""
         
         if not self.llm_client:
-            return {"error": "LLM not available"}
+            return {
+                "error": "LLM not available",
+                "response": "I can provide basic group information, but advanced AI analysis is not available.",
+                "groups_analyzed": parsed_question['groups'],
+                "stocks_analyzed": parsed_question['custom_stocks'],
+                "basic_info": self._get_basic_group_info(parsed_question)
+            }
         
         # Fetch group data
         group_data = {}
@@ -629,7 +659,19 @@ class GroupAnalysisChat:
                 group_data['custom'] = custom_data
         
         if not group_data:
-            return {"error": "No group data available"}
+            return {
+                "error": "No group data available",
+                "response": "I couldn't fetch real-time data for the requested groups. Here's what I can tell you:",
+                "groups_requested": parsed_question['groups'],
+                "stocks_requested": parsed_question['custom_stocks'],
+                "available_groups": list(self.group_definitions.keys()),
+                "basic_info": self._get_basic_group_info(parsed_question),
+                "suggestions": [
+                    "Try asking about a different group",
+                    "Check if the group name is spelled correctly",
+                    "Ask about specific stocks instead"
+                ]
+            }
         
         # Prepare context for LLM
         context = self._prepare_group_context(group_data, parsed_question)

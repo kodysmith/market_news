@@ -1,0 +1,30 @@
+{
+  "timestamp": "2025-10-01T22:32:36.756812",
+  "tickers_scanned": 16,
+  "opportunities": [
+    {
+      "ticker": "^TNX",
+      "signal": "WEAK_SELL",
+      "confidence": 0.6,
+      "current_price": 4.105999946594238,
+      "target_price": 4.005571432411671,
+      "stop_loss": 4.181321332231164,
+      "risk_reward": 1.3333333333333333,
+      "rsi": 62.273887634277344,
+      "sma_20": 4.101450443267822,
+      "sma_50": 4.11440896987915,
+      "atr": 0.0502142570912838,
+      "timestamp": "2025-10-01T22:32:43.716692"
+    }
+  ],
+  "market_sentiment": {
+    "sentiment": "BEARISH",
+    "confidence": 1.0,
+    "buy_signals": 0,
+    "sell_signals": 1,
+    "total_opportunities": 1
+  },
+  "ai_analysis": {},
+  "gpu_used": true,
+  "llm_used": true
+}

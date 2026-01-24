@@ -1,0 +1,14 @@
+# News Intelligence Bot Requirements
+
+# Core dependencies
+requests>=2.31.0
+python-dotenv>=1.0.0
+feedparser>=6.0.10
+
+# Anthropic Claude API
+anthropic>=0.25.0
+
+# Additional dependencies (if not already installed)
+pytz>=2024.1
+
+

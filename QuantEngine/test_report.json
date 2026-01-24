@@ -1,0 +1,12 @@
+{
+  "timestamp": "2025-10-01 22:00:23.266786",
+  "python_version": "3.12.7 | packaged by Anaconda, Inc. | (main, Oct  4 2024, 13:27:36) [GCC 11.2.0]",
+  "python_path": "/mnt/4tb/stock_scanner/market_news/venv/bin/python",
+  "tests": {
+    "python_environment": true,
+    "gpu_setup": true,
+    "ollama_setup": false,
+    "market_data": true,
+    "enhanced_scanner": true
+  }
+}

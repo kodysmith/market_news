@@ -5,6 +5,9 @@ import 'package:market_news_app/models/report_data.dart';
 import 'package:market_news_app/screens/market_insights_screen.dart';
 import 'package:market_news_app/screens/market_intelligence_screen.dart';
 import 'package:market_news_app/screens/quant_chat_screen.dart';
+import 'package:market_news_app/screens/gex_calculator_screen.dart';
+import 'package:market_news_app/screens/intrinsic_value_screen.dart';
+import 'package:market_news_app/screens/decision_cockpit_screen.dart';
 import 'package:market_news_app/widgets/scanner_opportunities_widget.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'screens/news_screen.dart';
@@ -16,9 +19,16 @@ import 'firebase_options.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
-// Set the API base URL here for easy switching between local, staging, and production
-const String apiBaseUrl = 'https://api-hvi4gdtdka-uc.a.run.app'; // Production Firebase Cloud Functions
-// const String apiBaseUrl = 'http://localhost:5000'; // Local development
+// API Configuration
+// ==================
+// For local network access (Android phone on same WiFi):
+//   1. Find your Linux machine's IP: hostname -I  (e.g., 192.168.1.31)
+//   2. Use that IP below
+//   3. Make sure Flask API is running: cd market_news/apis && python3 api.py
+
+// Your local machine IP - this works for both desktop and phone on same WiFi
+const String apiBaseUrl = 'http://192.168.1.31:5000';
+
 const String apiSecretKey = 'b7e2f8c4e1a94e2b8c9d4e7f2a1b3c4d';
 
 Future<void> main() async {
@@ -142,13 +152,14 @@ class _MainNavigationState extends State<MainNavigation> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> widgetOptions = <Widget>[
-      DashboardScreen(),
+      const DecisionCockpitScreen(), // Decision Cockpit - Single-Screen Trading State View
       const MarketIntelligenceScreen(), // New intelligence-focused screen
       _reportData != null
           ? MarketInsightsScreen(reportData: _reportData!)
           : const Center(child: CircularProgressIndicator()),
       NewsScreen(),
-      const QuantChatScreen(), // New QuantEngine Chat
+      const GexCalculatorScreen(), // GEX Calculator - Detailed GEX Analysis
+      const IntrinsicValueScreen(), // Intrinsic Value Calculator
     ];
     return Scaffold(
       body: _error != null
@@ -170,8 +181,8 @@ class _MainNavigationState extends State<MainNavigation> {
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
-            label: 'Dashboard',
+            icon: Icon(Icons.speed),
+            label: 'Cockpit',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.psychology),
@@ -186,8 +197,12 @@ class _MainNavigationState extends State<MainNavigation> {
             label: 'News',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
-            label: 'Quant Chat',
+            icon: Icon(Icons.flash_on),
+            label: 'GEX',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_balance),
+            label: 'Valuation',
           ),
         ],
         currentIndex: _selectedIndex,

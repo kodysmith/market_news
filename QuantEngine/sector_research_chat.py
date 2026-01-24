@@ -462,11 +462,32 @@ class SectorResearchChat:
             'neutral_news': 5
         }
     
+    def _get_basic_sector_info(self, sectors: List[str]) -> Dict[str, Any]:
+        """Get basic sector information without real-time data"""
+        basic_info = {}
+        
+        for sector in sectors:
+            if sector in self.sector_definitions:
+                sector_info = self.sector_definitions[sector]
+                basic_info[sector] = {
+                    'description': sector_info['description'],
+                    'etf': sector_info['etf'],
+                    'key_stocks': sector_info['key_stocks'][:5],  # Top 5 stocks
+                    'subsectors': sector_info['subsectors']
+                }
+        
+        return basic_info
+    
     async def generate_sector_analysis(self, parsed_question: Dict[str, Any]) -> Dict[str, Any]:
         """Generate comprehensive sector analysis using LLM"""
         
         if not self.llm_client:
-            return {"error": "LLM not available"}
+            return {
+                "error": "LLM not available",
+                "response": "I can provide basic sector information, but advanced AI analysis is not available.",
+                "sectors_analyzed": parsed_question['sectors'],
+                "basic_info": self._get_basic_sector_info(parsed_question['sectors'])
+            }
         
         # Fetch sector data
         sector_data = {}
@@ -476,7 +497,18 @@ class SectorResearchChat:
                 sector_data[sector] = data
         
         if not sector_data:
-            return {"error": "No sector data available"}
+            return {
+                "error": "No sector data available",
+                "response": "I couldn't fetch real-time data for the requested sectors. Here's what I can tell you:",
+                "sectors_requested": parsed_question['sectors'],
+                "available_sectors": list(self.sector_definitions.keys()),
+                "basic_info": self._get_basic_sector_info(parsed_question['sectors']),
+                "suggestions": [
+                    "Try asking about a different sector",
+                    "Check if the sector name is spelled correctly", 
+                    "Ask about specific stocks instead"
+                ]
+            }
         
         # Prepare context for LLM
         context = self._prepare_sector_context(sector_data, parsed_question)
