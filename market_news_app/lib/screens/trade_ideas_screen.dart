@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import '../models/trade_idea.dart';
 import '../services/trade_ideas_service.dart';
 import '../widgets/asset_selector_widget.dart';
@@ -34,6 +36,22 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
   @override
   void initState() {
     super.initState();
+    // #region agent log
+    final logData = {
+      'sessionId': 'debug-session',
+      'runId': 'run1',
+      'hypothesisId': 'C',
+      'location': 'trade_ideas_screen.dart:37',
+      'message': 'initState called',
+      'data': {'timestamp': DateTime.now().millisecondsSinceEpoch},
+      'timestamp': DateTime.now().millisecondsSinceEpoch
+    };
+    http.post(
+      Uri.parse('http://127.0.0.1:7242/ingest/f2e5acba-93e2-4270-a633-fee604b9e81c'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(logData),
+    ).catchError((_) {});
+    // #endregion
     _loadTradeIdeas();
   }
   
@@ -72,6 +90,23 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
   }
 
   Future<void> _loadTradeIdeas() async {
+    // #region agent log
+    final logData1 = {
+      'sessionId': 'debug-session',
+      'runId': 'run1',
+      'hypothesisId': 'C',
+      'location': 'trade_ideas_screen.dart:74',
+      'message': '_loadTradeIdeas called',
+      'data': {'ticker': _selectedTicker, 'timeframe': _selectedTimeframe, 'timestamp': DateTime.now().millisecondsSinceEpoch},
+      'timestamp': DateTime.now().millisecondsSinceEpoch
+    };
+    http.post(
+      Uri.parse('http://127.0.0.1:7242/ingest/f2e5acba-93e2-4270-a633-fee604b9e81c'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(logData1),
+    ).catchError((_) {});
+    // #endregion
+    
     setState(() {
       _isLoading = true;
       _error = null;
@@ -81,6 +116,23 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
     });
 
     try {
+      // #region agent log
+      final logData2 = {
+        'sessionId': 'debug-session',
+        'runId': 'run1',
+        'hypothesisId': 'D',
+        'location': 'trade_ideas_screen.dart:91',
+        'message': 'API call starting',
+        'data': {'ticker': _selectedTicker, 'timestamp': DateTime.now().millisecondsSinceEpoch},
+        'timestamp': DateTime.now().millisecondsSinceEpoch
+      };
+      http.post(
+        Uri.parse('http://127.0.0.1:7242/ingest/f2e5acba-93e2-4270-a633-fee604b9e81c'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(logData2),
+      ).catchError((_) {});
+      // #endregion
+      
       final result = await TradeIdeasService.fetchAllowedTradeIdeasWithDiagnostics(
         _selectedTicker,
         maxIdeas: 3,
@@ -88,6 +140,50 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
         minDte: _useCustomDte ? _customMinDte : null,
         maxDte: _useCustomDte ? _customMaxDte : null,
       );
+      
+      // #region agent log
+      final logData3 = {
+        'sessionId': 'debug-session',
+        'runId': 'run1',
+        'hypothesisId': 'D',
+        'location': 'trade_ideas_screen.dart:105',
+        'message': 'API call completed',
+        'data': {
+          'hasUnlocked': result.containsKey('unlocked'),
+          'hasUnlockedByTimeframe': result.containsKey('unlockedByTimeframe'),
+          'ideasCount': result.containsKey('unlocked') ? (result['unlocked'] as List).length : 0,
+          'timestamp': DateTime.now().millisecondsSinceEpoch
+        },
+        'timestamp': DateTime.now().millisecondsSinceEpoch
+      };
+      http.post(
+        Uri.parse('http://127.0.0.1:7242/ingest/f2e5acba-93e2-4270-a633-fee604b9e81c'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(logData3),
+      ).catchError((_) {});
+      // #endregion
+      
+      // #region agent log
+      final logData4 = {
+        'sessionId': 'debug-session',
+        'runId': 'run1',
+        'hypothesisId': 'C',
+        'location': 'trade_ideas_screen.dart:170',
+        'message': 'setState called with result',
+        'data': {
+          'hasUnlockedByTimeframe': result.containsKey('unlockedByTimeframe'),
+          'hasUnlocked': result.containsKey('unlocked'),
+          'hasIdeasByTimeframe': result.containsKey('ideasByTimeframe'),
+          'timestamp': DateTime.now().millisecondsSinceEpoch
+        },
+        'timestamp': DateTime.now().millisecondsSinceEpoch
+      };
+      http.post(
+        Uri.parse('http://127.0.0.1:7242/ingest/f2e5acba-93e2-4270-a633-fee604b9e81c'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(logData4),
+      ).catchError((_) {});
+      // #endregion
       
       setState(() {
         // Parse unlocked ideas
@@ -130,6 +226,29 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // #region agent log
+    final logData = {
+      'sessionId': 'debug-session',
+      'runId': 'run1',
+      'hypothesisId': 'C',
+      'location': 'trade_ideas_screen.dart:132',
+      'message': 'build method called',
+      'data': {
+        'isLoading': _isLoading,
+        'hasError': _error != null,
+        'ideasCount': _ideas.length,
+        'hasIdeasByTimeframe': _ideasByTimeframe != null,
+        'timestamp': DateTime.now().millisecondsSinceEpoch
+      },
+      'timestamp': DateTime.now().millisecondsSinceEpoch
+    };
+    http.post(
+      Uri.parse('http://127.0.0.1:7242/ingest/f2e5acba-93e2-4270-a633-fee604b9e81c'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(logData),
+    ).catchError((_) {});
+    // #endregion
+    
     return Scaffold(
       backgroundColor: const Color(0xFF0D1117),
       appBar: AppBar(
