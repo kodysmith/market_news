@@ -31,23 +31,6 @@ class TradeIdeasService {
       final uri = Uri.parse('$apiBaseUrl/trade-ideas/allowed')
           .replace(queryParameters: params);
 
-      // #region agent log
-      final logData = {
-        'sessionId': 'debug-session',
-        'runId': 'run1',
-        'hypothesisId': 'D',
-        'location': 'trade_ideas_service.dart:34',
-        'message': 'HTTP GET request',
-        'data': {'url': uri.toString(), 'ticker': ticker, 'timestamp': DateTime.now().millisecondsSinceEpoch},
-        'timestamp': DateTime.now().millisecondsSinceEpoch
-      };
-      http.post(
-        Uri.parse('http://127.0.0.1:7242/ingest/f2e5acba-93e2-4270-a633-fee604b9e81c'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(logData),
-      ).catchError((_) {});
-      // #endregion
-
       final response = await http.get(
         uri,
         headers: {
@@ -55,23 +38,6 @@ class TradeIdeasService {
           'Content-Type': 'application/json',
         },
       );
-      
-      // #region agent log
-      final logData2 = {
-        'sessionId': 'debug-session',
-        'runId': 'run1',
-        'hypothesisId': 'D',
-        'location': 'trade_ideas_service.dart:50',
-        'message': 'HTTP response received',
-        'data': {'statusCode': response.statusCode, 'bodyLength': response.body.length, 'timestamp': DateTime.now().millisecondsSinceEpoch},
-        'timestamp': DateTime.now().millisecondsSinceEpoch
-      };
-      http.post(
-        Uri.parse('http://127.0.0.1:7242/ingest/f2e5acba-93e2-4270-a633-fee604b9e81c'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(logData2),
-      ).catchError((_) {});
-      // #endregion
 
       if (response.statusCode == 200) {
         final dynamic decoded = json.decode(response.body);

@@ -1,0 +1,127 @@
+# Crypto Arbitrage System Configuration
+
+environment: development
+
+# Exchange configurations
+exchanges:
+  binance:
+    name: binance
+    display_name: "Binance"
+    enabled: true
+    testnet: false
+    rate_limit: 1200
+    maker_fee_pct: 0.1
+    taker_fee_pct: 0.1
+    api_key: ""  # Set via environment variable
+    api_secret: ""
+  
+  coinbase:
+    name: coinbase
+    display_name: "Coinbase Pro"
+    enabled: true
+    testnet: false
+    rate_limit: 600
+    maker_fee_pct: 0.4
+    taker_fee_pct: 0.6
+    api_key: ""
+    api_secret: ""
+    api_passphrase: ""
+  
+  kraken:
+    name: kraken
+    display_name: "Kraken"
+    enabled: true
+    testnet: false
+    rate_limit: 300
+    maker_fee_pct: 0.16
+    taker_fee_pct: 0.26
+    api_key: ""
+    api_secret: ""
+
+# Strategy parameters
+strategy:
+  # Capital
+  total_capital_usd: 10000
+  max_position_size_usd: 1000
+  max_position_size_pct: 0.1
+  
+  # Profitability thresholds
+  min_spread_pct: 0.5  # 0.5% minimum profit after fees
+  target_spread_pct: 1.0  # 1.0% target spread
+  
+  # Execution
+  execution_timeout_seconds: 2
+  max_price_staleness_seconds: 5
+  
+  # Volume requirements
+  min_24h_volume_usd: 1000000  # $1M minimum daily volume
+  
+  # Trading pairs (Top 50 altcoins)
+  trading_pairs:
+    # Major
+    - BTC/USDT
+    - ETH/USDT
+    - BNB/USDT
+    - SOL/USDT
+    - XRP/USDT
+    # Top 10-20
+    - ADA/USDT
+    - DOGE/USDT
+    - AVAX/USDT
+    - DOT/USDT
+    - MATIC/USDT
+    # DeFi
+    - LINK/USDT
+    - UNI/USDT
+    - AAVE/USDT
+    - ATOM/USDT
+    - LTC/USDT
+    # Layer 1s
+    - NEAR/USDT
+    - FTM/USDT
+    - ALGO/USDT
+    - VET/USDT
+    - ICP/USDT
+    # Others  
+    - XLM/USDT
+    - FIL/USDT
+    - ETC/USDT
+    - APT/USDT
+    - ARB/USDT
+
+# Risk management
+risk:
+  # Position limits
+  max_total_exposure_usd: 5000
+  max_single_exchange_exposure_pct: 0.6
+  
+  # Circuit breakers
+  max_daily_loss_usd: 500
+  max_consecutive_failures: 5
+  
+  # Rate limiting
+  max_trades_per_hour: 20
+  max_trades_per_day: 100
+  
+  # Balance requirements
+  min_balance_per_exchange_usd: 100
+  rebalance_threshold_pct: 0.3
+
+# Monitoring
+monitoring:
+  track_latency: true
+  track_opportunities: true
+  alert_on_failure: true
+  alert_on_low_balance: true
+  alert_threshold_balance_usd: 50
+  dashboard_enabled: true
+  dashboard_port: 5001
+
+# Database
+database:
+  sqlite_path: "./data/arbitrage.db"
+  enable_wal_mode: true
+  backup_enabled: true
+  backup_interval_hours: 24
+
+
