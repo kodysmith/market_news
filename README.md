@@ -16,6 +16,7 @@ This application provides real-time market sentiment analysis, options trading s
 
 ```
 MarketNews/
+├── docs/                   # Project docs (design, setup guides, etc.)
 ├── apis/                    # API servers and clients
 ├── screeners/              # Stock and options screeners
 ├── strategies/             # Strategy analysis and optimization
@@ -26,9 +27,14 @@ MarketNews/
 ├── options_scanner/        # Options scanning system
 ├── QuantEngine/            # Advanced quant trading engine
 ├── market_news_app/        # Flutter mobile application
-├── firebase/               # Firebase functions
-└── archive/                # Archived old files
+└── firebase/               # Firebase functions
 ```
+
+## Docs & Guides
+
+- `ARCHITECTURE.md`: High-level system architecture
+- `ROADMAP.md`: Product/engineering roadmap
+- `docs/`: Additional guides (Firebase setup, deployment guides, design docs, etc.)
 
 ## Architecture
 

@@ -1,4 +1,31 @@
-# Python virtual environments
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyd
+*.so
+
+# --- Virtual environments / environment files ---
 venv/
-.env/
 .venv/
+.env
+.env.*
+
+# --- Logs ---
+*.log
+
+# --- Databases / generated data ---
+*.db
+*.sqlite
+*.sqlite3
+*.parquet
+*.csv
+
+# Generated outputs (repo-specific)
+data/logs/
+data/results/
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
