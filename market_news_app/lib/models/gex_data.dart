@@ -244,3 +244,32 @@ class GexTickerSummary {
     );
   }
 }
+
+/// Max Pain API result: strike that minimizes option holder payout at expiry.
+class MaxPainResult {
+  final String ticker;
+  final String expiration;
+  final double maxPainStrike;
+  final double spotPrice;
+  final List<String>? expirations;
+
+  MaxPainResult({
+    required this.ticker,
+    required this.expiration,
+    required this.maxPainStrike,
+    required this.spotPrice,
+    this.expirations,
+  });
+
+  factory MaxPainResult.fromJson(Map<String, dynamic> json) {
+    return MaxPainResult(
+      ticker: json['ticker'] ?? '',
+      expiration: json['expiration'] ?? '',
+      maxPainStrike: (json['max_pain_strike'] as num?)?.toDouble() ?? 0.0,
+      spotPrice: (json['spot_price'] as num?)?.toDouble() ?? 0.0,
+      expirations: json['expirations'] != null
+          ? (json['expirations'] as List).map((e) => e.toString()).toList()
+          : null,
+    );
+  }
+}

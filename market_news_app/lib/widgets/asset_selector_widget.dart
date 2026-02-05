@@ -218,7 +218,8 @@ class _AssetSelectorWidgetState extends State<AssetSelectorWidget> {
                     isDense: true,
                   ),
                   inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9]')),
+                    // Allow a-z and A-Z so keystrokes are accepted; textCapitalization shows uppercase
+                    FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9]')),
                     LengthLimitingTextInputFormatter(5),
                   ],
                   onChanged: _handleTextChange,

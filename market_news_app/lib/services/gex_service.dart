@@ -106,6 +106,42 @@ class GexService {
     }
   }
 
+  /// Get max pain strike for a ticker and expiration (dte or specific expiration date).
+  static Future<MaxPainResult?> getMaxPain(
+    String ticker, {
+    int? dte,
+    String? expiration,
+  }) async {
+    try {
+      final queryParams = <String, String>{'ticker': ticker.toUpperCase()};
+      if (dte != null) queryParams['dte'] = dte.toString();
+      if (expiration != null && expiration.isNotEmpty) queryParams['expiration'] = expiration;
+
+      final uri = Uri.parse('$apiBaseUrl/gex/max-pain').replace(
+        queryParameters: queryParams,
+      );
+
+      final response = await http.get(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiSecretKey,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return MaxPainResult.fromJson(data);
+      } else {
+        print('Error getting max pain: ${response.statusCode} - ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching max pain: $e');
+      return null;
+    }
+  }
+
   /// Compare spot prices from different data sources
   static Future<Map<String, dynamic>?> getPriceComparison(String ticker) async {
     try {

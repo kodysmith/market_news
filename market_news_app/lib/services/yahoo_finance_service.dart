@@ -49,6 +49,49 @@ class YahooFinanceService {
     return null;
   }
 
+  /// Get historical daily closes from Yahoo chart endpoint.
+  ///
+  /// Note: Yahoo responses can contain null closes; we filter them out.
+  static Future<List<double>> getHistoricalCloses(
+    String symbol, {
+    String range = '3mo',
+    String interval = '1d',
+  }) async {
+    try {
+      final url = '$_baseUrl/$symbol?range=$range&interval=$interval';
+
+      final cacheKey = _cache.generateKey(url, null, null);
+      final cached = _cache.get<List<double>>(cacheKey);
+      if (cached != null) return cached;
+
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept': 'application/json, text/plain, */*',
+        },
+      );
+
+      if (response.statusCode != 200) {
+        return [];
+      }
+
+      final data = json.decode(response.body);
+      final result = data['chart']?['result']?[0];
+      final closesRaw = result?['indicators']?['quote']?[0]?['close'] as List<dynamic>?;
+      if (closesRaw == null) return [];
+
+      final closes = closesRaw.where((v) => v != null).map((v) => (v as num).toDouble()).toList();
+      if (closes.isNotEmpty) {
+        _cache.set(cacheKey, closes, ttl: 60); // 1 minute cache for history
+      }
+      return closes;
+    } catch (e) {
+      print('Error fetching historical closes for $symbol: $e');
+      return [];
+    }
+  }
+
   // Get options chain data
   static Future<Map<String, dynamic>?> getOptionsChain(String symbol) async {
     try {

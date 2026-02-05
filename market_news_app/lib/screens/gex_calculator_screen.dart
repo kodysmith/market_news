@@ -15,9 +15,12 @@ class GexCalculatorScreen extends StatefulWidget {
 class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
   GexCalculation? _gexData;
   GexSummary? _summaryData;
+  MaxPainResult? _maxPainData;
   bool _isLoading = false;
   String? _error;
   bool _showSummary = false;
+  bool _showMaxPain = false;
+  int _maxPainDte = 0;
 
   @override
   void initState() {
@@ -47,12 +50,13 @@ class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
   }
   
   void _onAssetChanged() {
-    // Reload GEX data when asset changes
+    // Reload GEX data when asset changes (or clear max pain result)
     if (mounted) {
       setState(() {
         _showSummary = false;
+        if (_showMaxPain) _maxPainData = null;
       });
-      _loadGexData();
+      if (!_showMaxPain) _loadGexData();
     }
   }
   
@@ -90,6 +94,19 @@ class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
     });
 
     try {
+      if (_showMaxPain) {
+        final result = await GexService.getMaxPain(_selectedTicker, dte: _maxPainDte);
+        if (mounted) {
+          setState(() {
+            _maxPainData = result;
+            _isLoading = false;
+            _error = result == null
+                ? 'Failed to load max pain for $_selectedTicker. Check API connection.'
+                : null;
+          });
+        }
+        return;
+      }
       if (_showSummary) {
         final summary = await GexService.getGexSummary();
         if (mounted) {
@@ -150,10 +167,8 @@ class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
                 title: const Text('API Configuration'),
                 content: Text(
                   'Current API URL: ${apiBaseUrl}\n\n'
-                  'For local GEX testing, update apiBaseUrl in lib/main.dart to:\n'
-                  'http://localhost:5000 (for web)\n'
-                  'or\n'
-                  'http://192.168.1.31:5000 (for mobile/network)',
+                  'Default is localhost (same machine). For a device on the network,\n'
+                  'set API_BASE_URL in .env (e.g. http://192.168.1.31:5000).',
                 ),
                 actions: [
                   TextButton(
@@ -185,7 +200,9 @@ class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
 
             // Content
             if (!_isLoading && _error == null)
-              _showSummary ? _buildSummaryView() : _buildDetailView(),
+              _showMaxPain
+                  ? _buildMaxPainView()
+                  : (_showSummary ? _buildSummaryView() : _buildDetailView()),
           ],
         ),
       ),
@@ -202,8 +219,9 @@ class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
               onAssetChanged: (asset) {
                 setState(() {
                   _showSummary = false;
+                  if (_showMaxPain) _maxPainData = null;
                 });
-                _loadGexData();
+                if (!_showMaxPain) _loadGexData();
               },
             ),
             const SizedBox(height: 12),
@@ -211,7 +229,13 @@ class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
               children: [
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: _loadGexData,
+                    onPressed: () {
+                      setState(() {
+                        _showMaxPain = false;
+                        _showSummary = false;
+                      });
+                      _loadGexData();
+                    },
                     icon: const Icon(Icons.calculate),
                     label: const Text('Calculate GEX'),
                   ),
@@ -221,6 +245,7 @@ class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
                   child: ElevatedButton.icon(
                     onPressed: () {
                       setState(() {
+                        _showMaxPain = false;
                         _showSummary = true;
                       });
                       _loadGexData();
@@ -229,8 +254,50 @@ class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
                     label: const Text('View Summary'),
                   ),
                 ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _showMaxPain = true;
+                        _showSummary = false;
+                        _maxPainData = null;
+                        _error = null;
+                      });
+                      _loadGexData();
+                    },
+                    icon: const Icon(Icons.show_chart),
+                    label: const Text('Max Pain'),
+                  ),
+                ),
               ],
             ),
+            if (_showMaxPain) ...[
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  const Text('DTE: ', style: TextStyle(fontWeight: FontWeight.w500)),
+                  DropdownButton<int>(
+                    value: _maxPainDte,
+                    items: [0, 1, 5]
+                        .map((dte) => DropdownMenuItem(
+                              value: dte,
+                              child: Text('$dte DTE'),
+                            ))
+                        .toList(),
+                    onChanged: (v) {
+                      if (v != null) setState(() => _maxPainDte = v);
+                    },
+                  ),
+                  const SizedBox(width: 12),
+                  ElevatedButton.icon(
+                    onPressed: _isLoading ? null : _loadGexData,
+                    icon: const Icon(Icons.calculate),
+                    label: const Text('Get Max Pain'),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
@@ -290,6 +357,63 @@ class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
 
         // Debug Section
         _buildDebugSection(),
+      ],
+    );
+  }
+
+  Widget _buildMaxPainView() {
+    if (_maxPainData == null) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Text(
+            'Select DTE above and tap Get Max Pain for $_selectedTicker',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.grey.shade600),
+          ),
+        ),
+      );
+    }
+    final d = _maxPainData!;
+    final diff = d.spotPrice - d.maxPainStrike;
+    final diffText = diff >= 0
+        ? 'Spot is \$${diff.toStringAsFixed(2)} above max pain'
+        : 'Spot is \$${(-diff).toStringAsFixed(2)} below max pain';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildMetricCard('Max Pain Strike', '\$${d.maxPainStrike.toStringAsFixed(2)}', Colors.orange),
+        const SizedBox(height: 12),
+        _buildMetricCard('Spot Price', '\$${d.spotPrice.toStringAsFixed(2)}', Colors.blue),
+        const SizedBox(height: 12),
+        _buildMetricCard('Expiration', d.expiration, Colors.purple),
+        const SizedBox(height: 12),
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                Icon(
+                  diff >= 0 ? Icons.arrow_upward : Icons.arrow_downward,
+                  color: diff >= 0 ? Colors.green : Colors.red,
+                  size: 28,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    diffText,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: diff >= 0 ? Colors.green.shade700 : Colors.red.shade700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }

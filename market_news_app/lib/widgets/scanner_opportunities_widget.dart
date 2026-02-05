@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+
+import '../models/opportunity_v1.dart';
+import '../services/opportunity_scanner_service.dart';
 
 class ScannerOpportunitiesWidget extends StatefulWidget {
   const ScannerOpportunitiesWidget({Key? key}) : super(key: key);
@@ -10,7 +11,7 @@ class ScannerOpportunitiesWidget extends StatefulWidget {
 }
 
 class _ScannerOpportunitiesWidgetState extends State<ScannerOpportunitiesWidget> {
-  List<Map<String, dynamic>> opportunities = [];
+  List<OpportunityV1> opportunities = [];
   bool isLoading = true;
   String? error;
   Map<String, dynamic>? summary;
@@ -28,95 +29,27 @@ class _ScannerOpportunitiesWidgetState extends State<ScannerOpportunitiesWidget>
         error = null;
       });
 
-      // For now, use mock data since Firebase functions are having issues
-      // TODO: Replace with actual API call when Firebase is working
-      await Future.delayed(const Duration(seconds: 1)); // Simulate loading
-      
+      // Small universe to start; expand later or load from remote config.
+      const tickers = ['SPY', 'QQQ', 'AAPL', 'MSFT', 'NVDA', 'TSLA', 'AMZN', 'META', 'GOOGL', 'IWM', 'TQQQ'];
+      final results = await OpportunityScannerService.scan(tickers: tickers);
+
       setState(() {
-        opportunities = [
-          {
-            'ticker': 'AAPL',
-            'signal': 'WEAK_SELL',
-            'confidence': 90,
-            'current_price': 254.63,
-            'technical_indicators': {'rsi': 68.8},
-            'targets_stops': {'target': 246.08, 'stop_loss': 262.48, 'risk_reward': 1.33},
-            'fundamentals': {'fundamental_score': 45}
-          },
-          {
-            'ticker': 'TSLA',
-            'signal': 'SELL',
-            'confidence': 80,
-            'current_price': 444.72,
-            'technical_indicators': {'rsi': 73.7},
-            'targets_stops': {'target': 427.16, 'stop_loss': 483.68, 'risk_reward': 1.33},
-            'fundamentals': {'fundamental_score': 15}
-          },
-          {
-            'ticker': 'GOOGL',
-            'signal': 'WEAK_SELL',
-            'confidence': 74,
-            'current_price': 233.57,
-            'technical_indicators': {'rsi': 64.0},
-            'targets_stops': {'target': 233.57, 'stop_loss': 253.40, 'risk_reward': 1.33},
-            'fundamentals': {'fundamental_score': 70}
-          },
-          {
-            'ticker': 'MSFT',
-            'signal': 'HOLD',
-            'confidence': 45,
-            'current_price': 534.85,
-            'technical_indicators': {'rsi': 59.6},
-            'targets_stops': {'target': 534.85, 'stop_loss': 508.35, 'risk_reward': 1.33},
-            'fundamentals': {'fundamental_score': 50}
-          },
-          {
-            'ticker': 'NVDA',
-            'signal': 'WEAK_SELL',
-            'confidence': 25,
-            'current_price': 176.56,
-            'technical_indicators': {'rsi': 63.9},
-            'targets_stops': {'target': 176.56, 'stop_loss': 195.25, 'risk_reward': 1.33},
-            'fundamentals': {'fundamental_score': 50}
-          }
-        ];
+        opportunities = results;
         summary = {
           'scan_timestamp': DateTime.now().toIso8601String(),
-          'summary': {'high_confidence_signals': 2}
+          'summary': {
+            'tickers_scanned': tickers.length,
+            'opportunities_found': results.length,
+          }
         };
         isLoading = false;
       });
-
-      // Try to load from Firebase in background (for future use)
-      _loadFromFirebase();
       
     } catch (e) {
       setState(() {
         error = 'Error loading opportunities: $e';
         isLoading = false;
       });
-    }
-  }
-
-  Future<void> _loadFromFirebase() async {
-    try {
-      final response = await http.get(
-        Uri.parse('https://us-central1-kardova-capital.cloudfunctions.net/api/scanner-opportunities'),
-        headers: {'Content-Type': 'application/json'},
-      );
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (mounted) {
-          setState(() {
-            opportunities = List<Map<String, dynamic>>.from(data['opportunities'] ?? []);
-            summary = data['summary'];
-          });
-        }
-      }
-    } catch (e) {
-      // Silently fail - we have mock data as fallback
-      print('Firebase load failed: $e');
     }
   }
 
@@ -181,7 +114,7 @@ class _ScannerOpportunitiesWidgetState extends State<ScannerOpportunitiesWidget>
                 ),
               ),
               Text(
-                'High confidence signals: ${summary!['summary']?['high_confidence_signals'] ?? 0}',
+                'Opportunities found: ${summary!['summary']?['opportunities_found'] ?? 0}',
                 style: TextStyle(
                   fontSize: 12,
                   color: Colors.grey[600],
@@ -240,14 +173,14 @@ class _ScannerOpportunitiesWidgetState extends State<ScannerOpportunitiesWidget>
                 itemCount: opportunities.length > 5 ? 5 : opportunities.length,
                 itemBuilder: (context, index) {
                   final opp = opportunities[index];
-                  final signal = opp['signal'] ?? 'HOLD';
-                  final ticker = opp['ticker'] ?? 'N/A';
-                  final currentPrice = opp['current_price'] ?? 0.0;
-                  final confidence = opp['confidence'] ?? 0;
-                  final rsi = opp['technical_indicators']?['rsi'] ?? 50.0;
-                  final target = opp['targets_stops']?['target'] ?? 0.0;
-                  final stop = opp['targets_stops']?['stop_loss'] ?? 0.0;
-                  final riskReward = opp['targets_stops']?['risk_reward'] ?? 0.0;
+                  final signal = opp.opportunityType;
+                  final ticker = opp.ticker;
+                  final currentPrice = opp.currentPrice;
+                  final confidence = opp.overallScore;
+                  final rsi = opp.rsi ?? 50.0;
+                  final target = opp.targetPrice ?? 0.0;
+                  final stop = opp.stopLoss ?? 0.0;
+                  final riskReward = opp.riskRewardRatio ?? 0.0;
 
                   return Card(
                     margin: const EdgeInsets.symmetric(vertical: 4.0),
@@ -280,7 +213,7 @@ class _ScannerOpportunitiesWidgetState extends State<ScannerOpportunitiesWidget>
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
-                              '${confidence.toInt()}%',
+                              confidence.toStringAsFixed(0),
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,

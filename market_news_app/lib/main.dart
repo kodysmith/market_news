@@ -24,13 +24,10 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 
 // API Configuration
 // ==================
-// For local network access (Android phone on same WiFi):
-//   1. Find your Linux machine's IP: hostname -I  (e.g., 192.168.1.31)
-//   2. Use that IP below
-//   3. Make sure Flask API is running: cd market_news/apis && python3 api.py
-
-// Your local machine IP - this works for both desktop and phone on same WiFi
-const String apiBaseUrl = 'http://192.168.1.31:5000';
+// Default: localhost (when Flutter app and Flask API run on the same machine).
+// For a device on the same WiFi (e.g. Android phone), set API_BASE_URL in .env
+// to your machine's IP, e.g. API_BASE_URL=http://192.168.1.31:5000
+String apiBaseUrl = 'http://localhost:5000';
 
 const String apiSecretKey = 'b7e2f8c4e1a94e2b8c9d4e7f2a1b3c4d';
 
@@ -43,6 +40,11 @@ Future<void> main() async {
   );
   
   await dotenv.load(fileName: ".env");
+  // Override API base URL from .env (e.g. API_BASE_URL=http://192.168.1.31:5000 for device on network)
+  final envApiUrl = dotenv.env['API_BASE_URL'];
+  if (envApiUrl != null && envApiUrl.isNotEmpty) {
+    apiBaseUrl = envApiUrl.replaceFirst(RegExp(r'/$'), '');
+  }
 
   // Initialize Firebase Messaging (Android)
   await _initFirebaseMessaging();
