@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # One-time server setup for Fisher full-market scan: venv, deps, DB/queue, enqueue, cron.
 #
-# After cloning: create .env with DATABASE_URL, then run ./setup.sh from repo root.
+# After cloning: create .env with DATABASE_URL (or SUPABASE_DB_URL), then run ./setup.sh from repo root.
+# DATABASE_URL can be a local Postgres URI or a Supabase Postgres URI (Project Settings → Database).
 # Cron will run the worker hourly and enqueue monthly so the scan runs continuously.
 #
 # Usage: ./setup.sh   (from repo root, with DATABASE_URL in .env or environment)
@@ -24,7 +25,7 @@ if [ -f .env ]; then
   set +a
   echo "Loaded .env"
 else
-  echo "No .env found. Create .env with DATABASE_URL=postgresql://..."
+  echo "No .env found. Create .env with DATABASE_URL=postgresql://... (or Supabase Postgres URI)"
   echo "Example: cp env_template.txt .env && edit .env"
 fi
 

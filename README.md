@@ -154,10 +154,10 @@ market_news_app/
 }
 ```
 
-### Flutter Configuration
-- Environment variables in `.env` file
-- Asset files in `assets/` directory
-- API keys and endpoints configured via environment
+### Environment (`.env`)
+- Copy `env_template.txt` to `.env` and fill in values.
+- **DATABASE_URL** (or **SUPABASE_DB_URL**): Postgres URI for Fisher pipeline and Flask API. Use a local Postgres URI or a Supabase Postgres URI (Project Settings → Database) so the backend works from anywhere.
+- API keys and endpoints configured via environment; see `env_template.txt`.
 
 ## Setup and Installation
 

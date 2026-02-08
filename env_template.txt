@@ -1,3 +1,8 @@
+# Fisher / API database (required for Fisher scan and Flask API)
+# Use a Postgres URI, e.g. local: postgresql://user:pass@localhost:5432/marketnews
+# Or Supabase: get URI from Project Settings → Database (Session mode port 5432 for worker)
+DATABASE_URL=postgresql://user:pass@host:5432/dbname
+
 # Alpha Vantage API Key (get from https://www.alphavantage.co/support/#api-key)
 ALPHAVANTAGE_API_KEY=your_alpha_vantage_key_here
 

@@ -44,12 +44,27 @@ python3 scripts/setup_fisher_full_scan.py --enqueue # add only tickers not in qu
 
 Then run the worker (see Commands below).
 
+## Using Supabase
+
+To run the scan against a **Supabase** project (works from anywhere; no local Postgres):
+
+1. **Get the Postgres connection string:** Supabase dashboard → **Project Settings → Database**. Copy the **URI** (Connection string). Use **Session mode** (port 5432) for the worker and enqueue; the API can use Session or Transaction pooler (port 6543).
+2. **Apply schemas** in Supabase **SQL Editor**, in order:
+   - `supabase_schema.sql` (trading tables; optional if you only need Fisher)
+   - `supabase_schema_fisher.sql` (Fisher tables)
+   - `scripts/fisher_scan_queue_schema.sql` (queue table, if not already in your Fisher schema)
+3. **Set in `.env`:** `DATABASE_URL=postgresql://postgres.[ref]:[YOUR-PASSWORD]@...` (or `SUPABASE_DB_URL`). Same value on the server, in API deployment, and locally where you run scripts.
+4. **Run setup:** `./setup.sh` (or run `scripts/setup_fisher_full_scan.py --reset` then the worker). Worker and cron use the same scripts; they read/write Supabase.
+
+For the app to work everywhere, host the Flask API (e.g. Cloud Run) with the same `DATABASE_URL`, and set the app’s `API_BASE_URL` to that API URL.
+
 ## Prerequisites
 
 - **SEC universe:** Run `python3 scripts/fetch_sec_universe.py` (or use `setup_fisher_full_scan.py` above) to create `data/sec_universe.json`.
 - **Database:** `DATABASE_URL` (or `SUPABASE_DB_URL`) set. The queue table is created by `setup_fisher_full_scan.py` or:
   - New installs: `supabase_schema_fisher.sql` already includes `fisher_scan_queue`.
   - Existing DBs: run `scripts/fisher_scan_queue_schema.sql` once.
+  - **Supabase:** Use the Postgres URI from Project Settings → Database; apply the three SQL files above in the SQL Editor.
 
 ## Workflow
 
