@@ -12,6 +12,7 @@ venv/
 
 # --- Logs ---
 *.log
+logs/
 
 # --- Databases / generated data ---
 *.db

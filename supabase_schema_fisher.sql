@@ -130,6 +130,22 @@ CREATE INDEX IF NOT EXISTS idx_fisher_market_bar_company_date ON fisher_market_b
 
 CREATE INDEX IF NOT EXISTS idx_fisher_score_snapshot_company_at ON fisher_score_snapshot(company_id, snapshot_at DESC);
 
+-- fisher_scan_queue: full-market Fisher scan (monthly or manual)
+CREATE TABLE IF NOT EXISTS fisher_scan_queue (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    ticker VARCHAR(10) NOT NULL UNIQUE,
+    status VARCHAR(20) NOT NULL DEFAULT 'pending'
+        CHECK (status IN ('pending', 'processing', 'done', 'failed')),
+    source VARCHAR(20) NOT NULL DEFAULT 'sec',
+    queued_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    started_at TIMESTAMPTZ,
+    completed_at TIMESTAMPTZ,
+    error_text TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_fisher_scan_queue_status_queued
+    ON fisher_scan_queue (status, queued_at) WHERE status = 'pending';
+
 -- RLS
 ALTER TABLE fisher_company ENABLE ROW LEVEL SECURITY;
 ALTER TABLE fisher_filing ENABLE ROW LEVEL SECURITY;
@@ -140,6 +156,7 @@ ALTER TABLE fisher_transcript_chunk ENABLE ROW LEVEL SECURITY;
 ALTER TABLE fisher_market_bar_daily ENABLE ROW LEVEL SECURITY;
 ALTER TABLE fisher_peer_set ENABLE ROW LEVEL SECURITY;
 ALTER TABLE fisher_score_snapshot ENABLE ROW LEVEL SECURITY;
+ALTER TABLE fisher_scan_queue ENABLE ROW LEVEL SECURITY;
 
 -- Service role full access
 CREATE POLICY "fisher_service_full" ON fisher_company FOR ALL USING (auth.role() = 'service_role');
@@ -151,6 +168,7 @@ CREATE POLICY "fisher_service_full" ON fisher_transcript_chunk FOR ALL USING (au
 CREATE POLICY "fisher_service_full" ON fisher_market_bar_daily FOR ALL USING (auth.role() = 'service_role');
 CREATE POLICY "fisher_service_full" ON fisher_peer_set FOR ALL USING (auth.role() = 'service_role');
 CREATE POLICY "fisher_service_full" ON fisher_score_snapshot FOR ALL USING (auth.role() = 'service_role');
+CREATE POLICY "fisher_service_full" ON fisher_scan_queue FOR ALL USING (auth.role() = 'service_role');
 
 -- Anon read (dashboard)
 CREATE POLICY "fisher_anon_read" ON fisher_company FOR SELECT USING (true);
@@ -162,6 +180,7 @@ CREATE POLICY "fisher_anon_read" ON fisher_transcript_chunk FOR SELECT USING (tr
 CREATE POLICY "fisher_anon_read" ON fisher_market_bar_daily FOR SELECT USING (true);
 CREATE POLICY "fisher_anon_read" ON fisher_peer_set FOR SELECT USING (true);
 CREATE POLICY "fisher_anon_read" ON fisher_score_snapshot FOR SELECT USING (true);
+CREATE POLICY "fisher_anon_read" ON fisher_scan_queue FOR SELECT USING (true);
 
 -- Trigger for fisher_company updated_at
 CREATE TRIGGER update_fisher_company_updated_at BEFORE UPDATE ON fisher_company

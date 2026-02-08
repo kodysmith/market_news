@@ -113,6 +113,30 @@ To get a list of top high-growth + profitable companies from Yahoo (or Alpha Van
 3. **Scan for high growth + profitable (Fisher categories):**  
    `python3 scripts/scan_growth_profitable.py -n 30`
 
+## Full-market scan (queue, monthly or manual)
+
+Scan every stock in the SEC universe with the Fisher pipeline. Run on a local server; data is written to the same Fisher database.
+
+**Prerequisites:** `data/sec_universe.json` (run `scripts/fetch_sec_universe.py`), `DATABASE_URL` set, and the queue table (included in `supabase_schema_fisher.sql`; for existing DBs run `scripts/fisher_scan_queue_schema.sql`).
+
+1. **Enqueue** (queue all SEC tickers):  
+   `python3 scripts/enqueue_fisher_scan.py`  
+   For a **monthly full rescan**, clear and re-enqueue:  
+   `python3 scripts/enqueue_fisher_scan.py --reset`
+
+2. **Worker** (process queue in batches):  
+   `python3 scripts/run_fisher_scan_worker.py`  
+   Runs until the queue is empty. Options:  
+   - `--batch 50` (default; tickers per batch; respect SEC rate limits)  
+   - `--once` — process one batch and exit (for cron)  
+   - `--delay 60` — seconds to sleep after each batch  
+
+**Monthly (cron):**  
+- First of month: `enqueue_fisher_scan.py --reset` then start the worker (e.g. in a screen/tmux session or as a service).  
+- Or run the worker with `--once` and schedule it every hour: `0 * * * * ... run_fisher_scan_worker.py --once --batch 50`
+
+**Manual:** Run enqueue (without `--reset` to add only new tickers), then run the worker in the foreground or background.
+
 ## Finding high scorers (hidden gems)
 
 - **Top scorers (among already-scored companies):**  

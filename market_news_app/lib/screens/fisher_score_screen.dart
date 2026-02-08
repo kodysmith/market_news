@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:market_news_app/constants/fisher_points.dart';
 import 'package:market_news_app/models/fisher_snapshot.dart';
 import 'package:market_news_app/services/fisher_service.dart';
 import 'package:market_news_app/widgets/asset_selector_widget.dart';
@@ -233,16 +234,6 @@ class _FisherScoreScreenState extends State<FisherScoreScreen> {
   }
 
   Widget _buildPointsCard(FisherSnapshot s) {
-    final pointLabels = <String, String>{
-      '1': 'Sales growth potential',
-      '3': 'R&D effectiveness',
-      '5': 'Profit margin',
-      '6': 'Maintain/improve margins',
-      '9': 'Depth of management',
-      '13': 'Dilution risk',
-      '14': 'Cash/debt management',
-      '15': 'Moat (partial)',
-    };
     return Card(
       color: const Color(0xFF161B22),
       child: Padding(
@@ -250,29 +241,44 @@ class _FisherScoreScreenState extends State<FisherScoreScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Point scores', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.grey.shade400)),
+            Text('Fisher 15 points', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.grey.shade400)),
             const SizedBox(height: 12),
-            ...(s.points.entries.map((e) {
-              final score = e.value.score ?? 0.0;
-              final color = score >= 7 ? Colors.green : score >= 5 ? Colors.orange : Colors.red;
-              final label = pointLabels[e.key] ?? 'Point ${e.key}';
+            ...(fisherPointsInOrder.map((meta) {
+              final pointData = s.points[meta.id.toString()];
+              final score = pointData?.score;
+              final hasScore = score != null;
+              final color = !hasScore ? Colors.grey : (score >= 7 ? Colors.green : score >= 5 ? Colors.orange : Colors.red);
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Row(
                   children: [
                     Expanded(
                       flex: 2,
-                      child: Text(label, style: const TextStyle(fontSize: 13)),
+                      child: Row(
+                        children: [
+                          Expanded(child: Text(meta.label, style: const TextStyle(fontSize: 13))),
+                          Tooltip(
+                            message: meta.tooltip,
+                            child: Icon(Icons.info_outline, size: 16, color: Colors.grey.shade400),
+                          ),
+                        ],
+                      ),
                     ),
                     Expanded(
                       child: LinearProgressIndicator(
-                        value: (score / 10).clamp(0.0, 1.0),
+                        value: hasScore ? (score / 10).clamp(0.0, 1.0) : 0.0,
                         backgroundColor: Colors.grey.shade800,
                         valueColor: AlwaysStoppedAnimation<Color>(color),
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Text(score.toStringAsFixed(1), style: TextStyle(fontSize: 13, color: color)),
+                    SizedBox(
+                      width: 32,
+                      child: Text(
+                        hasScore ? score.toStringAsFixed(1) : 'N/A',
+                        style: TextStyle(fontSize: 13, color: color),
+                      ),
+                    ),
                   ],
                 ),
               );
@@ -298,10 +304,11 @@ class _FisherScoreScreenState extends State<FisherScoreScreen> {
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: ['1', '3', '5', '6', '9', '13', '14', '15'].map((pointId) {
+              children: fisherPointsInOrder.map((meta) {
+                final pointId = meta.id.toString();
                 return OutlinedButton(
                   onPressed: () => _showEvidence(pointId),
-                  child: Text('Point $pointId'),
+                  child: Text('${meta.id}'),
                 );
               }).toList(),
             ),

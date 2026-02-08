@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:market_news_app/constants/fisher_points.dart';
 import 'package:market_news_app/models/fisher_snapshot.dart';
 import 'package:market_news_app/models/valuation_data.dart';
 import 'package:market_news_app/services/fisher_service.dart';
@@ -141,6 +142,8 @@ class _FisherValuationScreenState extends State<FisherValuationScreen> {
                     const SizedBox(height: 20),
                     if (_error != null) _buildError(),
                     if (_snapshot != null) _buildFisherCard(_snapshot!),
+                    if (_snapshot != null) const SizedBox(height: 16),
+                    if (_snapshot != null) _buildFisher15PointsCard(_snapshot!),
                     if (_snapshot != null) const SizedBox(height: 16),
                     if (_valuation != null) _buildValuationCard(_valuation!),
                   ],
@@ -286,6 +289,54 @@ class _FisherValuationScreenState extends State<FisherValuationScreen> {
                     ),
                     const SizedBox(width: 8),
                     Text(v.toStringAsFixed(1), style: TextStyle(fontSize: 12, color: barColor)),
+                  ],
+                ),
+              );
+            })),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFisher15PointsCard(FisherSnapshot s) {
+    return Card(
+      color: const Color(0xFF161B22),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Fisher 15 points', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.grey.shade400)),
+            const SizedBox(height: 8),
+            ...(fisherPointsInOrder.map((meta) {
+              final pointData = s.points[meta.id.toString()];
+              final score = pointData?.score;
+              final hasScore = score != null;
+              final color = !hasScore ? Colors.grey : (score >= 7 ? Colors.green : score >= 5 ? Colors.orange : Colors.red);
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Row(
+                        children: [
+                          Expanded(child: Text(meta.label, style: const TextStyle(fontSize: 12))),
+                          Tooltip(
+                            message: meta.tooltip,
+                            child: Icon(Icons.info_outline, size: 14, color: Colors.grey.shade400),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 28,
+                      child: Text(
+                        hasScore ? score.toStringAsFixed(1) : 'N/A',
+                        style: TextStyle(fontSize: 12, color: color),
+                      ),
+                    ),
                   ],
                 ),
               );

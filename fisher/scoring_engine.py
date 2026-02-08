@@ -16,9 +16,21 @@ from fisher.db import get_connection
 
 logger = logging.getLogger(__name__)
 
-# MVP-1 points (SEC/financials only)
+# All 15 Fisher points (Common Stocks and Uncommon Profits); display all, score implemented only
+ALL_15_POINTS = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
+# MVP-1 points (SEC/financials only) — used for total_score and category_scores
 MVP1_POINTS = (1, 3, 5, 6, 9, 13, 14, 15)
 VERSION = 1
+
+
+def _stub_point() -> dict:
+    """Return point payload for unimplemented points (score N/A)."""
+    return {
+        "score": None,
+        "confidence": 0.0,
+        "evidence": ["N/A - not yet automated"],
+        "feature_values": {},
+    }
 
 
 def _decimal_to_float(v: Any) -> float | None:
@@ -313,8 +325,8 @@ def score_company(conn: Any, company_id: Any) -> dict | None:
         15: lambda: score_point_15_partial(features),
     }
     points = {}
-    for pid in MVP1_POINTS:
-        points[str(pid)] = point_handlers[pid]()
+    for pid in ALL_15_POINTS:
+        points[str(pid)] = point_handlers[pid]() if pid in point_handlers else _stub_point()
 
     scores_only = [points[str(p)]["score"] for p in MVP1_POINTS]
     total_score = round(sum(scores_only) / len(scores_only), 2) if scores_only else None
