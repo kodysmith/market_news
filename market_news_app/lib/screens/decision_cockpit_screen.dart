@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import '../services/cockpit_service.dart';
+import '../services/gex_service.dart';
+import '../models/gex_data.dart';
 import '../widgets/asset_selector_widget.dart';
 import '../widgets/asset_selection_provider.dart';
+import '../widgets/gex_chart_widget.dart';
+import '../widgets/gex_price_bar_widget.dart';
 
 /// Decision Cockpit - Compact Single-Screen Trading State View
 class DecisionCockpitScreen extends StatefulWidget {
@@ -14,6 +18,7 @@ class DecisionCockpitScreen extends StatefulWidget {
 class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
   CockpitState? _state;
   CockpitEventsData? _events;
+  GexCalculation? _gexChartData;
   bool _isLoading = true;
   String? _error;
   bool _eventsExpanded = false;
@@ -67,12 +72,14 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
     try {
       final results = await Future.wait([
         CockpitService.getCockpitState(_selectedTicker),
-        CockpitService.getCockpitEvents(daysAhead: 14),
+        CockpitService.getCockpitEvents(daysAhead: 14, symbol: _selectedTicker),
+        GexService.calculateGex(_selectedTicker),
       ]);
       
       setState(() {
         _state = results[0] as CockpitState?;
         _events = results[1] as CockpitEventsData?;
+        _gexChartData = results[2] as GexCalculation?;
         _isLoading = false;
         if (_state == null) {
           _error = 'Failed to load cockpit state';
@@ -131,16 +138,19 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
             // Compact Header
             _buildCompactHeader(),
             const SizedBox(height: 12),
-            // Regime Card with Price Bar
+            // Block A: Price strip
+            _buildPriceStrip(),
+            const SizedBox(height: 12),
+            // Action filter — full width, above graph
+            SizedBox(
+              width: double.infinity,
+              child: _buildActionChips(),
+            ),
+            const SizedBox(height: 12),
+            // Regime Card: graph + strategy sections (De-Pin, Volatility, Hero Bias) just below
             _buildRegimeCard(),
             const SizedBox(height: 12),
-            // Structure Card
-            _buildStructureCard(),
-            const SizedBox(height: 12),
-            // Action Chips
-            _buildActionChips(),
-            const SizedBox(height: 12),
-            // Events Section
+            // Events (today & tomorrow with impact)
             _buildEventsSection(),
           ],
         ),
@@ -165,9 +175,9 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
       ),
       child: Row(
         children: [
-          // Ticker dropdown - fixed width
+          // Ticker dropdown + symbol input — need enough width so dropdown isn't squished
           SizedBox(
-            width: 120,
+            width: 280,
             child: _buildTickerDropdown(),
           ),
           const SizedBox(width: 12),
@@ -213,6 +223,113 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
       onAssetChanged: (asset) {
         _loadData();
       },
+    );
+  }
+
+  /// Block A: Price strip — current | prev close | today open
+  Widget _buildPriceStrip() {
+    final quote = _state!.quote;
+    final spot = _state!.regime.spot;
+    if (quote == null && spot == null) return const SizedBox.shrink();
+    final current = quote?.current ?? spot;
+    final prev = quote?.previousClose;
+    final open = quote?.open;
+    if (current == null) return const SizedBox.shrink();
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFF161B22),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text('Current', style: TextStyle(fontSize: 11, color: Colors.white54, fontFamily: 'JetBrains Mono')),
+              const SizedBox(height: 4),
+              Text(
+                current.toStringAsFixed(2),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'JetBrains Mono'),
+              ),
+              if (quote?.change != null && quote?.changePct != null) ...[
+                const SizedBox(height: 2),
+                Text(
+                  '${quote!.change! >= 0 ? '+' : ''}${quote.change!.toStringAsFixed(2)} (${quote.changePct! >= 0 ? '+' : ''}${quote.changePct!.toStringAsFixed(2)}%)',
+                  style: TextStyle(fontSize: 12, color: quote.change! >= 0 ? const Color(0xFF3FB950) : const Color(0xFFF85149), fontFamily: 'JetBrains Mono'),
+                ),
+              ],
+            ],
+          ),
+          if (prev != null)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text('Prev close', style: TextStyle(fontSize: 11, color: Colors.white54, fontFamily: 'JetBrains Mono')),
+                const SizedBox(height: 4),
+                Text(prev.toStringAsFixed(2), style: const TextStyle(fontSize: 16, color: Colors.white70, fontFamily: 'JetBrains Mono')),
+              ],
+            ),
+          if (open != null)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text('Open', style: TextStyle(fontSize: 11, color: Colors.white54, fontFamily: 'JetBrains Mono')),
+                const SizedBox(height: 4),
+                Text(open.toStringAsFixed(2), style: const TextStyle(fontSize: 16, color: Colors.white70, fontFamily: 'JetBrains Mono')),
+              ],
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// Block C: Volatility strategy card
+  Widget _buildVolatilityStrategyCard() {
+    final vol = _state!.volatility;
+    final vs = _state!.volatilityStrategy;
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF161B22),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withOpacity(0.08)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('VOLATILITY STRATEGY', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF8B949E), fontFamily: 'JetBrains Mono')),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              if (vol.vix != null)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF58A6FF).withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text('VIX ${vol.vix!.toStringAsFixed(1)}${vol.vixChange != null ? (vol.vixChange! >= 0 ? ' ↑' : ' ↓') : ''}', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF58A6FF), fontFamily: 'JetBrains Mono')),
+                ),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(4)),
+                child: Text(vol.termStructure, style: const TextStyle(fontSize: 12, color: Colors.white70, fontFamily: 'JetBrains Mono')),
+              ),
+              const SizedBox(width: 8),
+              Text(vol.direction, style: const TextStyle(fontSize: 12, color: Colors.white54, fontFamily: 'JetBrains Mono')),
+            ],
+          ),
+          if (vs != null && vs.headline.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Text(vs.headline, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'JetBrains Mono')),
+            if (vs.rationale.isNotEmpty)
+              Text(vs.rationale, style: const TextStyle(fontSize: 13, color: Colors.white70, fontFamily: 'JetBrains Mono')),
+          ],
+        ],
+      ),
     );
   }
 
@@ -323,306 +440,47 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
             ],
           ),
           const SizedBox(height: 16),
-          // Price Bar
-          _buildPriceBar(regime, structure),
+          // Chart title: ticker + "GEX by Strike"
+          Text(
+            '$_selectedTicker GEX by Strike',
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: Colors.white54,
+              fontFamily: 'JetBrains Mono',
+            ),
+          ),
+          const SizedBox(height: 8),
+          // GEX chart (from GEX tab) or fallback price bar
+          if (_gexChartData != null && _gexChartData!.gexByStrike.isNotEmpty)
+            GexChartWidget(
+              data: _gexChartData!.gexByStrike,
+              annotations: _gexChartData!.chartAnnotations,
+              cumulativeGex: _gexChartData!.cumulativeGex,
+              height: 280,
+              maxPainStrike: _state!.maxPain != null && _state!.maxPain!.strike > 0 ? _state!.maxPain!.strike : null,
+            )
+          else
+            GexPriceBarWidget(
+              spot: regime.spot,
+              flipLine: regime.flipLine,
+              putWall: structure.primaryWalls.put,
+              callWall: structure.primaryWalls.call,
+              darkBackground: true,
+            ),
           const SizedBox(height: 16),
           // De-Pin Risk Widget
           if (_state!.depinRisk != null) ...[
             _buildDepinRiskWidget(_state!.depinRisk!),
             const SizedBox(height: 16),
           ],
+          // Volatility strategy (just under graph, next to Hero Bias)
+          _buildVolatilityStrategyCard(),
+          const SizedBox(height: 16),
           // Hero Bias
           _buildHeroBias(regime),
         ],
       ),
-    );
-  }
-
-  Widget _buildPriceBar(RegimeState regime, StructureState structure) {
-    final putWall = structure.primaryWalls.put;
-    final callWall = structure.primaryWalls.call;
-    final spot = regime.spot;
-    final flip = regime.flipLine;
-
-    if (putWall == null || callWall == null || spot == null) {
-      return const SizedBox.shrink();
-    }
-
-    // Determine center point (flip line if available, otherwise spot)
-    final center = flip ?? spot;
-    
-    // Create evenly spaced strikes: 20 below center, center, 20 above center
-    final strikeIncrement = 1.0; // $1 strikes for SPY
-    final numStrikesEachSide = 20;
-    final minStrike = center - (numStrikesEachSide * strikeIncrement);
-    final maxStrike = center + (numStrikesEachSide * strikeIncrement);
-    
-    // Generate strike list
-    final strikes = <double>[];
-    for (int i = 0; i <= numStrikesEachSide * 2; i++) {
-      strikes.add(minStrike + (i * strikeIncrement));
-    }
-    
-    // Calculate positions
-    final range = maxStrike - minStrike;
-    double getPosition(double price) => ((price - minStrike) / range).clamp(0.0, 1.0);
-    
-    // Calculate distances
-    final putDistance = spot - putWall;
-    final callDistance = callWall - spot;
-    final flipDistance = flip != null ? (flip - spot) : null;
-
-    return Column(
-      children: [
-        const SizedBox(height: 8),
-        // Price line graph
-        SizedBox(
-          height: 120,
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final width = constraints.maxWidth;
-              final height = constraints.maxHeight;
-              
-              // Calculate positions
-              final spotPos = getPosition(spot);
-              final putWallPos = getPosition(putWall);
-              final callWallPos = getPosition(callWall);
-              final flipPos = flip != null ? getPosition(flip) : null;
-              final minPos = 0.0;
-              final maxPos = 1.0;
-              
-              return Stack(
-                children: [
-                  // Background grid lines (strike ticks)
-                  ...strikes.map((strike) {
-                    final pos = getPosition(strike);
-                    // Only show tick marks, not labels for most strikes
-                    final isKeyLevel = (strike == minStrike || strike == maxStrike || 
-                                       (flip != null && (strike - flip).abs() < 0.5) ||
-                                       (strike - putWall).abs() < 0.5 ||
-                                       (strike - callWall).abs() < 0.5 ||
-                                       (strike - spot).abs() < 0.5);
-                    
-                    return Positioned(
-                      left: pos * width,
-                      child: Container(
-                        width: 1,
-                        height: isKeyLevel ? height : 8,
-                        color: Colors.white.withOpacity(isKeyLevel ? 0.3 : 0.1),
-                      ),
-                    );
-                  }).toList(),
-                  
-                  // Horizontal price line
-                  Positioned(
-                    top: height / 2 - 1,
-                    child: Container(
-                      width: width,
-                      height: 2,
-                      color: Colors.white.withOpacity(0.2),
-                    ),
-                  ),
-                  
-                  // Put Wall marker
-                  Positioned(
-                    left: putWallPos * width - 2,
-                    top: 0,
-                    child: Column(
-                      children: [
-                        // Price label on the line
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF85149).withOpacity(0.9),
-                            borderRadius: BorderRadius.circular(3),
-                          ),
-                          child: Text(
-                            putWall.toStringAsFixed(0),
-                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'JetBrains Mono'),
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Container(
-                          width: 4,
-                          height: height - 30,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF85149),
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF85149).withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(color: const Color(0xFFF85149)),
-                          ),
-                          child: Column(
-                            children: [
-                              const Text('PUT WALL', style: TextStyle(fontSize: 9, color: Color(0xFFF85149), fontFamily: 'JetBrains Mono')),
-                              Text('(${putDistance.toStringAsFixed(1)} pts)', style: const TextStyle(fontSize: 8, color: Colors.white54, fontFamily: 'JetBrains Mono')),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  
-                  // Flip line marker
-                  if (flipPos != null)
-                    Positioned(
-                      left: flipPos * width - 2,
-                      top: 0,
-                      child: Column(
-                        children: [
-                          // Price label on the line
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFFFA500).withOpacity(0.9),
-                              borderRadius: BorderRadius.circular(3),
-                            ),
-                            child: Text(
-                              flip!.toStringAsFixed(1),
-                              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'JetBrains Mono'),
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Container(
-                            width: 4,
-                            height: height - 30,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFFFA500),
-                              borderRadius: BorderRadius.circular(2),
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFFFA500).withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(4),
-                              border: Border.all(color: const Color(0xFFFFA500)),
-                            ),
-                            child: Column(
-                              children: [
-                                const Text('FLIP', style: TextStyle(fontSize: 9, color: Color(0xFFFFA500), fontFamily: 'JetBrains Mono')),
-                                Text('(${flipDistance!.toStringAsFixed(1)} pts)', style: const TextStyle(fontSize: 8, color: Colors.white54, fontFamily: 'JetBrains Mono')),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  
-                  // Spot marker
-                  Positioned(
-                    left: spotPos * width - 15,
-                    top: height / 2 - 15,
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 30,
-                          height: 30,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: const Color(0xFF0D1117), width: 3),
-                            boxShadow: [BoxShadow(color: Colors.white.withOpacity(0.4), blurRadius: 6)],
-                          ),
-                          child: const Center(
-                            child: Text('●', style: TextStyle(fontSize: 12, color: Color(0xFF0D1117))),
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(color: Colors.white),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(spot.toStringAsFixed(2), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'JetBrains Mono')),
-                              const Text('SPOT', style: TextStyle(fontSize: 9, color: Colors.white70, fontFamily: 'JetBrains Mono')),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  
-                  // Call Wall marker
-                  Positioned(
-                    left: callWallPos * width - 2,
-                    top: 0,
-                    child: Column(
-                      children: [
-                        // Price label on the line
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF3FB950).withOpacity(0.9),
-                            borderRadius: BorderRadius.circular(3),
-                          ),
-                          child: Text(
-                            callWall.toStringAsFixed(0),
-                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'JetBrains Mono'),
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Container(
-                          width: 4,
-                          height: height - 30,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF3FB950),
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF3FB950).withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(color: const Color(0xFF3FB950)),
-                          ),
-                          child: Column(
-                            children: [
-                              const Text('CALL WALL', style: TextStyle(fontSize: 9, color: Color(0xFF3FB950), fontFamily: 'JetBrains Mono')),
-                              Text('(${callDistance.toStringAsFixed(1)} pts)', style: const TextStyle(fontSize: 8, color: Colors.white54, fontFamily: 'JetBrains Mono')),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  
-                  // Min/Max strike labels at ends
-                  Positioned(
-                    left: 0,
-                    top: height / 2 - 8,
-                    child: Text(
-                      minStrike.toStringAsFixed(0),
-                      style: TextStyle(fontSize: 10, color: Colors.white.withOpacity(0.5), fontFamily: 'JetBrains Mono'),
-                    ),
-                  ),
-                  Positioned(
-                    right: 0,
-                    top: height / 2 - 8,
-                    child: Text(
-                      maxStrike.toStringAsFixed(0),
-                      style: TextStyle(fontSize: 10, color: Colors.white.withOpacity(0.5), fontFamily: 'JetBrains Mono'),
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
-      ],
     );
   }
 
@@ -806,92 +664,6 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
     );
   }
 
-  /// Structure Card
-  Widget _buildStructureCard() {
-    final structure = _state!.structure;
-    final zoneColor = _getZoneColor(structure.zoneDescription?.type ?? '');
-
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: const Color(0xFF161B22),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        children: [
-          // Header
-          Row(
-            children: [
-              const Text('STRUCTURE', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF8B949E), fontFamily: 'JetBrains Mono')),
-              const Spacer(),
-              if (structure.zoneDescription != null && structure.zoneDescription!.type.isNotEmpty)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(color: zoneColor.withOpacity(0.2), borderRadius: BorderRadius.circular(4), border: Border.all(color: zoneColor)),
-                  child: Text(
-                    structure.zoneDescription!.type.replaceAll('_', ' '),
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: zoneColor, fontFamily: 'JetBrains Mono'),
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          // Walls
-          Row(
-            children: [
-              _buildWallChip('PUT', structure.primaryWalls.put, structure.oiPrimaryWalls.put, const Color(0xFFF85149)),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(4)),
-                child: Text('Range: ${structure.wallRange?.toStringAsFixed(0) ?? '--'}pts', style: const TextStyle(fontSize: 14, color: Colors.white70, fontFamily: 'JetBrains Mono')),
-              ),
-              const Spacer(),
-              _buildWallChip('CALL', structure.primaryWalls.call, structure.oiPrimaryWalls.call, const Color(0xFF3FB950)),
-            ],
-          ),
-          if (structure.zoneDescription != null && structure.zoneDescription!.behavior.isNotEmpty) ...[
-            const SizedBox(height: 10),
-            Text(
-              '→ ${structure.zoneDescription!.behavior}',
-              style: const TextStyle(fontSize: 14, color: Colors.white70, fontFamily: 'JetBrains Mono'),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildWallChip(String label, double? gexWall, double? oiWall, Color color) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          decoration: BoxDecoration(color: color.withOpacity(0.2), borderRadius: BorderRadius.circular(6)),
-          child: Text('$label: ${gexWall?.toStringAsFixed(0) ?? '--'}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: color, fontFamily: 'JetBrains Mono')),
-        ),
-        const SizedBox(height: 2),
-        Text('  OI: ${oiWall?.toStringAsFixed(0) ?? '--'}', style: const TextStyle(fontSize: 12, color: Colors.white38, fontFamily: 'JetBrains Mono')),
-      ],
-    );
-  }
-
-  Color _getZoneColor(String zoneType) {
-    switch (zoneType) {
-      case 'FLIP_IN_RANGE':
-      case 'BELOW_FLIP':
-        return Colors.orange;
-      case 'ABOVE_FLIP':
-        return const Color(0xFF3FB950);
-      case 'TIGHT':
-        return Colors.amber;
-      default:
-        return const Color(0xFF8B949E);
-    }
-  }
-
   /// Action Chips
   Widget _buildActionChips() {
     final filter = _state!.actionFilter;
@@ -961,9 +733,21 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
     );
   }
 
-  /// Events Section
+  /// Block E: Events — today & tomorrow with impact on symbol
   Widget _buildEventsSection() {
-    final events = _events?.events ?? [];
+    final allEvents = _events?.events ?? [];
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final tomorrow = today.add(const Duration(days: 1));
+    final events = allEvents.where((e) {
+      try {
+        final d = DateTime.parse(e.date);
+        final eventDay = DateTime(d.year, d.month, d.day);
+        return eventDay == today || eventDay == tomorrow;
+      } catch (_) {
+        return true;
+      }
+    }).toList();
     
     return Container(
       decoration: BoxDecoration(
@@ -981,7 +765,7 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
                 children: [
                   Icon(_eventsExpanded ? Icons.expand_less : Icons.expand_more, color: Colors.white54, size: 22),
                   const SizedBox(width: 8),
-                  Text('UPCOMING EVENTS (${events.length})', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF8B949E), fontFamily: 'JetBrains Mono')),
+                  Text('TODAY & TOMORROW (${events.length})', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF8B949E), fontFamily: 'JetBrains Mono')),
                   const Spacer(),
                   if (!_eventsExpanded && events.isNotEmpty)
                     Text(
@@ -1012,6 +796,16 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
                         const SizedBox(width: 10),
                         SizedBox(width: 60, child: Text(_formatEventDate(event.date), style: const TextStyle(fontSize: 13, color: Colors.white54, fontFamily: 'JetBrains Mono'))),
                         Expanded(child: Text(event.title, style: const TextStyle(fontSize: 14, color: Colors.white70, fontFamily: 'JetBrains Mono'), overflow: TextOverflow.ellipsis)),
+                        if (event.impactOnSymbol != null && event.impactOnSymbol!.isNotEmpty)
+                          Container(
+                            margin: const EdgeInsets.only(right: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: event.impactOnSymbol == 'high' ? const Color(0xFFF85149).withOpacity(0.2) : event.impactOnSymbol == 'medium' ? const Color(0xFFFFA500).withOpacity(0.2) : Colors.white.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(event.impactOnSymbol!, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: event.impactOnSymbol == 'high' ? const Color(0xFFF85149) : event.impactOnSymbol == 'medium' ? const Color(0xFFFFA500) : Colors.white54, fontFamily: 'JetBrains Mono')),
+                          ),
                         if (event.time.isNotEmpty)
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),

@@ -187,6 +187,116 @@ def calculate_gex():
         )
 
 
+@bp.route("/gex/max-pain")
+def get_max_pain():
+    """
+    Get max pain strike for a ticker and expiration.
+    Query params: ticker (required), dte (optional int, default 0 = front expiry),
+    expiration (optional YYYY-MM-DD; if set, overrides dte).
+    """
+    try:
+        import sys
+        import json
+        from pathlib import Path
+
+        quant_engine_path = Path(__file__).parent.parent / "QuantEngine"
+        if str(quant_engine_path) not in sys.path:
+            sys.path.insert(0, str(quant_engine_path))
+
+        from gex_calculator import (
+            get_option_chain_snapshot,
+            get_spot_price,
+            compute_max_pain as calc_max_pain,
+            get_expiration_dates_from_snap,
+        )
+
+        ticker = request.args.get("ticker", "SPY").upper()
+        dte = request.args.get("dte", type=int, default=0)
+        expiration = request.args.get("expiration", "").strip() or None
+
+        config_path = Path(__file__).parent.parent / "data" / "config.json"
+        massive_api_key = ""
+        alphavantage_api_key = ""
+        if config_path.exists():
+            with open(config_path, "r") as f:
+                config = json.load(f)
+            massive_api_key = config.get("MASSIVE_API_KEY", "")
+            alphavantage_api_key = config.get("ALPHAVANTAGE_API_KEY", "")
+
+        if not massive_api_key:
+            return jsonify({"error": "Massive API key is required"}), 400
+
+        spot_price = get_spot_price(ticker, massive_api_key, alphavantage_api_key)
+        if not spot_price:
+            return (
+                jsonify(
+                    {
+                        "error": "Could not fetch spot price.",
+                        "ticker": ticker,
+                    }
+                ),
+                400,
+            )
+
+        snap = get_option_chain_snapshot(
+            massive_api_key,
+            ticker,
+            limit=250,
+            spot_price=spot_price,
+            strike_range=60,
+        )
+
+        if not snap.get("results"):
+            return jsonify({"error": f"No options data found for {ticker}"}), 404
+
+        all_expirations = get_expiration_dates_from_snap(snap)
+        if not all_expirations:
+            return jsonify({"error": "No expiration dates in chain", "ticker": ticker}), 404
+
+        # Resolve target expiration: explicit param > dte index
+        if expiration and expiration in all_expirations:
+            target_expiration = expiration
+        else:
+            idx = max(0, min(dte, len(all_expirations) - 1))
+            target_expiration = all_expirations[idx]
+
+        max_pain_strike, chosen_exp, expirations_list = calc_max_pain(
+            snap, spot_price, expiration_str=target_expiration
+        )
+
+        if max_pain_strike is None:
+            return (
+                jsonify(
+                    {
+                        "error": "Could not compute max pain for selected expiration",
+                        "ticker": ticker,
+                        "expiration": target_expiration,
+                    }
+                ),
+                400,
+            )
+
+        return jsonify(
+            {
+                "ticker": ticker,
+                "expiration": chosen_exp,
+                "max_pain_strike": max_pain_strike,
+                "spot_price": spot_price,
+                "expirations": expirations_list,
+            }
+        )
+
+    except Exception as e:
+        import traceback
+
+        return (
+            jsonify(
+                {"error": f"Failed to get max pain: {str(e)}", "traceback": traceback.format_exc()}
+            ),
+            500,
+        )
+
+
 @bp.route("/gex/tickers")
 def get_gex_tickers():
     """Get list of supported GEX tickers from config"""

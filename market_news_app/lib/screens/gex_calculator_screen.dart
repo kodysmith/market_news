@@ -3,6 +3,7 @@ import 'package:market_news_app/services/gex_service.dart';
 import 'package:market_news_app/models/gex_data.dart';
 import '../widgets/asset_selector_widget.dart';
 import '../widgets/asset_selection_provider.dart';
+import '../widgets/gex_price_bar_widget.dart';
 import '../main.dart' show apiBaseUrl;
 
 class GexCalculatorScreen extends StatefulWidget {
@@ -539,15 +540,6 @@ class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
   }
 
   Widget _buildChartSection(List<GexByStrike> data, ChartAnnotations annotations) {
-    if (data.isEmpty) {
-      return const Card(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Text('No chart data available'),
-        ),
-      );
-    }
-
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -555,23 +547,25 @@ class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'GEX by Strike',
+              'Price & Walls',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            SizedBox(
-              height: 300,
-              child: CustomPaint(
-                painter: GexChartPainter(
-                  data, 
-                  annotations,
-                  _gexData?.cumulativeGex ?? [],
-                ),
-                child: Container(),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey.shade900,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: GexPriceBarWidget(
+                spot: annotations.spotPrice,
+                flipLine: annotations.flipLine,
+                putWall: annotations.putWall > 0 ? annotations.putWall : null,
+                callWall: annotations.callWall > 0 ? annotations.callWall : null,
+                height: 120,
+                darkBackground: true,
               ),
             ),
-            const SizedBox(height: 12),
-            _buildChartLegend(annotations),
             if (_gexData?.gammaSlope != null) ...[
               const SizedBox(height: 16),
               _buildGammaSlopeIndicator(_gexData!.gammaSlope!),
@@ -579,33 +573,6 @@ class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildChartLegend(ChartAnnotations annotations) {
-    return Wrap(
-      spacing: 16,
-      runSpacing: 8,
-      children: [
-        _buildLegendItem('Spot', Colors.green, Icons.circle),
-        if (annotations.flipLine != null)
-          _buildLegendItem('Flip Line', Colors.red, Icons.remove),
-        _buildLegendItem('Put Wall', Colors.orange, Icons.arrow_downward),
-        _buildLegendItem('Call Wall', Colors.blue, Icons.arrow_upward),
-        if (_gexData?.cumulativeGex.isNotEmpty ?? false)
-          _buildLegendItem('Cumulative GEX', Colors.purple, Icons.show_chart),
-      ],
-    );
-  }
-
-  Widget _buildLegendItem(String label, Color color, IconData icon) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, color: color, size: 16),
-        const SizedBox(width: 4),
-        Text(label, style: TextStyle(fontSize: 12, color: color)),
-      ],
     );
   }
 
@@ -903,160 +870,3 @@ class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
   }
 }
 
-// Simple chart painter for GEX visualization
-class GexChartPainter extends CustomPainter {
-  final List<GexByStrike> data;
-  final ChartAnnotations annotations;
-  final List<CumulativeGexPoint> cumulativeGex;
-
-  GexChartPainter(this.data, this.annotations, this.cumulativeGex);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (data.isEmpty) return;
-
-    final padding = 40.0;
-    final chartWidth = size.width - (padding * 2);
-    final chartHeight = size.height - (padding * 2);
-
-    // Find min/max values
-    double minGex = data.map((d) => d.gex).reduce((a, b) => a < b ? a : b);
-    double maxGex = data.map((d) => d.gex).reduce((a, b) => a > b ? a : b);
-    double minStrike = data.map((d) => d.strike).reduce((a, b) => a < b ? a : b);
-    double maxStrike = data.map((d) => d.strike).reduce((a, b) => a > b ? a : b);
-
-    // Normalize to include zero
-    minGex = minGex < 0 ? minGex * 1.1 : 0;
-    maxGex = maxGex > 0 ? maxGex * 1.1 : 0;
-
-    final gexRange = maxGex - minGex;
-    final strikeRange = maxStrike - minStrike;
-
-    // Draw zero line
-    final zeroY = padding + chartHeight - ((0 - minGex) / gexRange * chartHeight);
-    final zeroPaint = Paint()
-      ..color = Colors.grey
-      ..strokeWidth = 1;
-    canvas.drawLine(
-      Offset(padding, zeroY),
-      Offset(size.width - padding, zeroY),
-      zeroPaint,
-    );
-
-    // Find min/max for cumulative GEX to scale the curve
-    double minCumGex = 0.0;
-    double maxCumGex = 0.0;
-    if (cumulativeGex.isNotEmpty) {
-      minCumGex = cumulativeGex.map((d) => d.cumulativeGex).reduce((a, b) => a < b ? a : b);
-      maxCumGex = cumulativeGex.map((d) => d.cumulativeGex).reduce((a, b) => a > b ? a : b);
-    }
-    final cumGexRange = maxCumGex - minCumGex;
-    final zeroCumY = cumGexRange > 0 
-        ? padding + chartHeight - ((0 - minCumGex) / cumGexRange * chartHeight)
-        : padding + chartHeight / 2;
-
-    // Draw cumulative gamma curve
-    // Uses its own scale (cumulative values are typically much larger)
-    if (cumulativeGex.isNotEmpty && cumGexRange > 0) {
-      final segments = <Path>[];
-      final colors = <Color>[];
-      
-      for (int i = 0; i < cumulativeGex.length - 1; i++) {
-        final point1 = cumulativeGex[i];
-        final point2 = cumulativeGex[i + 1];
-        
-        if (point1.strike < minStrike || point2.strike > maxStrike) continue;
-        
-        // Calculate positions using cumulative GEX's own scale
-        final x1 = padding + ((point1.strike - minStrike) / strikeRange * chartWidth);
-        final y1 = padding + chartHeight - ((point1.cumulativeGex - minCumGex) / cumGexRange * chartHeight);
-        final x2 = padding + ((point2.strike - minStrike) / strikeRange * chartWidth);
-        final y2 = padding + chartHeight - ((point2.cumulativeGex - minCumGex) / cumGexRange * chartHeight);
-        
-        final segmentPath = Path()
-          ..moveTo(x1, y1)
-          ..lineTo(x2, y2);
-        segments.add(segmentPath);
-        
-        // Color based on sign of cumulative GEX
-        final avgCumGex = (point1.cumulativeGex + point2.cumulativeGex) / 2;
-        colors.add(avgCumGex >= 0 ? Colors.green.shade700 : Colors.red.shade700);
-      }
-      
-      // Draw segments with appropriate colors (thicker line for visibility)
-      for (int i = 0; i < segments.length; i++) {
-        final segmentPaint = Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 3.0
-          ..color = colors[i];
-        canvas.drawPath(segments[i], segmentPaint);
-      }
-      
-      // Draw zero line for cumulative GEX (if it crosses zero)
-      if (minCumGex < 0 && maxCumGex > 0) {
-        final zeroCumY = padding + chartHeight - ((0 - minCumGex) / cumGexRange * chartHeight);
-        final zeroCumPaint = Paint()
-          ..color = Colors.grey.withOpacity(0.5)
-          ..strokeWidth = 1
-          ..style = PaintingStyle.stroke;
-        canvas.drawLine(
-          Offset(padding, zeroCumY),
-          Offset(size.width - padding, zeroCumY),
-          zeroCumPaint,
-        );
-      }
-    }
-
-    // Draw bars
-    final barWidth = chartWidth / data.length;
-    for (int i = 0; i < data.length; i++) {
-      final item = data[i];
-      final x = padding + (i * barWidth);
-      final barHeight = (item.gex.abs() / gexRange * chartHeight);
-      final barY = item.gex >= 0
-          ? zeroY - barHeight
-          : zeroY;
-
-      final barPaint = Paint()
-        ..color = item.gex >= 0 ? Colors.green.withOpacity(0.6) : Colors.red.withOpacity(0.6)
-        ..style = PaintingStyle.fill;
-      canvas.drawRect(
-        Rect.fromLTWH(x, barY, barWidth * 0.8, barHeight),
-        barPaint,
-      );
-    }
-
-    // Draw annotations
-    final annotationPaint = Paint()
-      ..strokeWidth = 2
-      ..style = PaintingStyle.stroke;
-
-    // Spot price
-    if (annotations.spotPrice >= minStrike && annotations.spotPrice <= maxStrike) {
-      final spotX = padding + ((annotations.spotPrice - minStrike) / strikeRange * chartWidth);
-      annotationPaint.color = Colors.green;
-      canvas.drawLine(
-        Offset(spotX, padding),
-        Offset(spotX, size.height - padding),
-        annotationPaint,
-      );
-    }
-
-    // Flip line
-    if (annotations.flipLine != null &&
-        annotations.flipLine! >= minStrike &&
-        annotations.flipLine! <= maxStrike) {
-      final flipX = padding + ((annotations.flipLine! - minStrike) / strikeRange * chartWidth);
-      annotationPaint.color = Colors.red;
-      annotationPaint.style = PaintingStyle.stroke;
-      canvas.drawLine(
-        Offset(flipX, padding),
-        Offset(flipX, size.height - padding),
-        annotationPaint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
-}

@@ -1,0 +1,744 @@
+{
+  "source": "high_growth scan (yahoo, universe=sp500)",
+  "updated": "2026-02-06T08:08:17Z",
+  "constituents": [
+    {
+      "ticker": "NVDA",
+      "name": "NVIDIA Corporation",
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "cik": "1045810",
+      "revenue_growth_yoy_pct": 114.2,
+      "profit_growth_yoy_pct": 144.89
+    },
+    {
+      "ticker": "NEM",
+      "name": "Newmont Corporation",
+      "sector": "Basic Materials",
+      "industry": "Gold",
+      "cik": "1164727",
+      "revenue_growth_yoy_pct": 58.16,
+      "profit_growth_yoy_pct": 234.24
+    },
+    {
+      "ticker": "BA",
+      "name": "The Boeing Company",
+      "sector": "Industrials",
+      "industry": "Aerospace & Defense",
+      "cik": "12927",
+      "revenue_growth_yoy_pct": 34.5,
+      "profit_growth_yoy_pct": 118.91
+    },
+    {
+      "ticker": "O",
+      "name": "Realty Income Corporation",
+      "sector": "Real Estate",
+      "industry": "REIT - Retail",
+      "cik": "726728",
+      "revenue_growth_yoy_pct": 29.23,
+      "profit_growth_yoy_pct": -1.32
+    },
+    {
+      "ticker": "EXR",
+      "name": "Extra Space Storage Inc.",
+      "sector": "Real Estate",
+      "industry": "REIT - Industrial",
+      "cik": "1289490",
+      "revenue_growth_yoy_pct": 27.21,
+      "profit_growth_yoy_pct": 6.41
+    },
+    {
+      "ticker": "AVGO",
+      "name": "Broadcom Inc.",
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "cik": "1730168",
+      "revenue_growth_yoy_pct": 23.87,
+      "profit_growth_yoy_pct": 292.3
+    },
+    {
+      "ticker": "META",
+      "name": "Meta Platforms, Inc.",
+      "sector": "Communication Services",
+      "industry": "Internet Content & Information",
+      "cik": "1326801",
+      "revenue_growth_yoy_pct": 22.17,
+      "profit_growth_yoy_pct": -3.05
+    },
+    {
+      "ticker": "WELL",
+      "name": "Welltower Inc.",
+      "sector": "Real Estate",
+      "industry": "REIT - Healthcare Facilities",
+      "cik": "766704",
+      "revenue_growth_yoy_pct": 21.23,
+      "profit_growth_yoy_pct": 179.83
+    },
+    {
+      "ticker": "GE",
+      "name": "GE Aerospace",
+      "sector": "Industrials",
+      "industry": "Aerospace & Defense",
+      "cik": "40545",
+      "revenue_growth_yoy_pct": 18.48,
+      "profit_growth_yoy_pct": 32.76
+    },
+    {
+      "ticker": "RTX",
+      "name": "RTX Corporation",
+      "sector": "Industrials",
+      "industry": "Aerospace & Defense",
+      "cik": "101829",
+      "revenue_growth_yoy_pct": 17.15,
+      "profit_growth_yoy_pct": 49.42
+    },
+    {
+      "ticker": "NFLX",
+      "name": "Netflix, Inc.",
+      "sector": "Communication Services",
+      "industry": "Entertainment",
+      "cik": "1065280",
+      "revenue_growth_yoy_pct": 15.85,
+      "profit_growth_yoy_pct": 26.05
+    },
+    {
+      "ticker": "MSFT",
+      "name": "Microsoft Corporation",
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "cik": "789019",
+      "revenue_growth_yoy_pct": 14.93,
+      "profit_growth_yoy_pct": 15.54
+    },
+    {
+      "ticker": "BLK",
+      "name": "BlackRock, Inc.",
+      "sector": "Financial Services",
+      "industry": "Asset Management",
+      "cik": "2012383",
+      "revenue_growth_yoy_pct": 14.27,
+      "profit_growth_yoy_pct": 15.76
+    },
+    {
+      "ticker": "GOOGL",
+      "name": "Alphabet Inc.",
+      "sector": "Communication Services",
+      "industry": "Internet Content & Information",
+      "cik": "1652044",
+      "revenue_growth_yoy_pct": 13.87,
+      "profit_growth_yoy_pct": 35.67
+    },
+    {
+      "ticker": "SPGI",
+      "name": "S&P Global Inc.",
+      "sector": "Financial Services",
+      "industry": "Financial Data & Stock Exchanges",
+      "cik": "64040",
+      "revenue_growth_yoy_pct": 13.69,
+      "profit_growth_yoy_pct": 46.69
+    },
+    {
+      "ticker": "ABNB",
+      "name": "Airbnb, Inc.",
+      "sector": "Consumer Cyclical",
+      "industry": "Travel Services",
+      "cik": "1559720",
+      "revenue_growth_yoy_pct": 11.95,
+      "profit_growth_yoy_pct": -44.74
+    },
+    {
+      "ticker": "BKNG",
+      "name": "Booking Holdings Inc.",
+      "sector": "Consumer Cyclical",
+      "industry": "Travel Services",
+      "cik": "1075531",
+      "revenue_growth_yoy_pct": 11.11,
+      "profit_growth_yoy_pct": 37.14
+    },
+    {
+      "ticker": "AMZN",
+      "name": "Amazon.com, Inc.",
+      "sector": "Consumer Cyclical",
+      "industry": "Internet Retail",
+      "cik": "1018724",
+      "revenue_growth_yoy_pct": 10.99,
+      "profit_growth_yoy_pct": 94.73
+    },
+    {
+      "ticker": "ADBE",
+      "name": "Adobe Inc.",
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "cik": "796343",
+      "revenue_growth_yoy_pct": 10.53,
+      "profit_growth_yoy_pct": 28.24
+    },
+    {
+      "ticker": "CRM",
+      "name": "Salesforce, Inc.",
+      "sector": "Technology",
+      "industry": "Software - Application",
+      "cik": "1108524",
+      "revenue_growth_yoy_pct": 8.72,
+      "profit_growth_yoy_pct": 49.83
+    },
+    {
+      "ticker": "ORCL",
+      "name": "Oracle Corporation",
+      "sector": "Technology",
+      "industry": "Software - Infrastructure",
+      "cik": "1341439",
+      "revenue_growth_yoy_pct": 8.38,
+      "profit_growth_yoy_pct": 18.88
+    },
+    {
+      "ticker": "COST",
+      "name": "Costco Wholesale Corporation",
+      "sector": "Consumer Defensive",
+      "industry": "Discount Stores",
+      "cik": "909832",
+      "revenue_growth_yoy_pct": 8.17,
+      "profit_growth_yoy_pct": 9.94
+    },
+    {
+      "ticker": "UNH",
+      "name": "UnitedHealth Group Incorporated",
+      "sector": "Healthcare",
+      "industry": "Healthcare Plans",
+      "cik": "731766",
+      "revenue_growth_yoy_pct": 7.71,
+      "profit_growth_yoy_pct": -35.64
+    },
+    {
+      "ticker": "PFE",
+      "name": "Pfizer Inc.",
+      "sector": "Healthcare",
+      "industry": "Drug Manufacturers - General",
+      "cik": "78003",
+      "revenue_growth_yoy_pct": 6.84,
+      "profit_growth_yoy_pct": 279.0
+    },
+    {
+      "ticker": "EQIX",
+      "name": "Equinix, Inc.",
+      "sector": "Real Estate",
+      "industry": "REIT - Specialty",
+      "cik": "1101239",
+      "revenue_growth_yoy_pct": 6.84,
+      "profit_growth_yoy_pct": -15.89
+    },
+    {
+      "ticker": "AAPL",
+      "name": "Apple Inc.",
+      "sector": "Technology",
+      "industry": "Consumer Electronics",
+      "cik": "320193",
+      "revenue_growth_yoy_pct": 6.43,
+      "profit_growth_yoy_pct": 19.5
+    },
+    {
+      "ticker": "EXC",
+      "name": "Exelon Corporation",
+      "sector": "Utilities",
+      "industry": "Utilities - Regulated Electric",
+      "cik": "1109357",
+      "revenue_growth_yoy_pct": 5.99,
+      "profit_growth_yoy_pct": 5.67
+    },
+    {
+      "ticker": "SO",
+      "name": "The Southern Company",
+      "sector": "Utilities",
+      "industry": "Utilities - Regulated Electric",
+      "cik": "92122",
+      "revenue_growth_yoy_pct": 5.83,
+      "profit_growth_yoy_pct": 10.69
+    },
+    {
+      "ticker": "LMT",
+      "name": "Lockheed Martin Corporation",
+      "sector": "Industrials",
+      "industry": "Aerospace & Defense",
+      "cik": "936468",
+      "revenue_growth_yoy_pct": 5.64,
+      "profit_growth_yoy_pct": -5.98
+    },
+    {
+      "ticker": "AVB",
+      "name": "AvalonBay Communities, Inc.",
+      "sector": "Real Estate",
+      "industry": "REIT - Residential",
+      "cik": "915912",
+      "revenue_growth_yoy_pct": 5.27,
+      "profit_growth_yoy_pct": 16.49
+    },
+    {
+      "ticker": "WMT",
+      "name": "Walmart Inc.",
+      "sector": "Consumer Defensive",
+      "industry": "Discount Stores",
+      "cik": "104169",
+      "revenue_growth_yoy_pct": 5.07,
+      "profit_growth_yoy_pct": 25.3
+    },
+    {
+      "ticker": "HON",
+      "name": "Honeywell International Inc.",
+      "sector": "Industrials",
+      "industry": "Conglomerates",
+      "cik": "773840",
+      "revenue_growth_yoy_pct": 5.01,
+      "profit_growth_yoy_pct": 0.83
+    },
+    {
+      "ticker": "HD",
+      "name": "The Home Depot, Inc.",
+      "sector": "Consumer Cyclical",
+      "industry": "Home Improvement Retail",
+      "cik": "354950",
+      "revenue_growth_yoy_pct": 4.48,
+      "profit_growth_yoy_pct": -2.23
+    },
+    {
+      "ticker": "DUK",
+      "name": "Duke Energy Corporation",
+      "sector": "Utilities",
+      "industry": "Utilities - Regulated Electric",
+      "cik": "1326160",
+      "revenue_growth_yoy_pct": 4.46,
+      "profit_growth_yoy_pct": 59.24
+    },
+    {
+      "ticker": "JNJ",
+      "name": "Johnson & Johnson",
+      "sector": "Healthcare",
+      "industry": "Drug Manufacturers - General",
+      "cik": "200406",
+      "revenue_growth_yoy_pct": 4.3,
+      "profit_growth_yoy_pct": -59.99
+    },
+    {
+      "ticker": "TJX",
+      "name": "The TJX Companies, Inc.",
+      "sector": "Consumer Cyclical",
+      "industry": "Apparel Retail",
+      "cik": "109198",
+      "revenue_growth_yoy_pct": 3.95,
+      "profit_growth_yoy_pct": 8.72
+    },
+    {
+      "ticker": "PSA",
+      "name": "Public Storage",
+      "sector": "Real Estate",
+      "industry": "REIT - Industrial",
+      "cik": "1393311",
+      "revenue_growth_yoy_pct": 3.94,
+      "profit_growth_yoy_pct": -3.55
+    },
+    {
+      "ticker": "AEP",
+      "name": "American Electric Power Company, Inc.",
+      "sector": "Utilities",
+      "industry": "Utilities - Regulated Electric",
+      "cik": "4904",
+      "revenue_growth_yoy_pct": 3.89,
+      "profit_growth_yoy_pct": 34.37
+    },
+    {
+      "ticker": "ABBV",
+      "name": "AbbVie Inc.",
+      "sector": "Healthcare",
+      "industry": "Drug Manufacturers - General",
+      "cik": "1551152",
+      "revenue_growth_yoy_pct": 3.71,
+      "profit_growth_yoy_pct": -12.03
+    },
+    {
+      "ticker": "TMUS",
+      "name": "T-Mobile US, Inc.",
+      "sector": "Communication Services",
+      "industry": "Telecom Services",
+      "cik": "1283699",
+      "revenue_growth_yoy_pct": 3.62,
+      "profit_growth_yoy_pct": 36.34
+    },
+    {
+      "ticker": "DIS",
+      "name": "The Walt Disney Company",
+      "sector": "Communication Services",
+      "industry": "Entertainment",
+      "cik": "1744489",
+      "revenue_growth_yoy_pct": 3.35,
+      "profit_growth_yoy_pct": 149.48
+    },
+    {
+      "ticker": "CL",
+      "name": "Colgate-Palmolive Company",
+      "sector": "Consumer Defensive",
+      "industry": "Household & Personal Products",
+      "cik": "21665",
+      "revenue_growth_yoy_pct": 3.31,
+      "profit_growth_yoy_pct": 25.61
+    },
+    {
+      "ticker": "EMR",
+      "name": "Emerson Electric Co.",
+      "sector": "Industrials",
+      "industry": "Specialty Industrial Machinery",
+      "cik": "32604",
+      "revenue_growth_yoy_pct": 3.0,
+      "profit_growth_yoy_pct": 16.51
+    },
+    {
+      "ticker": "KO",
+      "name": "The Coca-Cola Company",
+      "sector": "Consumer Defensive",
+      "industry": "Beverages - Non-Alcoholic",
+      "cik": "21344",
+      "revenue_growth_yoy_pct": 2.86,
+      "profit_growth_yoy_pct": -0.77
+    },
+    {
+      "ticker": "SBUX",
+      "name": "Starbucks Corporation",
+      "sector": "Consumer Cyclical",
+      "industry": "Restaurants",
+      "cik": "829224",
+      "revenue_growth_yoy_pct": 2.79,
+      "profit_growth_yoy_pct": -50.64
+    },
+    {
+      "ticker": "ECL",
+      "name": "Ecolab Inc.",
+      "sector": "Basic Materials",
+      "industry": "Specialty Chemicals",
+      "cik": "31462",
+      "revenue_growth_yoy_pct": 2.75,
+      "profit_growth_yoy_pct": 53.93
+    },
+    {
+      "ticker": "DD",
+      "name": "DuPont de Nemours, Inc.",
+      "sector": "Basic Materials",
+      "industry": "Specialty Chemicals",
+      "cik": "1666700",
+      "revenue_growth_yoy_pct": 2.64,
+      "profit_growth_yoy_pct": 66.19
+    },
+    {
+      "ticker": "PEP",
+      "name": "PepsiCo, Inc.",
+      "sector": "Consumer Defensive",
+      "industry": "Beverages - Non-Alcoholic",
+      "cik": "77476",
+      "revenue_growth_yoy_pct": 2.25,
+      "profit_growth_yoy_pct": -13.97
+    },
+    {
+      "ticker": "PLD",
+      "name": "Prologis, Inc.",
+      "sector": "Real Estate",
+      "industry": "REIT - Industrial",
+      "cik": "1045609",
+      "revenue_growth_yoy_pct": 2.22,
+      "profit_growth_yoy_pct": 21.98
+    },
+    {
+      "ticker": "MCD",
+      "name": "McDonald's Corporation",
+      "sector": "Consumer Cyclical",
+      "industry": "Restaurants",
+      "cik": "63908",
+      "revenue_growth_yoy_pct": 1.67,
+      "profit_growth_yoy_pct": -2.9
+    },
+    {
+      "ticker": "MMM",
+      "name": "3M Company",
+      "sector": "Industrials",
+      "industry": "Conglomerates",
+      "cik": "66740",
+      "revenue_growth_yoy_pct": 1.52,
+      "profit_growth_yoy_pct": -22.12
+    },
+    {
+      "ticker": "XOM",
+      "name": "Exxon Mobil Corporation",
+      "sector": "Energy",
+      "industry": "Oil & Gas Integrated",
+      "cik": "34088",
+      "revenue_growth_yoy_pct": 1.36,
+      "profit_growth_yoy_pct": -6.47
+    },
+    {
+      "ticker": "AMT",
+      "name": "American Tower Corporation",
+      "sector": "Real Estate",
+      "industry": "REIT - Specialty",
+      "cik": "1053507",
+      "revenue_growth_yoy_pct": 1.15,
+      "profit_growth_yoy_pct": 52.03
+    },
+    {
+      "ticker": "EOG",
+      "name": "EOG Resources, Inc.",
+      "sector": "Energy",
+      "industry": "Oil & Gas E&P",
+      "cik": "821189",
+      "revenue_growth_yoy_pct": 0.85,
+      "profit_growth_yoy_pct": -15.68
+    },
+    {
+      "ticker": "VZ",
+      "name": "Verizon Communications Inc.",
+      "sector": "Communication Services",
+      "industry": "Telecom Services",
+      "cik": "732712",
+      "revenue_growth_yoy_pct": 0.61,
+      "profit_growth_yoy_pct": 50.73
+    },
+    {
+      "ticker": "LIN",
+      "name": "Linde plc",
+      "sector": "Basic Materials",
+      "industry": "Specialty Chemicals",
+      "cik": "1707925",
+      "revenue_growth_yoy_pct": 0.46,
+      "profit_growth_yoy_pct": 5.9
+    },
+    {
+      "ticker": "D",
+      "name": "Dominion Energy, Inc.",
+      "sector": "Utilities",
+      "industry": "Utilities - Regulated Electric",
+      "cik": "715957",
+      "revenue_growth_yoy_pct": 0.46,
+      "profit_growth_yoy_pct": 4.58
+    },
+    {
+      "ticker": "HSY",
+      "name": "The Hershey Company",
+      "sector": "Consumer Defensive",
+      "industry": "Confectioners",
+      "cik": "47111",
+      "revenue_growth_yoy_pct": 0.33,
+      "profit_growth_yoy_pct": 19.31
+    },
+    {
+      "ticker": "PG",
+      "name": "The Procter & Gamble Company",
+      "sector": "Consumer Defensive",
+      "industry": "Household & Personal Products",
+      "cik": "80424",
+      "revenue_growth_yoy_pct": 0.29,
+      "profit_growth_yoy_pct": 7.36
+    },
+    {
+      "ticker": "SHW",
+      "name": "The Sherwin-Williams Company",
+      "sector": "Basic Materials",
+      "industry": "Specialty Chemicals",
+      "cik": "89800",
+      "revenue_growth_yoy_pct": 0.2,
+      "profit_growth_yoy_pct": 12.25
+    },
+    {
+      "ticker": "IFF",
+      "name": "International Flavors & Fragrances Inc.",
+      "sector": "Basic Materials",
+      "industry": "Specialty Chemicals",
+      "cik": "51253",
+      "revenue_growth_yoy_pct": 0.04,
+      "profit_growth_yoy_pct": 109.47
+    },
+    {
+      "ticker": "MRK",
+      "name": "Merck & Co., Inc.",
+      "sector": "Healthcare",
+      "industry": "Drug Manufacturers - General",
+      "cik": "310158",
+      "revenue_growth_yoy_pct": null,
+      "profit_growth_yoy_pct": null
+    },
+    {
+      "ticker": "TMO",
+      "name": "Thermo Fisher Scientific Inc.",
+      "sector": "Healthcare",
+      "industry": "Diagnostics & Research",
+      "cik": "97745",
+      "revenue_growth_yoy_pct": null,
+      "profit_growth_yoy_pct": null
+    },
+    {
+      "ticker": "ABT",
+      "name": "Abbott Laboratories",
+      "sector": "Healthcare",
+      "industry": "Medical Devices",
+      "cik": "1800",
+      "revenue_growth_yoy_pct": null,
+      "profit_growth_yoy_pct": null
+    },
+    {
+      "ticker": "DHR",
+      "name": "Danaher Corporation",
+      "sector": "Healthcare",
+      "industry": "Diagnostics & Research",
+      "cik": "313616",
+      "revenue_growth_yoy_pct": null,
+      "profit_growth_yoy_pct": null
+    },
+    {
+      "ticker": "AMGN",
+      "name": "Amgen Inc.",
+      "sector": "Healthcare",
+      "industry": "Drug Manufacturers - General",
+      "cik": "318154",
+      "revenue_growth_yoy_pct": null,
+      "profit_growth_yoy_pct": null
+    },
+    {
+      "ticker": "JPM",
+      "name": "JPMorgan Chase & Co.",
+      "sector": "Financial Services",
+      "industry": "Banks - Diversified",
+      "cik": "19617",
+      "revenue_growth_yoy_pct": null,
+      "profit_growth_yoy_pct": null
+    },
+    {
+      "ticker": "BAC",
+      "name": "Bank of America Corporation",
+      "sector": "Financial Services",
+      "industry": "Banks - Diversified",
+      "cik": "70858",
+      "revenue_growth_yoy_pct": null,
+      "profit_growth_yoy_pct": null
+    },
+    {
+      "ticker": "GS",
+      "name": "The Goldman Sachs Group, Inc.",
+      "sector": "Financial Services",
+      "industry": "Capital Markets",
+      "cik": "886982",
+      "revenue_growth_yoy_pct": null,
+      "profit_growth_yoy_pct": null
+    },
+    {
+      "ticker": "MS",
+      "name": "Morgan Stanley",
+      "sector": "Financial Services",
+      "industry": "Capital Markets",
+      "cik": "895421",
+      "revenue_growth_yoy_pct": null,
+      "profit_growth_yoy_pct": null
+    },
+    {
+      "ticker": "C",
+      "name": "Citigroup Inc.",
+      "sector": "Financial Services",
+      "industry": "Banks - Diversified",
+      "cik": "831001",
+      "revenue_growth_yoy_pct": null,
+      "profit_growth_yoy_pct": null
+    },
+    {
+      "ticker": "AXP",
+      "name": "American Express Company",
+      "sector": "Financial Services",
+      "industry": "Credit Services",
+      "cik": "4962",
+      "revenue_growth_yoy_pct": null,
+      "profit_growth_yoy_pct": null
+    },
+    {
+      "ticker": "CMG",
+      "name": "Chipotle Mexican Grill, Inc.",
+      "sector": "Consumer Cyclical",
+      "industry": "Restaurants",
+      "cik": "1058090",
+      "revenue_growth_yoy_pct": null,
+      "profit_growth_yoy_pct": null
+    },
+    {
+      "ticker": "KMB",
+      "name": "Kimberly-Clark Corporation",
+      "sector": "Consumer Defensive",
+      "industry": "Household & Personal Products",
+      "cik": "55785",
+      "revenue_growth_yoy_pct": null,
+      "profit_growth_yoy_pct": null
+    },
+    {
+      "ticker": "UPS",
+      "name": "United Parcel Service, Inc.",
+      "sector": "Industrials",
+      "industry": "Integrated Freight & Logistics",
+      "cik": "1090727",
+      "revenue_growth_yoy_pct": null,
+      "profit_growth_yoy_pct": null
+    },
+    {
+      "ticker": "CVX",
+      "name": "Chevron Corporation",
+      "sector": "Energy",
+      "industry": "Oil & Gas Integrated",
+      "cik": "93410",
+      "revenue_growth_yoy_pct": null,
+      "profit_growth_yoy_pct": null
+    },
+    {
+      "ticker": "VLO",
+      "name": "Valero Energy Corporation",
+      "sector": "Energy",
+      "industry": "Oil & Gas Refining & Marketing",
+      "cik": "1035002",
+      "revenue_growth_yoy_pct": null,
+      "profit_growth_yoy_pct": null
+    },
+    {
+      "ticker": "KMI",
+      "name": "Kinder Morgan, Inc.",
+      "sector": "Energy",
+      "industry": "Oil & Gas Midstream",
+      "cik": "1506307",
+      "revenue_growth_yoy_pct": null,
+      "profit_growth_yoy_pct": null
+    },
+    {
+      "ticker": "NEE",
+      "name": "NextEra Energy, Inc.",
+      "sector": "Utilities",
+      "industry": "Utilities - Regulated Electric",
+      "cik": "753308",
+      "revenue_growth_yoy_pct": null,
+      "profit_growth_yoy_pct": null
+    },
+    {
+      "ticker": "SPG",
+      "name": "Simon Property Group, Inc.",
+      "sector": "Real Estate",
+      "industry": "REIT - Retail",
+      "cik": "1063761",
+      "revenue_growth_yoy_pct": null,
+      "profit_growth_yoy_pct": null
+    },
+    {
+      "ticker": "FCX",
+      "name": "Freeport-McMoRan Inc.",
+      "sector": "Basic Materials",
+      "industry": "Copper",
+      "cik": "831259",
+      "revenue_growth_yoy_pct": null,
+      "profit_growth_yoy_pct": null
+    },
+    {
+      "ticker": "T",
+      "name": "AT&T Inc.",
+      "sector": "Communication Services",
+      "industry": "Telecom Services",
+      "cik": "732717",
+      "revenue_growth_yoy_pct": null,
+      "profit_growth_yoy_pct": null
+    }
+  ]
+}

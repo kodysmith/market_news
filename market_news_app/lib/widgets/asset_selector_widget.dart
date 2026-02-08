@@ -12,7 +12,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../services/asset_selection_service.dart';
-import 'asset_selection_provider.dart';
 
 class AssetSelectorWidget extends StatefulWidget {
   final ValueChanged<String>? onAssetChanged;
@@ -30,11 +29,14 @@ class AssetSelectorWidget extends StatefulWidget {
   State<AssetSelectorWidget> createState() => _AssetSelectorWidgetState();
 }
 
+/// Debounce delay before submitting symbol from text input (ms).
+const int _kInputDebounceMs = 400;
+
 class _AssetSelectorWidgetState extends State<AssetSelectorWidget> {
   late AssetSelectionService _service;
   late TextEditingController _textController;
   Timer? _debounceTimer;
-  
+
   @override
   void initState() {
     super.initState();
@@ -42,7 +44,7 @@ class _AssetSelectorWidgetState extends State<AssetSelectorWidget> {
     _textController = TextEditingController(text: _service.selectedAsset);
     _service.addListener(_onAssetChanged);
   }
-  
+
   @override
   void dispose() {
     _service.removeListener(_onAssetChanged);
@@ -50,7 +52,7 @@ class _AssetSelectorWidgetState extends State<AssetSelectorWidget> {
     _debounceTimer?.cancel();
     super.dispose();
   }
-  
+
   void _onAssetChanged() {
     if (_textController.text != _service.selectedAsset) {
       _textController.text = _service.selectedAsset;
@@ -59,28 +61,27 @@ class _AssetSelectorWidgetState extends State<AssetSelectorWidget> {
       widget.onAssetChanged!(_service.selectedAsset);
     }
   }
-  
+
+  /// Only update service and notify after user stops typing (debounce).
+  /// Do NOT call _service.setAsset on every keystroke — other listeners (e.g. Cockpit)
+  /// would reload the whole page and make typing impossible.
   void _handleTextChange(String value) {
     final ticker = value.toUpperCase().trim();
-    if (ticker != _service.selectedAsset && ticker.isNotEmpty && ticker.length >= 1) {
-      // Cancel previous timer
-      _debounceTimer?.cancel();
-      
-      // Set new asset immediately for UI
-      _service.setAsset(ticker);
-      
-      // Debounce the callback (wait 500ms after user stops typing)
-      _debounceTimer = Timer(const Duration(milliseconds: 500), () {
-        final currentTicker = _textController.text.toUpperCase().trim();
-        if (currentTicker == ticker && currentTicker.isNotEmpty) {
-          if (widget.onAssetChanged != null) {
-            widget.onAssetChanged!(currentTicker);
-          }
-        }
-      });
-    }
+    _debounceTimer?.cancel();
+
+    if (ticker.isEmpty) return;
+
+    // Debounce: update service only after user stops typing for 400ms.
+    // This prevents the shared AssetSelectionService from notifying the Cockpit
+    // on every keystroke (which would trigger _loadData() and a full reload).
+    _debounceTimer = Timer(const Duration(milliseconds: _kInputDebounceMs), () {
+      final currentTicker = _textController.text.toUpperCase().trim();
+      if (currentTicker.isEmpty) return;
+      _service.setAsset(currentTicker);
+      // Parent callback is fired by _onAssetChanged when service notifies
+    });
   }
-  
+
   void _handleTextSubmitted(String value) {
     final ticker = value.toUpperCase().trim();
     if (ticker.isNotEmpty) {
@@ -91,8 +92,9 @@ class _AssetSelectorWidgetState extends State<AssetSelectorWidget> {
       }
     }
   }
-  
+
   void _handleQuickSelect(String ticker) {
+    _debounceTimer?.cancel();
     _textController.text = ticker;
     _service.setAsset(ticker);
     if (widget.onAssetChanged != null) {
@@ -126,39 +128,80 @@ class _AssetSelectorWidgetState extends State<AssetSelectorWidget> {
   Widget _buildCompactSelector(List<String> availableAssets) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final maxWidth = constraints.maxWidth != double.infinity 
-            ? constraints.maxWidth 
+        final maxWidth = constraints.maxWidth != double.infinity
+            ? constraints.maxWidth
             : MediaQuery.of(context).size.width;
-        
+        // Reserve fixed space: input 90, gap 12, dropdown 168+ so dropdown is never squished
+        const inputWidth = 90.0;
+        const gapWidth = 12.0;
+        const dropdownMinWidth = 168.0;
+
         return SizedBox(
           width: maxWidth,
           child: Row(
-            mainAxisSize: MainAxisSize.min,
             children: [
-              Flexible(
-                fit: FlexFit.loose,
-                child: DropdownButtonFormField<String>(
-                  value: _service.selectedAsset,
-                  decoration: const InputDecoration(
-                    labelText: 'Asset',
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              // Text field: type any symbol
+              SizedBox(
+                width: inputWidth,
+                child: TextField(
+                  controller: _textController,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'JetBrains Mono',
                   ),
-                  items: availableAssets
-                      .map((asset) => DropdownMenuItem(
-                            value: asset,
-                            child: Text(asset),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      _textController.text = value;
-                      _service.setAsset(value);
-                      if (widget.onAssetChanged != null) {
-                        widget.onAssetChanged!(value);
+                  textAlign: TextAlign.center,
+                  textCapitalization: TextCapitalization.characters,
+                  decoration: InputDecoration(
+                    hintText: 'Symbol',
+                    hintStyle: TextStyle(color: Colors.white.withOpacity(0.4), fontSize: 12),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
+                    filled: true,
+                    fillColor: const Color(0xFF0D1117),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                    isDense: true,
+                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9.]')),
+                    LengthLimitingTextInputFormatter(12),
+                  ],
+                  onChanged: _handleTextChange,
+                  onSubmitted: _handleTextSubmitted,
+                ),
+              ),
+              const SizedBox(width: gapWidth),
+              // Dropdown: fixed minimum width so it's never collapsed; take remaining space
+              Expanded(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minWidth: dropdownMinWidth),
+                  child: DropdownButtonFormField<String>(
+                    value: _service.selectedAsset,
+                    decoration: InputDecoration(
+                      labelText: 'Or pick',
+                      labelStyle: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 11),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    ),
+                    dropdownColor: const Color(0xFF161B22),
+                    isExpanded: true,
+                    items: availableAssets
+                        .map((asset) => DropdownMenuItem(
+                              value: asset,
+                              child: Text(asset, style: const TextStyle(fontFamily: 'JetBrains Mono', fontSize: 13)),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        _debounceTimer?.cancel();
+                        _textController.text = value;
+                        _service.setAsset(value);
+                        if (widget.onAssetChanged != null) {
+                          widget.onAssetChanged!(value);
+                        }
                       }
-                    }
-                  },
+                    },
+                  ),
                 ),
               ),
             ],

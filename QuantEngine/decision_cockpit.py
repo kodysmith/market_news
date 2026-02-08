@@ -63,6 +63,7 @@ class DecisionCockpit:
         volatility = self._get_volatility(ticker)
         structure = self._get_structure(ticker)
         action_filter = self._get_action_filter(regime, volatility)
+        volatility_strategy = self._get_volatility_strategy(volatility)
         
         # Get diagnostics from gex_state
         raw_diagnostics = self.gex_state.get('diagnostics', {})
@@ -72,6 +73,7 @@ class DecisionCockpit:
             'timestamp': datetime.now().isoformat(),
             'regime': regime,
             'volatility': volatility,
+            'volatility_strategy': volatility_strategy,
             'structure': structure,
             'action_filter': action_filter,
             'net_series': self.gex_state.get('net_series', []),
@@ -222,6 +224,43 @@ class DecisionCockpit:
             'vix_change': round(vix_change, 2) if vix_change else None
         }
     
+    def _get_volatility_strategy(self, volatility: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Get one-line volatility strategy: sell vol, buy vol, or neutral.
+        Returns headline, rationale, and optional vol_allowed / vol_forbidden.
+        """
+        vol_state = volatility.get('state', 'NORMAL')
+        term_structure = volatility.get('term_structure', 'FLAT')
+        direction = volatility.get('direction', 'FLAT')
+        
+        headline = ''
+        rationale = ''
+        vol_allowed = []
+        vol_forbidden = []
+        
+        if vol_state in ['CONTRACTING', 'COMPRESSED']:
+            headline = 'Sell vol / premium'
+            rationale = 'IV contracting or compressed; premium selling favored.'
+            vol_allowed = ['Sell premium (wide)', 'Cash-secured puts', 'Iron condors', 'Fade vol spikes']
+            vol_forbidden = ['Long premium', 'Naked long options', 'Chasing breakouts']
+        elif vol_state in ['EXPANDING', 'ELEVATED'] or term_structure == 'INVERTED':
+            headline = 'Buy vol / hedge'
+            rationale = 'IV expanding or term structure inverted; consider long vol or defined risk.'
+            vol_allowed = ['Long vol / hedges', 'Defined-risk structures', 'Calendars/diagonals', 'Buy vol on dips']
+            vol_forbidden = ['Naked short premium', 'Tight condors', 'Selling vol into spike']
+        else:
+            headline = 'Neutral / defined risk'
+            rationale = 'Normal vol environment; size and defined risk matter.'
+            vol_allowed = ['Defined-risk only', 'Wide strikes', 'Reduce size']
+            vol_forbidden = ['Aggressive short vol', 'Unhedged positions']
+        
+        return {
+            'headline': headline,
+            'rationale': rationale,
+            'vol_allowed': vol_allowed,
+            'vol_forbidden': vol_forbidden,
+        }
+    
     def _get_structure(self, ticker: str) -> Dict[str, Any]:
         """
         Get market structure with multi-lens walls (GEX + OI).
@@ -239,6 +278,7 @@ class DecisionCockpit:
         walls_regime = self.gex_state.get('walls_regime', {})
         walls_tactical = self.gex_state.get('walls_tactical', {})
         walls_today = self.gex_state.get('walls_today', {})
+        walls_opex = self.gex_state.get('walls_opex', {})
         
         # Extract GEX walls (primary for behavior)
         gex_walls = walls_tactical.get('gex_walls', {})
@@ -299,6 +339,18 @@ class DecisionCockpit:
                     'put': walls_today.get('oi_walls', {}).get('put', {})
                 }
             } if walls_today else {},
+            'walls_opex': {
+                'gex': {
+                    'call': walls_opex.get('gex_walls', {}).get('call', {}),
+                    'put': walls_opex.get('gex_walls', {}).get('put', {})
+                },
+                'oi': {
+                    'call': walls_opex.get('oi_walls', {}).get('call', {}),
+                    'put': walls_opex.get('oi_walls', {}).get('put', {})
+                },
+                'put': walls_opex.get('put'),
+                'call': walls_opex.get('call'),
+            } if walls_opex else {},
             
             # Primary walls for quick reference (GEX-based)
             'primary_walls': {

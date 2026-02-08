@@ -34,6 +34,7 @@ def index():
                 "summary": "/gex/summary",
                 "tickers": "/gex/tickers",
                 "price_comparison": "/gex/price-comparison?ticker=SPY",
+                "max_pain": "/gex/max-pain?ticker=SPY&dte=0",
             },
             "valuation": {
                 "calculate": "/valuation/calculate?ticker=AAPL",
@@ -53,6 +54,13 @@ def index():
                 "risk": "/depin/risk?ticker=SPY",
                 "state": "/depin/state?ticker=SPY",
                 "history": "/depin/history?ticker=SPY&limit=100",
+            },
+            "fisher": {
+                "snapshot": "/fisher/snapshot?ticker=AAPL",
+                "delta": "/fisher/delta?ticker=AAPL",
+                "evidence": "/fisher/evidence?ticker=AAPL&point_id=1",
+                "universe": "/fisher/universe",
+                "growth_profitable": "/fisher/growth-profitable?min_growth=6&min_financials=6&limit=100",
             },
         },
     }

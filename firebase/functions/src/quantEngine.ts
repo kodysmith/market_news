@@ -34,15 +34,11 @@ interface StockData {
   low52w: number;
 }
 
-interface TechnicalAnalysis {
-  rsi: number;
-  sma20: number;
-  sma50: number;
-  trend: 'BULLISH' | 'BEARISH' | 'MIXED';
-  signal: 'BUY' | 'SELL' | 'HOLD';
-  confidence: number;
-  support: number;
-  resistance: number;
+interface PriceHistory {
+  closes: number[];
+  currentPrice: number;
+  range: string;
+  interval: string;
 }
 
 /**
@@ -73,11 +69,11 @@ export const quantChat = onRequest({
     if (ticker) {
       // Get real-time stock analysis
       const stockData = await getStockData(ticker);
-      const technicalAnalysis = await getTechnicalAnalysis(ticker);
+      const priceHistory = await getPriceHistory(ticker);
       const stockAnalysis = {
         ticker,
         stockData,
-        technicalAnalysis,
+        priceHistory,
         timestamp: new Date().toISOString()
       };
       response = await generateStockResponse(message, stockAnalysis, conversationHistory);
@@ -131,13 +127,13 @@ export const analyzeStock = onRequest({
     console.log(`📊 Analyzing stock: ${ticker}`);
 
     const stockData = await getStockData(ticker.toUpperCase());
-    const technicalAnalysis = await getTechnicalAnalysis(ticker.toUpperCase());
+    const priceHistory = await getPriceHistory(ticker.toUpperCase());
     const fundamentalAnalysis = await getFundamentalAnalysis(ticker.toUpperCase());
 
     const analysis = {
       ticker: ticker.toUpperCase(),
       stockData,
-      technicalAnalysis,
+      priceHistory,
       fundamentalAnalysis,
       timestamp: new Date().toISOString()
     };
@@ -172,29 +168,14 @@ export const scanMarket = onRequest({
     console.log('🔍 Scanning market for opportunities...');
 
     const popularTickers = ['AAPL', 'MSFT', 'GOOGL', 'NVDA', 'TSLA', 'AMZN', 'META', 'NFLX', 'AMD', 'INTC'];
-    const opportunities = [];
+    const opportunities: any[] = [];
 
     for (const ticker of popularTickers) {
       try {
-        const analysis = await getTechnicalAnalysis(ticker);
-        
-        if (analysis.signal === 'BUY' && analysis.confidence > 70) {
-          opportunities.push({
-            ticker,
-            signal: 'BUY',
-            confidence: analysis.confidence,
-            reason: 'Strong bullish signals',
-            ...analysis
-          });
-        } else if (analysis.signal === 'SELL' && analysis.confidence > 70) {
-          opportunities.push({
-            ticker,
-            signal: 'SELL',
-            confidence: analysis.confidence,
-            reason: 'Strong bearish signals',
-            ...analysis
-          });
-        }
+        // Device-first architecture: return raw history for on-device scoring.
+        const stockData = await getStockData(ticker);
+        const priceHistory = await getPriceHistory(ticker);
+        opportunities.push({ ticker, stockData, priceHistory });
       } catch (error) {
         console.warn(`Failed to analyze ${ticker}:`, error);
       }
@@ -265,10 +246,10 @@ async function getStockData(ticker: string): Promise<StockData> {
   }
 }
 
-async function getTechnicalAnalysis(ticker: string): Promise<TechnicalAnalysis> {
+async function getPriceHistory(ticker: string, range: string = '3mo', interval: string = '1d'): Promise<PriceHistory> {
   try {
     // Get historical data from Yahoo Finance with caching
-    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?range=3mo&interval=1d`;
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?range=${range}&interval=${interval}`;
     
     const response = await cachedRequest(
       () => axios.get(url),
@@ -282,63 +263,12 @@ async function getTechnicalAnalysis(ticker: string): Promise<TechnicalAnalysis> 
     const result = response.chart.result[0];
     const quotes = result.indicators.quote[0];
     
-    const prices = quotes.close.filter((price: number) => price !== null);
-    const currentPrice = prices[prices.length - 1];
-    
-    // Calculate RSI
-    const rsi = calculateRSI(prices, 14);
-    
-    // Calculate SMAs
-    const sma20 = calculateSMA(prices, 20);
-    const sma50 = calculateSMA(prices, 50);
-    
-    // Determine trend
-    let trend: 'BULLISH' | 'BEARISH' | 'MIXED';
-    if (currentPrice > sma20 && sma20 > sma50) {
-      trend = 'BULLISH';
-    } else if (currentPrice < sma20 && sma20 < sma50) {
-      trend = 'BEARISH';
-    } else {
-      trend = 'MIXED';
-    }
-    
-    // Generate signal
-    let signal: 'BUY' | 'SELL' | 'HOLD';
-    let confidence: number;
-    
-    if (trend === 'BULLISH' && rsi < 70) {
-      signal = 'BUY';
-      confidence = 75;
-    } else if (trend === 'BEARISH' && rsi > 30) {
-      signal = 'SELL';
-      confidence = 75;
-    } else if (rsi < 30) {
-      signal = 'BUY';
-      confidence = 60;
-    } else if (rsi > 70) {
-      signal = 'SELL';
-      confidence = 60;
-    } else {
-      signal = 'HOLD';
-      confidence = 50;
-    }
-    
-    // Calculate support and resistance
-    const recentHigh = Math.max(...prices.slice(-20));
-    const recentLow = Math.min(...prices.slice(-20));
-    
-    return {
-      rsi,
-      sma20,
-      sma50,
-      trend,
-      signal,
-      confidence,
-      support: recentLow,
-      resistance: recentHigh
-    };
+    const closes = (quotes.close as Array<number | null>).filter((price) => price !== null) as number[];
+    const currentPrice = closes.length > 0 ? closes[closes.length - 1] : 0;
+
+    return { closes, currentPrice, range, interval };
   } catch (error) {
-    throw new Error(`Failed to get technical analysis for ${ticker}: ${error}`);
+    throw new Error(`Failed to get price history for ${ticker}: ${error}`);
   }
 }
 
@@ -367,37 +297,8 @@ async function getFundamentalAnalysis(ticker: string): Promise<any> {
   }
 }
 
-function calculateRSI(prices: number[], period: number = 14): number {
-  if (prices.length < period + 1) return 50;
-  
-  const deltas = [];
-  for (let i = 1; i < prices.length; i++) {
-    deltas.push(prices[i] - prices[i - 1]);
-  }
-  
-  let gains = 0;
-  let losses = 0;
-  
-  for (let i = deltas.length - period; i < deltas.length; i++) {
-    if (deltas[i] > 0) gains += deltas[i];
-    else losses -= deltas[i];
-  }
-  
-  const avgGain = gains / period;
-  const avgLoss = losses / period;
-  
-  if (avgLoss === 0) return 100;
-  
-  const rs = avgGain / avgLoss;
-  return 100 - (100 / (1 + rs));
-}
-
-function calculateSMA(prices: number[], period: number): number {
-  if (prices.length < period) return prices[prices.length - 1];
-  
-  const sum = prices.slice(-period).reduce((a, b) => a + b, 0);
-  return sum / period;
-}
+// Technical indicators are intentionally not computed server-side in the
+// device-first architecture. Return raw history and compute on-device.
 
 function detectTicker(message: string): string | null {
   const tickers = ['AAPL', 'MSFT', 'GOOGL', 'NVDA', 'TSLA', 'AMZN', 'META', 'NFLX', 'AMD', 'INTC'];
@@ -432,23 +333,12 @@ async function generateStockResponse(message: string, analysis: any, conversatio
 • Change: ${analysis.stockData.changePercent.toFixed(2)}%
 • Volume: ${analysis.stockData.volume.toLocaleString()}
 
-📈 **Technical Indicators:**
-• RSI: ${analysis.technicalAnalysis.rsi.toFixed(1)} (${analysis.technicalAnalysis.rsi > 70 ? 'Overbought' : analysis.technicalAnalysis.rsi < 30 ? 'Oversold' : 'Neutral'})
-• Trend: ${analysis.technicalAnalysis.trend}
-• 20-day SMA: $${analysis.technicalAnalysis.sma20.toFixed(2)}
-• 50-day SMA: $${analysis.technicalAnalysis.sma50.toFixed(2)}
+📈 **History:**
+• Range: ${analysis.priceHistory.range}
+• Interval: ${analysis.priceHistory.interval}
+• Points: ${analysis.priceHistory.closes.length}
 
-🎯 **Trading Signal:**
-• Recommendation: ${analysis.technicalAnalysis.signal}
-• Confidence: ${analysis.technicalAnalysis.confidence}%
-
-💡 **Key Levels:**
-• Support: $${analysis.technicalAnalysis.support.toFixed(2)}
-• Resistance: $${analysis.technicalAnalysis.resistance.toFixed(2)}
-
-${analysis.technicalAnalysis.signal === 'BUY' ? '🟢 Consider buying on pullbacks to support' : 
-  analysis.technicalAnalysis.signal === 'SELL' ? '🔴 Consider selling on rallies to resistance' : 
-  '⚪ Wait for clearer signals'}`;
+Note: Technical indicators/signals are computed on-device in the current architecture.`;
 }
 
 async function generateTradingResponse(message: string, signals: any[], conversationHistory: ChatMessage[]): Promise<string> {
@@ -460,10 +350,9 @@ async function generateTradingResponse(message: string, signals: any[], conversa
   response += `Found ${signals.length} trading opportunities:\n\n`;
   
   signals.slice(0, 5).forEach((signal, index) => {
-    response += `${index + 1}. **${signal.ticker}** - ${signal.signal} (${signal.confidence}%)\n`;
-    response += `   • Reason: ${signal.reason}\n`;
-    response += `   • RSI: ${signal.rsi.toFixed(1)}\n`;
-    response += `   • Trend: ${signal.trend}\n\n`;
+    response += `${index + 1}. **${signal.ticker}**\n`;
+    response += `   • Price: $${signal.stockData?.currentPrice?.toFixed?.(2) ?? 'N/A'}\n`;
+    response += `   • History points: ${signal.priceHistory?.closes?.length ?? 0}\n\n`;
   });
   
   return response;

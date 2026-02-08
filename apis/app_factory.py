@@ -22,6 +22,8 @@ def create_app() -> Flask:
     from .routes_valuation import bp as valuation_bp
     from .routes_cockpit import bp as cockpit_bp
     from .routes_depin import bp as depin_bp
+    from .routes_probability import bp as probability_bp
+    from .routes_fisher import bp as fisher_bp
     from .routes_index import bp as index_bp
 
     app.register_blueprint(report_bp)
@@ -32,6 +34,8 @@ def create_app() -> Flask:
     app.register_blueprint(valuation_bp)
     app.register_blueprint(cockpit_bp)
     app.register_blueprint(depin_bp)
+    app.register_blueprint(probability_bp)
+    app.register_blueprint(fisher_bp)
     app.register_blueprint(index_bp)
 
     return app

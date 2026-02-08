@@ -17,6 +17,26 @@ app.options('*', cors({ origin: true }));
 
 // Environment variables - get from process.env for Cloud Functions v2
 const FMP_API_KEY = process.env.FMP_API_KEY;
+const ALPHAVANTAGE_API_KEY = process.env.ALPHAVANTAGE_API_KEY;
+const MASSIVE_API_KEY = process.env.MASSIVE_API_KEY;
+
+async function requireFirebaseAuth(req: express.Request, res: express.Response, next: express.NextFunction) {
+  try {
+    const authHeader = req.get('authorization') || '';
+    const match = authHeader.match(/^Bearer (.+)$/i);
+    if (!match) {
+      res.status(401).json({ error: 'Missing Authorization Bearer token' });
+      return;
+    }
+
+    const idToken = match[1];
+    await admin.auth().verifyIdToken(idToken);
+    next();
+  } catch (e) {
+    console.error('Auth failed:', e);
+    res.status(401).json({ error: 'Unauthorized' });
+  }
+}
 
 interface VixData {
   date: string;
@@ -718,6 +738,114 @@ app.use((req, res, next) => {
     return res.status(403).json({ error: 'Forbidden' });
   }
   next();
+});
+
+// ==========================================
+// AUTHENTICATED PROXY ENDPOINTS (KEY PROTECTION)
+// ==========================================
+// These are designed for the mobile app: keep vendor keys off-device.
+app.use('/proxy', requireFirebaseAuth);
+
+// Alpha Vantage: Global Quote
+app.get('/proxy/alphavantage/global-quote', async (req: express.Request, res: express.Response) => {
+  try {
+    const symbol = String(req.query.symbol || '').toUpperCase();
+    if (!symbol) {
+      res.status(400).json({ error: 'symbol is required' });
+      return;
+    }
+    if (!ALPHAVANTAGE_API_KEY) {
+      res.status(500).json({ error: 'ALPHAVANTAGE_API_KEY not configured' });
+      return;
+    }
+
+    const url = 'https://www.alphavantage.co/query';
+    const params = {
+      function: 'GLOBAL_QUOTE',
+      symbol,
+      apikey: ALPHAVANTAGE_API_KEY,
+    };
+
+    const data = await cachedRequest(
+      () => axios.get(url, { params }),
+      apiCache,
+      url,
+      params,
+      ALPHAVANTAGE_API_KEY,
+      10
+    );
+
+    res.json(data);
+  } catch (error) {
+    console.error('AlphaVantage proxy error:', error);
+    res.status(500).json({ error: 'Failed to fetch AlphaVantage data' });
+  }
+});
+
+// FMP: Quote
+app.get('/proxy/fmp/quote/:symbol', async (req: express.Request, res: express.Response) => {
+  try {
+    const symbol = String(req.params.symbol || '').toUpperCase();
+    if (!symbol) {
+      res.status(400).json({ error: 'symbol is required' });
+      return;
+    }
+    if (!FMP_API_KEY) {
+      res.status(500).json({ error: 'FMP_API_KEY not configured' });
+      return;
+    }
+
+    const url = `https://financialmodelingprep.com/api/v3/quote/${symbol}`;
+    const params = { apikey: FMP_API_KEY };
+
+    const data = await cachedRequest(
+      () => axios.get(url, { params }),
+      apiCache,
+      url,
+      params,
+      FMP_API_KEY,
+      10
+    );
+
+    res.json(data);
+  } catch (error) {
+    console.error('FMP quote proxy error:', error);
+    res.status(500).json({ error: 'Failed to fetch FMP quote' });
+  }
+});
+
+// FMP: Economic calendar (US-focused filtering should happen client-side or in a follow-up endpoint)
+app.get('/proxy/fmp/economic-calendar', async (req: express.Request, res: express.Response) => {
+  try {
+    if (!FMP_API_KEY) {
+      res.status(500).json({ error: 'FMP_API_KEY not configured' });
+      return;
+    }
+
+    const from = String(req.query.from || '');
+    const to = String(req.query.to || '');
+    if (!from || !to) {
+      res.status(400).json({ error: 'from and to are required (YYYY-MM-DD)' });
+      return;
+    }
+
+    const url = 'https://financialmodelingprep.com/api/v3/economic_calendar';
+    const params = { from, to, apikey: FMP_API_KEY };
+
+    const data = await cachedRequest(
+      () => axios.get(url, { params }),
+      apiCache,
+      url,
+      params,
+      FMP_API_KEY,
+      60
+    );
+
+    res.json(data);
+  } catch (error) {
+    console.error('FMP economic-calendar proxy error:', error);
+    res.status(500).json({ error: 'Failed to fetch economic calendar' });
+  }
 });
 
 // API Routes

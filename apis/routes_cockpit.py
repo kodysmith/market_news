@@ -55,7 +55,10 @@ def cockpit_state():
         from QuantEngine.gex_calculator import (
             get_option_chain_snapshot,
             get_spot_price,
+            get_quote_yfinance,
             compute_cockpit_state as compute_gex_state,
+            compute_max_pain as calc_max_pain,
+            get_expiration_dates_from_snap,
         )
         import json
 
@@ -218,6 +221,44 @@ def cockpit_state():
         if depin_risk_data:
             state["de_pin_risk"] = depin_risk_data
 
+        # Add quote (current, previous_close, open) for Block A
+        try:
+            quote = get_quote_yfinance(ticker)
+            state["quote"] = {
+                "current": quote.get("current"),
+                "previous_close": quote.get("previous_close"),
+                "open": quote.get("open"),
+                "change": quote.get("change"),
+                "change_pct": quote.get("change_pct"),
+            }
+        except Exception as e:
+            print(f"[cockpit] Quote fetch failed: {e}")
+            state["quote"] = None
+
+        # Add max_pain for nearest expiry (Block D)
+        try:
+            if snap and snap.get("results") and spot is not None:
+                all_exp = get_expiration_dates_from_snap(snap)
+                target_exp = all_exp[0] if all_exp else None
+                if target_exp:
+                    max_pain_strike, chosen_exp, _ = calc_max_pain(
+                        snap, spot, expiration_str=target_exp
+                    )
+                    if max_pain_strike is not None:
+                        state["max_pain"] = {
+                            "strike": round(max_pain_strike, 2),
+                            "expiration": chosen_exp,
+                        }
+                    else:
+                        state["max_pain"] = None
+                else:
+                    state["max_pain"] = None
+            else:
+                state["max_pain"] = None
+        except Exception as e:
+            print(f"[cockpit] Max pain failed: {e}")
+            state["max_pain"] = None
+
         return jsonify(state)
 
     except Exception as e:
@@ -225,6 +266,31 @@ def cockpit_state():
 
         traceback.print_exc()
         return jsonify({"error": f"Failed to get cockpit state: {str(e)}", "ticker": ticker}), 500
+
+
+@bp.route("/cockpit/quote")
+def cockpit_quote():
+    """
+    Get quote (current, previous_close, open) for dashboard price strip.
+    Query params: ticker (default SPY)
+    """
+    ticker = request.args.get("ticker", "SPY").upper()
+    if not ticker or len(ticker) > 5 or not ticker.isalnum():
+        return jsonify({"error": "Invalid ticker format"}), 400
+    try:
+        from QuantEngine.gex_calculator import get_quote_yfinance
+
+        quote = get_quote_yfinance(ticker)
+        return jsonify({
+            "ticker": ticker,
+            "current": quote.get("current"),
+            "previous_close": quote.get("previous_close"),
+            "open": quote.get("open"),
+            "change": quote.get("change"),
+            "change_pct": quote.get("change_pct"),
+        })
+    except Exception as e:
+        return jsonify({"error": str(e), "ticker": ticker}), 500
 
 
 @bp.route("/cockpit/tickers")
@@ -862,6 +928,7 @@ def cockpit_events():
     import requests
 
     days_ahead = int(request.args.get("days", 7))
+    symbol = (request.args.get("symbol") or "").strip().upper() or None
 
     try:
         events = []
@@ -1118,6 +1185,24 @@ def cockpit_events():
                     "impact": event["impact"],
                 }
             )
+
+        # Add impact_on_symbol for each event when symbol is provided
+        index_tickers = {"SPY", "SPX", "QQQ", "NDX"}
+        if symbol:
+            for event in events:
+                ev_type = event.get("type", "")
+                ev_ticker = event.get("ticker")
+                if ev_type == "earnings" and ev_ticker:
+                    if ev_ticker == symbol or (symbol in index_tickers and ev_ticker in spy_top_holdings):
+                        event["impact_on_symbol"] = "high"
+                    else:
+                        event["impact_on_symbol"] = "low"
+                elif ev_type in ("fomc", "cpi", "ppi", "nfp", "gdp") and symbol in index_tickers:
+                    event["impact_on_symbol"] = "high"
+                elif ev_type == "opex" and symbol in index_tickers:
+                    event["impact_on_symbol"] = "medium"
+                else:
+                    event["impact_on_symbol"] = "low"
 
         return jsonify({"badges": badges, "events": events, "days_ahead": days_ahead, "count": len(events)})
 

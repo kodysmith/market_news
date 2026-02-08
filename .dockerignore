@@ -1,0 +1,53 @@
+# Docker ignore file
+
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Data and results
+data/results/
+*.csv
+*.db
+*.log
+
+# Documentation
+*.md
+!README_TRADING_SYSTEM.md
+
+# Archive
+archive/
+
+# Firebase
+firebase/
+
+# Market news app (Flutter; not needed for API container)
+market_news_app/
+
+# Other projects not needed for APIs
+buffett_screener/
+options_scanner/
+screeners/
+strategies/
+tools/
+# apis/ and QuantEngine/ and fisher/ are required for the API server

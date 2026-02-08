@@ -44,8 +44,11 @@ class CockpitService {
   }
   
   /// Get upcoming market events for cockpit display
-  static Future<CockpitEventsData?> getCockpitEvents({int daysAhead = 3}) async {
-    final url = '$apiBaseUrl/cockpit/events?days=$daysAhead';
+  static Future<CockpitEventsData?> getCockpitEvents({int daysAhead = 3, String? symbol}) async {
+    var url = '$apiBaseUrl/cockpit/events?days=$daysAhead';
+    if (symbol != null && symbol.isNotEmpty) {
+      url += '&symbol=${Uri.encodeComponent(symbol)}';
+    }
     print('[CockpitService] Fetching events: $url');
     
     try {
@@ -130,6 +133,7 @@ class CockpitEvent {
   final String impact;
   final String? ticker;  // For earnings
   final String source;
+  final String? impactOnSymbol;  // 'high' | 'medium' | 'low' when symbol param was passed
   
   CockpitEvent({
     required this.type,
@@ -139,6 +143,7 @@ class CockpitEvent {
     required this.impact,
     this.ticker,
     required this.source,
+    this.impactOnSymbol,
   });
   
   factory CockpitEvent.fromJson(Map<String, dynamic> json) {
@@ -150,6 +155,7 @@ class CockpitEvent {
       impact: json['impact'] ?? 'medium',
       ticker: json['ticker'],
       source: json['source'] ?? '',
+      impactOnSymbol: json['impact_on_symbol'],
     );
   }
   
@@ -224,18 +230,90 @@ class DepinRiskData {
   }
 }
 
+/// Quote for dashboard price strip (Block A)
+class CockpitQuote {
+  final double? current;
+  final double? previousClose;
+  final double? open;
+  final double? change;
+  final double? changePct;
+  
+  CockpitQuote({
+    this.current,
+    this.previousClose,
+    this.open,
+    this.change,
+    this.changePct,
+  });
+  
+  factory CockpitQuote.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return CockpitQuote();
+    return CockpitQuote(
+      current: (json['current'] as num?)?.toDouble(),
+      previousClose: (json['previous_close'] as num?)?.toDouble(),
+      open: (json['open'] as num?)?.toDouble(),
+      change: (json['change'] as num?)?.toDouble(),
+      changePct: (json['change_pct'] as num?)?.toDouble(),
+    );
+  }
+}
+
+/// Volatility strategy (Block C): headline + rationale + vol_allowed/forbidden
+class VolatilityStrategy {
+  final String headline;
+  final String rationale;
+  final List<String> volAllowed;
+  final List<String> volForbidden;
+  
+  VolatilityStrategy({
+    required this.headline,
+    required this.rationale,
+    this.volAllowed = const [],
+    this.volForbidden = const [],
+  });
+  
+  factory VolatilityStrategy.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return VolatilityStrategy(headline: '', rationale: '');
+    return VolatilityStrategy(
+      headline: json['headline'] ?? '',
+      rationale: json['rationale'] ?? '',
+      volAllowed: List<String>.from(json['vol_allowed'] ?? []),
+      volForbidden: List<String>.from(json['vol_forbidden'] ?? []),
+    );
+  }
+}
+
+/// Max pain for nearest expiry (Block D)
+class CockpitMaxPain {
+  final double strike;
+  final String expiration;
+  
+  CockpitMaxPain({required this.strike, required this.expiration});
+  
+  factory CockpitMaxPain.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return CockpitMaxPain(strike: 0, expiration: '');
+    return CockpitMaxPain(
+      strike: (json['strike'] as num?)?.toDouble() ?? 0,
+      expiration: json['expiration'] ?? '',
+    );
+  }
+}
+
 /// Complete cockpit state model
 class CockpitState {
   final String ticker;
   final String timestamp;
   final RegimeState regime;
   final VolatilityState volatility;
+  final VolatilityStrategy? volatilityStrategy;
   final StructureState structure;
   final ActionFilter actionFilter;
   final String? opex;
   final int contractsProcessed;
   final int contractsTotal;
   final DepinRiskData? depinRisk;
+  final CockpitQuote? quote;
+  final CockpitMaxPain? maxPain;
   
   CockpitState({
     required this.ticker,
@@ -248,6 +326,9 @@ class CockpitState {
     required this.contractsProcessed,
     required this.contractsTotal,
     this.depinRisk,
+    this.volatilityStrategy,
+    this.quote,
+    this.maxPain,
   });
   
   factory CockpitState.fromJson(Map<String, dynamic> json) {
@@ -256,6 +337,9 @@ class CockpitState {
       timestamp: json['timestamp'] ?? '',
       regime: RegimeState.fromJson(json['regime'] ?? {}),
       volatility: VolatilityState.fromJson(json['volatility'] ?? {}),
+      volatilityStrategy: json['volatility_strategy'] != null
+          ? VolatilityStrategy.fromJson(json['volatility_strategy'])
+          : null,
       structure: StructureState.fromJson(json['structure'] ?? {}),
       actionFilter: ActionFilter.fromJson(json['action_filter'] ?? {}),
       opex: json['opex'],
@@ -264,6 +348,8 @@ class CockpitState {
       depinRisk: json['de_pin_risk'] != null 
           ? DepinRiskData.fromJson(json['de_pin_risk'])
           : null,
+      quote: json['quote'] != null ? CockpitQuote.fromJson(json['quote']) : null,
+      maxPain: json['max_pain'] != null ? CockpitMaxPain.fromJson(json['max_pain']) : null,
     );
   }
 }
@@ -305,8 +391,25 @@ class RegimeState {
   });
   
   factory RegimeState.fromJson(Map<String, dynamic> json) {
+    final rawLabel = json['label']?.toString().trim();
+    final isPositive = json['is_positive'] ?? false;
+    final isNegative = json['is_negative'] ?? false;
+    final transition = json['transition'] ?? false;
+    // Derive a readable label when API sends none or "UNKNOWN"
+    String label = rawLabel ?? '';
+    if (label.isEmpty || label.toUpperCase() == 'UNKNOWN') {
+      if (transition) {
+        label = 'NEAR FLIP';
+      } else if (isPositive) {
+        label = 'POSITIVE GEX';
+      } else if (isNegative) {
+        label = 'NEGATIVE GEX';
+      } else {
+        label = 'MIXED / NEUTRAL';
+      }
+    }
     return RegimeState(
-      label: json['label'] ?? 'UNKNOWN',
+      label: label,
       spot: json['spot']?.toDouble(),
       flipLine: json['flip_line']?.toDouble(),
       flipLineReason: json['flip_line_reason'],
@@ -317,9 +420,9 @@ class RegimeState {
       callGex: json['call_gex']?.toDouble(),
       putGex: json['put_gex']?.toDouble(),
       gexRatio: json['gex_ratio']?.toDouble(),
-      isPositive: json['is_positive'] ?? false,
-      isNegative: json['is_negative'] ?? false,
-      transition: json['transition'] ?? false,
+      isPositive: isPositive,
+      isNegative: isNegative,
+      transition: transition,
       transitionReason: json['transition_reason'],
     );
   }
@@ -440,6 +543,7 @@ class StructureState {
   final WallPair wallsRegime;    // 0-60 DTE
   final WallPair wallsTactical;  // 0-14 DTE
   final WallPair wallsToday;     // 0-2 DTE
+  final WallPair wallsOpex;      // Next monthly OPEX expiry only
   
   // Zone and distance metrics
   final List<double>? noTradeZone;
@@ -462,6 +566,7 @@ class StructureState {
     required this.wallsRegime,
     required this.wallsTactical,
     required this.wallsToday,
+    WallPair? wallsOpex,
     this.noTradeZone,
     required this.inNoTradeZone,
     this.distanceToPutWall,
@@ -473,7 +578,7 @@ class StructureState {
     required this.putLevels,
     required this.callLevels,
     this.zoneDescription,
-  });
+  }) : wallsOpex = wallsOpex ?? WallPair();
   
   // Convenience getters for primary (GEX) walls
   double? get putWall => primaryWalls.put;
@@ -502,6 +607,7 @@ class StructureState {
       wallsRegime: WallPair.fromJson(json['walls_regime']),
       wallsTactical: WallPair.fromJson(json['walls_tactical']),
       wallsToday: WallPair.fromJson(json['walls_today']),
+      wallsOpex: WallPair.fromJson(json['walls_opex']),
       noTradeZone: noTradeZone,
       inNoTradeZone: json['in_no_trade_zone'] ?? false,
       distanceToPutWall: json['distance_to_put_wall']?.toDouble(),

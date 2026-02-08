@@ -20,7 +20,7 @@
  */
 
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 import { URL } from 'url';
 
 interface CacheEntry<T> {

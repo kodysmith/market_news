@@ -625,6 +625,39 @@ def get_spot_from_yfinance(ticker: str) -> Optional[float]:
     return None
 
 
+def get_quote_yfinance(ticker: str) -> Dict[str, Optional[float]]:
+    """
+    Fetch current, previous_close, and open for dashboard quote strip.
+    Returns dict with keys: current, previous_close, open, change, change_pct (optional).
+    """
+    result = {"current": None, "previous_close": None, "open": None, "change": None, "change_pct": None}
+    try:
+        yf_symbol = f"^{ticker}" if ticker in ["SPX", "NDX", "DJI", "RUT", "XSP"] else ticker
+        ticker_obj = yf.Ticker(yf_symbol)
+        info = ticker_obj.info
+        current = info.get("regularMarketPrice") or info.get("previousClose")
+        previous_close = info.get("previousClose")
+        if current is not None:
+            result["current"] = float(current)
+        if previous_close is not None:
+            result["previous_close"] = float(previous_close)
+        hist = ticker_obj.history(period="1d")
+        if not hist.empty:
+            result["open"] = float(hist["Open"].iloc[0])
+            if result["current"] is None:
+                result["current"] = float(hist["Close"].iloc[-1])
+            if result["previous_close"] is None and len(hist) > 0:
+                result["previous_close"] = result["open"]
+        if result["open"] is None and result["previous_close"] is not None:
+            result["open"] = result["previous_close"]
+        if result["current"] is not None and result["previous_close"] is not None and result["previous_close"] != 0:
+            result["change"] = result["current"] - result["previous_close"]
+            result["change_pct"] = round((result["change"] / result["previous_close"]) * 100, 2)
+    except Exception as e:
+        print(f"[quote] yfinance failed for {ticker}: {e}")
+    return result
+
+
 def get_underlying_spot_price_v2(api_key: str, ticker: str) -> Optional[float]:
     """Uses Massive v2 single ticker snapshot for spot price"""
     try:
@@ -830,6 +863,102 @@ def parse_option_chain(snap: dict, spot: float) -> List[Dict]:
             contracts.append(contract)
     
     return contracts
+
+
+def get_expiration_dates_from_snap(snap: dict) -> List[str]:
+    """
+    Extract unique expiration dates (YYYY-MM-DD) from option chain snapshot.
+    Returns sorted list of expiration date strings.
+    """
+    expirations = set()
+    for item in snap.get("results", []):
+        d = item.get("details") or {}
+        exp_str = d.get("expiration_date")
+        if exp_str:
+            expirations.add(exp_str)
+    return sorted(expirations)
+
+
+def compute_max_pain(
+    snap: dict,
+    spot_price: float,
+    expiration_date: Optional[date] = None,
+    expiration_str: Optional[str] = None,
+) -> Tuple[Optional[float], Optional[str], List[str]]:
+    """
+    Compute max pain strike for a given expiration.
+    Max pain is the strike at which total option holder payout at expiry is minimized.
+
+    Args:
+        snap: API response with 'results' list (option chain)
+        spot_price: Current spot price (used for parsing; not for payout math)
+        expiration_date: Filter contracts to this expiration (date object)
+        expiration_str: Filter to this expiration YYYY-MM-DD (if set, overrides expiration_date)
+
+    Returns:
+        Tuple of (max_pain_strike, chosen_expiration_str, list_of_all_expirations).
+        If no valid contracts for the chosen expiry, returns (None, None, expirations_list).
+    """
+    all_expirations = get_expiration_dates_from_snap(snap)
+    if not all_expirations:
+        return None, None, []
+
+    # Resolve target expiration: explicit string > date > front month (index 0)
+    target_exp_str = expiration_str
+    if target_exp_str is None and expiration_date is not None:
+        target_exp_str = expiration_date.strftime("%Y-%m-%d")
+    if target_exp_str not in all_expirations and not expiration_str and expiration_date is None:
+        target_exp_str = all_expirations[0]
+
+    if target_exp_str not in all_expirations:
+        return None, target_exp_str, all_expirations
+
+    contracts = parse_option_chain(snap, spot_price)
+    mult = MULT
+    # Filter to target expiration and collect (strike, type, oi, mult)
+    filtered = []
+    for c in contracts:
+        if c.get("expiry_str") != target_exp_str:
+            continue
+        m = c.get("mult", mult)
+        if isinstance(m, (int, float)):
+            mult_val = float(m)
+        else:
+            mult_val = float(MULT)
+        filtered.append({
+            "strike": c["strike"],
+            "type": c["type"],
+            "oi": c["oi"],
+            "mult": mult_val,
+        })
+
+    if not filtered:
+        return None, target_exp_str, all_expirations
+
+    # Unique strikes (candidates for settlement price S)
+    strikes = sorted(set(c["strike"] for c in filtered))
+
+    def total_payout(s: float) -> float:
+        total = 0.0
+        for c in filtered:
+            k = c["strike"]
+            oi = c["oi"]
+            m = c["mult"]
+            if c["type"] == "call":
+                total += max(0.0, s - k) * oi * m
+            else:
+                total += max(0.0, k - s) * oi * m
+        return total
+
+    best_strike = None
+    best_payout = float("inf")
+    for s in strikes:
+        p = total_payout(s)
+        if p < best_payout:
+            best_payout = p
+            best_strike = s
+
+    return best_strike, target_exp_str, all_expirations
 
 
 # ===============================
@@ -1558,6 +1687,21 @@ def compute_cockpit_state(
         spot, k=3
     )
     
+    # === OPEX LENS (next monthly OPEX expiry only) - GEX + OI walls ===
+    walls_opex = {"gex_walls": {"call": {}, "put": {}}, "oi_walls": {"call": {}, "put": {}}, "call": None, "put": None}
+    opex_filter = lambda exp: exp == opex
+    opex_weight = lambda exp: 1.0
+    opex_call_gex, opex_put_gex = aggregate_gex_by_strike_and_right(
+        contracts, spot, opex_filter, opex_weight
+    )
+    opex_call_oi, opex_put_oi = aggregate_oi_by_strike_and_right(contracts, opex_filter)
+    if opex_call_gex or opex_put_gex or opex_call_oi or opex_put_oi:
+        walls_opex = compute_walls_multi(
+            opex_call_gex, opex_put_gex,
+            opex_call_oi, opex_put_oi,
+            spot, k=3
+        )
+    
     # === TRANSITION DETECTION ===
     transition = detect_transition(spot, flip, ticker)
     
@@ -1576,6 +1720,7 @@ def compute_cockpit_state(
         "walls_regime": walls_regime,
         "walls_tactical": walls_tactical,
         "walls_today": walls_today,
+        "walls_opex": walls_opex,
         "net_series": net_series,
         "contracts_processed": diagnostics.get("contracts_processed", len(contracts)),
         "contracts_total": len(snap.get("results", [])),

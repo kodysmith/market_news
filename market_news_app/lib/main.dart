@@ -6,8 +6,9 @@ import 'package:market_news_app/screens/market_insights_screen.dart';
 import 'package:market_news_app/screens/market_intelligence_screen.dart';
 import 'package:market_news_app/screens/quant_chat_screen.dart';
 import 'package:market_news_app/screens/gex_calculator_screen.dart';
-import 'package:market_news_app/screens/intrinsic_value_screen.dart';
 import 'package:market_news_app/screens/decision_cockpit_screen.dart';
+import 'package:market_news_app/screens/probability_range_screen.dart';
+import 'package:market_news_app/screens/fisher_valuation_screen.dart';
 import 'package:market_news_app/widgets/scanner_opportunities_widget.dart';
 import 'package:market_news_app/widgets/asset_selection_provider.dart';
 import 'package:market_news_app/services/asset_selection_service.dart';
@@ -165,7 +166,8 @@ class _MainNavigationState extends State<MainNavigation> {
       const TradeIdeasScreen(), // Trade Ideas (Allowed Only) - Regime-Aware
       NewsScreen(),
       const GexCalculatorScreen(), // GEX Calculator - Detailed GEX Analysis
-      const IntrinsicValueScreen(), // Intrinsic Value Calculator
+      const ProbabilityRangeScreen(), // Range + HPH/HPL + close probabilities (from now to close)
+      const FisherValuationScreen(), // Fisher + Valuation: growth/profitable list, Fisher score, DCF buy price
     ];
     return Scaffold(
       body: _error != null
@@ -207,8 +209,12 @@ class _MainNavigationState extends State<MainNavigation> {
             label: 'GEX',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance),
-            label: 'Valuation',
+            icon: Icon(Icons.show_chart),
+            label: 'Range',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.analytics),
+            label: 'Fisher & Val',
           ),
         ],
         currentIndex: _selectedIndex,
