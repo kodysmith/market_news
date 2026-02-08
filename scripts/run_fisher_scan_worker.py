@@ -8,14 +8,12 @@ Use --once to process one batch and exit (e.g. cron every hour). Use default --l
 from __future__ import annotations
 
 import argparse
-import json
 import logging
 import sys
 import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-DEBUG_LOG = ROOT / ".cursor" / "debug.log"
 sys.path.insert(0, str(ROOT))
 
 from fisher.db import get_connection, company_id_by_ticker
@@ -47,13 +45,6 @@ def claim_batch(conn, batch_size: int):
     if not rows:
         return []
     ids = [r["id"] for r in rows]
-    # #region agent log
-    try:
-        with open(DEBUG_LOG, "a") as f:
-            f.write(json.dumps({"hypothesisId": "H1", "location": "run_fisher_scan_worker.py:claim_batch", "message": "ids before UPDATE", "data": {"len": len(ids), "type_first": type(ids[0]).__name__ if ids else None, "repr_first": repr(ids[0]) if ids else None}, "timestamp": int(time.time() * 1000)}) + "\n")
-    except Exception:
-        pass
-    # #endregion
     with conn.cursor() as cur:
         cur.execute(
             """
@@ -64,13 +55,6 @@ def claim_batch(conn, batch_size: int):
             (ids,),
         )
     conn.commit()
-    # #region agent log
-    try:
-        with open(DEBUG_LOG, "a") as f:
-            f.write(json.dumps({"hypothesisId": "H1", "runId": "post-fix", "location": "run_fisher_scan_worker.py:claim_batch", "message": "claim_batch UPDATE succeeded", "data": {"len": len(ids)}, "timestamp": int(time.time() * 1000)}) + "\n")
-    except Exception:
-        pass
-    # #endregion
     return [(r["id"], r["ticker"]) for r in rows]
 
 
