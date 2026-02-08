@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:market_news_app/models/fisher_snapshot.dart';
 import 'package:market_news_app/models/valuation_data.dart';
 import 'package:market_news_app/services/fisher_service.dart';
@@ -305,30 +303,6 @@ class _FisherValuationScreenState extends State<FisherValuationScreen> {
     final divergencePct = dcfValue != null && dcfValue > 0
         ? ((result.currentPrice - dcfValue) / dcfValue * 100)
         : composite.divergencePct;
-    // #region agent log
-    try {
-      http.post(
-        Uri.parse('http://127.0.0.1:7242/ingest/08e61b0b-ebbf-4810-a2b3-957975614a22'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'location': 'fisher_valuation_screen.dart:_buildValuationCard',
-          'message': 'Valuation card: composite vs DCF',
-          'data': {
-            'ticker': result.ticker,
-            'currentPrice': result.currentPrice,
-            'composite_value': composite.value,
-            'composite_divergencePct': composite.divergencePct,
-            'composite_verdict': composite.verdict,
-            'dcfValue': dcfValue,
-            'dcf_divergencePct': divergencePct,
-          },
-          'timestamp': DateTime.now().millisecondsSinceEpoch,
-          'sessionId': 'debug-session',
-          'hypothesisId': 'H1',
-        }),
-      ).catchError((_) => Future.value(http.Response('', 0)));
-    } catch (_) {}
-    // #endregion
 
     // Use verdict that matches the DCF section when we show DCF value/divergence
     final displayVerdict = _verdictFromDivergence(divergencePct, dcfValue) ?? composite.verdict;
