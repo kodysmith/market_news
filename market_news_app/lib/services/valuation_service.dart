@@ -2,18 +2,33 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../main.dart' show apiBaseUrl;
 import '../models/valuation_data.dart';
+import 'compute_queue_service.dart';
 
-/// Service for interacting with the Intrinsic Value / Valuation API endpoints
+/// Service for interacting with the Intrinsic Value / Valuation API (Supabase cache/queue first when configured).
 class ValuationService {
-  /// Calculate intrinsic value using all 6 methods
+  /// Calculate intrinsic value using all 6 methods (Supabase cache/queue first when configured, else API).
   static Future<ValuationResult?> calculateIntrinsicValue(String ticker, {bool store = true}) async {
+    final t = ticker.toUpperCase();
+    if (ComputeQueueService.isAvailable) {
+      final result = await ComputeQueueService.getCachedOrEnqueue(
+        symbol: t,
+        taskType: ComputeTaskType.valuation,
+      );
+      if (result.ok && result.result != null) {
+        final data = result.result!;
+        if (data['error'] != null && data['valuations'] == null) return null;
+        try {
+          return ValuationResult.fromJson(data);
+        } catch (e) {
+          print('[ValuationService] Parse Supabase result: $e');
+        }
+      }
+    }
     try {
-      final url = '$apiBaseUrl/valuation/calculate?ticker=${ticker.toUpperCase()}&store=$store';
+      final url = '$apiBaseUrl/valuation/calculate?ticker=$t&store=$store';
       print('[ValuationService] Calling: $url');
-      
       final response = await http.get(Uri.parse(url));
       print('[ValuationService] Response status: ${response.statusCode}');
-      
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['error'] != null && data['valuations'] == null) {
@@ -21,10 +36,9 @@ class ValuationService {
           return null;
         }
         return ValuationResult.fromJson(data);
-      } else {
-        print('[ValuationService] Error: ${response.body}');
-        return null;
       }
+      print('[ValuationService] Error: ${response.body}');
+      return null;
     } catch (e) {
       print('[ValuationService] Exception: $e');
       return null;

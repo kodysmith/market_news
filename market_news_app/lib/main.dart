@@ -5,13 +5,13 @@ import 'package:market_news_app/models/report_data.dart';
 import 'package:market_news_app/screens/market_insights_screen.dart';
 import 'package:market_news_app/screens/market_intelligence_screen.dart';
 import 'package:market_news_app/screens/quant_chat_screen.dart';
-import 'package:market_news_app/screens/gex_calculator_screen.dart';
 import 'package:market_news_app/screens/decision_cockpit_screen.dart';
 import 'package:market_news_app/screens/probability_range_screen.dart';
 import 'package:market_news_app/screens/fisher_valuation_screen.dart';
 import 'package:market_news_app/widgets/scanner_opportunities_widget.dart';
 import 'package:market_news_app/widgets/asset_selection_provider.dart';
 import 'package:market_news_app/services/asset_selection_service.dart';
+import 'package:market_news_app/services/compute_queue_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'screens/news_screen.dart';
@@ -127,6 +127,16 @@ class _MainNavigationState extends State<MainNavigation> {
       _isLoading = true;
       _error = null;
     });
+    // When Supabase is configured, skip report.json so app works without API.
+    if (ComputeQueueService.isAvailable) {
+      if (!mounted) return;
+      setState(() {
+        _reportData = null;
+        _error = null;
+        _isLoading = false;
+      });
+      return;
+    }
     try {
       final response = await http.get(
         Uri.parse('$apiBaseUrl/report.json'),
@@ -173,7 +183,6 @@ class _MainNavigationState extends State<MainNavigation> {
       const MarketIntelligenceScreen(), // New intelligence-focused screen
       const TradeIdeasScreen(), // Trade Ideas (Allowed Only) - Regime-Aware
       NewsScreen(),
-      const GexCalculatorScreen(), // GEX Calculator - Detailed GEX Analysis
       const ProbabilityRangeScreen(), // Range + HPH/HPL + close probabilities (from now to close)
       const FisherValuationScreen(), // Fisher + Valuation: growth/profitable list, Fisher score, DCF buy price
     ];
@@ -211,10 +220,6 @@ class _MainNavigationState extends State<MainNavigation> {
           BottomNavigationBarItem(
             icon: Icon(Icons.article),
             label: 'News',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.flash_on),
-            label: 'GEX',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.show_chart),
@@ -269,6 +274,16 @@ class _SimplifiedDashboardState extends State<SimplifiedDashboard> {
       _isLoading = true;
       _error = null;
     });
+    // When Supabase is configured, skip report.json so app works without API.
+    if (ComputeQueueService.isAvailable) {
+      if (!mounted) return;
+      setState(() {
+        _reportData = null;
+        _error = null;
+        _isLoading = false;
+      });
+      return;
+    }
     try {
       final response = await http.get(
         Uri.parse('$apiBaseUrl/report.json'),

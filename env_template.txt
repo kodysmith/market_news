@@ -3,6 +3,15 @@
 # Or Supabase: get URI from Project Settings → Database (Session mode port 5432 for worker)
 DATABASE_URL=postgresql://user:pass@host:5432/dbname
 
+# Supabase (preferred for GEX/Cockpit precompute – no Postgres URI or password encoding)
+# From Project Settings → API: Project URL and secret key (sb_secret_...; not publishable/anon). See https://supabase.com/docs/guides/api/api-keys
+SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
+SUPABASE_SECRET_KEY=your_secret_key_here
+
+# Optional fallback: Postgres URI for precompute (only if SUPABASE_URL + SUPABASE_SECRET_KEY not set).
+# In Supabase: Connect → Session/Transaction pooler URI (IPv4). Password with ! use %21 (e.g. !! -> %21%21).
+# SUPABASE_DB_URL=postgresql://postgres.[ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres
+
 # Alpha Vantage API Key (get from https://www.alphavantage.co/support/#api-key)
 ALPHAVANTAGE_API_KEY=your_alpha_vantage_key_here
 

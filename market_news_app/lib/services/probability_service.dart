@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../main.dart' show apiBaseUrl, apiSecretKey;
+import 'compute_queue_service.dart';
 
 /// Response from GET /probability/range (Panel A/B/C).
 class ProbabilityRangeResponse {
@@ -125,9 +126,24 @@ class HistogramBucket {
 }
 
 class ProbabilityService {
+  /// Get probability range (Supabase cache/queue first when configured, else API).
   static Future<ProbabilityRangeResponse?> getProbabilityRange(String ticker, {int? minutesToClose}) async {
+    final t = ticker.toUpperCase();
+    if (ComputeQueueService.isAvailable) {
+      final result = await ComputeQueueService.getCachedOrEnqueue(
+        symbol: t,
+        taskType: ComputeTaskType.probability,
+      );
+      if (result.ok && result.result != null) {
+        try {
+          return ProbabilityRangeResponse.fromJson(result.result!);
+        } catch (e) {
+          print('Error parsing probability from Supabase: $e');
+        }
+      }
+    }
     try {
-      final params = <String, String>{'ticker': ticker.toUpperCase()};
+      final params = <String, String>{'ticker': t};
       if (minutesToClose != null) params['minutes_to_close'] = minutesToClose.toString();
       final uri = Uri.parse('$apiBaseUrl/probability/range').replace(queryParameters: params);
       final response = await http.get(

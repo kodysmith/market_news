@@ -1,172 +1,82 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import '../models/gex_data.dart';
-import '../main.dart' show apiBaseUrl, apiSecretKey;
+import 'compute_queue_service.dart';
 
+/// GEX service: reads only from Supabase compute_result_cache (precomputed every 5 min). No API.
 class GexService {
-  /// Calculate GEX for a specific ticker
+  /// Calculate GEX for a ticker. Tries precompute cache first, then enqueues and waits if missing.
   static Future<GexCalculation?> calculateGex(String ticker) async {
-    try {
-      final uri = Uri.parse('$apiBaseUrl/gex/calculate').replace(
-        queryParameters: {'ticker': ticker.toUpperCase()},
+    final t = ticker.toUpperCase();
+    if (!ComputeQueueService.isAvailable) return null;
+    Map<String, dynamic>? result = await ComputeQueueService.getCachedResultFromTable(
+      symbol: t,
+      taskType: ComputeTaskType.gex,
+    );
+    if (result == null) {
+      final jobResult = await ComputeQueueService.getCachedOrEnqueue(
+        symbol: t,
+        taskType: ComputeTaskType.gex,
       );
-      
-      print('🌐 Calling GEX API: $uri');
-      
-      final response = await http.get(
-        uri,
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiSecretKey,
-        },
-      );
-      
-      print('📡 GEX API response status: ${response.statusCode}');
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        print('✅ GEX calculation response received for $ticker');
-        try {
-          return GexCalculation.fromJson(data);
-        } catch (parseError) {
-          print('❌ Error parsing GEX response: $parseError');
-          print('Response data: ${data.toString().substring(0, 200)}...');
-          return null;
-        }
-      } else {
-        print('❌ Error calculating GEX: ${response.statusCode} - ${response.body}');
-        return null;
+      if (jobResult.ok && jobResult.result != null) {
+        result = jobResult.result;
       }
-    } catch (e, stackTrace) {
-      print('❌ Error fetching GEX calculation: $e');
-      print('Stack trace: $stackTrace');
+    }
+    if (result == null) return null;
+    try {
+      return GexCalculation.fromJson(result);
+    } catch (e) {
+      print('❌ Error parsing GEX from Supabase: $e');
       return null;
     }
   }
 
-  /// Get batch GEX summary for all configured tickers or specific tickers
+  /// Get batch GEX summary from cache (all core symbols). No API.
   static Future<GexSummary?> getGexSummary({List<String>? tickers}) async {
-    try {
-      final queryParams = <String, String>{};
-      if (tickers != null && tickers.isNotEmpty) {
-        queryParams['tickers'] = tickers.join(',');
-      }
-
-      final uri = Uri.parse('$apiBaseUrl/gex/summary').replace(
-        queryParameters: queryParams,
-      );
-
-      final response = await http.get(
-        uri,
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiSecretKey,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return GexSummary.fromJson(data);
-      } else {
-        print('Error getting GEX summary: ${response.statusCode} - ${response.body}');
-        return null;
-      }
-    } catch (e) {
-      print('Error fetching GEX summary: $e');
-      return null;
+    if (!ComputeQueueService.isAvailable) return null;
+    final rows = await ComputeQueueService.getAllCachedResultsForTask(ComputeTaskType.gex);
+    if (rows.isEmpty) return null;
+    final tickerSummaries = <GexTickerSummary>[];
+    for (final row in rows) {
+      final symbol = row['symbol'] as String? ?? '';
+      final result = row['result'] as Map<String, dynamic>?;
+      if (result == null) continue;
+      final metrics = result['metrics'] as Map<String, dynamic>? ?? {};
+      tickerSummaries.add(GexTickerSummary(
+        ticker: symbol,
+        spot: (result['spot_price'] as num?)?.toDouble() ?? (metrics['spot_price'] as num?)?.toDouble() ?? 0.0,
+        flipLine: (metrics['flip_line'] as num?)?.toDouble(),
+        putWall: (metrics['put_wall'] as num?)?.toDouble() ?? 0.0,
+        callWall: (metrics['call_wall'] as num?)?.toDouble() ?? 0.0,
+        totalGex: (metrics['total_gex'] as num?)?.toDouble() ?? 0.0,
+        regime: metrics['regime'] as String? ?? 'unknown',
+      ));
     }
+    if (tickerSummaries.isEmpty) return null;
+    return GexSummary(
+      tickers: tickerSummaries,
+      errors: null,
+      timestamp: DateTime.now().millisecondsSinceEpoch / 1000.0,
+    );
   }
 
-  /// Get list of supported GEX tickers
+  /// Get list of supported GEX tickers (core symbols from Supabase precompute).
   static Future<List<String>> getGexTickers() async {
-    try {
-      final uri = Uri.parse('$apiBaseUrl/gex/tickers');
-      
-      final response = await http.get(
-        uri,
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiSecretKey,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final tickers = (data['tickers'] as List)
-            .map((t) => t.toString().toUpperCase())
-            .toList();
-        return tickers;
-      } else {
-        print('Error getting GEX tickers: ${response.statusCode}');
-        return ['SPY', 'SPX', 'QQQ']; // Default fallback
-      }
-    } catch (e) {
-      print('Error fetching GEX tickers: $e');
-      return ['SPY', 'SPX', 'QQQ']; // Default fallback
+    if (ComputeQueueService.isAvailable) {
+      return List.from(ComputeQueueService.coreSymbols);
     }
+    return List.from(ComputeQueueService.coreSymbols);
   }
 
-  /// Get max pain strike for a ticker and expiration (dte or specific expiration date).
+  /// Max pain: not available in Supabase-only mode (no API). Returns null.
   static Future<MaxPainResult?> getMaxPain(
     String ticker, {
     int? dte,
     String? expiration,
   }) async {
-    try {
-      final queryParams = <String, String>{'ticker': ticker.toUpperCase()};
-      if (dte != null) queryParams['dte'] = dte.toString();
-      if (expiration != null && expiration.isNotEmpty) queryParams['expiration'] = expiration;
-
-      final uri = Uri.parse('$apiBaseUrl/gex/max-pain').replace(
-        queryParameters: queryParams,
-      );
-
-      final response = await http.get(
-        uri,
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiSecretKey,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return MaxPainResult.fromJson(data);
-      } else {
-        print('Error getting max pain: ${response.statusCode} - ${response.body}');
-        return null;
-      }
-    } catch (e) {
-      print('Error fetching max pain: $e');
-      return null;
-    }
+    return null;
   }
 
-  /// Compare spot prices from different data sources
+  /// Price comparison: not available in Supabase-only mode (no API). Returns null.
   static Future<Map<String, dynamic>?> getPriceComparison(String ticker) async {
-    try {
-      final uri = Uri.parse('$apiBaseUrl/gex/price-comparison').replace(
-        queryParameters: {'ticker': ticker.toUpperCase()},
-      );
-
-      final response = await http.get(
-        uri,
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiSecretKey,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return data;
-      } else {
-        print('Error getting price comparison: ${response.statusCode}');
-        return null;
-      }
-    } catch (e) {
-      print('Error fetching price comparison: $e');
-      return null;
-    }
+    return null;
   }
 }

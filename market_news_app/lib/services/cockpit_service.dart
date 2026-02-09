@@ -1,46 +1,44 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../main.dart';
+import 'compute_queue_service.dart';
 
-/// Service for interacting with the Decision Cockpit API
+/// Service for Decision Cockpit: reads only from Supabase compute_result_cache (precomputed every 5 min). No API for state/tickers.
 class CockpitService {
-  /// Get the complete cockpit state for a ticker
+  /// Get the complete cockpit state for a ticker. Tries precompute cache first, then enqueues and waits if missing.
+  /// Returns null if Supabase not configured, or parse error. Enqueues so worker can fill data for non-core symbols.
   static Future<CockpitState?> getCockpitState(String ticker) async {
-    final url = '$apiBaseUrl/cockpit/state?ticker=$ticker';
-    print('[CockpitService] Fetching: $url');
-    
-    try {
-      final response = await http.get(Uri.parse(url));
-      print('[CockpitService] Response status: ${response.statusCode}');
-      
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-        return CockpitState.fromJson(json);
-      } else {
-        print('[CockpitService] Error: ${response.body}');
-        return null;
+    final t = ticker.toUpperCase();
+    if (!ComputeQueueService.isAvailable) {
+      print('[CockpitService] Supabase not configured (SUPABASE_URL, SUPABASE_ANON_KEY)');
+      return null;
+    }
+    Map<String, dynamic>? result = await ComputeQueueService.getCachedResultFromTable(
+      symbol: t,
+      taskType: ComputeTaskType.cockpit,
+    );
+    if (result == null) {
+      final jobResult = await ComputeQueueService.getCachedOrEnqueue(
+        symbol: t,
+        taskType: ComputeTaskType.cockpit,
+      );
+      if (jobResult.ok && jobResult.result != null) {
+        result = jobResult.result;
       }
-    } catch (e) {
-      print('[CockpitService] Exception: $e');
+    }
+    if (result == null) return null;
+    try {
+      return CockpitState.fromJson(result);
+    } catch (e, st) {
+      print('[CockpitService] Parse Supabase result: $e');
+      print(st);
       return null;
     }
   }
-  
-  /// Get supported tickers for the cockpit
+
+  /// Get supported tickers (core symbols from Supabase precompute).
   static Future<List<String>> getSupportedTickers() async {
-    final url = '$apiBaseUrl/cockpit/tickers';
-    
-    try {
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-        return List<String>.from(json['tickers'] ?? ['SPY', 'QQQ', 'IWM']);
-      }
-    } catch (e) {
-      print('[CockpitService] Failed to get tickers: $e');
-    }
-    
-    return ['SPY', 'QQQ', 'IWM'];
+    return List.from(ComputeQueueService.coreSymbols);
   }
   
   /// Get upcoming market events for cockpit display

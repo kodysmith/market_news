@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/cockpit_service.dart';
+import '../services/compute_queue_service.dart';
 import '../services/gex_service.dart';
 import '../models/gex_data.dart';
 import '../widgets/asset_selector_widget.dart';
@@ -82,7 +83,12 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
         _gexChartData = results[2] as GexCalculation?;
         _isLoading = false;
         if (_state == null) {
-          _error = 'Failed to load cockpit state';
+          if (!ComputeQueueService.isAvailable) {
+            _error = 'Supabase not configured. Set SUPABASE_URL and SUPABASE_ANON_KEY in market_news_app/.env';
+          } else {
+            _error = 'No data for $_selectedTicker. Core symbols (${ComputeQueueService.coreSymbols.join(", ")}) are precomputed. '
+                'For other symbols, ensure the compute worker is running, or choose a core symbol above.';
+          }
         }
       });
     } catch (e) {
@@ -102,31 +108,78 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
   }
 
   Widget _buildBody() {
+    // Always show selector bar so user can switch symbol even when no data or error.
+    final selectorBar = _buildSelectorBar();
+
     if (_isLoading) {
-      return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(color: Color(0xFF58A6FF)),
-            SizedBox(height: 16),
-            Text('Loading cockpit...', style: TextStyle(color: Colors.white70, fontSize: 16)),
-          ],
-        ),
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          selectorBar,
+          Expanded(
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const CircularProgressIndicator(color: Color(0xFF58A6FF)),
+                  const SizedBox(height: 16),
+                  const Text('Loading cockpit...', style: TextStyle(color: Colors.white70, fontSize: 16)),
+                  const SizedBox(height: 8),
+                  Text('Fetching data for $_selectedTicker', style: const TextStyle(color: Colors.white54, fontSize: 13)),
+                ],
+              ),
+            ),
+          ),
+        ],
       );
     }
 
     if (_error != null || _state == null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, color: Colors.red, size: 48),
-            const SizedBox(height: 16),
-            Text(_error ?? 'Unknown error', style: const TextStyle(color: Colors.white70, fontSize: 16)),
-            const SizedBox(height: 16),
-            ElevatedButton(onPressed: _loadData, child: const Text('Retry')),
-          ],
-        ),
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          selectorBar,
+          Expanded(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      _error != null ? Icons.error_outline : Icons.info_outline,
+                      color: _error != null ? Colors.red : Colors.amber,
+                      size: 48,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      _error ?? 'No data for $_selectedTicker.',
+                      style: const TextStyle(color: Colors.white70, fontSize: 15),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Choose another symbol above, or retry if a worker is running.',
+                      style: TextStyle(color: Colors.white54, fontSize: 13),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 20),
+                    FilledButton.icon(
+                      onPressed: _loadData,
+                      icon: const Icon(Icons.refresh, size: 18),
+                      label: const Text('Retry'),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: const Color(0xFF238636),
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       );
     }
 
@@ -154,6 +207,28 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
             _buildEventsSection(),
           ],
         ),
+      ),
+    );
+  }
+
+  /// Minimal bar with asset selector only (used when loading or no data so user can always switch symbol).
+  Widget _buildSelectorBar() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: const BoxDecoration(
+        color: Color(0xFF161B22),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 280,
+            child: AssetSelectorWidget(
+              compact: true,
+              showQuickButtons: false,
+              onAssetChanged: (_) => _loadData(),
+            ),
+          ),
+        ],
       ),
     );
   }

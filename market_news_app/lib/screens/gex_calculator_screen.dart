@@ -4,7 +4,7 @@ import 'package:market_news_app/models/gex_data.dart';
 import '../widgets/asset_selector_widget.dart';
 import '../widgets/asset_selection_provider.dart';
 import '../widgets/gex_price_bar_widget.dart';
-import '../main.dart' show apiBaseUrl;
+import '../services/compute_queue_service.dart';
 
 class GexCalculatorScreen extends StatefulWidget {
   const GexCalculatorScreen({super.key});
@@ -167,9 +167,9 @@ class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
               builder: (context) => AlertDialog(
                 title: const Text('API Configuration'),
                 content: Text(
-                  'Current API URL: ${apiBaseUrl}\n\n'
-                  'Default is localhost (same machine). For a device on the network,\n'
-                  'set API_BASE_URL in .env (e.g. http://192.168.1.31:5000).',
+                  'GEX data is read from Supabase (compute_result_cache).\n\n'
+                  'Set SUPABASE_URL and SUPABASE_ANON_KEY in .env. '
+                  'Core symbols: ${ComputeQueueService.coreSymbols.join(", ")}.',
                 ),
                 actions: [
                   TextButton(

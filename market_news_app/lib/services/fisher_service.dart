@@ -1,14 +1,48 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../main.dart' show apiBaseUrl;
 import '../models/fisher_snapshot.dart';
 
-/// Service for Fisher score API: snapshot, delta, evidence, universe.
+/// Service for Fisher score: reads from Supabase when configured, else localhost API.
 class FisherService {
-  /// Get latest Fisher score snapshot for a ticker.
-  static Future<FisherSnapshot?> getSnapshot(String ticker) async {
+  static bool get _useSupabase {
     try {
-      final url = '$apiBaseUrl/fisher/snapshot?ticker=${ticker.toUpperCase()}';
+      Supabase.instance;
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Get latest Fisher score snapshot for a ticker (Supabase first, then API).
+  static Future<FisherSnapshot?> getSnapshot(String ticker) async {
+    final t = ticker.toUpperCase();
+    if (_useSupabase) {
+      try {
+        final client = Supabase.instance.client;
+        final company = await client.from('fisher_company').select('id, ticker').eq('ticker', t).maybeSingle();
+        if (company == null) return null;
+        final companyId = company['id'] as String?;
+        final snapshot = await client.from('fisher_score_snapshot').select().eq('company_id', companyId!).order('snapshot_at', ascending: false).limit(1).maybeSingle();
+        if (snapshot == null) return null;
+        final snapshotAt = snapshot['snapshot_at'];
+        final map = <String, dynamic>{
+          'company_id': companyId,
+          'ticker': company['ticker'],
+          'snapshot_at': snapshotAt is DateTime ? snapshotAt.toIso8601String() : snapshotAt?.toString(),
+          'total_score': snapshot['total_score'],
+          'version': snapshot['version'],
+          'points': snapshot['points'] ?? {},
+          'category_scores': snapshot['category_scores'] ?? {},
+        };
+        return FisherSnapshot.fromJson(map);
+      } catch (e) {
+        print('[FisherService] getSnapshot Supabase: $e');
+      }
+    }
+    try {
+      final url = '$apiBaseUrl/fisher/snapshot?ticker=$t';
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final data = json.decode(response.body) as Map<String, dynamic>?;
@@ -24,8 +58,56 @@ class FisherService {
 
   /// Get delta (what changed since last quarter) for a ticker.
   static Future<FisherDelta?> getDelta(String ticker) async {
+    final t = ticker.toUpperCase();
+    if (_useSupabase) {
+      try {
+        final client = Supabase.instance.client;
+        final company = await client.from('fisher_company').select('id').eq('ticker', t).maybeSingle();
+        if (company == null) return null;
+        final companyId = company['id'] as String;
+        final rows = await client.from('fisher_score_snapshot').select('snapshot_at, points').eq('company_id', companyId).order('snapshot_at', ascending: false).limit(2);
+        if (rows.isEmpty) return FisherDelta(ticker: t, pointDeltas: {}, message: 'No snapshots');
+        if (rows.length < 2) {
+          final r = rows.first;
+          final at = r['snapshot_at'];
+          return FisherDelta(
+            ticker: t,
+            currentSnapshotAt: at is DateTime ? at.toIso8601String() : at?.toString(),
+            previousSnapshotAt: null,
+            pointDeltas: {},
+            message: 'Only one snapshot; no delta available.',
+          );
+        }
+        final curr = rows[0];
+        final prev = rows[1];
+        final currPts = curr['points'] as Map<String, dynamic>? ?? {};
+        final prevPts = prev['points'] as Map<String, dynamic>? ?? {};
+        final pointDeltas = <String, double>{};
+        for (final pid in {...currPts.keys, ...prevPts.keys}) {
+          final cScore = _pointScore(currPts[pid]);
+          final pScore = _pointScore(prevPts[pid]);
+          if (cScore != null && pScore != null) {
+            pointDeltas[pid.toString()] = (cScore - pScore).roundToDouble();
+          } else if (cScore != null) {
+            pointDeltas[pid.toString()] = cScore;
+          } else if (pScore != null) {
+            pointDeltas[pid.toString()] = -pScore;
+          }
+        }
+        final currAt = curr['snapshot_at'];
+        final prevAt = prev['snapshot_at'];
+        return FisherDelta(
+          ticker: t,
+          currentSnapshotAt: currAt is DateTime ? currAt.toIso8601String() : currAt?.toString(),
+          previousSnapshotAt: prevAt is DateTime ? prevAt.toIso8601String() : prevAt?.toString(),
+          pointDeltas: pointDeltas,
+        );
+      } catch (e) {
+        print('[FisherService] getDelta Supabase: $e');
+      }
+    }
     try {
-      final url = '$apiBaseUrl/fisher/delta?ticker=${ticker.toUpperCase()}';
+      final url = '$apiBaseUrl/fisher/delta?ticker=$t';
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final data = json.decode(response.body) as Map<String, dynamic>?;
@@ -39,10 +121,48 @@ class FisherService {
     }
   }
 
+  static double? _pointScore(dynamic pt) {
+    if (pt == null || pt is! Map) return null;
+    final v = pt['score'];
+    if (v == null) return null;
+    if (v is num) return v.toDouble();
+    if (v is String) return double.tryParse(v);
+    return null;
+  }
+
   /// Get evidence for a given point.
   static Future<FisherEvidence?> getEvidence(String ticker, String pointId) async {
+    final t = ticker.toUpperCase();
+    if (_useSupabase) {
+      try {
+        final client = Supabase.instance.client;
+        final company = await client.from('fisher_company').select('id').eq('ticker', t).maybeSingle();
+        if (company == null) return null;
+        final companyId = company['id'] as String;
+        final row = await client.from('fisher_score_snapshot').select('points').eq('company_id', companyId).order('snapshot_at', ascending: false).limit(1).maybeSingle();
+        if (row == null) return null;
+        final points = row['points'] as Map<String, dynamic>? ?? {};
+        final pt = points[pointId] ?? points[int.tryParse(pointId)];
+        if (pt == null || pt is! Map) return null;
+        final evidence = pt['evidence'];
+        double? confidence;
+        final c = pt['confidence'];
+        if (c is num) confidence = c.toDouble();
+        else if (c is String) confidence = double.tryParse(c);
+        return FisherEvidence(
+          ticker: t,
+          pointId: pointId,
+          score: _pointScore(pt),
+          confidence: confidence,
+          evidence: evidence is List ? evidence : [],
+          featureValues: pt['feature_values'] is Map<String, dynamic> ? Map<String, dynamic>.from(pt['feature_values'] as Map) : {},
+        );
+      } catch (e) {
+        print('[FisherService] getEvidence Supabase: $e');
+      }
+    }
     try {
-      final url = '$apiBaseUrl/fisher/evidence?ticker=${ticker.toUpperCase()}&point_id=$pointId';
+      final url = '$apiBaseUrl/fisher/evidence?ticker=$t&point_id=$pointId';
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final data = json.decode(response.body) as Map<String, dynamic>?;
@@ -56,8 +176,17 @@ class FisherService {
     }
   }
 
-  /// Get Fisher universe (S&P 500 tickers).
+  /// Get Fisher universe (tickers from fisher_company when Supabase; else API).
   static Future<FisherUniverse?> getUniverse() async {
+    if (_useSupabase) {
+      try {
+        final rows = await Supabase.instance.client.from('fisher_company').select('ticker').order('ticker');
+        final tickers = (rows as List).map((r) => (r as Map)['ticker']?.toString() ?? '').where((s) => s.isNotEmpty).toList();
+        return FisherUniverse(tickers: tickers);
+      } catch (e) {
+        print('[FisherService] getUniverse Supabase: $e');
+      }
+    }
     try {
       final url = '$apiBaseUrl/fisher/universe';
       final response = await http.get(Uri.parse(url));

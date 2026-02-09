@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/news_item.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import '../main.dart' show apiBaseUrl, apiSecretKey;
@@ -22,18 +23,58 @@ class _NewsScreenState extends State<NewsScreen> {
     _futureNews = fetchNews();
   }
 
+  /// Try Supabase news_feed first (when configured); else API news.json.
   Future<List<NewsItem>> fetchNews() async {
+    if (_supabaseAvailable()) {
+      final fromDb = await _fetchNewsFromSupabase();
+      if (fromDb != null) return fromDb;
+    }
+    return _fetchNewsFromApi();
+  }
+
+  bool _supabaseAvailable() {
+    try {
+      Supabase.instance;
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<List<NewsItem>?> _fetchNewsFromSupabase() async {
+    try {
+      final rows = await Supabase.instance.client
+          .from('news_feed')
+          .select('headline, source, url, summary')
+          .order('created_at', ascending: false)
+          .limit(100);
+      if (rows.isEmpty) return null;
+      return rows.map((r) {
+        final m = Map<String, dynamic>.from(r as Map);
+        return NewsItem(
+          headline: m['headline'] as String? ?? '',
+          source: m['source'] as String? ?? '',
+          url: m['url'] as String? ?? '',
+          summary: m['summary'] as String? ?? '',
+        );
+      }).toList();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<List<NewsItem>> _fetchNewsFromApi() async {
     try {
       final response = await http.get(
         Uri.parse('$apiBaseUrl/news.json'),
         headers: {'x-api-key': apiSecretKey},
       );
       if (response.statusCode == 200) {
-        final List<dynamic>? data = json.decode(response.body);
+        final data = json.decode(response.body);
         if (data == null || data is! List) {
           throw Exception('Received invalid data from backend.');
         }
-        return data.map((item) => NewsItem.fromJson(item)).toList();
+        return data.map<NewsItem>((item) => NewsItem.fromJson(Map<String, dynamic>.from(item as Map))).toList();
       } else {
         throw Exception('Failed to load news from backend (status: ${response.statusCode})');
       }
