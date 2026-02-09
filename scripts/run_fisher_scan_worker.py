@@ -107,8 +107,14 @@ def mark_done(conn, ids, error_text=None):
     conn.commit()
 
 
-def process_batch(batch_size: int, delay_after_batch: float) -> int:
-    """Process one batch; return number processed, or 0 if queue empty."""
+# Score every N tickers so partial results appear in the app without waiting for the full batch.
+SCORE_SUBBATCH = 10
+
+
+def process_batch(batch_size: int, delay_after_batch: float, score_every: int = SCORE_SUBBATCH) -> int:
+    """Process one batch; return number processed, or 0 if queue empty.
+    Runs EDGAR + scoring in sub-batches of score_every so the app can show partial results (e.g. after 10 tickers).
+    """
     with get_connection() as conn:
         batch = claim_batch(conn, batch_size)
     if not batch:
@@ -118,17 +124,19 @@ def process_batch(batch_size: int, delay_after_batch: float) -> int:
     tickers = [b[1] for b in batch]
 
     try:
-        logger.info("Watcher: %s tickers", len(tickers))
-        run_watcher(tickers=tickers, universe="sec")
-        with get_connection() as conn:
-            company_ids = []
-            for t in tickers:
-                cid = company_id_by_ticker(conn, t)
-                if cid:
-                    company_ids.append(cid)
-        if company_ids:
-            logger.info("Scoring: %s companies", len(company_ids))
-            run_scoring_job(company_ids=company_ids)
+        logger.info("Watcher + scoring: %s tickers (sub-batches of %s)", len(tickers), score_every)
+        for i in range(0, len(tickers), score_every):
+            chunk = tickers[i : i + score_every]
+            run_watcher(tickers=chunk, universe="sec")
+            with get_connection() as conn:
+                company_ids = []
+                for t in chunk:
+                    cid = company_id_by_ticker(conn, t)
+                    if cid:
+                        company_ids.append(cid)
+            if company_ids:
+                run_scoring_job(company_ids=company_ids)
+                logger.info("Scored %s companies (batch %s/%s)", len(company_ids), (i // score_every) + 1, (len(tickers) + score_every - 1) // score_every)
         with get_connection() as conn:
             mark_done(conn, ids)
         logger.info("Batch done: %s tickers", len(tickers))
@@ -156,16 +164,22 @@ def main() -> int:
         default=0,
         help="Seconds to sleep after each batch (default 0)",
     )
+    ap.add_argument(
+        "--score-every",
+        type=int,
+        default=SCORE_SUBBATCH,
+        help="Run EDGAR + scoring every N tickers so partial results appear sooner (default %s)" % SCORE_SUBBATCH,
+    )
     args = ap.parse_args()
 
     try:
         if args.once:
-            n = process_batch(args.batch, args.delay)
+            n = process_batch(args.batch, args.delay, score_every=args.score_every)
             print(f"Processed {n} tickers.")
             return 0
         total = 0
         while True:
-            n = process_batch(args.batch, args.delay)
+            n = process_batch(args.batch, args.delay, score_every=args.score_every)
             if n == 0:
                 break
             total += n

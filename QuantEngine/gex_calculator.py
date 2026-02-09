@@ -702,6 +702,10 @@ def get_underlying_spot_price_v2(api_key: str, ticker: str) -> Optional[float]:
     return None
 
 
+# Tickers we treat as indices (Massive may support these; stock snapshot often requires a higher plan).
+_SPOT_INDICES = frozenset({"SPX", "NDX", "DJI", "RUT", "VIX", "XSP"})
+
+
 def get_spot_price(
     ticker: str,
     massive_api_key: Optional[str] = None,
@@ -709,19 +713,16 @@ def get_spot_price(
 ) -> Optional[float]:
     """
     Get spot price with smart routing.
-    
-    Priority:
-    1. Massive API v2 (same source as options chain - reduces discrepancies)
-    2. For indices: yfinance
-    3. For stocks: Alpha Vantage → yfinance
+
+    For indices (SPX, NDX, etc.): try Massive v2 then yfinance.
+    For stocks: skip Massive (stock snapshot often not allowed) and use Alpha Vantage → yfinance.
     """
-    if massive_api_key:
+    is_index = ticker in _SPOT_INDICES
+    if massive_api_key and is_index:
         spot = get_underlying_spot_price_v2(massive_api_key, ticker)
         if spot:
             return spot
-    
-    is_index = ticker in ["SPX", "NDX", "DJI", "RUT", "VIX", "XSP"]
-    
+
     if is_index:
         spot = get_spot_from_yfinance(ticker)
         if spot:
@@ -734,7 +735,7 @@ def get_spot_price(
         spot = get_spot_from_yfinance(ticker)
         if spot:
             return spot
-    
+
     return None
 
 
@@ -1855,12 +1856,12 @@ def get_spot_price_comparison(
     massive_api_key: Optional[str] = None,
     alphavantage_api_key: Optional[str] = None
 ) -> Dict[str, Optional[float]]:
-    """Get spot price from all sources for comparison"""
+    """Get spot price from all sources for comparison. Massive only for indices (stock snapshot often not allowed)."""
     result = {}
-    
-    if massive_api_key:
+
+    if massive_api_key and ticker in _SPOT_INDICES:
         result['massive'] = get_underlying_spot_price_v2(massive_api_key, ticker)
-    
+
     if alphavantage_api_key:
         result['alphavantage'] = get_spot_from_alpha_vantage(alphavantage_api_key, ticker)
     

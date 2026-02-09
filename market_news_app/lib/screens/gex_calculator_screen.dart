@@ -17,6 +17,7 @@ class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
   GexCalculation? _gexData;
   GexSummary? _summaryData;
   MaxPainResult? _maxPainData;
+  DateTime? _lastCacheUpdate;
   bool _isLoading = false;
   String? _error;
   bool _showSummary = false;
@@ -120,12 +121,13 @@ class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
           });
         }
       } else {
-        final data = await GexService.calculateGex(_selectedTicker);
+        final result = await GexService.calculateGex(_selectedTicker);
         if (mounted) {
           setState(() {
-            _gexData = data;
+            _gexData = result.calculation;
+            _lastCacheUpdate = result.updatedAt;
             _isLoading = false;
-            if (data == null) {
+            if (result.calculation == null) {
               _error = 'Failed to load GEX data for $_selectedTicker. Check API connection and ensure GEX endpoints are available.';
             } else {
               print('✅ GEX data loaded successfully for $_selectedTicker');
@@ -191,6 +193,8 @@ class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
           children: [
             // Controls Section
             _buildControlsSection(),
+            const SizedBox(height: 12),
+            if (!_showSummary && !_showMaxPain) _buildCacheStalenessBanner(),
             const SizedBox(height: 20),
 
             // Error Display
@@ -206,6 +210,53 @@ class _GexCalculatorScreenState extends State<GexCalculatorScreen> {
                   : (_showSummary ? _buildSummaryView() : _buildDetailView()),
           ],
         ),
+      ),
+    );
+  }
+
+  bool get _isCacheStale {
+    if (_lastCacheUpdate == null) return false;
+    return DateTime.now().difference(_lastCacheUpdate!) > cacheStalenessThreshold;
+  }
+
+  String get _cacheAgeLabel {
+    if (_lastCacheUpdate == null) return '';
+    final diff = DateTime.now().difference(_lastCacheUpdate!);
+    if (diff.inMinutes < 1) return 'Updated just now';
+    if (diff.inMinutes == 1) return 'Updated 1 min ago';
+    return 'Updated ${diff.inMinutes} min ago';
+  }
+
+  Widget _buildCacheStalenessBanner() {
+    if (_lastCacheUpdate == null) return const SizedBox.shrink();
+    final stale = _isCacheStale;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: stale ? const Color(0xFF3D1F00) : const Color(0xFF161B22),
+        borderRadius: BorderRadius.circular(6),
+        border: stale ? Border.all(color: const Color(0xFFD29922), width: 1) : null,
+      ),
+      child: Row(
+        children: [
+          Icon(
+            stale ? Icons.warning_amber_rounded : Icons.schedule,
+            size: 20,
+            color: stale ? const Color(0xFFD29922) : Colors.white54,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              stale
+                  ? 'Data may be stale ($_cacheAgeLabel). Use other sources if the service has stopped.'
+                  : _cacheAgeLabel,
+              style: TextStyle(
+                color: stale ? const Color(0xFFD29922) : Colors.white54,
+                fontSize: 13,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

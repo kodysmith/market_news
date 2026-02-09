@@ -3,37 +3,53 @@ import 'package:http/http.dart' as http;
 import '../main.dart';
 import 'compute_queue_service.dart';
 
+/// Wrapper for cockpit state plus cache timestamp (for staleness checks).
+class CockpitStateResult {
+  final CockpitState? state;
+  final DateTime? updatedAt;
+
+  CockpitStateResult({this.state, this.updatedAt});
+}
+
 /// Service for Decision Cockpit: reads only from Supabase compute_result_cache (precomputed every 5 min). No API for state/tickers.
 class CockpitService {
-  /// Get the complete cockpit state for a ticker. Tries precompute cache first, then enqueues and waits if missing.
-  /// Returns null if Supabase not configured, or parse error. Enqueues so worker can fill data for non-core symbols.
-  static Future<CockpitState?> getCockpitState(String ticker) async {
+  /// Get the complete cockpit state for a ticker plus cache updated_at. Tries precompute cache first, then enqueues and waits if missing.
+  /// Returns state and updatedAt for staleness; updatedAt is null when data came from enqueue-and-wait.
+  static Future<CockpitStateResult> getCockpitState(String ticker) async {
     final t = ticker.toUpperCase();
     if (!ComputeQueueService.isAvailable) {
       print('[CockpitService] Supabase not configured (SUPABASE_URL, SUPABASE_ANON_KEY)');
-      return null;
+      return CockpitStateResult(state: null, updatedAt: null);
     }
-    Map<String, dynamic>? result = await ComputeQueueService.getCachedResultFromTable(
+    final cached = await ComputeQueueService.getCachedResultFromTable(
       symbol: t,
       taskType: ComputeTaskType.cockpit,
     );
-    if (result == null) {
-      final jobResult = await ComputeQueueService.getCachedOrEnqueue(
-        symbol: t,
-        taskType: ComputeTaskType.cockpit,
-      );
-      if (jobResult.ok && jobResult.result != null) {
-        result = jobResult.result;
+    if (cached != null) {
+      try {
+        final state = CockpitState.fromJson(cached.result);
+        return CockpitStateResult(state: state, updatedAt: cached.updatedAt);
+      } catch (e, st) {
+        print('[CockpitService] Parse Supabase result: $e');
+        print(st);
+        return CockpitStateResult(state: null, updatedAt: cached.updatedAt);
       }
     }
-    if (result == null) return null;
-    try {
-      return CockpitState.fromJson(result);
-    } catch (e, st) {
-      print('[CockpitService] Parse Supabase result: $e');
-      print(st);
-      return null;
+    final jobResult = await ComputeQueueService.getCachedOrEnqueue(
+      symbol: t,
+      taskType: ComputeTaskType.cockpit,
+    );
+    if (jobResult.ok && jobResult.result != null) {
+      try {
+        final state = CockpitState.fromJson(jobResult.result!);
+        return CockpitStateResult(state: state, updatedAt: null);
+      } catch (e, st) {
+        print('[CockpitService] Parse enqueue result: $e');
+        print(st);
+        return CockpitStateResult(state: null, updatedAt: null);
+      }
     }
+    return CockpitStateResult(state: null, updatedAt: null);
   }
 
   /// Get supported tickers (core symbols from Supabase precompute).

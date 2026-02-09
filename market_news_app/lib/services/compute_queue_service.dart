@@ -18,6 +18,17 @@ class ComputeJobResult {
   ComputeJobResult({required this.ok, this.result, this.error});
 }
 
+/// Cache row with result and when it was last updated (for staleness checks).
+class CachedResultWithTimestamp {
+  final Map<String, dynamic> result;
+  final DateTime? updatedAt;
+
+  CachedResultWithTimestamp({required this.result, this.updatedAt});
+}
+
+/// Staleness threshold: data older than this is considered stale (precompute runs every 5 min).
+const Duration cacheStalenessThreshold = Duration(minutes: 6);
+
 /// Enqueue on-demand compute jobs and wait for results (table-based queue in Supabase).
 /// Precomputed GEX/cockpit for core symbols live in compute_result_cache (filled every 5 min by cron).
 class ComputeQueueService {
@@ -172,8 +183,8 @@ class ComputeQueueService {
   }
 
   /// Get result from precompute cache table (compute_result_cache). One row per (symbol, task_type).
-  /// Use for GEX/cockpit when app reads only from Supabase (no API, no enqueue).
-  static Future<Map<String, dynamic>?> getCachedResultFromTable({
+  /// Returns result and updated_at for staleness checks. Use for GEX/cockpit when app reads only from Supabase.
+  static Future<CachedResultWithTimestamp?> getCachedResultFromTable({
     required String symbol,
     required ComputeTaskType taskType,
   }) async {
@@ -182,29 +193,36 @@ class ComputeQueueService {
       final taskTypeStr = _taskTypeString(taskType);
       final rows = await Supabase.instance.client
           .from(_cacheTable)
-          .select('result')
+          .select('result, updated_at')
           .eq('symbol', symbol.toUpperCase())
           .eq('task_type', taskTypeStr)
           .limit(1);
       if (rows.isEmpty) return null;
-      final result = rows.first['result'];
+      final row = rows.first;
+      final result = row['result'];
       if (result == null) return null;
-      if (result is Map<String, dynamic>) return result;
-      if (result is Map) return Map<String, dynamic>.from(result);
-      return null;
+      final resultMap = result is Map<String, dynamic> ? result : (result is Map ? Map<String, dynamic>.from(result) : null);
+      if (resultMap == null) return null;
+      DateTime? updatedAt;
+      final raw = row['updated_at'];
+      if (raw != null) {
+        if (raw is DateTime) updatedAt = raw;
+        else if (raw is String) updatedAt = DateTime.tryParse(raw);
+      }
+      return CachedResultWithTimestamp(result: resultMap, updatedAt: updatedAt);
     } catch (_) {
       return null;
     }
   }
 
-  /// Fetch all cache rows for a task type (e.g. gex). Returns list of (symbol, result) for core symbols.
+  /// Fetch all cache rows for a task type (e.g. gex). Returns list of (symbol, result, updated_at) for core symbols.
   static Future<List<Map<String, dynamic>>> getAllCachedResultsForTask(ComputeTaskType taskType) async {
     if (!isAvailable) return [];
     try {
       final taskTypeStr = _taskTypeString(taskType);
       final rows = await Supabase.instance.client
           .from(_cacheTable)
-          .select('symbol, result')
+          .select('symbol, result, updated_at')
           .eq('task_type', taskTypeStr)
           .inFilter('symbol', coreSymbols);
       if (rows.isEmpty) return [];

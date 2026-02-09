@@ -45,7 +45,7 @@ Run in Supabase SQL editor (after your main schema):
 
 On the machine that runs the heavy API (same codebase, same `data/config.json` and API keys):
 
-1. Set `DATABASE_URL` or `SUPABASE_DB_URL` to your Supabase Postgres URI (same as Fisher).
+1. Set **SUPABASE_URL** and **SUPABASE_SECRET_KEY** in repo `.env` (preferred; worker then writes to Supabase and also upserts to `compute_result_cache`). Or set **SUPABASE_DB_URL** / **DATABASE_URL** to your Supabase Postgres URI.
 2. Run:
 
 ```bash
@@ -53,7 +53,7 @@ python scripts/run_compute_worker.py --once   # process one job and exit
 python scripts/run_compute_worker.py --loop   # keep polling until queue empty
 ```
 
-The worker uses the same Postgres connection as Fisher, claims one row from `compute_job_queue`, runs the corresponding Flask handler in-process (valuation, GEX, cockpit, probability, trade_ideas), and updates the row with `result` and `status = 'done'` (or `failed` and `error_text`). No HTTP; it reuses the API logic via `test_request_context`.
+The worker uses **SUPABASE_URL + SUPABASE_SECRET_KEY** (preferred) or Postgres URI. It claims one row from `compute_job_queue`, runs the corresponding Flask handler in-process (valuation, GEX, cockpit, probability, trade_ideas), updates the row with `result` and `status = 'done'` (or `failed` and `error_text`), and **also upserts into `compute_result_cache`** when using the Supabase client so the app’s cache read sees the result without running the precompute script. No HTTP; it reuses the API logic via `test_request_context`.
 
 ## Flutter app
 
@@ -75,3 +75,10 @@ The worker uses the same Postgres connection as Fisher, claims one row from `com
 5. App’s poll sees status = done and returns the result to the UI.
 
 All data stays in Supabase; the server only needs outbound access to Supabase (no public URL).
+
+## Data not in Supabase?
+
+- **Workers must write to the same Supabase project the app reads from.** Use **SUPABASE_URL + SUPABASE_SECRET_KEY** in repo `.env` so Fisher and compute workers use the Supabase client (no direct Postgres host). If you set only **SUPABASE_DB_URL** or **DATABASE_URL** to a local or different DB, workers write there and the app (reading via Supabase) sees nothing.
+- **Tables must exist.** In Supabase SQL editor, run: `supabase_schema_fisher.sql` and `fisher_scan_queue_schema.sql` for Fisher; `compute_job_queue_schema.sql` and `compute_result_cache_schema.sql` for compute. RLS allows `service_role` to write; anon can read where documented.
+- **Fisher:** Enqueue tickers (`scripts/enqueue_fisher_scan.py` or `setup_fisher_full_scan.py --reset`), then run `scripts/run_fisher_scan_worker.py --batch 50`. Data appears in `fisher_company` and `fisher_score_snapshot` as each (sub-)batch completes.
+- **Compute cache:** The compute worker upserts to `compute_result_cache` when it finishes a job (Supabase client only). Alternatively run `scripts/run_gex_cockpit_precompute.py` every 5 min to fill the cache for core symbols.

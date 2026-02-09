@@ -20,6 +20,7 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
   CockpitState? _state;
   CockpitEventsData? _events;
   GexCalculation? _gexChartData;
+  DateTime? _lastCacheUpdate;
   bool _isLoading = true;
   String? _error;
   bool _eventsExpanded = false;
@@ -68,6 +69,7 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
     setState(() {
       _isLoading = true;
       _error = null;
+      _lastCacheUpdate = null;
     });
 
     try {
@@ -76,11 +78,25 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
         CockpitService.getCockpitEvents(daysAhead: 14, symbol: _selectedTicker),
         GexService.calculateGex(_selectedTicker),
       ]);
-      
+
+      final cockpitResult = results[0] as CockpitStateResult;
+      final events = results[1] as CockpitEventsData?;
+      final gexResult = results[2] as GexResult;
+
+      DateTime? lastUpdate;
+      if (cockpitResult.updatedAt != null && gexResult.updatedAt != null) {
+        lastUpdate = cockpitResult.updatedAt!.isBefore(gexResult.updatedAt!)
+            ? cockpitResult.updatedAt
+            : gexResult.updatedAt;
+      } else {
+        lastUpdate = cockpitResult.updatedAt ?? gexResult.updatedAt;
+      }
+
       setState(() {
-        _state = results[0] as CockpitState?;
-        _events = results[1] as CockpitEventsData?;
-        _gexChartData = results[2] as GexCalculation?;
+        _state = cockpitResult.state;
+        _events = events;
+        _gexChartData = gexResult.calculation;
+        _lastCacheUpdate = lastUpdate;
         _isLoading = false;
         if (_state == null) {
           if (!ComputeQueueService.isAvailable) {
@@ -97,6 +113,19 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
         _error = e.toString();
       });
     }
+  }
+
+  bool get _isCacheStale {
+    if (_lastCacheUpdate == null) return false;
+    return DateTime.now().difference(_lastCacheUpdate!) > cacheStalenessThreshold;
+  }
+
+  String get _cacheAgeLabel {
+    if (_lastCacheUpdate == null) return '';
+    final diff = DateTime.now().difference(_lastCacheUpdate!);
+    if (diff.inMinutes < 1) return 'Updated just now';
+    if (diff.inMinutes == 1) return 'Updated 1 min ago';
+    return 'Updated ${diff.inMinutes} min ago';
   }
 
   @override
@@ -187,7 +216,10 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            _buildCacheStalenessBanner(),
+            const SizedBox(height: 8),
             // Compact Header
             _buildCompactHeader(),
             const SizedBox(height: 12),
@@ -234,6 +266,40 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
   }
 
   /// Compact Header: Ticker + Events + Vol + Refresh
+  Widget _buildCacheStalenessBanner() {
+    if (_lastCacheUpdate == null) return const SizedBox.shrink();
+    final stale = _isCacheStale;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: stale ? const Color(0xFF3D1F00) : const Color(0xFF161B22),
+        borderRadius: BorderRadius.circular(6),
+        border: stale ? Border.all(color: const Color(0xFFD29922), width: 1) : null,
+      ),
+      child: Row(
+        children: [
+          Icon(
+            stale ? Icons.warning_amber_rounded : Icons.schedule,
+            size: 20,
+            color: stale ? const Color(0xFFD29922) : Colors.white54,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              stale
+                  ? 'Data may be stale ($_cacheAgeLabel). Use other sources if the service has stopped.'
+                  : _cacheAgeLabel,
+              style: TextStyle(
+                color: stale ? const Color(0xFFD29922) : Colors.white54,
+                fontSize: 13,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildCompactHeader() {
     final vol = _state!.volatility;
     final volColor = vol.direction == 'RISING'

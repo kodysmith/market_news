@@ -1,32 +1,48 @@
 import '../models/gex_data.dart';
 import 'compute_queue_service.dart';
 
+/// Wrapper for GEX calculation plus cache timestamp (for staleness checks).
+class GexResult {
+  final GexCalculation? calculation;
+  final DateTime? updatedAt;
+
+  GexResult({this.calculation, this.updatedAt});
+}
+
 /// GEX service: reads only from Supabase compute_result_cache (precomputed every 5 min). No API.
 class GexService {
-  /// Calculate GEX for a ticker. Tries precompute cache first, then enqueues and waits if missing.
-  static Future<GexCalculation?> calculateGex(String ticker) async {
+  /// Calculate GEX for a ticker plus cache updated_at. Tries precompute cache first, then enqueues and waits if missing.
+  /// Returns calculation and updatedAt for staleness; updatedAt is null when data came from enqueue-and-wait.
+  static Future<GexResult> calculateGex(String ticker) async {
     final t = ticker.toUpperCase();
-    if (!ComputeQueueService.isAvailable) return null;
-    Map<String, dynamic>? result = await ComputeQueueService.getCachedResultFromTable(
+    if (!ComputeQueueService.isAvailable) return GexResult(calculation: null, updatedAt: null);
+    final cached = await ComputeQueueService.getCachedResultFromTable(
       symbol: t,
       taskType: ComputeTaskType.gex,
     );
-    if (result == null) {
-      final jobResult = await ComputeQueueService.getCachedOrEnqueue(
-        symbol: t,
-        taskType: ComputeTaskType.gex,
-      );
-      if (jobResult.ok && jobResult.result != null) {
-        result = jobResult.result;
+    if (cached != null) {
+      try {
+        final calculation = GexCalculation.fromJson(cached.result);
+        return GexResult(calculation: calculation, updatedAt: cached.updatedAt);
+      } catch (e) {
+        print('❌ Error parsing GEX from Supabase: $e');
+        return GexResult(calculation: null, updatedAt: cached.updatedAt);
       }
     }
-    if (result == null) return null;
-    try {
-      return GexCalculation.fromJson(result);
-    } catch (e) {
-      print('❌ Error parsing GEX from Supabase: $e');
-      return null;
+    final jobResult = await ComputeQueueService.getCachedOrEnqueue(
+      symbol: t,
+      taskType: ComputeTaskType.gex,
+    );
+    if (jobResult.ok && jobResult.result != null) {
+      try {
+        final calculation = GexCalculation.fromJson(jobResult.result!);
+        return GexResult(calculation: calculation, updatedAt: null);
+      } catch (e) {
+        print('❌ Error parsing GEX from enqueue: $e');
+        return GexResult(calculation: null, updatedAt: null);
+      }
     }
+    return GexResult(calculation: null, updatedAt: null);
   }
 
   /// Get batch GEX summary from cache (all core symbols). No API.

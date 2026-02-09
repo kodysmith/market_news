@@ -2,6 +2,23 @@
 
 Use this when you have **no Fisher valuation data** in the database and want to populate it once by hand.
 
+### How Fisher score snapshot data gets into the DB
+
+- **Snapshot rows** live in `fisher_score_snapshot`. They are **only** created when you run scoring (either via the scan worker or the scoring-only script).
+- **Two ways to get snapshot data:**
+
+1. **Full pipeline (recommended when DB is empty):**  
+   Enqueue tickers → run the **scan worker**. The worker runs the EDGAR watcher (fills `fisher_company`, `fisher_filing`, `fisher_financial_fact`) then runs scoring (writes `fisher_score_snapshot`). See steps 4–5 below.
+
+2. **Scoring only (when EDGAR data is already in the DB):**  
+   If you already have `fisher_company` + filings + `fisher_financial_fact` (e.g. from a previous worker run or migration) but no or stale snapshots, run:
+   ```bash
+   python3 scripts/run_fisher_scoring_only.py
+   ```
+   This scores every company in `fisher_company` that has filings/facts and writes/updates `fisher_score_snapshot` rows.
+
+---
+
 ## 1. One-time: Supabase schema
 
 In the **Supabase SQL Editor**, run (in order):

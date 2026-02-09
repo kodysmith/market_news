@@ -2,7 +2,7 @@
 """
 Process compute_job_queue: claim pending jobs, run the corresponding API logic, write result to Supabase.
 
-Run on the private server (same machine as the heavy API). Uses DATABASE_URL/SUPABASE_DB_URL.
+Run on the private server (same machine as the heavy API). Loads .env from repo root. Uses SUPABASE_URL + SUPABASE_SECRET_KEY (preferred) or DATABASE_URL/SUPABASE_DB_URL.
 Reuses Flask API handlers in-process via test_request_context so no HTTP or code duplication.
 
 Usage:
@@ -17,18 +17,40 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import os
 import sys
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
+
+_env_file = ROOT / ".env"
+if _env_file.exists():
+    try:
+        with open(_env_file) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, _, v = line.partition("=")
+                    v = v.strip()
+                    if (v.startswith("'") and v.endswith("'")) or (v.startswith('"') and v.endswith('"')):
+                        v = v[1:-1]
+                    if k and k not in os.environ:
+                        os.environ[k] = v
+    except Exception:
+        pass
 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
 )
 logger = logging.getLogger(__name__)
+
+def _is_supabase_client(conn) -> bool:
+    return conn is not None and hasattr(conn, "table")
+
 
 # Task type -> (path_template, view_callable)
 # Path template uses {symbol}. View is the Flask view function.
@@ -50,6 +72,12 @@ def _get_app_and_routes():
 
 
 def compute_job_queue_exists(conn) -> bool:
+    if _is_supabase_client(conn):
+        try:
+            conn.table("compute_job_queue").select("id").limit(1).execute()
+            return True
+        except Exception:
+            return False
     with conn.cursor() as cur:
         cur.execute(
             """
@@ -72,9 +100,13 @@ def _strip_sql_comments(segment: str) -> str:
 
 
 def ensure_compute_job_queue(conn) -> None:
-    """Create compute_job_queue table if it does not exist."""
+    """Create compute_job_queue table if it does not exist (Postgres only). With Supabase client, table must exist."""
     if compute_job_queue_exists(conn):
         return
+    if _is_supabase_client(conn):
+        raise RuntimeError(
+            "Table compute_job_queue not found. Run scripts/compute_job_queue_schema.sql in Supabase SQL editor."
+        )
     schema_path = ROOT / "scripts" / "compute_job_queue_schema.sql"
     if not schema_path.exists():
         raise RuntimeError(f"Schema file not found: {schema_path}. Run it in Supabase SQL editor.")
@@ -100,6 +132,31 @@ def ensure_compute_job_queue(conn) -> None:
 
 def claim_one(conn):
     """Claim one pending job; return (id, symbol, task_type) or (None, None, None)."""
+    if _is_supabase_client(conn):
+        r = (
+            conn.table("compute_job_queue")
+            .select("id, symbol, task_type")
+            .eq("status", "pending")
+            .order("requested_at")
+            .limit(1)
+            .execute()
+        )
+        rows = getattr(r, "data", None) or []
+        if not rows:
+            return None, None, None
+        job_id, symbol, task_type = rows[0]["id"], rows[0]["symbol"], rows[0]["task_type"]
+        now = datetime.now(timezone.utc).isoformat()
+        up = (
+            conn.table("compute_job_queue")
+            .update({"status": "processing", "claimed_at": now})
+            .eq("id", job_id)
+            .eq("status", "pending")
+            .execute()
+        )
+        updated = getattr(up, "data", None) or []
+        if not updated:
+            return None, None, None
+        return job_id, symbol, task_type
     with conn.cursor() as cur:
         cur.execute(
             """
@@ -128,7 +185,30 @@ def claim_one(conn):
     return job_id, symbol, task_type
 
 
-def mark_done(conn, job_id, result: dict):
+def _upsert_result_cache(client, symbol: str, task_type: str, result: dict) -> None:
+    """Upsert one row into compute_result_cache so the app's cache read sees it. Supabase client only."""
+    try:
+        now = datetime.now(timezone.utc).isoformat()
+        row = {
+            "symbol": symbol.upper(),
+            "task_type": task_type,
+            "result": result,
+            "updated_at": now,
+        }
+        client.table("compute_result_cache").upsert(row, on_conflict="symbol,task_type").execute()
+        logger.debug("Upserted cache %s %s", symbol, task_type)
+    except Exception as e:
+        logger.warning("Upsert compute_result_cache failed (table may not exist): %s", e)
+
+
+def mark_done(conn, job_id, result: dict, symbol: str = "", task_type: str = ""):
+    now = datetime.now(timezone.utc).isoformat()
+    payload = {"status": "done", "result": result, "completed_at": now}
+    if _is_supabase_client(conn):
+        conn.table("compute_job_queue").update(payload).eq("id", job_id).execute()
+        if symbol and task_type:
+            _upsert_result_cache(conn, symbol, task_type, result)
+        return
     with conn.cursor() as cur:
         cur.execute(
             """
@@ -142,6 +222,11 @@ def mark_done(conn, job_id, result: dict):
 
 
 def mark_failed(conn, job_id, error_text: str):
+    now = datetime.now(timezone.utc).isoformat()
+    payload = {"status": "failed", "error_text": (error_text[:5000] if error_text else None), "completed_at": now}
+    if _is_supabase_client(conn):
+        conn.table("compute_job_queue").update(payload).eq("id", job_id).execute()
+        return
     with conn.cursor() as cur:
         cur.execute(
             """
@@ -176,7 +261,7 @@ def process_one(conn, app, routes) -> bool:
     logger.info("Processing job %s: %s %s", job_id, task_type, symbol)
     try:
         result = run_task(app, routes, symbol, task_type)
-        mark_done(conn, job_id, result)
+        mark_done(conn, job_id, result, symbol=symbol, task_type=task_type)
         logger.info("Job %s done", job_id)
     except Exception as e:
         logger.exception("Job %s failed: %s", job_id, e)
@@ -186,37 +271,29 @@ def process_one(conn, app, routes) -> bool:
 
 def main():
     ap = argparse.ArgumentParser(description="Process compute_job_queue (valuation, GEX, cockpit, etc.)")
-    ap.add_argument("--loop", action="store_true", help="Drain queue then exit")
-    ap.add_argument("--daemon", action="store_true", help="Run forever; sleep when queue empty, poll for new jobs (Ctrl+C to stop)")
-    ap.add_argument("--poll", type=float, default=30.0, help="Seconds to sleep when queue empty in daemon mode (default 30)")
+    ap.add_argument("--loop", action="store_true", help="Run forever; when queue empty, sleep --poll s then check again (Ctrl+C to stop)")
+    ap.add_argument("--daemon", action="store_true", help="Same as --loop (run forever, poll when empty)")
+    ap.add_argument("--poll", type=float, default=30.0, help="Seconds to sleep when queue empty in --loop/--daemon (default 30)")
     ap.add_argument("--once", action="store_true", help="Process one job and exit (default)")
     args = ap.parse_args()
 
+    from fisher.db import get_connection, get_supabase_client
     from fisher.config import get_database_url
-    if not get_database_url():
-        print("Set DATABASE_URL or SUPABASE_DB_URL.", file=sys.stderr)
+    if not get_supabase_client() and not get_database_url():
+        print("Set SUPABASE_URL + SUPABASE_SECRET_KEY, or DATABASE_URL/SUPABASE_DB_URL.", file=sys.stderr)
         return 1
-
-    from fisher.db import get_connection
     app, routes = _get_app_and_routes()
 
     with get_connection() as conn:
         ensure_compute_job_queue(conn)
 
-    if args.daemon:
-        logger.info("Daemon mode: polling every %s s when queue empty (Ctrl+C to stop)", args.poll)
+    if args.loop or args.daemon:
+        logger.info("Loop mode: polling every %s s when queue empty (Ctrl+C to stop)", args.poll)
         while True:
             with get_connection() as conn:
                 if not process_one(conn, app, routes):
                     time.sleep(args.poll)
                     continue
-    elif args.loop:
-        while True:
-            with get_connection() as conn:
-                if not process_one(conn, app, routes):
-                    break
-        print("Queue empty.")
-        return 0
 
     with get_connection() as conn:
         if process_one(conn, app, routes):

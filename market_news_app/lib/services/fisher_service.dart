@@ -21,7 +21,7 @@ class FisherService {
     if (_useSupabase) {
       try {
         final client = Supabase.instance.client;
-        final company = await client.from('fisher_company').select('id, ticker').eq('ticker', t).maybeSingle();
+        final company = await client.from('fisher_company').select('id, ticker').eq('ticker', t).order('created_at', ascending: false).limit(1).maybeSingle();
         if (company == null) return null;
         final companyId = company['id'] as String?;
         final snapshot = await client.from('fisher_score_snapshot').select().eq('company_id', companyId!).order('snapshot_at', ascending: false).limit(1).maybeSingle();
@@ -62,7 +62,7 @@ class FisherService {
     if (_useSupabase) {
       try {
         final client = Supabase.instance.client;
-        final company = await client.from('fisher_company').select('id').eq('ticker', t).maybeSingle();
+        final company = await client.from('fisher_company').select('id').eq('ticker', t).order('created_at', ascending: false).limit(1).maybeSingle();
         if (company == null) return null;
         final companyId = company['id'] as String;
         final rows = await client.from('fisher_score_snapshot').select('snapshot_at, points').eq('company_id', companyId).order('snapshot_at', ascending: false).limit(2);
@@ -136,7 +136,7 @@ class FisherService {
     if (_useSupabase) {
       try {
         final client = Supabase.instance.client;
-        final company = await client.from('fisher_company').select('id').eq('ticker', t).maybeSingle();
+        final company = await client.from('fisher_company').select('id').eq('ticker', t).order('created_at', ascending: false).limit(1).maybeSingle();
         if (company == null) return null;
         final companyId = company['id'] as String;
         final row = await client.from('fisher_score_snapshot').select('points').eq('company_id', companyId).order('snapshot_at', ascending: false).limit(1).maybeSingle();
@@ -203,7 +203,7 @@ class FisherService {
   }
 
   /// Get high growth + profitable companies (for Fisher & Valuation screen).
-  /// Uses Supabase first (fisher_company + latest fisher_score_snapshot); falls back to API when Supabase empty or unavailable.
+  /// When Supabase is configured, only use Supabase (no API fallback) so the list and Fisher detail stay in sync.
   static Future<({List<FisherGrowthProfitableItem> companies, String? error})> getGrowthProfitableWithError({
     double minGrowth = 6.0,
     double minFinancials = 6.0,
@@ -211,9 +211,20 @@ class FisherService {
   }) async {
     if (_useSupabase) {
       final fromSupabase = await _getGrowthProfitableFromSupabase(limit: limit);
-      if (fromSupabase != null && fromSupabase.isNotEmpty) {
-        return (companies: fromSupabase, error: null);
+      if (fromSupabase != null) {
+        if (fromSupabase.isNotEmpty) {
+          return (companies: fromSupabase, error: null);
+        }
+        return (
+          companies: <FisherGrowthProfitableItem>[],
+          error: 'No Fisher data in Supabase yet. Run the Fisher scan worker; data will appear as each batch completes. Tap refresh after a batch finishes.',
+        );
       }
+      // Supabase failed (null): don't fall back to API so we don't show a list that has no Fisher data when tapped.
+      return (
+        companies: <FisherGrowthProfitableItem>[],
+        error: 'Could not load Fisher list from Supabase. Check SUPABASE_URL/keys and RLS (fisher_company, fisher_score_snapshot readable).',
+      );
     }
     try {
       final url = '$apiBaseUrl/fisher/growth-profitable?min_growth=$minGrowth&min_financials=$minFinancials&limit=$limit';

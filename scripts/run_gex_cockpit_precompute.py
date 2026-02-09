@@ -26,6 +26,7 @@ import logging
 import os
 import sys
 from contextlib import contextmanager
+from datetime import datetime
 from pathlib import Path
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError, URLError
@@ -293,11 +294,12 @@ def upsert_cache_pg(conn, symbol: str, task_type: str, result: dict) -> None:
 
 
 def _row_for_cache(symbol: str, task_type: str, result: dict) -> dict:
-    """Build one cache row with JSON-safe result."""
+    """Build one cache row with JSON-safe result. Include updated_at so Supabase upsert refreshes it."""
     return {
         "symbol": symbol.upper(),
         "task_type": task_type,
         "result": _sanitize_for_json(result) or {},
+        "updated_at": datetime.utcnow().isoformat() + "Z",
     }
 
 
