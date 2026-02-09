@@ -126,6 +126,17 @@ def news_items_to_rows(items: list[dict]) -> list[dict]:
 
 
 def main() -> int:
+    # Only run during market window (8:30–17:00 ET, Mon–Fri)
+    try:
+        import sys
+        sys.path.insert(0, str(ROOT / "scripts"))
+        from market_window import should_run_scheduled_publish
+        if not should_run_scheduled_publish(check_queue=False):
+            logger.info("Outside market window (8:30–17:00 ET, Mon–Fri); skipping news publish.")
+            return 0
+    except ImportError:
+        pass
+
     supabase = get_supabase_client()
     if not supabase:
         logger.error("Set SUPABASE_URL and SUPABASE_SECRET_KEY in .env. Run news_feed_schema.sql in Supabase SQL editor.")

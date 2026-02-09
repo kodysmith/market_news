@@ -3,7 +3,7 @@
 
 CREATE TABLE IF NOT EXISTS fisher_scan_queue (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    ticker VARCHAR(10) NOT NULL UNIQUE,
+    ticker VARCHAR(10) NOT NULL,
     status VARCHAR(20) NOT NULL DEFAULT 'pending'
         CHECK (status IN ('pending', 'processing', 'done', 'failed')),
     source VARCHAR(20) NOT NULL DEFAULT 'sec',

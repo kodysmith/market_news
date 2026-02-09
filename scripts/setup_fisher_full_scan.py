@@ -16,12 +16,30 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import os
 import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
+
+# Load repo root .env so DATABASE_URL / SUPABASE_DB_URL are set
+_env_file = ROOT / ".env"
+if _env_file.exists():
+    try:
+        with open(_env_file) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, _, v = line.partition("=")
+                    v = v.strip()
+                    if (v.startswith("'") and v.endswith("'")) or (v.startswith('"') and v.endswith('"')):
+                        v = v[1:-1]
+                    if k and k not in os.environ:
+                        os.environ[k] = v
+    except Exception:
+        pass
 
 
 def need_sec_universe() -> bool:
@@ -46,6 +64,13 @@ def run_fetch_sec_universe() -> bool:
 
 
 def queue_table_exists(conn) -> bool:
+    from fisher.db import get_supabase_client, _is_supabase_client
+    if _is_supabase_client(conn):
+        try:
+            conn.table("fisher_scan_queue").select("id").limit(1).execute()
+            return True
+        except Exception:
+            return False
     with conn.cursor() as cur:
         cur.execute(
             """
@@ -57,6 +82,10 @@ def queue_table_exists(conn) -> bool:
 
 
 def apply_queue_schema(conn) -> bool:
+    from fisher.db import _is_supabase_client
+    if _is_supabase_client(conn):
+        print("When using Supabase client, run scripts/fisher_scan_queue_schema.sql in Supabase SQL editor.")
+        return True
     schema_path = ROOT / "scripts" / "fisher_scan_queue_schema.sql"
     if not schema_path.exists():
         print(f"Schema file not found: {schema_path}", file=sys.stderr)
@@ -98,8 +127,9 @@ def main() -> int:
     args = ap.parse_args()
 
     from fisher.config import get_database_url
-    if not get_database_url():
-        print("Set DATABASE_URL or SUPABASE_DB_URL.", file=sys.stderr)
+    from fisher.db import get_supabase_client
+    if not get_database_url() and not get_supabase_client():
+        print("Set SUPABASE_URL and SUPABASE_SECRET_KEY, or DATABASE_URL/SUPABASE_DB_URL.", file=sys.stderr)
         return 1
 
     # 1. SEC universe

@@ -338,6 +338,15 @@ def get_db_hint(url: str) -> str:
 
 
 def main() -> int:
+    # Only run during market window (8:30–17:00 ET, Mon–Fri) or when someone enqueued a job
+    try:
+        from market_window import should_run_scheduled_publish
+        if not should_run_scheduled_publish(check_queue=True):
+            logger.info("Outside market window (8:30–17:00 ET, Mon–Fri) and no pending queue jobs; skipping.")
+            return 0
+    except ImportError:
+        pass
+
     supabase = get_supabase_client()
     db_url = get_cache_db_url() if not supabase else None
 

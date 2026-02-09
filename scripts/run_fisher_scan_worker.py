@@ -4,11 +4,14 @@ Process fisher_scan_queue in batches: EDGAR + facts, then Fisher scoring.
 
 Run after enqueue_fisher_scan.py. Processes pending tickers in batches (SEC rate limits).
 Use --once to process one batch and exit (e.g. cron every hour). Use default --loop until queue empty.
+
+No market-window check: this is a long-running queue process and can run 24/7 (unlike GEX/cockpit precompute).
 """
 from __future__ import annotations
 
 import argparse
 import logging
+import os
 import sys
 import time
 from pathlib import Path
@@ -16,7 +19,24 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from fisher.db import get_connection, company_id_by_ticker
+# Load repo root .env so DATABASE_URL / SUPABASE_DB_URL are set (e.g. for cron)
+_env_file = ROOT / ".env"
+if _env_file.exists():
+    try:
+        with open(_env_file) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, _, v = line.partition("=")
+                    v = v.strip()
+                    if (v.startswith("'") and v.endswith("'")) or (v.startswith('"') and v.endswith('"')):
+                        v = v[1:-1]
+                    if k and k not in os.environ:
+                        os.environ[k] = v
+    except Exception:
+        pass
+
+from fisher.db import get_connection, company_id_by_ticker, _is_supabase_client, claim_batch_supabase, mark_done_supabase
 from fisher.edgar_watcher import run_watcher
 from fisher.scoring_engine import run_scoring_job
 
@@ -28,7 +48,9 @@ logger = logging.getLogger(__name__)
 
 
 def claim_batch(conn, batch_size: int):
-    """Claim up to batch_size pending rows; return list of (id, ticker)."""
+    """Claim up to batch_size pending rows; return list of (id, ticker). Works with Supabase client or Postgres conn."""
+    if _is_supabase_client(conn):
+        return claim_batch_supabase(conn, batch_size)
     with conn.cursor() as cur:
         cur.execute(
             """
@@ -59,6 +81,10 @@ def claim_batch(conn, batch_size: int):
 
 
 def mark_done(conn, ids, error_text=None):
+    """Mark queue rows done or failed. Works with Supabase client or Postgres conn."""
+    if _is_supabase_client(conn):
+        mark_done_supabase(conn, ids, error_text)
+        return
     with conn.cursor() as cur:
         if error_text:
             cur.execute(
