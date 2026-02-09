@@ -23,4 +23,4 @@ echo "=========================================="
 echo ""
 
 # Launch Flutter web on port 8080, binding to all interfaces
-flutter run -d chrome --web-port=8080 --web-hostname=0.0.0.0
+flutter run -d web-server --web-port=8080 --web-hostname=0.0.0.0
