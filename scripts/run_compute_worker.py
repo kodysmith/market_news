@@ -1,0 +1,230 @@
+#!/usr/bin/env python3
+"""
+Process compute_job_queue: claim pending jobs, run the corresponding API logic, write result to Supabase.
+
+Run on the private server (same machine as the heavy API). Uses DATABASE_URL/SUPABASE_DB_URL.
+Reuses Flask API handlers in-process via test_request_context so no HTTP or code duplication.
+
+Usage:
+  python scripts/run_compute_worker.py           # run one job and exit
+  python scripts/run_compute_worker.py --once    # same as default, one job
+  python scripts/run_compute_worker.py --loop    # drain queue then exit
+  python scripts/run_compute_worker.py --daemon   # run forever, sleep when empty (Ctrl+C to stop)
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import logging
+import sys
+import time
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+)
+logger = logging.getLogger(__name__)
+
+# Task type -> (path_template, view_callable)
+# Path template uses {symbol}. View is the Flask view function.
+def _get_app_and_routes():
+    from apis.app_factory import create_app
+    app = create_app()
+    with app.app_context():
+        from apis.routes_valuation import valuation_calculate
+        from apis.routes_gex import calculate_gex
+        from apis.routes_cockpit import cockpit_state, trade_ideas_allowed
+        from apis.routes_probability import probability_range
+    return app, {
+        "valuation": ("/valuation/calculate?ticker={symbol}&store=false", valuation_calculate),
+        "gex": ("/gex/calculate?ticker={symbol}", calculate_gex),
+        "cockpit": ("/cockpit/state?ticker={symbol}", cockpit_state),
+        "probability": ("/probability/range?ticker={symbol}", probability_range),
+        "trade_ideas": ("/trade-ideas/allowed?ticker={symbol}", trade_ideas_allowed),
+    }
+
+
+def compute_job_queue_exists(conn) -> bool:
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            SELECT 1 FROM information_schema.tables
+            WHERE table_schema = 'public' AND table_name = 'compute_job_queue'
+            """
+        )
+        return cur.fetchone() is not None
+
+
+def _strip_sql_comments(segment: str) -> str:
+    """Remove leading comment lines so CREATE TABLE etc. are not skipped."""
+    lines = []
+    for line in segment.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("--") or not stripped:
+            continue
+        lines.append(line)
+    return "\n".join(lines).strip()
+
+
+def ensure_compute_job_queue(conn) -> None:
+    """Create compute_job_queue table if it does not exist."""
+    if compute_job_queue_exists(conn):
+        return
+    schema_path = ROOT / "scripts" / "compute_job_queue_schema.sql"
+    if not schema_path.exists():
+        raise RuntimeError(f"Schema file not found: {schema_path}. Run it in Supabase SQL editor.")
+    sql = schema_path.read_text()
+    raw_statements = [s.strip() for s in sql.split(";") if s.strip()]
+    statements = []
+    for s in raw_statements:
+        stmt = _strip_sql_comments(s)
+        if stmt:
+            statements.append(stmt)
+    with conn.cursor() as cur:
+        for stmt in statements:
+            try:
+                cur.execute(stmt)
+            except Exception as e:
+                msg = str(e).lower()
+                if "already exists" in msg or "duplicate" in msg:
+                    continue
+                raise
+    conn.commit()
+    logger.info("Created compute_job_queue table.")
+
+
+def claim_one(conn):
+    """Claim one pending job; return (id, symbol, task_type) or (None, None, None)."""
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            SELECT id, symbol, task_type
+            FROM compute_job_queue
+            WHERE status = 'pending'
+            ORDER BY requested_at
+            LIMIT 1
+            FOR UPDATE SKIP LOCKED
+            """
+        )
+        row = cur.fetchone()
+    if not row:
+        return None, None, None
+    job_id, symbol, task_type = row["id"], row["symbol"], row["task_type"]
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            UPDATE compute_job_queue
+            SET status = 'processing', claimed_at = NOW()
+            WHERE id = %s
+            """,
+            (job_id,),
+        )
+    conn.commit()
+    return job_id, symbol, task_type
+
+
+def mark_done(conn, job_id, result: dict):
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            UPDATE compute_job_queue
+            SET status = 'done', result = %s, completed_at = NOW()
+            WHERE id = %s
+            """,
+            (json.dumps(result), job_id),
+        )
+    conn.commit()
+
+
+def mark_failed(conn, job_id, error_text: str):
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            UPDATE compute_job_queue
+            SET status = 'failed', error_text = %s, completed_at = NOW()
+            WHERE id = %s
+            """,
+            (error_text[:5000] if error_text else None, job_id),
+        )
+    conn.commit()
+
+
+def run_task(app, routes, symbol: str, task_type: str) -> dict:
+    """Run the API handler for task_type and symbol; return JSON-serializable result."""
+    if task_type not in routes:
+        return {"error": f"Unknown task_type: {task_type}"}
+    path_tpl, view = routes[task_type]
+    path = path_tpl.format(symbol=symbol)
+    with app.test_request_context(path):
+        resp = view()
+        data = resp.get_json()
+        if resp.status_code != 200:
+            return data if isinstance(data, dict) else {"error": str(data)}
+        return data
+
+
+def process_one(conn, app, routes) -> bool:
+    """Claim one job, run it, write result. Return True if a job was processed."""
+    job_id, symbol, task_type = claim_one(conn)
+    if job_id is None:
+        return False
+    logger.info("Processing job %s: %s %s", job_id, task_type, symbol)
+    try:
+        result = run_task(app, routes, symbol, task_type)
+        mark_done(conn, job_id, result)
+        logger.info("Job %s done", job_id)
+    except Exception as e:
+        logger.exception("Job %s failed: %s", job_id, e)
+        mark_failed(conn, job_id, str(e))
+    return True
+
+
+def main():
+    ap = argparse.ArgumentParser(description="Process compute_job_queue (valuation, GEX, cockpit, etc.)")
+    ap.add_argument("--loop", action="store_true", help="Drain queue then exit")
+    ap.add_argument("--daemon", action="store_true", help="Run forever; sleep when queue empty, poll for new jobs (Ctrl+C to stop)")
+    ap.add_argument("--poll", type=float, default=30.0, help="Seconds to sleep when queue empty in daemon mode (default 30)")
+    ap.add_argument("--once", action="store_true", help="Process one job and exit (default)")
+    args = ap.parse_args()
+
+    from fisher.config import get_database_url
+    if not get_database_url():
+        print("Set DATABASE_URL or SUPABASE_DB_URL.", file=sys.stderr)
+        return 1
+
+    from fisher.db import get_connection
+    app, routes = _get_app_and_routes()
+
+    with get_connection() as conn:
+        ensure_compute_job_queue(conn)
+
+    if args.daemon:
+        logger.info("Daemon mode: polling every %s s when queue empty (Ctrl+C to stop)", args.poll)
+        while True:
+            with get_connection() as conn:
+                if not process_one(conn, app, routes):
+                    time.sleep(args.poll)
+                    continue
+    elif args.loop:
+        while True:
+            with get_connection() as conn:
+                if not process_one(conn, app, routes):
+                    break
+        print("Queue empty.")
+        return 0
+
+    with get_connection() as conn:
+        if process_one(conn, app, routes):
+            print("Processed one job.")
+        else:
+            print("No pending jobs.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

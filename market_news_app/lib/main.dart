@@ -13,6 +13,7 @@ import 'package:market_news_app/widgets/scanner_opportunities_widget.dart';
 import 'package:market_news_app/widgets/asset_selection_provider.dart';
 import 'package:market_news_app/services/asset_selection_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'screens/news_screen.dart';
 import 'screens/trade_ideas_screen.dart';
 import 'dart:math' as math;
@@ -45,6 +46,13 @@ Future<void> main() async {
   final envApiUrl = dotenv.env['API_BASE_URL'];
   if (envApiUrl != null && envApiUrl.isNotEmpty) {
     apiBaseUrl = envApiUrl.replaceFirst(RegExp(r'/$'), '');
+  }
+
+  // Supabase (optional): for compute job queue (on-demand GEX, valuation, cockpit, etc.)
+  final supabaseUrl = dotenv.env['SUPABASE_URL'];
+  final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY'];
+  if (supabaseUrl != null && supabaseUrl.isNotEmpty && supabaseAnonKey != null && supabaseAnonKey.isNotEmpty) {
+    await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
   }
 
   // Initialize Firebase Messaging (Android)
