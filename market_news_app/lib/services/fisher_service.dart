@@ -203,12 +203,18 @@ class FisherService {
   }
 
   /// Get high growth + profitable companies (for Fisher & Valuation screen).
-  /// On success returns (companies, null). On API/connection error returns ([], errorMessage).
+  /// Uses Supabase first (fisher_company + latest fisher_score_snapshot); falls back to API when Supabase empty or unavailable.
   static Future<({List<FisherGrowthProfitableItem> companies, String? error})> getGrowthProfitableWithError({
     double minGrowth = 6.0,
     double minFinancials = 6.0,
     int limit = 100,
   }) async {
+    if (_useSupabase) {
+      final fromSupabase = await _getGrowthProfitableFromSupabase(limit: limit);
+      if (fromSupabase != null && fromSupabase.isNotEmpty) {
+        return (companies: fromSupabase, error: null);
+      }
+    }
     try {
       final url = '$apiBaseUrl/fisher/growth-profitable?min_growth=$minGrowth&min_financials=$minFinancials&limit=$limit';
       final response = await http.get(Uri.parse(url));
@@ -226,7 +232,6 @@ class FisherService {
         return (companies: companies, error: null);
       }
 
-      // API returned error (e.g. 503 = DB not configured)
       if (errorMsg != null && errorMsg.isNotEmpty) {
         return (companies: <FisherGrowthProfitableItem>[], error: errorMsg);
       }
@@ -236,8 +241,62 @@ class FisherService {
       return (companies: <FisherGrowthProfitableItem>[], error: null);
     } catch (e) {
       print('[FisherService] getGrowthProfitable: $e');
+      if (_useSupabase) {
+        return (companies: <FisherGrowthProfitableItem>[], error: 'No Fisher companies in Supabase. Run Fisher pipeline and scan on the server, or connect to API.');
+      }
       return (companies: <FisherGrowthProfitableItem>[], error: 'Can\'t reach Fisher API. Check API_BASE_URL and that the server is running.');
     }
+  }
+
+  /// Build growth list from Supabase: fisher_company + latest fisher_score_snapshot per company. Returns null on error.
+  static Future<List<FisherGrowthProfitableItem>?> _getGrowthProfitableFromSupabase({int limit = 100}) async {
+    try {
+      final client = Supabase.instance.client;
+      final companies = await client.from('fisher_company').select('id, ticker, name, sector').order('ticker');
+      if (companies.isEmpty) return <FisherGrowthProfitableItem>[];
+      final ids = companies.map<String>((c) => c['id'] as String).toList();
+      final snapshots = await client.from('fisher_score_snapshot').select('company_id, total_score, snapshot_at').inFilter('company_id', ids).order('snapshot_at', ascending: false);
+      final latestByCompany = <String, Map<String, dynamic>>{};
+      for (final row in snapshots as List) {
+        final map = Map<String, dynamic>.from(row as Map);
+        final cid = map['company_id'] as String?;
+        if (cid != null && !latestByCompany.containsKey(cid)) {
+          latestByCompany[cid] = map;
+        }
+      }
+      final list = <FisherGrowthProfitableItem>[];
+      for (final c in companies as List) {
+        final m = Map<String, dynamic>.from(c as Map);
+        final id = m['id'] as String?;
+        final ticker = m['ticker'] as String? ?? '';
+        final name = m['name'] as String? ?? ticker;
+        final sector = m['sector'] as String? ?? '';
+        final snap = id != null ? latestByCompany[id] : null;
+        final totalScore = snap != null ? _snapshotScore(snap['total_score']) : null;
+        final snapshotAt = snap?['snapshot_at']?.toString();
+        list.add(FisherGrowthProfitableItem(
+          ticker: ticker,
+          name: name,
+          sector: sector,
+          growth: null,
+          financials: null,
+          totalScore: totalScore,
+          snapshotAt: snapshotAt,
+        ));
+      }
+      list.sort((a, b) => (b.totalScore ?? 0).compareTo(a.totalScore ?? 0));
+      return list.take(limit).toList();
+    } catch (e) {
+      print('[FisherService] _getGrowthProfitableFromSupabase: $e');
+      return null;
+    }
+  }
+
+  static double? _snapshotScore(dynamic v) {
+    if (v == null) return null;
+    if (v is num) return v.toDouble();
+    if (v is String) return double.tryParse(v);
+    return null;
   }
 
   /// Get high growth + profitable companies (returns empty list on any error; use getGrowthProfitableWithError for error message).

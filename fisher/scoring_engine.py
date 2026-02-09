@@ -12,7 +12,7 @@ from datetime import datetime
 from decimal import Decimal
 from typing import Any
 
-from fisher.db import get_connection
+from fisher.db import get_connection, get_latest_facts_supabase, write_snapshot_supabase, get_company_ids_supabase, _is_supabase_client
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +51,8 @@ def get_latest_facts(conn: Any, company_id: Any) -> tuple[dict[str, float], dict
     Get financial facts for latest filing (current) and prior filing (for YoY).
     Returns (current_facts, prior_facts). prior_facts may be None.
     """
+    if _is_supabase_client(conn):
+        return get_latest_facts_supabase(conn, company_id)
     with conn.cursor() as cur:
         cur.execute(
             """
@@ -344,7 +346,10 @@ def score_company(conn: Any, company_id: Any) -> dict | None:
 
 
 def write_snapshot(conn: Any, company_id: Any, payload: dict) -> None:
-    """Insert one row into fisher_score_snapshot."""
+    """Insert one row into fisher_score_snapshot. Works with Supabase client or Postgres conn."""
+    if _is_supabase_client(conn):
+        write_snapshot_supabase(conn, company_id, payload, VERSION)
+        return
     # JSON-serialize for JSONB; ensure dicts are JSON-serializable
     def _serialize(obj: Any) -> Any:
         if isinstance(obj, (Decimal,)):
@@ -374,9 +379,12 @@ def run_scoring(conn: Any, company_ids: list[Any] | None = None) -> int:
     Returns number of snapshots written.
     """
     if company_ids is None:
-        with conn.cursor() as cur:
-            cur.execute("SELECT id FROM fisher_company")
-            company_ids = [r["id"] for r in cur.fetchall()]
+        if _is_supabase_client(conn):
+            company_ids = get_company_ids_supabase(conn)
+        else:
+            with conn.cursor() as cur:
+                cur.execute("SELECT id FROM fisher_company")
+                company_ids = [r["id"] for r in cur.fetchall()]
     written = 0
     for cid in company_ids:
         try:

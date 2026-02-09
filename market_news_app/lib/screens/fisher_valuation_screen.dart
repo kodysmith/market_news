@@ -194,7 +194,7 @@ class _FisherValuationScreenState extends State<FisherValuationScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'On the server: set DATABASE_URL (e.g. postgresql://user:pass@host:5433/db), then run the Fisher pipeline and scan.',
+                      'Data comes from Supabase (fisher_company, fisher_score_snapshot). Run the Fisher pipeline and scan on the server so Supabase has data.',
                       style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
                     ),
                   ],

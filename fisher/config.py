@@ -34,8 +34,8 @@ def load_config() -> dict:
 
 
 def get_database_url() -> str | None:
-    """Postgres connection URL (Supabase or DATABASE_URL)."""
-    url = os.environ.get("DATABASE_URL") or os.environ.get("SUPABASE_DB_URL")
+    """Postgres connection URL. Prefers SUPABASE_DB_URL so Fisher uses Supabase when both are set."""
+    url = os.environ.get("SUPABASE_DB_URL") or os.environ.get("DATABASE_URL")
     if url:
         return url
     # Supabase project URL + key don't give direct Postgres; user must set DATABASE_URL

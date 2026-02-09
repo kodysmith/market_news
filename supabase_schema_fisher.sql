@@ -6,7 +6,7 @@
 -- company: S&P 500 (or universe) companies with CIK for EDGAR
 CREATE TABLE IF NOT EXISTS fisher_company (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    ticker VARCHAR(10) NOT NULL UNIQUE,
+    ticker VARCHAR(10) NOT NULL,
     name TEXT,
     cik VARCHAR(20),
     sector TEXT,
@@ -133,7 +133,7 @@ CREATE INDEX IF NOT EXISTS idx_fisher_score_snapshot_company_at ON fisher_score_
 -- fisher_scan_queue: full-market Fisher scan (monthly or manual)
 CREATE TABLE IF NOT EXISTS fisher_scan_queue (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    ticker VARCHAR(10) NOT NULL UNIQUE,
+    ticker VARCHAR(10) NOT NULL,
     status VARCHAR(20) NOT NULL DEFAULT 'pending'
         CHECK (status IN ('pending', 'processing', 'done', 'failed')),
     source VARCHAR(20) NOT NULL DEFAULT 'sec',
@@ -181,6 +181,15 @@ CREATE POLICY "fisher_anon_read" ON fisher_market_bar_daily FOR SELECT USING (tr
 CREATE POLICY "fisher_anon_read" ON fisher_peer_set FOR SELECT USING (true);
 CREATE POLICY "fisher_anon_read" ON fisher_score_snapshot FOR SELECT USING (true);
 CREATE POLICY "fisher_anon_read" ON fisher_scan_queue FOR SELECT USING (true);
+
+-- Function used by updated_at triggers
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
 -- Trigger for fisher_company updated_at
 CREATE TRIGGER update_fisher_company_updated_at BEFORE UPDATE ON fisher_company
