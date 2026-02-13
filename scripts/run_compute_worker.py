@@ -19,12 +19,14 @@ import json
 import logging
 import os
 import sys
+import threading
 import time
 from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "scripts"))
 
 _env_file = ROOT / ".env"
 if _env_file.exists():
@@ -269,11 +271,96 @@ def process_one(conn, app, routes) -> bool:
     return True
 
 
+def _sleep_interval_seconds(args) -> tuple[float, str]:
+    """Return (seconds, label) for idle sleep: use poll during market hours, poll_after_hours otherwise."""
+    try:
+        from market_window import is_market_window
+        in_window = is_market_window()
+    except ImportError:
+        in_window = True
+    if in_window:
+        return args.poll, "market hours"
+    return args.poll_after_hours, "after hours"
+
+
+def _realtime_timeout_seconds(args) -> float:
+    """Return timeout for Realtime wait: shorter during market hours, longer after hours."""
+    try:
+        from market_window import is_market_window
+        in_window = is_market_window()
+    except ImportError:
+        in_window = True
+    return args.poll if in_window else args.poll_after_hours
+
+
+def _run_realtime_listener(wake_event: threading.Event, wss_url: str, api_key: str) -> None:
+    """Run async Realtime listener in current thread; on INSERT into compute_job_queue call wake_event.set()."""
+    import asyncio
+    try:
+        from realtime import AsyncRealtimeClient
+    except ImportError:
+        logger.warning("realtime package not installed; pip install realtime for push-based wake-up. Using poll.")
+        return
+    async def _listen() -> None:
+        socket = AsyncRealtimeClient(wss_url, api_key)
+        channel = socket.channel("compute_job_queue_worker")
+        channel.on_postgres_changes(
+            "INSERT",
+            schema="public",
+            table="compute_job_queue",
+            callback=lambda payload: wake_event.set(),
+        )
+        await channel.subscribe()
+        # Keep running until process exits (daemon thread)
+        while True:
+            await asyncio.sleep(60)
+    try:
+        asyncio.run(_listen())
+    except Exception as e:
+        logger.warning("Realtime listener stopped: %s", e)
+
+
+def _loop_with_realtime(get_supabase_client, get_connection, app, routes, args) -> None:
+    """Loop/daemon mode using Supabase Realtime: wake on INSERT, else wait with timeout (market/after-hours)."""
+    if not get_supabase_client():
+        raise RuntimeError("Realtime requires Supabase client (SUPABASE_URL + SUPABASE_SECRET_KEY)")
+    url = (os.environ.get("SUPABASE_URL") or "").strip().rstrip("/")
+    key = (os.environ.get("SUPABASE_SECRET_KEY") or os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or "").strip()
+    if not url or not key:
+        logger.warning("SUPABASE_URL or SUPABASE_SECRET_KEY not set; Realtime disabled.")
+        raise RuntimeError("Realtime requires SUPABASE_URL and SUPABASE_SECRET_KEY")
+    wss_url = url.replace("https://", "wss://", 1).replace("http://", "ws://", 1)
+    if not wss_url.startswith("ws"):
+        wss_url = "wss://" + url.split("://", 1)[-1]
+    wss_url = wss_url.rstrip("/") + "/realtime/v1"
+    wake_event = threading.Event()
+    try:
+        from realtime import AsyncRealtimeClient
+    except ImportError:
+        raise RuntimeError("realtime package not installed; pip install realtime for push-based wake-up")
+    listener_thread = threading.Thread(
+        target=_run_realtime_listener,
+        args=(wake_event, wss_url, key),
+        daemon=True,
+        name="realtime-listener",
+    )
+    listener_thread.start()
+    logger.info("Realtime: listening for INSERT on compute_job_queue; wake timeout by market hours.")
+    while True:
+        wake_event.clear()
+        timeout = _realtime_timeout_seconds(args)
+        wake_event.wait(timeout=timeout)
+        with get_connection() as conn:
+            while process_one(conn, app, routes):
+                pass
+
+
 def main():
     ap = argparse.ArgumentParser(description="Process compute_job_queue (valuation, GEX, cockpit, etc.)")
     ap.add_argument("--loop", action="store_true", help="Run forever; when queue empty, sleep --poll s then check again (Ctrl+C to stop)")
     ap.add_argument("--daemon", action="store_true", help="Same as --loop (run forever, poll when empty)")
-    ap.add_argument("--poll", type=float, default=30.0, help="Seconds to sleep when queue empty in --loop/--daemon (default 30)")
+    ap.add_argument("--poll", type=float, default=30.0, help="Seconds to sleep when queue empty during market hours (default 30)")
+    ap.add_argument("--poll-after-hours", type=float, default=300.0, help="Seconds to sleep when queue empty outside market hours (default 300)")
     ap.add_argument("--once", action="store_true", help="Process one job and exit (default)")
     args = ap.parse_args()
 
@@ -288,11 +375,24 @@ def main():
         ensure_compute_job_queue(conn)
 
     if args.loop or args.daemon:
-        logger.info("Loop mode: polling every %s s when queue empty (Ctrl+C to stop)", args.poll)
+        try:
+            _loop_with_realtime(get_supabase_client, get_connection, app, routes, args)
+            return 0
+        except RuntimeError as e:
+            logger.info("Realtime not used: %s; using poll loop.", e)
+        except Exception as e:
+            logger.warning("Realtime failed: %s; using poll loop.", e)
+        poll_sec, poll_label = _sleep_interval_seconds(args)
+        logger.info(
+            "Loop mode: when queue empty, sleeping %s s (%s); Ctrl+C to stop",
+            poll_sec, poll_label,
+        )
         while True:
             with get_connection() as conn:
                 if not process_one(conn, app, routes):
-                    time.sleep(args.poll)
+                    sleep_sec, label = _sleep_interval_seconds(args)
+                    logger.info("Queue empty; sleeping %.0f s (%s)", sleep_sec, label)
+                    time.sleep(sleep_sec)
                     continue
 
     with get_connection() as conn:

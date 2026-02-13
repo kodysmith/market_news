@@ -26,3 +26,7 @@ ALTER TABLE compute_job_queue ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "compute_job_service_full" ON compute_job_queue FOR ALL USING (auth.role() = 'service_role');
 CREATE POLICY "compute_job_anon_insert_select" ON compute_job_queue FOR INSERT WITH CHECK (true);
 CREATE POLICY "compute_job_anon_select" ON compute_job_queue FOR SELECT USING (true);
+
+-- Optional: enable Supabase Realtime so the compute worker can wake on INSERT (see docs/COMPUTE_QUEUE.md).
+-- Run once in Supabase SQL editor. Skip if the table is already in the publication.
+-- ALTER PUBLICATION supabase_realtime ADD TABLE compute_job_queue;
