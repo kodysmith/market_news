@@ -46,6 +46,14 @@ Pre-market watch for QQQ breakout above $485."
 
 ---
 
+## FMP (Financial Modeling Prep) — Quote/spot fallback
+
+**Why?** When IBKR is down or unavailable, the API uses FMP for stock quotes and the dashboard price strip (reliable fallback).
+
+**Setup:** Add `FMP_API_KEY` to `data/config.json` (same file as `MASSIVE_API_KEY`, `ALPHAVANTAGE_API_KEY`). The Flask API reads it from there. If you already use FMP in `.env` for news, copy that key into `config.json` for the quote fallback.
+
+---
+
 ## Optional: Alpha Vantage (OPTIONAL)
 
 **Time: 1 minute**

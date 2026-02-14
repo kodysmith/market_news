@@ -64,9 +64,10 @@ def depin_risk():
 
         latest_bar = bars[-1]  # Most recent bar
 
-        # Step 2: Get spot price
+        # Step 2: Get spot price (FMP fallback when IBKR unavailable)
         alphavantage_key = config.get("ALPHAVANTAGE_API_KEY", "")
-        spot = get_spot_price(ticker, massive_key, alphavantage_key)
+        fmp_key = config.get("FMP_API_KEY", "")
+        spot = get_spot_price(ticker, massive_key, alphavantage_key, fmp_key)
         if not spot:
             spot = latest_bar.close  # Fallback to bar close
 

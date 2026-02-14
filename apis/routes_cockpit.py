@@ -56,6 +56,7 @@ def cockpit_state():
             get_option_chain_snapshot,
             get_spot_price,
             get_quote_yfinance,
+            get_quote_fmp,
             compute_cockpit_state as compute_gex_state,
             compute_max_pain as calc_max_pain,
             get_expiration_dates_from_snap,
@@ -71,6 +72,7 @@ def cockpit_state():
 
         massive_key = config.get("MASSIVE_API_KEY", "")
         alphavantage_key = config.get("ALPHAVANTAGE_API_KEY", "")
+        fmp_key = config.get("FMP_API_KEY", "")
 
         # Get GEX state using new multi-lens computation
         # Strategy: Fetch wide range from API, then filter locally to ±20 strikes
@@ -78,8 +80,8 @@ def cockpit_state():
         snap = None  # Initialize snap for de-pin risk computation
         spot = None  # Initialize spot for de-pin risk computation
         try:
-            # === STEP 1: Get spot price first (Yahoo/Alpha Vantage) ===
-            spot = get_spot_price(ticker, massive_key, alphavantage_key)
+            # === STEP 1: Get spot price (Alpha Vantage → FMP → yfinance fallback) ===
+            spot = get_spot_price(ticker, massive_key, alphavantage_key, fmp_key)
             if spot:
                 # === STEP 2: Fetch WIDE range from Massive API ===
                 # Fetch ±60 points to ensure we have enough data
@@ -221,9 +223,14 @@ def cockpit_state():
         if depin_risk_data:
             state["de_pin_risk"] = depin_risk_data
 
-        # Add quote (current, previous_close, open) for Block A
+        # Add quote (current, previous_close, open) for Block A — FMP first when key present, else yfinance
         try:
-            quote = get_quote_yfinance(ticker)
+            if fmp_key:
+                quote = get_quote_fmp(fmp_key, ticker)
+                if quote.get("current") is None:
+                    quote = get_quote_yfinance(ticker)
+            else:
+                quote = get_quote_yfinance(ticker)
             state["quote"] = {
                 "current": quote.get("current"),
                 "previous_close": quote.get("previous_close"),
@@ -278,9 +285,21 @@ def cockpit_quote():
     if not ticker or len(ticker) > 5 or not ticker.isalnum():
         return jsonify({"error": "Invalid ticker format"}), 400
     try:
-        from QuantEngine.gex_calculator import get_quote_yfinance
-
-        quote = get_quote_yfinance(ticker)
+        from QuantEngine.gex_calculator import get_quote_yfinance, get_quote_fmp
+        import json
+        import os
+        config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "config.json")
+        config = {}
+        if os.path.exists(config_path):
+            with open(config_path, "r") as f:
+                config = json.load(f)
+        fmp_key = config.get("FMP_API_KEY", "")
+        if fmp_key:
+            quote = get_quote_fmp(fmp_key, ticker)
+            if quote.get("current") is None:
+                quote = get_quote_yfinance(ticker)
+        else:
+            quote = get_quote_yfinance(ticker)
         return jsonify({
             "ticker": ticker,
             "current": quote.get("current"),
@@ -353,9 +372,10 @@ def trade_ideas_allowed():
 
         massive_key = config.get("MASSIVE_API_KEY", "")
         alphavantage_key = config.get("ALPHAVANTAGE_API_KEY", "")
+        fmp_key = config.get("FMP_API_KEY", "")
 
-        # Get spot price
-        spot = get_spot_price(ticker, massive_key, alphavantage_key)
+        # Get spot price (FMP fallback when IBKR unavailable)
+        spot = get_spot_price(ticker, massive_key, alphavantage_key, fmp_key)
         if not spot:
             return jsonify({"error": "Failed to get spot price"}), 500
 

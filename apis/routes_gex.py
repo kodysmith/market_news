@@ -52,6 +52,9 @@ def calculate_gex():
                 massive_api_key = config.get("MASSIVE_API_KEY", "")
             if not alphavantage_api_key:
                 alphavantage_api_key = config.get("ALPHAVANTAGE_API_KEY", "")
+            fmp_api_key = config.get("FMP_API_KEY", "")
+        else:
+            fmp_api_key = ""
 
         if not massive_api_key:
             return jsonify({"error": "Massive API key is required"}), 400
@@ -62,9 +65,9 @@ def calculate_gex():
         NUM_STRIKES_EACH_SIDE = 20  # ±20 strikes around ATM (41 total)
         STRIKE_INCREMENT = 1.0  # $1 strikes for SPY
 
-        # === STEP 1: Get spot price FIRST (Yahoo/Alpha Vantage) ===
+        # === STEP 1: Get spot price (Alpha Vantage → FMP → yfinance) ===
         if not spot_price:
-            spot_price = get_spot_price(ticker, massive_api_key, alphavantage_api_key)
+            spot_price = get_spot_price(ticker, massive_api_key, alphavantage_api_key, fmp_api_key)
             if not spot_price:
                 return (
                     jsonify(
@@ -217,16 +220,18 @@ def get_max_pain():
         config_path = Path(__file__).parent.parent / "data" / "config.json"
         massive_api_key = ""
         alphavantage_api_key = ""
+        fmp_api_key = ""
         if config_path.exists():
             with open(config_path, "r") as f:
                 config = json.load(f)
             massive_api_key = config.get("MASSIVE_API_KEY", "")
             alphavantage_api_key = config.get("ALPHAVANTAGE_API_KEY", "")
+            fmp_api_key = config.get("FMP_API_KEY", "")
 
         if not massive_api_key:
             return jsonify({"error": "Massive API key is required"}), 400
 
-        spot_price = get_spot_price(ticker, massive_api_key, alphavantage_api_key)
+        spot_price = get_spot_price(ticker, massive_api_key, alphavantage_api_key, fmp_api_key)
         if not spot_price:
             return (
                 jsonify(
@@ -349,6 +354,7 @@ def get_gex_summary():
 
         massive_api_key = config.get("MASSIVE_API_KEY", "")
         alphavantage_api_key = config.get("ALPHAVANTAGE_API_KEY", "")
+        fmp_api_key = config.get("FMP_API_KEY", "")
         tickers = config.get("GEX_TICKERS", ["SPY", "SPX", "QQQ"])
 
         if not massive_api_key:
@@ -371,8 +377,8 @@ def get_gex_summary():
                     errors.append({"ticker": ticker, "error": "No options data"})
                     continue
 
-                # Get spot price
-                spot_price = get_spot_price(ticker, massive_api_key, alphavantage_api_key)
+                # Get spot price (FMP fallback)
+                spot_price = get_spot_price(ticker, massive_api_key, alphavantage_api_key, fmp_api_key)
                 if not spot_price:
                     errors.append({"ticker": ticker, "error": "Could not fetch spot price"})
                     continue
@@ -440,9 +446,10 @@ def get_gex_price_comparison():
 
         massive_api_key = config.get("MASSIVE_API_KEY", "")
         alphavantage_api_key = config.get("ALPHAVANTAGE_API_KEY", "")
+        fmp_api_key = config.get("FMP_API_KEY", "")
 
-        # Get prices from all sources
-        prices = get_spot_price_comparison(ticker, massive_api_key, alphavantage_api_key)
+        # Get prices from all sources (including FMP)
+        prices = get_spot_price_comparison(ticker, massive_api_key, alphavantage_api_key, fmp_api_key)
 
         # Calculate max discrepancy
         valid_prices = [p for p in prices.values() if p is not None]

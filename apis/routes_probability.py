@@ -83,8 +83,9 @@ def probability_range():
                 config = json.load(f)
         massive_key = config.get("MASSIVE_API_KEY", "")
         alphavantage_key = config.get("ALPHAVANTAGE_API_KEY", "")
+        fmp_key = config.get("FMP_API_KEY", "")
 
-        spot = get_spot_price(ticker, massive_key, alphavantage_key)
+        spot = get_spot_price(ticker, massive_key, alphavantage_key, fmp_key)
         if not spot:
             return jsonify({"error": "Could not get spot price", "ticker": ticker}), 502
 

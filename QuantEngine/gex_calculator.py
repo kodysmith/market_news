@@ -579,6 +579,69 @@ def compute_gex_symmetric(
     return dict(call_gex), dict(put_gex), diagnostics
 
 
+def get_spot_from_fmp(api_key: str, ticker: str) -> Optional[float]:
+    """Fetch spot price via FMP v3 quote (stocks/ETFs; indices may not be supported)."""
+    if not api_key:
+        return None
+    try:
+        url = f"https://financialmodelingprep.com/api/v3/quote/{ticker}"
+        params = {"apikey": api_key}
+        r = requests.get(url, params=params, timeout=10)
+        r.raise_for_status()
+        data = r.json()
+        if isinstance(data, list) and len(data) > 0:
+            item = data[0]
+            price = item.get("price")
+            if price is not None:
+                p = float(price)
+                if p > 0:
+                    return p
+    except Exception as e:
+        print(f"[spot] FMP failed for {ticker}: {e}")
+    return None
+
+
+def get_quote_fmp(api_key: str, ticker: str) -> Dict[str, Optional[float]]:
+    """
+    Fetch current, previous_close, open, change, change_pct from FMP v3 quote.
+    Same shape as get_quote_yfinance for dashboard quote strip.
+    """
+    result = {"current": None, "previous_close": None, "open": None, "change": None, "change_pct": None}
+    if not api_key:
+        return result
+    try:
+        url = f"https://financialmodelingprep.com/api/v3/quote/{ticker}"
+        params = {"apikey": api_key}
+        r = requests.get(url, params=params, timeout=10)
+        r.raise_for_status()
+        data = r.json()
+        if not isinstance(data, list) or len(data) == 0:
+            return result
+        item = data[0]
+        price = item.get("price")
+        prev = item.get("previousClose")
+        open_ = item.get("open")
+        change = item.get("change")
+        chg_pct = item.get("changesPercentage") or item.get("changePercentage")
+        if price is not None:
+            result["current"] = float(price)
+        if prev is not None:
+            result["previous_close"] = float(prev)
+        if open_ is not None:
+            result["open"] = float(open_)
+        if change is not None:
+            result["change"] = float(change)
+        if chg_pct is not None:
+            result["change_pct"] = round(float(chg_pct), 2)
+        if result["change"] is None and result["current"] is not None and result["previous_close"] is not None:
+            result["change"] = result["current"] - result["previous_close"]
+        if result["change_pct"] is None and result["change"] is not None and result["previous_close"] and result["previous_close"] != 0:
+            result["change_pct"] = round((result["change"] / result["previous_close"]) * 100, 2)
+    except Exception as e:
+        print(f"[quote] FMP failed for {ticker}: {e}")
+    return result
+
+
 def get_spot_from_alpha_vantage(api_key: str, ticker: str) -> Optional[float]:
     """Fetch spot price via Alpha Vantage GLOBAL_QUOTE"""
     try:
@@ -709,13 +772,14 @@ _SPOT_INDICES = frozenset({"SPX", "NDX", "DJI", "RUT", "VIX", "XSP"})
 def get_spot_price(
     ticker: str,
     massive_api_key: Optional[str] = None,
-    alphavantage_api_key: Optional[str] = None
+    alphavantage_api_key: Optional[str] = None,
+    fmp_api_key: Optional[str] = None,
 ) -> Optional[float]:
     """
     Get spot price with smart routing.
 
     For indices (SPX, NDX, etc.): try Massive v2 then yfinance.
-    For stocks: skip Massive (stock snapshot often not allowed) and use Alpha Vantage → yfinance.
+    For stocks/ETFs: try Alpha Vantage → FMP → yfinance (FMP is reliable fallback when IBKR unavailable).
     """
     is_index = ticker in _SPOT_INDICES
     if massive_api_key and is_index:
@@ -730,6 +794,10 @@ def get_spot_price(
     else:
         if alphavantage_api_key:
             spot = get_spot_from_alpha_vantage(alphavantage_api_key, ticker)
+            if spot:
+                return spot
+        if fmp_api_key:
+            spot = get_spot_from_fmp(fmp_api_key, ticker)
             if spot:
                 return spot
         spot = get_spot_from_yfinance(ticker)
@@ -1854,7 +1922,8 @@ def calculate_flip_line(agg_df: pd.DataFrame, spot_price: Optional[float] = None
 def get_spot_price_comparison(
     ticker: str,
     massive_api_key: Optional[str] = None,
-    alphavantage_api_key: Optional[str] = None
+    alphavantage_api_key: Optional[str] = None,
+    fmp_api_key: Optional[str] = None,
 ) -> Dict[str, Optional[float]]:
     """Get spot price from all sources for comparison. Massive only for indices (stock snapshot often not allowed)."""
     result = {}
@@ -1864,7 +1933,10 @@ def get_spot_price_comparison(
 
     if alphavantage_api_key:
         result['alphavantage'] = get_spot_from_alpha_vantage(alphavantage_api_key, ticker)
-    
+
+    if fmp_api_key:
+        result['fmp'] = get_spot_from_fmp(fmp_api_key, ticker)
+
     result['yfinance'] = get_spot_from_yfinance(ticker)
-    
+
     return result
