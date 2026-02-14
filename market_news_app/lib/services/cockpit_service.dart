@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import '../main.dart';
 import 'compute_queue_service.dart';
@@ -57,29 +58,226 @@ class CockpitService {
     return List.from(ComputeQueueService.coreSymbols);
   }
   
-  /// Get upcoming market events for cockpit display
-  static Future<CockpitEventsData?> getCockpitEvents({int daysAhead = 3, String? symbol}) async {
+  /// Get upcoming market events for cockpit display.
+  /// Tries Flask API first; if unreachable, fetches from FMP directly when FMP_API_KEY is set in .env.
+  static Future<CockpitEventsData?> getCockpitEvents({int daysAhead = 14, String? symbol}) async {
     var url = '$apiBaseUrl/cockpit/events?days=$daysAhead';
     if (symbol != null && symbol.isNotEmpty) {
       url += '&symbol=${Uri.encodeComponent(symbol)}';
     }
     print('[CockpitService] Fetching events: $url');
-    
+
     try {
-      final response = await http.get(Uri.parse(url));
-      print('[CockpitService] Events response status: ${response.statusCode}');
-      
+      final response = await http.get(Uri.parse(url)).timeout(
+        const Duration(seconds: 8),
+        onTimeout: () => throw Exception('timeout'),
+      );
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-        return CockpitEventsData.fromJson(json);
-      } else {
-        print('[CockpitService] Events error: ${response.body}');
-        return null;
+        if (json is Map && json.containsKey('badges')) {
+          return CockpitEventsData.fromJson(Map<String, dynamic>.from(json));
+        }
       }
     } catch (e) {
-      print('[CockpitService] Events exception: $e');
-      return null;
+      print('[CockpitService] API events failed: $e');
     }
+
+    // Fallback: fetch from FMP directly (earnings + economic calendar)
+    final fmpKey = dotenv.env['FMP_API_KEY']?.trim();
+    if (fmpKey != null && fmpKey.isNotEmpty) {
+      try {
+        final data = await _getCockpitEventsFromFmp(daysAhead: daysAhead, symbol: symbol, apiKey: fmpKey);
+        if (data != null) {
+          print('[CockpitService] Using FMP direct events (${data.events.length} events)');
+          return data;
+        }
+      } catch (e) {
+        print('[CockpitService] FMP direct events failed: $e');
+      }
+    }
+    return null;
+  }
+
+  static const List<String> _spyTopHoldings = [
+    'AAPL', 'MSFT', 'NVDA', 'AMZN', 'GOOGL', 'GOOG', 'META', 'TSLA', 'BRK.B',
+    'JPM', 'V', 'MA', 'UNH', 'HD', 'PG', 'JNJ', 'XOM', 'CVX', 'ABBV', 'MRK',
+    'PFE', 'KO', 'PEP', 'COST', 'WMT', 'BAC', 'WFC', 'NFLX', 'ADBE', 'CRM',
+    'ORCL', 'INTC', 'AMD', 'QCOM',
+  ];
+
+  static const List<String> _fomcDates = [
+    '2026-01-28', '2026-01-29', '2026-03-17', '2026-03-18', '2026-05-05', '2026-05-06',
+    '2026-06-16', '2026-06-17', '2026-07-28', '2026-07-29', '2026-09-15', '2026-09-16',
+    '2026-11-03', '2026-11-04', '2026-12-15', '2026-12-16',
+  ];
+
+  static Future<CockpitEventsData?> _getCockpitEventsFromFmp({
+    required int daysAhead,
+    String? symbol,
+    required String apiKey,
+  }) async {
+    final now = DateTime.now();
+    final end = now.add(Duration(days: daysAhead));
+    final fromStr = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+    final toStr = '${end.year}-${end.month.toString().padLeft(2, '0')}-${end.day.toString().padLeft(2, '0')}';
+    final today = DateTime(now.year, now.month, now.day);
+
+    final List<Map<String, dynamic>> events = [];
+
+    // 1. FMP earnings calendar (SPY top holdings only)
+    try {
+      final earningsUrl = 'https://financialmodelingprep.com/api/v3/earning_calendar?from=$fromStr&to=$toStr&apikey=$apiKey';
+      final earningsResp = await http.get(Uri.parse(earningsUrl)).timeout(const Duration(seconds: 10));
+      if (earningsResp.statusCode == 200) {
+        final list = jsonDecode(earningsResp.body);
+        if (list is List) {
+          for (final e in list) {
+            final ticker = (e['symbol'] ?? '').toString().toUpperCase();
+            if (!_spyTopHoldings.contains(ticker)) continue;
+            final date = e['date']?.toString();
+            if (date == null || date.isEmpty) continue;
+            final time = (e['time'] ?? '').toString().toLowerCase();
+            final timeLabel = time == 'bmo' ? 'BMO' : (time == 'amc' ? 'AH' : '');
+            events.add({
+              'type': 'earnings',
+              'title': '$ticker Earnings',
+              'date': date,
+              'time': timeLabel,
+              'impact': 'high',
+              'ticker': ticker,
+              'source': 'fmp',
+            });
+          }
+        }
+      }
+    } catch (_) {}
+
+    // 2. FMP economic calendar (US, medium/high impact)
+    try {
+      final econUrl = 'https://financialmodelingprep.com/api/v3/economic_calendar?from=$fromStr&to=$toStr&apikey=$apiKey';
+      final econResp = await http.get(Uri.parse(econUrl)).timeout(const Duration(seconds: 10));
+      if (econResp.statusCode == 200) {
+        final list = jsonDecode(econResp.body);
+        if (list is List) {
+          for (final e in list) {
+            if ((e['country'] ?? '').toString().toUpperCase() != 'US') continue;
+            final impact = (e['impact'] ?? '').toString();
+            if (impact.toUpperCase() != 'HIGH' && impact.toUpperCase() != 'MEDIUM') continue;
+            final date = e['date']?.toString();
+            if (date == null || date.isEmpty) continue;
+            final eventName = (e['event'] ?? e['title'] ?? 'Event').toString();
+            final type = eventName.toUpperCase().contains('FOMC') ? 'fomc'
+                : eventName.toUpperCase().contains('CPI') ? 'cpi'
+                : eventName.toUpperCase().contains('PPI') ? 'ppi'
+                : eventName.toUpperCase().contains('NFP') || eventName.toUpperCase().contains('EMPLOYMENT') ? 'nfp'
+                : eventName.toUpperCase().contains('GDP') ? 'gdp' : 'economic';
+            events.add({
+              'type': type,
+              'title': eventName,
+              'date': date.split(' ').first,
+              'time': date.contains(' ') ? date.split(' ').last : '08:30',
+              'impact': impact.toLowerCase(),
+              'ticker': null,
+              'source': 'fmp',
+            });
+          }
+        }
+      }
+    } catch (_) {}
+
+    // 3. OPEX (3rd Friday of month)
+    int thirdFriday(int year, int month) {
+      for (int day = 15; day <= 21; day++) {
+        final dt = DateTime(year, month, day);
+        if (dt.weekday == DateTime.friday) return day;
+      }
+      return 15;
+    }
+    for (int monthOffset = 0; monthOffset < 2; monthOffset++) {
+      final d = DateTime(now.year, now.month + monthOffset, 1);
+      final opexDay = thirdFriday(d.year, d.month);
+      final opexDate = DateTime(d.year, d.month, opexDay);
+      if (!opexDate.isBefore(today) && !opexDate.isAfter(end)) {
+        events.add({
+          'type': 'opex',
+          'title': 'Monthly OPEX',
+          'date': '${opexDate.year}-${opexDate.month.toString().padLeft(2, '0')}-${opexDate.day.toString().padLeft(2, '0')}',
+          'time': 'Close',
+          'impact': 'high',
+          'ticker': null,
+          'source': 'calculated',
+        });
+      }
+    }
+
+    // 4. FOMC (hardcoded decision days)
+    const fomcDecisionSuffixes = ['29', '18', '06', '17', '16', '04'];
+    for (final dateStr in _fomcDates) {
+      if (fomcDecisionSuffixes.any((s) => dateStr.endsWith(s))) {
+        try {
+          final d = DateTime.parse(dateStr);
+          if (!d.isBefore(today) && !d.isAfter(end)) {
+            events.add({
+              'type': 'fomc',
+              'title': 'FOMC Decision',
+              'date': dateStr,
+              'time': '2:00 PM',
+              'impact': 'high',
+              'ticker': null,
+              'source': 'scheduled',
+            });
+          }
+        } catch (_) {}
+      }
+    }
+
+    // Dedupe by date+type+title
+    final seen = <String>{};
+    final unique = <Map<String, dynamic>>[];
+    for (final e in events) {
+      final key = '${e['date']}_${e['type']}_${e['title']}';
+      if (seen.add(key)) unique.add(e);
+    }
+    unique.sort((a, b) => (a['date'] as String).compareTo(b['date'] as String));
+
+    // Build badges (top 3)
+    final badges = <Map<String, dynamic>>[];
+    for (final event in unique.take(3)) {
+      final dateStr = event['date'] as String;
+      final eventDate = DateTime.tryParse(dateStr) ?? today;
+      final daysUntil = eventDate.difference(today).inDays;
+      final dateLabel = daysUntil == 0 ? 'Today' : (daysUntil == 1 ? 'Tomorrow' : _dayLabel(eventDate));
+      String badgeText;
+      if (event['type'] == 'earnings') {
+        badgeText = (event['ticker'] ?? '').toString();
+      } else if (event['type'] == 'opex') {
+        badgeText = 'OPEX';
+      } else if (event['type'] == 'fomc') {
+        badgeText = 'FOMC';
+      } else {
+        final title = (event['title'] ?? '').toString().toUpperCase();
+        badgeText = title.contains('CPI') ? 'CPI' : title.contains('PPI') ? 'PPI' : title.contains('NFP') ? 'NFP' : title.contains('GDP') ? 'GDP' : (event['title'] ?? '').toString().length > 10 ? '${(event['title'] as String).substring(0, 10)}…' : (event['title'] ?? '').toString();
+      }
+      badges.add({
+        'text': badgeText,
+        'type': event['type'],
+        'date_label': dateLabel,
+        'full_title': event['title'],
+        'impact': event['impact'],
+      });
+    }
+
+    return CockpitEventsData(
+      badges: badges.map((e) => EventBadge.fromJson(e)).toList(),
+      events: unique.map((e) => CockpitEvent.fromJson(Map<String, dynamic>.from(e))).toList(),
+      daysAhead: daysAhead,
+      count: unique.length,
+    );
+  }
+
+  static String _dayLabel(DateTime d) {
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return days[d.weekday - 1];
   }
 }
 

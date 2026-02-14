@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../services/cockpit_service.dart';
 import '../services/compute_queue_service.dart';
 import '../services/gex_service.dart';
@@ -314,44 +315,39 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
         color: const Color(0xFF161B22),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Row(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Ticker dropdown + symbol input — need enough width so dropdown isn't squished
-          SizedBox(
-            width: 280,
-            child: _buildTickerDropdown(),
-          ),
-          const SizedBox(width: 12),
-          // Event badges - flexible, scrollable
-          Flexible(
-            flex: 2,
-            child: _buildEventBadges(),
-          ),
-          const SizedBox(width: 8),
-          // Vol badge - fixed width, no shrink
-          Flexible(
-            flex: 0,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: volColor.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(6),
+          // Row 1: Asset dropdown + vol badge + refresh (no squishing)
+          Row(
+            children: [
+              SizedBox(
+                width: 280,
+                child: _buildTickerDropdown(),
               ),
-              child: Text(
-                'VOL${vol.directionSymbol}',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: volColor, fontFamily: 'JetBrains Mono'),
+              const SizedBox(width: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: volColor.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  'VOL${vol.directionSymbol}',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: volColor, fontFamily: 'JetBrains Mono'),
+                ),
               ),
-            ),
+              const SizedBox(width: 8),
+              GestureDetector(
+                onTap: _loadData,
+                child: const Icon(Icons.refresh, color: Colors.white54, size: 24),
+              ),
+            ],
           ),
-          const SizedBox(width: 8),
-          // Refresh icon - fixed width, no shrink
-          Flexible(
-            flex: 0,
-            child: GestureDetector(
-              onTap: _loadData,
-              child: const Icon(Icons.refresh, color: Colors.white54, size: 24),
-            ),
-          ),
+          // Row 2: Event badges (news section) — full width, wraps to next line
+          const SizedBox(height: 10),
+          _buildEventBadges(),
         ],
       ),
     );
@@ -474,8 +470,28 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
     );
   }
 
+  String _urlForEvent(CockpitEvent event) {
+    final q = Uri.encodeComponent('${event.title} ${event.date}');
+    return 'https://www.google.com/search?q=$q';
+  }
+
+  Future<void> _launchEventUrl(CockpitEvent event) async {
+    final url = _urlForEvent(event);
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not open: $url')),
+        );
+      }
+    }
+  }
+
   Widget _buildEventBadges() {
     final badges = _events?.badges ?? [];
+    final eventList = _events?.events ?? [];
     if (badges.isEmpty) {
       return const Text('No events', style: TextStyle(fontSize: 14, color: Colors.white38, fontFamily: 'JetBrains Mono'));
     }
@@ -484,12 +500,15 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
       scrollDirection: Axis.horizontal,
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children: badges.take(3).map((badge) {
+        children: badges.take(3).toList().asMap().entries.map((entry) {
+          final i = entry.key;
+          final badge = entry.value;
+          final event = i < eventList.length ? eventList[i] : null;
           final color = Color(CockpitEvent(
             type: badge.type, title: '', date: '', time: '', impact: '', source: '',
           ).colorValue);
-          
-          return Container(
+
+          final chip = Container(
             margin: const EdgeInsets.only(right: 8),
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
@@ -502,6 +521,14 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
               style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: color, fontFamily: 'JetBrains Mono'),
             ),
           );
+
+          if (event != null) {
+            return GestureDetector(
+              onTap: () => _launchEventUrl(event),
+              child: chip,
+            );
+          }
+          return chip;
         }).toList(),
       ),
     );
@@ -928,32 +955,35 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
                 itemBuilder: (context, index) {
                   final event = events[index];
                   final color = Color(event.colorValue);
-                  
-                  return Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                    child: Row(
-                      children: [
-                        Container(width: 4, height: 24, decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(2))),
-                        const SizedBox(width: 10),
-                        SizedBox(width: 60, child: Text(_formatEventDate(event.date), style: const TextStyle(fontSize: 13, color: Colors.white54, fontFamily: 'JetBrains Mono'))),
-                        Expanded(child: Text(event.title, style: const TextStyle(fontSize: 14, color: Colors.white70, fontFamily: 'JetBrains Mono'), overflow: TextOverflow.ellipsis)),
-                        if (event.impactOnSymbol != null && event.impactOnSymbol!.isNotEmpty)
-                          Container(
-                            margin: const EdgeInsets.only(right: 8),
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: event.impactOnSymbol == 'high' ? const Color(0xFFF85149).withOpacity(0.2) : event.impactOnSymbol == 'medium' ? const Color(0xFFFFA500).withOpacity(0.2) : Colors.white.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(4),
+
+                  return GestureDetector(
+                    onTap: () => _launchEventUrl(event),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      child: Row(
+                        children: [
+                          Container(width: 4, height: 24, decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(2))),
+                          const SizedBox(width: 10),
+                          SizedBox(width: 60, child: Text(_formatEventDate(event.date), style: const TextStyle(fontSize: 13, color: Colors.white54, fontFamily: 'JetBrains Mono'))),
+                          Expanded(child: Text(event.title, style: const TextStyle(fontSize: 14, color: Colors.white70, fontFamily: 'JetBrains Mono'), overflow: TextOverflow.ellipsis)),
+                          if (event.impactOnSymbol != null && event.impactOnSymbol!.isNotEmpty)
+                            Container(
+                              margin: const EdgeInsets.only(right: 8),
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: event.impactOnSymbol == 'high' ? const Color(0xFFF85149).withOpacity(0.2) : event.impactOnSymbol == 'medium' ? const Color(0xFFFFA500).withOpacity(0.2) : Colors.white.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(event.impactOnSymbol!, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: event.impactOnSymbol == 'high' ? const Color(0xFFF85149) : event.impactOnSymbol == 'medium' ? const Color(0xFFFFA500) : Colors.white54, fontFamily: 'JetBrains Mono')),
                             ),
-                            child: Text(event.impactOnSymbol!, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: event.impactOnSymbol == 'high' ? const Color(0xFFF85149) : event.impactOnSymbol == 'medium' ? const Color(0xFFFFA500) : Colors.white54, fontFamily: 'JetBrains Mono')),
-                          ),
-                        if (event.time.isNotEmpty)
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(color: color.withOpacity(0.2), borderRadius: BorderRadius.circular(4)),
-                            child: Text(event.time, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: color, fontFamily: 'JetBrains Mono')),
-                          ),
-                      ],
+                          if (event.time.isNotEmpty)
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(color: color.withOpacity(0.2), borderRadius: BorderRadius.circular(4)),
+                              child: Text(event.time, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: color, fontFamily: 'JetBrains Mono')),
+                            ),
+                        ],
+                      ),
                     ),
                   );
                 },

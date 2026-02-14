@@ -48,9 +48,11 @@ class LocalAIService(private val context: Context) {
     
     private fun initializeGeminiNano() {
         try {
-            // Initialize Gemini Nano for on-device inference
+            // GenerativeModel (generativeai SDK) requires modelName + apiKey. Use empty if no key (build still works; runtime calls may fail).
+            val apiKey = "" // Optional: set from BuildConfig or Flutter env for cloud Gemini
             generativeModel = GenerativeModel(
-                modelName = "gemini-2.0-flash-exp", // Use Gemini 2.0 for Pixel 10
+                modelName = "gemini-2.0-flash-exp",
+                apiKey = apiKey,
                 generationConfig = generationConfig {
                     temperature = 0.7f
                     topK = 40

@@ -10,6 +10,9 @@ venv/
 .env
 .env.*
 
+# --- Secrets (never commit) ---
+secrets/
+
 # --- Logs ---
 *.log
 logs/
@@ -30,3 +33,6 @@ data/results/
 Thumbs.db
 .vscode/
 .idea/
+
+# secrets removal
+secrets/

@@ -17,8 +17,9 @@ class AssetSelectionService extends ChangeNotifier {
   AssetSelectionService._internal();
   
   String _selectedAsset = 'SPY';
+  /// Dashboard/cockpit dropdown: indices only (SPX, SPY, XSP, NDX, DIA = Dow ETF).
   static const List<String> _availableAssets = [
-    'XSP', 'SPX', 'SPY', 'NDX', 'AMZN', 'GOOGL', 'UNH', 'GLD',
+    'SPX', 'SPY', 'XSP', 'NDX', 'DIA',
   ];
   
   /// Get the currently selected asset

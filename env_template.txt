@@ -12,6 +12,11 @@ SUPABASE_SECRET_KEY=your_secret_key_here
 # In Supabase: Connect → Session/Transaction pooler URI (IPv4). Password with ! use %21 (e.g. !! -> %21%21).
 # SUPABASE_DB_URL=postgresql://postgres.[ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres
 
+# Optional: FCM push for GEX regime flip alerts. Firebase Console → Project Settings → Service accounts → Generate new private key (JSON).
+# Set to absolute path of that file so precompute script can send to topic market_alerts.
+# GOOGLE_APPLICATION_CREDENTIALS=/path/to/firebase-service-account.json
+# FIREBASE_SERVICE_ACCOUNT_JSON=/path/to/firebase-service-account.json
+
 # Alpha Vantage API Key (get from https://www.alphavantage.co/support/#api-key)
 ALPHAVANTAGE_API_KEY=your_alpha_vantage_key_here
 

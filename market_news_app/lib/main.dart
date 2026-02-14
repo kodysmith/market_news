@@ -33,6 +33,16 @@ String apiBaseUrl = 'http://localhost:5000';
 
 const String apiSecretKey = 'b7e2f8c4e1a94e2b8c9d4e7f2a1b3c4d';
 
+/// Background FCM handler (must be top-level). Called when app is in background or terminated.
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // Notification is shown by the system when app is in background; we can log or do optional work.
+  if (message.notification != null) {
+    print('Background FCM: ${message.notification!.title} - ${message.notification!.body}');
+  }
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
@@ -40,6 +50,9 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Register FCM background handler before any async work that might receive a message
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   
   await dotenv.load(fileName: ".env");
   // Override API base URL from .env (e.g. API_BASE_URL=http://192.168.1.31:5000 for device on network)
@@ -77,7 +90,10 @@ Future<void> _initFirebaseMessaging() async {
   String? token = await messaging.getToken();
   print('FCM Token: ' + (token ?? 'null'));
 
-  // Optionally: handle foreground messages
+  // Subscribe to topic for server-sent alerts (e.g. GEX regime flip)
+  await messaging.subscribeToTopic('market_alerts');
+
+  // Handle foreground messages
   FirebaseMessaging.onMessage.listen((message) {
     print('Received a foreground message: \n');
     print('Title: \${message.notification?.title}');
