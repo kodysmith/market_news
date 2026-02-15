@@ -62,7 +62,7 @@ def _get_app_and_routes():
     with app.app_context():
         from apis.routes_valuation import valuation_calculate
         from apis.routes_gex import calculate_gex
-        from apis.routes_cockpit import cockpit_state, trade_ideas_allowed
+        from apis.routes_cockpit import cockpit_state, trade_ideas_allowed, house_trades_recent
         from apis.routes_probability import probability_range
     return app, {
         "valuation": ("/valuation/calculate?ticker={symbol}&store=false", valuation_calculate),
@@ -70,6 +70,7 @@ def _get_app_and_routes():
         "cockpit": ("/cockpit/state?ticker={symbol}", cockpit_state),
         "probability": ("/probability/range?ticker={symbol}", probability_range),
         "trade_ideas": ("/trade-ideas/allowed?ticker={symbol}", trade_ideas_allowed),
+        "congressional_trades": ("/house-trades/recent", house_trades_recent),
     }
 
 

@@ -7,6 +7,7 @@ enum ComputeTaskType {
   cockpit,
   probability,
   trade_ideas,
+  congressional_trades,
 }
 
 /// Result of waiting for a compute job.
@@ -52,8 +53,13 @@ class ComputeQueueService {
         return 'probability';
       case ComputeTaskType.trade_ideas:
         return 'trade_ideas';
+      case ComputeTaskType.congressional_trades:
+        return 'congressional_trades';
     }
   }
+
+  /// Sentinel symbol for congressional trades (result is not per-symbol; one row in cache).
+  static const String congressionalTradesSentinelSymbol = '*';
 
   /// Returns true if Supabase is initialized and the queue can be used.
   static bool get isAvailable {

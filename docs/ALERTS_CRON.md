@@ -27,3 +27,13 @@ Sends one FCM at 6:20 AM PST if SPX is negative gamma. Script exits silently out
 ```
 
 Replace `/path/to/MarketNews` with your repo path. Create `logs/` if needed: `mkdir -p /path/to/MarketNews/logs`.
+
+## News search (daily, congressional symbols → FMP → data/news.json + Supabase)
+
+Runs once per weekday at 6:00 AM ET. Fetches symbols from congressional trades (last 30 days), pulls FMP stock news for those symbols, writes `data/news.json`, then runs `publish_news_to_supabase.py` so the app has fresh news without calling the API directly.
+
+```cron
+0 6 * * 1-5 cd /path/to/MarketNews && . venv/bin/activate && python3 scripts/run_news_search_job.py >> /path/to/MarketNews/logs/news_search.log 2>&1
+```
+
+For publish to Supabase, ensure `SUPABASE_URL` and `SUPABASE_SECRET_KEY` are set in `.env`.

@@ -7,10 +7,14 @@ import math
 import logging
 from datetime import datetime, timedelta
 from typing import Dict, Any, Optional, List, Tuple
+import requests
 import yfinance as yf
 import numpy as np
 
 logger = logging.getLogger(__name__)
+
+# FMP API base (v3)
+_FMP_BASE = "https://financialmodelingprep.com/api/v3"
 
 
 class IntrinsicValueCalculator:
@@ -29,8 +33,9 @@ class IntrinsicValueCalculator:
     DEFAULT_TERMINAL_GROWTH = 0.03  # 3% perpetual growth
     DEFAULT_RISK_FREE_RATE = 0.045  # 4.5% risk-free rate
     
-    def __init__(self, ticker: str):
+    def __init__(self, ticker: str, fmp_api_key: Optional[str] = None):
         self.ticker = ticker.upper()
+        self.fmp_api_key = (fmp_api_key or "").strip() or None
         self.stock = None
         self.info = {}
         self.financials = None
@@ -39,14 +44,127 @@ class IntrinsicValueCalculator:
         self.history = None
         self.current_price = 0.0
         self._loaded = False
+
+    def _load_data_fmp(self) -> bool:
+        """Load financial data from FMP API. Populates self.info and self.current_price. Returns True on success."""
+        if not self.fmp_api_key:
+            return False
+        try:
+            sym = self.ticker
+            key = self.fmp_api_key
+            params = {"apikey": key}
+
+            def get(url: str) -> List[Dict[str, Any]]:
+                r = requests.get(url, params=params, timeout=15)
+                r.raise_for_status()
+                data = r.json()
+                return data if isinstance(data, list) else []
+
+            profile_list = get(f"{_FMP_BASE}/profile/{sym}")
+            quote_list = get(f"{_FMP_BASE}/quote/{sym}")
+            income_list = get(f"{_FMP_BASE}/income-statement/{sym}?limit=2")
+            balance_list = get(f"{_FMP_BASE}/balance-sheet-statement/{sym}?limit=1")
+            cashflow_list = get(f"{_FMP_BASE}/cash-flow-statement/{sym}?limit=1")
+
+            profile = (profile_list or [{}])[0] if profile_list else {}
+            quote = (quote_list or [{}])[0] if quote_list else {}
+            income = (income_list or [{}])[0] if income_list else {}
+            income_prior = (income_list or [None, None])[1] if len(income_list or []) > 1 else {}
+            balance = (balance_list or [{}])[0] if balance_list else {}
+            cashflow = (cashflow_list or [{}])[0] if cashflow_list else {}
+
+            def _num(v: Any) -> float:
+                if v is None:
+                    return 0.0
+                try:
+                    return float(v)
+                except (TypeError, ValueError):
+                    return 0.0
+
+            price = _num(quote.get("price"))
+            if price <= 0 and profile:
+                price = _num(profile.get("price"))
+            if price <= 0:
+                logger.warning(f"FMP: no price for {sym}")
+                return False
+
+            self.current_price = price
+            rev_curr = _num(income.get("revenue"))
+            rev_prior = _num(income_prior.get("revenue")) if income_prior else 0
+            revenue_growth = ((rev_curr - rev_prior) / rev_prior) if rev_prior and rev_prior > 0 else 0
+
+            shares = _num(profile.get("mktCap")) / price if price and price > 0 else 0
+            if shares <= 0 and income.get("weightedAverageShsOut"):
+                shares = _num(income.get("weightedAverageShsOut"))
+            if shares <= 0 and balance.get("totalStockholdersEquity") and income.get("eps"):
+                eps = _num(income.get("eps"))
+                bv = _num(balance.get("totalStockholdersEquity"))
+                if eps > 0:
+                    shares = bv / eps if eps else 0
+
+            book_value = 0.0
+            if balance and shares and shares > 0:
+                te = _num(balance.get("totalStockholdersEquity"))
+                if te > 0:
+                    book_value = te / shares
+
+            dividend_rate = _num(profile.get("lastDiv")) or 0
+            dividend_yield = (dividend_rate / price) if price and price > 0 else 0
+            eps_val = _num(income.get("eps"))
+            trailing_pe = (price / eps_val) if eps_val and eps_val > 0 else 0
+            net_income_val = _num(income.get("netIncome"))
+            profit_margins = (net_income_val / rev_curr) if rev_curr and rev_curr > 0 else 0
+
+            self.info = {
+                "currentPrice": price,
+                "regularMarketPrice": price,
+                "longName": profile.get("companyName") or sym,
+                "sector": profile.get("sector") or "Unknown",
+                "industry": profile.get("industry") or "Unknown",
+                "freeCashflow": _num(cashflow.get("freeCashFlow")),
+                "sharesOutstanding": shares,
+                "totalDebt": _num(balance.get("totalDebt")),
+                "revenueGrowth": revenue_growth,
+                "trailingEps": eps_val,
+                "bookValue": book_value,
+                "trailingPE": trailing_pe,
+                "dividendRate": dividend_rate,
+                "dividendYield": dividend_yield,
+                "fiveYearAvgDividendYield": 0,
+                "payoutRatio": 0.5,
+                "earningsGrowth": 0,
+                "beta": _num(profile.get("beta")) if profile.get("beta") is not None else 1.0,
+                "netIncomeToCommon": net_income_val,
+                "operatingIncome": _num(income.get("operatingIncome")) or net_income_val,
+                "marketCap": _num(profile.get("mktCap")),
+                "interestExpense": _num(income.get("interestExpense")),
+                "profitMargins": profit_margins,
+                "totalRevenue": rev_curr,
+                "ebitda": _num(income.get("ebitda")),
+                "totalCash": _num(balance.get("cashAndCashEquivalents")),
+                "totalAssets": _num(balance.get("totalAssets")),
+                "totalLiab": _num(balance.get("totalLiabilities")),
+                "goodwill": _num(balance.get("goodwill")),
+                "intangibleAssets": _num(balance.get("intangibleAssets")),
+            }
+            self._loaded = True
+            logger.info(f"Loaded data for {self.ticker} from FMP")
+            return True
+        except Exception as e:
+            logger.warning(f"FMP data load failed for {self.ticker}: {e}")
+            return False
         
+
     def _load_data(self) -> bool:
-        """Load all necessary financial data from yfinance"""
+        """Load all necessary financial data. Tries FMP when fmp_api_key is set; falls back to yfinance."""
         if self._loaded:
             return True
-            
+
+        if self.fmp_api_key and self._load_data_fmp():
+            return True
+
         try:
-            logger.info(f"Loading data for {self.ticker}...")
+            logger.info(f"Loading data for {self.ticker} from yfinance...")
             self.stock = yf.Ticker(self.ticker)
             self.info = self.stock.info or {}
             
@@ -657,26 +775,28 @@ class IntrinsicValueCalculator:
             }
 
 
-def calculate_intrinsic_value(ticker: str) -> Dict[str, Any]:
+def calculate_intrinsic_value(ticker: str, fmp_api_key: Optional[str] = None) -> Dict[str, Any]:
     """
     Convenience function to calculate intrinsic value for a ticker.
     
     Args:
         ticker: Stock ticker symbol (e.g., 'AAPL')
+        fmp_api_key: Optional FMP API key; when set, FMP is used for data with yfinance fallback.
         
     Returns:
         Dict with all valuations, composite value, and divergence percentage
     """
-    calculator = IntrinsicValueCalculator(ticker)
+    calculator = IntrinsicValueCalculator(ticker, fmp_api_key=fmp_api_key)
     return calculator.calculate_all()
 
 
-def batch_calculate(tickers: List[str]) -> List[Dict[str, Any]]:
+def batch_calculate(tickers: List[str], fmp_api_key: Optional[str] = None) -> List[Dict[str, Any]]:
     """
     Calculate intrinsic values for multiple tickers.
     
     Args:
         tickers: List of stock ticker symbols
+        fmp_api_key: Optional FMP API key for data source
         
     Returns:
         List of valuation results
@@ -684,7 +804,7 @@ def batch_calculate(tickers: List[str]) -> List[Dict[str, Any]]:
     results = []
     for ticker in tickers:
         try:
-            result = calculate_intrinsic_value(ticker)
+            result = calculate_intrinsic_value(ticker, fmp_api_key=fmp_api_key)
             results.append(result)
         except Exception as e:
             results.append({

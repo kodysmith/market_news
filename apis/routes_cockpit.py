@@ -312,10 +312,59 @@ def cockpit_quote():
         return jsonify({"error": str(e), "ticker": ticker}), 500
 
 
+@bp.route("/cockpit/news")
+def cockpit_news():
+    """
+    Get FMP stock news for a symbol. Used when viewing the dashboard for that symbol.
+    Query params: symbol (default SPY), limit (default 15)
+    """
+    symbol = request.args.get("symbol", "SPY").upper().strip()
+    limit = request.args.get("limit", 15, type=int)
+    if not symbol or len(symbol) > 5 or not symbol.isalnum():
+        return jsonify({"error": "Invalid symbol format", "news": []}), 400
+    import json as _json
+    config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "config.json")
+    config = {}
+    if os.path.exists(config_path):
+        with open(config_path, "r") as f:
+            config = _json.load(f)
+    fmp_key = config.get("FMP_API_KEY", "")
+    if not fmp_key:
+        return jsonify({"symbol": symbol, "news": [], "error": "FMP_API_KEY not configured"})
+    try:
+        import requests
+        url = "https://financialmodelingprep.com/api/v3/stock_news"
+        params = {"tickers": symbol, "limit": min(limit, 50), "apikey": fmp_key}
+        resp = requests.get(url, params=params, timeout=10)
+        if resp.status_code != 200:
+            return jsonify({"symbol": symbol, "news": [], "error": f"FMP returned {resp.status_code}"})
+        data = resp.json()
+        news_list = data if isinstance(data, list) else []
+        return jsonify({"symbol": symbol, "news": news_list})
+    except Exception as e:
+        return jsonify({"symbol": symbol, "news": [], "error": str(e)}), 500
+
+
 @bp.route("/cockpit/tickers")
 def cockpit_tickers():
     """Get list of supported tickers for the cockpit"""
     return jsonify({"tickers": ["SPY", "QQQ", "IWM"], "default": "SPY"})
+
+
+@bp.route("/house-trades/recent")
+def house_trades_recent():
+    """
+    Congressional (House) trades aggregated for last 30 days. Used by compute worker only.
+    Returns symbols ranked by rep count and volume. App reads from Supabase cache; do not call from app.
+    """
+    try:
+        from QuantEngine.congressional_trades import fetch_aggregated
+        result = fetch_aggregated(days=30)
+        if "error" in result and not result.get("symbols"):
+            return jsonify(result), 500
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": str(e), "symbols": [], "days": 30}), 500
 
 
 @bp.route("/trade-ideas/allowed")

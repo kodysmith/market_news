@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../models/trade_idea.dart';
+import '../services/compute_queue_service.dart';
 import '../services/trade_ideas_service.dart';
 import '../widgets/asset_selector_widget.dart';
 import '../widgets/asset_selection_provider.dart';
@@ -31,10 +32,16 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
   final Map<String, bool> _expandedCards = {};
   Map<String, dynamic>? _diagnostics;
 
+  // Congressional trades (House, last 30 days) from Supabase cache/queue
+  List<Map<String, dynamic>> _congressionalSymbols = [];
+  bool _congressionalLoading = false;
+  String? _congressionalError;
+
   @override
   void initState() {
     super.initState();
     _loadTradeIdeas();
+    _loadCongressionalTrades();
   }
   
   @override
@@ -124,6 +131,62 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
       setState(() {
         _isLoading = false;
         _error = e.toString();
+      });
+    }
+  }
+
+  Future<void> _loadCongressionalTrades() async {
+    if (!ComputeQueueService.isAvailable) {
+      setState(() {
+        _congressionalSymbols = [];
+        _congressionalError = 'Supabase not configured';
+        _congressionalLoading = false;
+      });
+      return;
+    }
+    setState(() {
+      _congressionalLoading = true;
+      _congressionalError = null;
+    });
+    try {
+      final cached = await ComputeQueueService.getCachedResultFromTable(
+        symbol: ComputeQueueService.congressionalTradesSentinelSymbol,
+        taskType: ComputeTaskType.congressional_trades,
+      );
+      if (cached != null && cached.result['symbols'] != null) {
+        final list = cached.result['symbols'] as List<dynamic>? ?? [];
+        if (!mounted) return;
+        setState(() {
+          _congressionalSymbols = list.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+          _congressionalLoading = false;
+        });
+        return;
+      }
+      final result = await ComputeQueueService.getCachedOrEnqueue(
+        symbol: ComputeQueueService.congressionalTradesSentinelSymbol,
+        taskType: ComputeTaskType.congressional_trades,
+      );
+      if (!mounted) return;
+      if (result.ok && result.result != null && result.result!['symbols'] != null) {
+        final list = result.result!['symbols'] as List<dynamic>? ?? [];
+        setState(() {
+          _congressionalSymbols = list.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+          _congressionalLoading = false;
+          _congressionalError = null;
+        });
+      } else {
+        setState(() {
+          _congressionalSymbols = [];
+          _congressionalLoading = false;
+          _congressionalError = result.error ?? 'No data';
+        });
+      }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _congressionalSymbols = [];
+        _congressionalLoading = false;
+        _congressionalError = e.toString();
       });
     }
   }
@@ -358,8 +421,128 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
             
             // Section B: Preview Next Window
             _buildPreviewSection(),
+
+            // Section C: Congressional trades (last 30 days)
+            _buildCongressionalSection(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildCongressionalSection() {
+    return Container(
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF161B22),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  'Congressional trades (last 30 days)',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'JetBrains Mono',
+                  ),
+                ),
+              ),
+              IconButton(
+                icon: _congressionalLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF58A6FF)),
+                      )
+                    : const Icon(Icons.refresh, color: Color(0xFF58A6FF), size: 22),
+                onPressed: _congressionalLoading ? null : _loadCongressionalTrades,
+                tooltip: 'Refresh',
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'Stocks traded by U.S. House members; ranked by number of reps and volume.',
+            style: TextStyle(color: Colors.white70, fontSize: 12, fontFamily: 'JetBrains Mono'),
+          ),
+          const SizedBox(height: 12),
+          if (_congressionalError != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                _congressionalError!,
+                style: const TextStyle(color: Colors.redAccent, fontSize: 12, fontFamily: 'JetBrains Mono'),
+              ),
+            ),
+          if (_congressionalLoading && _congressionalSymbols.isEmpty)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 24),
+              child: Center(child: CircularProgressIndicator(color: Color(0xFF58A6FF))),
+            )
+          else if (_congressionalSymbols.isEmpty)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: Text(
+                'No data. Tap refresh to request from queue.',
+                style: TextStyle(color: Colors.white54, fontSize: 12, fontFamily: 'JetBrains Mono'),
+              ),
+            )
+          else
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: _congressionalSymbols.length,
+              separatorBuilder: (_, __) => const Divider(height: 1, color: Colors.white12),
+              itemBuilder: (context, index) {
+                final item = _congressionalSymbols[index];
+                final symbol = item['symbol'] as String? ?? '';
+                final buyCount = (item['buyCount'] as num?)?.toInt() ?? 0;
+                final sellCount = (item['sellCount'] as num?)?.toInt() ?? 0;
+                final repCount = (item['repCount'] as num?)?.toInt() ?? 0;
+                return InkWell(
+                  onTap: () {
+                    if (symbol.isEmpty) return;
+                    AssetSelectionProvider.of(context).setAsset(symbol);
+                    _loadTradeIdeas();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Row(
+                      children: [
+                        Text(
+                          symbol,
+                          style: const TextStyle(
+                            color: Color(0xFF58A6FF),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'JetBrains Mono',
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Text(
+                          'Buys: $buyCount  Sells: $sellCount',
+                          style: const TextStyle(color: Colors.white70, fontSize: 12, fontFamily: 'JetBrains Mono'),
+                        ),
+                        const Spacer(),
+                        Text(
+                          '$repCount rep${repCount == 1 ? '' : 's'}',
+                          style: const TextStyle(color: Colors.white54, fontSize: 12, fontFamily: 'JetBrains Mono'),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+        ],
       ),
     );
   }

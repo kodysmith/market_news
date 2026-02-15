@@ -16,11 +16,49 @@ class NewsScreen extends StatefulWidget {
 
 class _NewsScreenState extends State<NewsScreen> {
   late Future<List<NewsItem>> _futureNews;
+  bool _refreshInProgress = false;
 
   @override
   void initState() {
     super.initState();
     _futureNews = fetchNews();
+  }
+
+  /// Trigger backend news refresh (congressional symbols → FMP → Supabase), then reload list.
+  Future<void> _triggerRefreshNews() async {
+    if (_refreshInProgress) return;
+    setState(() => _refreshInProgress = true);
+    try {
+      final response = await http.post(
+        Uri.parse('$apiBaseUrl/news/refresh'),
+        headers: {'x-api-key': apiSecretKey},
+      );
+      final body = json.decode(response.body) as Map<String, dynamic>? ?? {};
+      if (response.statusCode == 200 && body['success'] == true) {
+        setState(() {
+          _futureNews = fetchNews();
+        });
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('News refreshed (${body['articles'] ?? 0} articles)')),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(body['error']?.toString() ?? 'Refresh failed')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Refresh failed: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _refreshInProgress = false);
+    }
   }
 
   /// Try Supabase news_feed first (when configured); else API news.json.
@@ -101,7 +139,22 @@ class _NewsScreenState extends State<NewsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Market News')),
+      appBar: AppBar(
+        title: const Text('Market News'),
+        actions: [
+          IconButton(
+            icon: _refreshInProgress
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.refresh),
+            onPressed: _refreshInProgress ? null : _triggerRefreshNews,
+            tooltip: 'Refresh news (fetches from server)',
+          ),
+        ],
+      ),
       body: RefreshIndicator(
         onRefresh: () async {
           setState(() {
@@ -119,7 +172,7 @@ class _NewsScreenState extends State<NewsScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Error: \\${snapshot.error}', textAlign: TextAlign.center, style: TextStyle(color: Colors.red)),
+                    Text('Error: ${snapshot.error}', textAlign: TextAlign.center, style: TextStyle(color: Colors.red)),
                     SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () {

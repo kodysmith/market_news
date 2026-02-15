@@ -193,6 +193,50 @@ def get_news_intelligence():
         return jsonify({"error": f"Failed to get news intelligence: {e}"}), 500
 
 
+def _run_news_refresh():
+    """Run news search (congressional symbols → FMP → data/news.json) and optionally publish. Returns (count, error)."""
+    import json
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parent.parent
+    scripts_dir = root / "scripts"
+    if str(scripts_dir) not in sys.path:
+        sys.path.insert(0, str(scripts_dir))
+    try:
+        from run_news_search_job import run_news_search
+    except ImportError:
+        return 0, "run_news_search_job not importable"
+
+    news_path = root / "data" / "news.json"
+    try:
+        items = run_news_search(days=30)
+        news_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(news_path, "w", encoding="utf-8") as f:
+            json.dump(items, f, indent=2)
+        if items and (root / "scripts" / "publish_news_to_supabase.py").exists():
+            subprocess.run([sys.executable, str(root / "scripts" / "publish_news_to_supabase.py")], cwd=str(root), timeout=60)
+        return len(items), None
+    except Exception as e:
+        return 0, str(e)
+
+
+@bp.route("/news/refresh", methods=["GET", "POST"])
+def news_refresh():
+    """
+    On-demand news refresh: congressional symbols → FMP news → data/news.json and Supabase.
+    Returns { "success": true, "articles": N } or { "error": "..." }.
+    """
+    try:
+        count, err = _run_news_refresh()
+        if err:
+            return jsonify({"success": False, "error": err, "articles": 0}), 500
+        return jsonify({"success": True, "articles": count})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e), "articles": 0}), 500
+
+
 @bp.route("/news/status")
 def get_news_bot_status():
     """Get news bot service status"""

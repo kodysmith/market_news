@@ -98,6 +98,24 @@ class CockpitService {
     return null;
   }
 
+  /// Get FMP stock news for a symbol (for cockpit dashboard).
+  static Future<List<Map<String, dynamic>>> getCockpitNews(String symbol, {int limit = 15}) async {
+    final t = symbol.toUpperCase();
+    try {
+      final url = '$apiBaseUrl/cockpit/news?symbol=${Uri.encodeComponent(t)}&limit=$limit';
+      final response = await http.get(Uri.parse(url)).timeout(const Duration(seconds: 10));
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        if (json is Map && json['news'] is List) {
+          return (json['news'] as List).map((e) => Map<String, dynamic>.from(e as Map)).toList();
+        }
+      }
+    } catch (e) {
+      print('[CockpitService] getCockpitNews failed: $e');
+    }
+    return [];
+  }
+
   static const List<String> _spyTopHoldings = [
     'AAPL', 'MSFT', 'NVDA', 'AMZN', 'GOOGL', 'GOOG', 'META', 'TSLA', 'BRK.B',
     'JPM', 'V', 'MA', 'UNH', 'HD', 'PG', 'JNJ', 'XOM', 'CVX', 'ABBV', 'MRK',

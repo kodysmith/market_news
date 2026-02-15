@@ -790,6 +790,19 @@ def main() -> int:
         except Exception as e:
             logger.exception("Failed %s trade_ideas: %s", symbol, e)
 
+    # Congressional trades: GET /house-trades/recent (one row, symbol=*)
+    try:
+        result = fetch_from_api(base_url, "/house-trades/recent", api_key)
+        if result is not None and not result.get("error"):
+            from QuantEngine.congressional_trades import CONGRESSIONAL_SENTINEL_SYMBOL
+            do_upsert(CONGRESSIONAL_SENTINEL_SYMBOL, "congressional_trades", result)
+            logger.info("Upserted congressional_trades")
+        else:
+            if result and result.get("error"):
+                logger.warning("Congressional trades: API error: %s", result.get("error"))
+    except Exception as e:
+        logger.exception("Failed congressional_trades: %s", e)
+
     # Flush batch to Supabase
     if supabase and cache_rows:
         try:

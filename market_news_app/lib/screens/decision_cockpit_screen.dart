@@ -25,6 +25,8 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
   bool _isLoading = true;
   String? _error;
   bool _eventsExpanded = false;
+  List<Map<String, dynamic>> _news = [];
+  bool _newsExpanded = false;
 
   @override
   void initState() {
@@ -78,11 +80,13 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
         CockpitService.getCockpitState(_selectedTicker),
         CockpitService.getCockpitEvents(daysAhead: 14, symbol: _selectedTicker),
         GexService.calculateGex(_selectedTicker),
+        CockpitService.getCockpitNews(_selectedTicker, limit: 15),
       ]);
 
       final cockpitResult = results[0] as CockpitStateResult;
       final events = results[1] as CockpitEventsData?;
       final gexResult = results[2] as GexResult;
+      final news = results[3] as List<Map<String, dynamic>>;
 
       DateTime? lastUpdate;
       if (cockpitResult.updatedAt != null && gexResult.updatedAt != null) {
@@ -97,6 +101,7 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
         _state = cockpitResult.state;
         _events = events;
         _gexChartData = gexResult.calculation;
+        _news = news;
         _lastCacheUpdate = lastUpdate;
         _isLoading = false;
         if (_state == null) {
@@ -238,6 +243,9 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
             const SizedBox(height: 12),
             // Events (today & tomorrow with impact)
             _buildEventsSection(),
+            const SizedBox(height: 12),
+            // News for symbol (FMP)
+            _buildNewsSection(),
           ],
         ),
       ),
@@ -982,6 +990,85 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
                               decoration: BoxDecoration(color: color.withOpacity(0.2), borderRadius: BorderRadius.circular(4)),
                               child: Text(event.time, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: color, fontFamily: 'JetBrains Mono')),
                             ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNewsSection() {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF161B22),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: () => setState(() => _newsExpanded = !_newsExpanded),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              child: Row(
+                children: [
+                  Icon(_newsExpanded ? Icons.expand_less : Icons.expand_more, color: Colors.white54, size: 22),
+                  const SizedBox(width: 8),
+                  Text('NEWS ($_selectedTicker)', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF8B949E), fontFamily: 'JetBrains Mono')),
+                  const Spacer(),
+                  if (!_newsExpanded && _news.isNotEmpty)
+                    Text(
+                      '${_news.length} articles',
+                      style: const TextStyle(fontSize: 12, color: Colors.white38, fontFamily: 'JetBrains Mono'),
+                    ),
+                ],
+              ),
+            ),
+          ),
+          if (_newsExpanded)
+            Container(
+              constraints: const BoxConstraints(maxHeight: 280),
+              child: ListView.builder(
+                shrinkWrap: true,
+                padding: const EdgeInsets.only(bottom: 8),
+                itemCount: _news.length,
+                itemBuilder: (context, index) {
+                  final item = _news[index];
+                  final title = (item['title'] ?? '').toString();
+                  final url = (item['url'] ?? '').toString();
+                  final published = (item['publishedDate'] ?? item['date'] ?? '').toString();
+                  return InkWell(
+                    onTap: () {
+                      if (url.isNotEmpty) {
+                        launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (published.isNotEmpty)
+                            SizedBox(
+                              width: 72,
+                              child: Text(
+                                published.length > 10 ? published.substring(0, 10) : published,
+                                style: const TextStyle(fontSize: 11, color: Colors.white54, fontFamily: 'JetBrains Mono'),
+                              ),
+                            ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              title.isEmpty ? 'No title' : title,
+                              style: const TextStyle(fontSize: 13, color: Colors.white70, fontFamily: 'JetBrains Mono'),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
                         ],
                       ),
                     ),

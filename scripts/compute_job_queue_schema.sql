@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS compute_job_queue (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     symbol VARCHAR(10) NOT NULL,
     task_type VARCHAR(30) NOT NULL
-        CHECK (task_type IN ('gex', 'valuation', 'cockpit', 'probability', 'trade_ideas')),
+        CHECK (task_type IN ('gex', 'valuation', 'cockpit', 'probability', 'trade_ideas', 'congressional_trades')),
     status VARCHAR(20) NOT NULL DEFAULT 'pending'
         CHECK (status IN ('pending', 'processing', 'done', 'failed')),
     requested_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),

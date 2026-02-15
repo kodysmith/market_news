@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 from flask import Blueprint, jsonify, request
 
 # Ensure shared path setup runs (QuantEngine/utils on sys.path)
@@ -19,6 +22,19 @@ from QuantEngine.intrinsic_value_database import (
 )
 
 bp = Blueprint("valuation", __name__)
+
+
+def _get_fmp_api_key() -> str | None:
+    """Read FMP_API_KEY from data/config.json."""
+    try:
+        config_path = Path(__file__).resolve().parent.parent / "data" / "config.json"
+        if config_path.is_file():
+            with open(config_path) as f:
+                config = json.load(f)
+            return config.get("FMP_API_KEY") or None
+    except Exception:
+        pass
+    return None
 
 
 # ===============================
@@ -44,7 +60,8 @@ def valuation_calculate():
     store = request.args.get("store", "true").lower() == "true"
 
     try:
-        result = calculate_intrinsic_value(ticker.upper())
+        fmp_key = _get_fmp_api_key()
+        result = calculate_intrinsic_value(ticker.upper(), fmp_api_key=fmp_key)
 
         if "error" in result and not result.get("valuations"):
             return jsonify(result), 500
@@ -112,8 +129,9 @@ def valuation_divergence():
         return jsonify({"error": "ticker parameter is required"}), 400
 
     try:
+        fmp_key = _get_fmp_api_key()
         # Calculate fresh values
-        result = calculate_intrinsic_value(ticker.upper())
+        result = calculate_intrinsic_value(ticker.upper(), fmp_api_key=fmp_key)
 
         if "error" in result and not result.get("valuations"):
             return jsonify(result), 500
@@ -172,7 +190,8 @@ def valuation_scan():
         return jsonify({"error": "No valid tickers provided"}), 400
 
     try:
-        results = batch_calculate(tickers)
+        fmp_key = _get_fmp_api_key()
+        results = batch_calculate(tickers, fmp_api_key=fmp_key)
 
         # Store results and check alerts
         for result in results:
@@ -237,8 +256,9 @@ def valuation_watchlist():
             return jsonify({"error": "ticker is required"}), 400
 
         try:
+            fmp_key = _get_fmp_api_key()
             # Optionally calculate fresh values
-            result = calculate_intrinsic_value(ticker.upper())
+            result = calculate_intrinsic_value(ticker.upper(), fmp_api_key=fmp_key)
             company_name = result.get("company_name")
             sector = result.get("sector")
 

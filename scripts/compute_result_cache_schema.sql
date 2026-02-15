@@ -4,7 +4,7 @@
 CREATE TABLE IF NOT EXISTS compute_result_cache (
     symbol VARCHAR(10) NOT NULL,
     task_type VARCHAR(30) NOT NULL
-        CHECK (task_type IN ('gex', 'valuation', 'cockpit', 'probability', 'trade_ideas')),
+        CHECK (task_type IN ('gex', 'valuation', 'cockpit', 'probability', 'trade_ideas', 'congressional_trades')),
     result JSONB NOT NULL,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     PRIMARY KEY (symbol, task_type)
