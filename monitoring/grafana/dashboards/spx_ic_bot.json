@@ -1,0 +1,170 @@
+{
+  "title": "SPX Iron Condor Bot",
+  "uid": "spx-ic-bot",
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "30s",
+  "time": { "from": "now-7d", "to": "now" },
+  "timezone": "America/New_York",
+  "tags": ["trading", "options", "spx"],
+  "panels": [
+    {
+      "id": 1,
+      "title": "Bot Status",
+      "type": "stat",
+      "gridPos": { "x": 0, "y": 0, "w": 4, "h": 4 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "targets": [{
+        "expr": "1 - bot_entries_paused",
+        "legendFormat": "Running"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "options": { "0": { "text": "PAUSED", "color": "red" }, "1": { "text": "RUNNING", "color": "green" } }, "type": "value" }
+          ],
+          "thresholds": { "steps": [{ "color": "red", "value": 0 }, { "color": "green", "value": 1 }] }
+        }
+      }
+    },
+    {
+      "id": 2,
+      "title": "Open Positions",
+      "type": "stat",
+      "gridPos": { "x": 4, "y": 0, "w": 4, "h": 4 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "graphMode": "area" },
+      "targets": [{ "expr": "bot_open_positions_total", "legendFormat": "Open ICs" }],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": { "steps": [{ "color": "green", "value": 0 }, { "color": "yellow", "value": 6 }, { "color": "red", "value": 8 }] }
+        }
+      }
+    },
+    {
+      "id": 3,
+      "title": "Cumulative P&L",
+      "type": "stat",
+      "gridPos": { "x": 8, "y": 0, "w": 5, "h": 4 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "graphMode": "area" },
+      "targets": [{ "expr": "bot_cumulative_pnl_dollars", "legendFormat": "Cumulative P&L" }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "thresholds": { "steps": [{ "color": "red", "value": -50000 }, { "color": "yellow", "value": 0 }, { "color": "green", "value": 10000 }] }
+        }
+      }
+    },
+    {
+      "id": 4,
+      "title": "VD2 Contracts",
+      "type": "stat",
+      "gridPos": { "x": 13, "y": 0, "w": 4, "h": 4 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "graphMode": "none" },
+      "targets": [{ "expr": "bot_vd2_contracts", "legendFormat": "VD2 Contracts" }],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": { "steps": [{ "color": "blue", "value": 0 }, { "color": "purple", "value": 15 }] },
+          "max": 22
+        }
+      }
+    },
+    {
+      "id": 5,
+      "title": "Last Heartbeat",
+      "type": "stat",
+      "gridPos": { "x": 17, "y": 0, "w": 7, "h": 4 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "graphMode": "none" },
+      "targets": [{ "expr": "time() - bot_heartbeat_timestamp_seconds", "legendFormat": "Seconds since heartbeat" }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "thresholds": { "steps": [{ "color": "green", "value": 0 }, { "color": "yellow", "value": 1800 }, { "color": "red", "value": 3600 }] }
+        }
+      }
+    },
+    {
+      "id": 6,
+      "title": "Cumulative P&L Over Time",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 4, "w": 14, "h": 8 },
+      "options": { "tooltip": { "mode": "single" } },
+      "targets": [{ "expr": "bot_cumulative_pnl_dollars", "legendFormat": "Cumulative P&L" }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "custom": { "lineWidth": 2, "fillOpacity": 20 },
+          "thresholds": { "steps": [{ "color": "green", "value": 0 }] }
+        }
+      }
+    },
+    {
+      "id": 7,
+      "title": "Open Positions Over Time",
+      "type": "timeseries",
+      "gridPos": { "x": 14, "y": 4, "w": 10, "h": 8 },
+      "targets": [{ "expr": "bot_open_positions_total", "legendFormat": "Open ICs" }],
+      "fieldConfig": { "defaults": { "unit": "short", "custom": { "lineWidth": 2 } } }
+    },
+    {
+      "id": 8,
+      "title": "Trades Closed by Reason",
+      "type": "piechart",
+      "gridPos": { "x": 0, "y": 12, "w": 8, "h": 8 },
+      "options": { "pieType": "donut", "legend": { "displayMode": "table", "placement": "right" } },
+      "targets": [{ "expr": "increase(bot_trades_total[30d])", "legendFormat": "{{ result }}" }]
+    },
+    {
+      "id": 9,
+      "title": "Job Last Run (age in seconds)",
+      "type": "table",
+      "gridPos": { "x": 8, "y": 12, "w": 10, "h": 8 },
+      "options": { "sortBy": [{ "displayName": "Value" }] },
+      "targets": [{ "expr": "time() - bot_job_last_run_seconds", "legendFormat": "{{ job }}", "instant": true }],
+      "fieldConfig": { "defaults": { "unit": "s" } }
+    },
+    {
+      "id": 10,
+      "title": "Order Fills (entry + exit)",
+      "type": "timeseries",
+      "gridPos": { "x": 18, "y": 12, "w": 6, "h": 8 },
+      "targets": [
+        { "expr": "increase(bot_order_fills_total[1h])", "legendFormat": "{{ config_id }} {{ side }}" },
+        { "expr": "increase(bot_order_errors_total[1h])", "legendFormat": "ERRORS {{ config_id }}" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short" } }
+    },
+    {
+      "id": 11,
+      "title": "Job Errors (last 24h)",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 20, "w": 12, "h": 6 },
+      "targets": [{ "expr": "increase(bot_job_errors_total[1h])", "legendFormat": "{{ job }}" }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": { "lineWidth": 2 },
+          "thresholds": { "steps": [{ "color": "green", "value": 0 }, { "color": "red", "value": 1 }] }
+        }
+      }
+    },
+    {
+      "id": 12,
+      "title": "VD2 Contract Growth",
+      "type": "timeseries",
+      "gridPos": { "x": 12, "y": 20, "w": 12, "h": 6 },
+      "targets": [{ "expr": "bot_vd2_contracts", "legendFormat": "VD2 Contracts" }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": { "lineWidth": 2, "fillOpacity": 20 },
+          "min": 0,
+          "max": 22
+        }
+      }
+    }
+  ]
+}

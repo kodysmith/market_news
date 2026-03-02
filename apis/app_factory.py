@@ -13,6 +13,10 @@ def create_app() -> Flask:
     if CORS is not None:
         CORS(app)
 
+    # Optional global auth enforcement (set REQUIRE_AUTH=1 to enable)
+    from .auth_middleware import init_auth
+    init_auth(app)
+
     # Register modular blueprints
     from .routes_report import bp as report_bp
     from .routes_news import bp as news_bp
@@ -25,6 +29,8 @@ def create_app() -> Flask:
     from .routes_probability import bp as probability_bp
     from .routes_fisher import bp as fisher_bp
     from .routes_index import bp as index_bp
+    from .routes_scanner import bp as scanner_bp
+    from .routes_bot import bp as bot_bp
 
     app.register_blueprint(report_bp)
     app.register_blueprint(news_bp)
@@ -37,6 +43,8 @@ def create_app() -> Flask:
     app.register_blueprint(probability_bp)
     app.register_blueprint(fisher_bp)
     app.register_blueprint(index_bp)
+    app.register_blueprint(scanner_bp)
+    app.register_blueprint(bot_bp)
 
     return app
 

@@ -1,0 +1,85 @@
+groups:
+  - name: spx_ic_bot_alerts
+    interval: 1m
+    rules:
+
+      # --- Liveness ---
+
+      - alert: BotHeartbeatStale
+        expr: time() - bot_heartbeat_timestamp_seconds > 3600
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "SPX IC Bot heartbeat is stale"
+          description: >
+            The bot has not updated its heartbeat in over 1 hour.
+            This indicates the scheduler may have crashed or been killed.
+
+      - alert: BotJobNotRunning
+        expr: time() - bot_job_last_run_seconds{job_label="entry_engine"} > 86400
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Entry engine has not run in 24h"
+          description: >
+            The entry engine has not executed in 24 hours on a trading day.
+
+      # --- Errors ---
+
+      - alert: BotJobErrorSpike
+        expr: increase(bot_job_errors_total[1h]) > 3
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Bot job error spike: {{ $labels.job }}"
+          description: >
+            More than 3 errors in 1 hour for job {{ $labels.job }}.
+
+      - alert: BotOrderErrorSpike
+        expr: increase(bot_order_errors_total[1h]) > 2
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Bot order errors: {{ $labels.config_id }}"
+          description: >
+            {{ $value }} order errors in the last hour for {{ $labels.config_id }}.
+            Check IBKR connection and margin availability.
+
+      # --- Risk ---
+
+      - alert: BotEntriesPaused
+        expr: bot_entries_paused == 1
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "SPX IC Bot entries are paused"
+          description: >
+            New IC entries have been paused (circuit breaker or manual override).
+            Cumulative P&L gauge will show current drawdown level.
+
+      - alert: BotDrawdownWarning
+        expr: bot_cumulative_pnl_dollars < -50000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Bot cumulative P&L below -$50K"
+          description: >
+            Cumulative P&L is {{ $value | humanize }} dollars.
+            Review open positions immediately.
+
+      - alert: BotTooManyOpenPositions
+        expr: bot_open_positions_total > 8
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Bot has more than 8 open ICs"
+          description: >
+            Hard safety cap is 8 total ICs. {{ $value }} positions open.
+            Check for duplicate entries or Supabase sync issue.

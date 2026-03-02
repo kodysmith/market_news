@@ -1,0 +1,29 @@
+[Unit]
+Description=SPX Iron Condor Bot (Simulation)
+Documentation=https://github.com/your-repo/MarketNews
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/MarketNews
+
+# Load all credentials from .env on the server
+EnvironmentFile=/home/ubuntu/MarketNews/.env
+
+# Restart automatically if the process crashes
+Restart=always
+RestartSec=30
+
+# Give it 60s to start before systemd considers it failed
+TimeoutStartSec=60
+
+ExecStart=/home/ubuntu/MarketNews/venv/bin/python -m bot.main --mode dry-run
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=spx-ic-bot
+
+[Install]
+WantedBy=multi-user.target

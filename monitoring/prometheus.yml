@@ -1,0 +1,40 @@
+global:
+  scrape_interval: 30s
+  evaluation_interval: 30s
+
+# Alerting rules
+rule_files:
+  - "alerts.yml"
+
+# Alertmanager (optional — configure if you want email/Slack routing)
+# alerting:
+#   alertmanagers:
+#     - static_configs:
+#         - targets: ["alertmanager:9093"]
+
+scrape_configs:
+  # Scrape the SPX IC Bot metrics endpoint
+  - job_name: "spx_ic_bot"
+    static_configs:
+      - targets:
+          # Bot runs on same host as Prometheus; adjust host if remote
+          - "host.docker.internal:9101"
+    scrape_interval: 30s
+    metrics_path: /metrics
+
+  # Scrape the Flask API health endpoint via a blackbox-style check
+  # (requires adding prometheus_client to Flask or using blackbox exporter)
+  - job_name: "bot_api"
+    static_configs:
+      - targets:
+          - "host.docker.internal:8080"
+    metrics_path: /bot/health
+    scrape_interval: 60s
+    # Note: /bot/health returns JSON not Prometheus format.
+    # Use blackbox exporter for proper HTTP monitoring, or expose /metrics
+    # from Flask separately. For now this acts as an uptime probe.
+
+  # Self-monitoring: Prometheus itself
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
