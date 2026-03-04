@@ -169,14 +169,17 @@ def run_entry_checks(
     open_positions: list,
     vd2_contracts: int,
     mode: str = "dry-run",
-) -> list[EntryOrder]:
+) -> tuple[list[EntryOrder], list[tuple]]:
     """Main entry point called by scheduler at 9:30 AM.
 
-    Returns list of EntryOrders to be placed (may be 0, 1, or 2 if both configs qualify).
+    Returns:
+        orders:    EntryOrders to be placed (0, 1, or 2 if both configs qualify)
+        decisions: list of (config_id, ok, reason, order_or_None) for publishing
     """
     from bot.config import SWEET_CONFIG, VD2_CONFIG, SWEET_CONTRACTS
 
     orders = []
+    decisions = []
     for config, n_contracts in [
         (SWEET_CONFIG, SWEET_CONTRACTS),
         (VD2_CONFIG, vd2_contracts),
@@ -186,7 +189,11 @@ def run_entry_checks(
             order = build_entry(config, snapshot, n_contracts)
             if order:
                 orders.append(order)
+                decisions.append((config.config_id, True, reason, order))
+            else:
+                decisions.append((config.config_id, False, "no valid expiration found", None))
         else:
             logger.info("[%s] No entry: %s", config.config_id, reason)
+            decisions.append((config.config_id, False, reason, None))
 
-    return orders
+    return orders, decisions

@@ -102,4 +102,19 @@ def build_scheduler(bot_runner) -> object:
         misfire_grace_time=300,
     )
 
+    # Every 10 min (always-on) — keep Prometheus heartbeat fresh so
+    # BotHeartbeatStale doesn't fire while the bot is simply idle overnight
+    # or on weekends.  Not gated by market-day check.
+    def _heartbeat_tick():
+        from bot import metrics
+        metrics.record_heartbeat()
+
+    scheduler.add_job(
+        _heartbeat_tick,
+        CronTrigger(minute="*/10", timezone=ET),
+        id="heartbeat_tick",
+        name="Prometheus heartbeat",
+        misfire_grace_time=60,
+    )
+
     return scheduler

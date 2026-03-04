@@ -18,7 +18,7 @@ scrape_configs:
     static_configs:
       - targets:
           # Bot runs on same host as Prometheus; adjust host if remote
-          - "host.docker.internal:9101"
+          - "192.168.1.31:9101"
     scrape_interval: 30s
     metrics_path: /metrics
 
@@ -27,7 +27,7 @@ scrape_configs:
   - job_name: "bot_api"
     static_configs:
       - targets:
-          - "host.docker.internal:8080"
+          - "192.168.1.31:8080"
     metrics_path: /bot/health
     scrape_interval: 60s
     # Note: /bot/health returns JSON not Prometheus format.

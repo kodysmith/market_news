@@ -88,7 +88,21 @@ VD2_CONFIG = StrategyConfig(
     ),
 )
 
-ALL_CONFIGS = [SWEET_CONFIG, VD2_CONFIG]
+MANUAL_IC_CONFIG = StrategyConfig(
+    config_id="MANUAL_IC",
+    strategy="iron_condor",
+    dte=21,
+    short_delta=0.15,
+    width=50.0,
+    exit_rules=ExitRules(
+        profit_target_pct=0.50,
+        stop_mult=2.0,
+        time_stop_dte=2,
+    ),
+    filters=EntryFilters(),
+)
+
+ALL_CONFIGS = [SWEET_CONFIG, VD2_CONFIG, MANUAL_IC_CONFIG]
 
 # ---------------------------------------------------------------------------
 # Supabase table names

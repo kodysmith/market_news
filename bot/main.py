@@ -101,7 +101,11 @@ class BotRunner:
             return
 
         vd2_contracts = self.state.get_vd2_contract_count()
-        orders = run_entry_checks(snapshot, open_positions, vd2_contracts, self.mode)
+        orders, decisions = run_entry_checks(snapshot, open_positions, vd2_contracts, self.mode)
+
+        # Publish all decisions (enter or skip) to Supabase for the app's Trade Ideas screen
+        from bot import publisher
+        publisher.publish_bot_decisions(decisions, snapshot)
 
         if not orders:
             logger.info("No entry signals today")
@@ -163,8 +167,9 @@ class BotRunner:
         """Every 15 min 9:30–15:45 — scan open positions for exit signals."""
         from bot.market_data import get_market_snapshot
         from bot.exit_engine import scan_all_exits
-        from bot import notifier
+        from bot import notifier, metrics
 
+        metrics.record_heartbeat()
         logger.debug("=== Exit scan ===")
         open_positions = self.state.get_open_positions()
         if not open_positions:

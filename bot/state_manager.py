@@ -59,7 +59,7 @@ def _get_client():
     """Lazy-import and return a Supabase client."""
     from supabase import create_client
     url = os.environ["SUPABASE_URL"]
-    key = os.environ["SUPABASE_KEY"]
+    key = os.environ.get("SUPABASE_SECRET_KEY") or os.environ["SUPABASE_KEY"]
     return create_client(url, key)
 
 
