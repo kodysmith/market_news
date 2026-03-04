@@ -1,0 +1,23 @@
+{
+  "stats": {
+    "n_trades": 1,
+    "expectancy": 100.99999999999997,
+    "avg_win": 100.99999999999997,
+    "avg_loss": 0.0,
+    "total_pnl": 100.99999999999997,
+    "max_drawdown": 0.0,
+    "sharpe_ratio": 0.0,
+    "sortino_ratio": 0.0,
+    "cagr": 0.0,
+    "worst_1pct_trade": 100.99999999999997,
+    "worst_month_pnl": 100.99999999999997,
+    "by_regime": {
+      "unknown": {
+        "n": 1,
+        "total_pnl": 100.99999999999997,
+        "avg_pnl": 100.99999999999997
+      }
+    }
+  },
+  "n_trades": 1
+}
