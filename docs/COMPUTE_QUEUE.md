@@ -9,7 +9,7 @@ When `SUPABASE_URL` and `SUPABASE_ANON_KEY` are set, the app uses Supabase as th
 - **Fisher** – Snapshot, delta, evidence, and universe are read from `fisher_company` and `fisher_score_snapshot`. Growth-profitable still uses the API (or a future Supabase view/RPC).
 - **GEX and Cockpit (Supabase-only)** – Core symbols (SPX, XSP, SPY, NDX) are precomputed every 5 minutes into `compute_result_cache`. The Flutter app reads only from this cache table; no API and no enqueue. Configure `GEX_CORE_SYMBOLS` in `data/config.json`; run `scripts/run_gex_cockpit_precompute.py` every 5 minutes via cron (see below).
 - **Probability, Valuation, on-demand** – Optional: use `compute_job_queue` and `getCachedOrEnqueue`; worker writes results. If Supabase is not configured, those services return null.
-- **Trade Ideas** – [TradeIdeasService](market_news_app/lib/services/trade_ideas_service.dart) tries Supabase first: `getCachedResultFromTable(symbol, trade_ideas)` then `getCachedOrEnqueue(symbol, trade_ideas)`. The compute worker runs the same `/trade-ideas/allowed` logic and upserts the JSON into `compute_result_cache`. If Supabase is not configured or both return nothing, the app falls back to `GET $apiBaseUrl/trade-ideas/allowed`. Cached/enqueue path uses server defaults (max_ideas=3, timeframe=all).
+- **Trade Ideas** – [TradeIdeasService](market_news_app/lib/services/trade_ideas_service.dart) tries **published ideas** first: `fetchPublishedByDate()` reads from `trade_ideas_published` for today/yesterday (ET). If that returns rows, the app shows them with “Valid: YYYY-MM-DD” and does not call the API. If empty, it then tries `getCachedResultFromTable(symbol, trade_ideas)` and `getCachedOrEnqueue(symbol, trade_ideas)` (compute worker / cache). If Supabase is not configured or all return nothing, the app falls back to `GET $apiBaseUrl/trade-ideas/allowed`. **The Flask API does not need to be on the internet** for published ideas: only the cron script needs to reach it (e.g. localhost).
 
 ## Precompute cache (GEX / Cockpit every 5 min)
 
@@ -31,6 +31,22 @@ The script calls the existing localhost API endpoints (`/gex/calculate?ticker=X`
 
 Set `API_BASE_URL` (default `http://localhost:5000`) and optionally `API_SECRET_KEY` if your API requires an x-api-key header.
 
+## Trade ideas published (today / yesterday)
+
+Trade ideas can be **published to Supabase** when SPX (or core symbols) meet entry criteria, so the app can show “Unlocked” ideas **without calling a public API**. Same pattern as GEX precompute: a cron job on the same server as the API writes to Supabase; the app reads by date.
+
+1. **Schema**: Run [scripts/migrations/002_trade_ideas_published.sql](../scripts/migrations/002_trade_ideas_published.sql) in the Supabase SQL editor (creates `trade_ideas_published` with `valid_date`, `as_of_et`, `symbol`, `idea_id`, `payload`).
+2. **Publisher script**: [scripts/publish_trade_ideas.py](../scripts/publish_trade_ideas.py) calls the **local** API (`API_BASE_URL`, e.g. `http://localhost:5000`) at `/trade-ideas/allowed?ticker=SYMBOL&max_ideas=5&timeframe=all` for each core symbol (from `GEX_CORE_SYMBOLS` or default SPX, XSP, SPY, NDX). It flattens unlocked ideas and upserts into `trade_ideas_published` with `valid_date` = today ET, `as_of_et` = now ET.
+3. **Cron**: On the same machine where the API runs (so the script can reach localhost), run every 5 minutes like GEX:
+
+```bash
+*/5 * * * * cd /path/to/repo && . venv/bin/activate && python3 scripts/publish_trade_ideas.py
+```
+
+4. **App**: The Trade Ideas screen calls `TradeIdeasService.fetchPublishedByDate()` first. If there are rows for today or yesterday (ET), it shows those and displays **“Valid: &lt;valid_date&gt;”** (and optional as_of_et). No API call and no enqueue. If the table is empty, the app falls back to cache/enqueue or the public API.
+
+**Requirements**: `SUPABASE_URL`, `SUPABASE_SECRET_KEY` (or `SUPABASE_SERVICE_ROLE_KEY`), and `API_BASE_URL` pointing at the local API. The Flask API does not need to be exposed to the internet.
+
 ## Schema (Supabase)
 
 Run in Supabase SQL editor (after your main schema):
@@ -41,6 +57,8 @@ Run in Supabase SQL editor (after your main schema):
 `compute_job_queue`: id, symbol, task_type, status, requested_at, claimed_at, completed_at, result (JSONB), error_text. RLS: anon INSERT/SELECT; service_role UPDATE.
 
 `compute_result_cache`: symbol, task_type, result (JSONB), updated_at. RLS: anon SELECT; service_role full. Filled by `run_gex_cockpit_precompute.py`.
+
+- [scripts/migrations/002_trade_ideas_published.sql](../scripts/migrations/002_trade_ideas_published.sql) – `trade_ideas_published`: valid_date, as_of_et, symbol, idea_id, payload (JSONB). RLS: anon SELECT; service_role full. Filled by `publish_trade_ideas.py`.
 
 ## Private server worker
 

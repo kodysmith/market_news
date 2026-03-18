@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import '../main.dart' show apiBaseUrl, apiSecretKey;
 import '../models/trade_idea.dart';
 import '../services/compute_queue_service.dart';
 import '../services/trade_ideas_service.dart';
@@ -19,6 +22,7 @@ class TradeIdeasScreen extends StatefulWidget {
 class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
   List<TradeIdea> _ideas = [];
   Map<String, List<TradeIdea>>? _ideasByTimeframe;
+  List<PublishedTradeIdea> _publishedIdeas = [];
   List<TradeIdea> _previewIdeas = [];
   Map<String, dynamic>? _nextWindow;
   String? _currentPhase;
@@ -31,34 +35,54 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
   bool _useCustomDte = false;
   final Map<String, bool> _expandedCards = {};
   Map<String, dynamic>? _diagnostics;
+  bool _listenerAttached = false;
 
   // Congressional trades (House, last 30 days) from Supabase cache/queue
   List<Map<String, dynamic>> _congressionalSymbols = [];
   bool _congressionalLoading = false;
   String? _congressionalError;
 
+  // SPX IC Bot open positions
+  List<Map<String, dynamic>> _botPositions = [];
+  bool _botPositionsLoading = false;
+  String? _botPositionsError;
+
+  // Premarket gap scanner ideas
+  List<Map<String, dynamic>> _scannerIdeas = [];
+  bool _scannerLoading = false;
+  String? _scannerError;
+  String? _scannerAsOf;
+
   @override
   void initState() {
     super.initState();
     _loadTradeIdeas();
     _loadCongressionalTrades();
+    _loadBotPositions();
+    _loadScannerIdeas();
   }
   
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Set up listener after context is available
-    final service = AssetSelectionProvider.of(context);
-    service.addListener(_onAssetChanged);
-  }
-  
-  @override
-  void dispose() {
+    if (_listenerAttached) return;
     try {
       final service = AssetSelectionProvider.of(context);
-      service.removeListener(_onAssetChanged);
-    } catch (e) {
-      // Context might not be available during dispose
+      service.addListener(_onAssetChanged);
+      _listenerAttached = true;
+    } catch (_) {
+      // Provider not in tree (e.g. route without wrapper); skip listener
+    }
+  }
+
+  @override
+  void dispose() {
+    if (_listenerAttached) {
+      try {
+        final service = AssetSelectionProvider.of(context);
+        service.removeListener(_onAssetChanged);
+      } catch (_) {}
+      _listenerAttached = false;
     }
     super.dispose();
   }
@@ -78,6 +102,11 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
     }
   }
 
+  bool get _hasUnlockedIdeas =>
+      _publishedIdeas.isNotEmpty ||
+      _ideas.isNotEmpty ||
+      (_ideasByTimeframe != null && _ideasByTimeframe!.values.any((list) => list.isNotEmpty));
+
   Future<void> _loadTradeIdeas() async {
     setState(() {
       _isLoading = true;
@@ -85,9 +114,24 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
       _diagnostics = null;
       _ideas = [];
       _ideasByTimeframe = null;
+      _publishedIdeas = [];
     });
 
     try {
+      // Prefer published ideas from Supabase (today/yesterday) — no public API needed
+      final published = await TradeIdeasService.fetchPublishedByDate();
+      if (published.isNotEmpty && mounted) {
+        setState(() {
+          _publishedIdeas = published;
+          _previewIdeas = [];
+          _nextWindow = null;
+          _currentPhase = null;
+          _diagnostics = null;
+          _isLoading = false;
+        });
+        return;
+      }
+
       final result = await TradeIdeasService.fetchAllowedTradeIdeasWithDiagnostics(
         _selectedTicker,
         maxIdeas: 3,
@@ -96,7 +140,9 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
         maxDte: _useCustomDte ? _customMaxDte : null,
       );
       
+      if (!mounted) return;
       setState(() {
+        _publishedIdeas = [];
         // Parse unlocked ideas
         if (result.containsKey('unlockedByTimeframe')) {
           _ideasByTimeframe = result['unlockedByTimeframe'] as Map<String, List<TradeIdea>>;
@@ -105,11 +151,9 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
           _ideas = result['unlocked'] as List<TradeIdea>;
           _ideasByTimeframe = null;
         } else if (result.containsKey('ideasByTimeframe')) {
-          // Backward compatibility
           _ideasByTimeframe = result['ideasByTimeframe'] as Map<String, List<TradeIdea>>;
           _ideas = [];
         } else if (result.containsKey('ideas')) {
-          // Backward compatibility
           _ideas = result['ideas'] as List<TradeIdea>;
           _ideasByTimeframe = null;
         } else {
@@ -117,21 +161,19 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
           _ideasByTimeframe = null;
         }
         
-        // Parse preview ideas
         _previewIdeas = result['preview'] as List<TradeIdea>? ?? [];
-        
-        // Parse next window and current phase
         _nextWindow = result['nextWindow'] as Map<String, dynamic>?;
         _currentPhase = result['currentPhase'] as String?;
-        
         _diagnostics = result['diagnostics'] as Map<String, dynamic>?;
         _isLoading = false;
       });
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-        _error = e.toString();
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _error = e.toString();
+        });
+      }
     }
   }
 
@@ -191,6 +233,60 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
     }
   }
 
+  Future<void> _loadBotPositions() async {
+    setState(() {
+      _botPositionsLoading = true;
+      _botPositionsError = null;
+    });
+    try {
+      final uri = Uri.parse('$apiBaseUrl/bot/positions');
+      final response = await http.get(uri, headers: {'x-api-key': apiSecretKey}).timeout(const Duration(seconds: 10));
+      if (!mounted) return;
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data is List) {
+          setState(() {
+            _botPositions = data.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+            _botPositionsLoading = false;
+          });
+        } else {
+          setState(() { _botPositions = []; _botPositionsLoading = false; });
+        }
+      } else {
+        setState(() { _botPositions = []; _botPositionsLoading = false; _botPositionsError = 'HTTP ${response.statusCode}'; });
+      }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() { _botPositions = []; _botPositionsLoading = false; _botPositionsError = e.toString(); });
+    }
+  }
+
+  Future<void> _loadScannerIdeas() async {
+    setState(() {
+      _scannerLoading = true;
+      _scannerError = null;
+    });
+    try {
+      final uri = Uri.parse('$apiBaseUrl/trade-ideas/scanner/today');
+      final response = await http.get(uri, headers: {'x-api-key': apiSecretKey}).timeout(const Duration(seconds: 10));
+      if (!mounted) return;
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body) as Map<String, dynamic>;
+        final ideas = (data['ideas'] as List? ?? []).map((e) => Map<String, dynamic>.from(e as Map)).toList();
+        setState(() {
+          _scannerIdeas = ideas;
+          _scannerAsOf = data['as_of'] as String?;
+          _scannerLoading = false;
+        });
+      } else {
+        setState(() { _scannerIdeas = []; _scannerLoading = false; _scannerError = 'HTTP ${response.statusCode}'; });
+      }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() { _scannerIdeas = []; _scannerLoading = false; _scannerError = e.toString(); });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -206,27 +302,11 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
           ),
         ],
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _error != null
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Error: $_error', style: const TextStyle(color: Colors.red)),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: _loadTradeIdeas,
-                        child: const Text('Retry'),
-                      ),
-                    ],
-                  ),
-                )
-              : Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // Controls bar
-                      Container(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Controls bar (always visible so screen is never blank)
+          Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             color: const Color(0xFF161B22),
             child: Column(
@@ -277,7 +357,7 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
                       ),
                     ),
                     const Spacer(),
-                    if (_ideas.isNotEmpty || (_ideasByTimeframe != null && _ideasByTimeframe!.values.any((list) => list.isNotEmpty)))
+                    if (_hasUnlockedIdeas)
                       Text(
                         _getTotalIdeasCount().toString() + ' idea${_getTotalIdeasCount() == 1 ? '' : 's'}',
                         style: const TextStyle(color: Colors.white54, fontSize: 12, fontFamily: 'JetBrains Mono'),
@@ -365,13 +445,9 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
               ],
             ),
           ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: _buildBody(),
-            ),
-          ),
+          Expanded(child: _buildBody()),
         ],
-                  ),
+      ),
     );
   }
 
@@ -389,43 +465,269 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
       );
     }
 
-    if (_error != null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, color: Colors.red, size: 48),
-            const SizedBox(height: 16),
-            Text(_error!, style: const TextStyle(color: Colors.white70, fontSize: 16, fontFamily: 'JetBrains Mono')),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _loadTradeIdeas,
-              child: const Text('Retry', style: TextStyle(fontFamily: 'JetBrains Mono')),
-            ),
-          ],
-        ),
-      );
-    }
+    // When there's an error, still show all sections and display error inline so screen is never blank
+    final hasUnlockedIdeas = _hasUnlockedIdeas;
 
-    // Check if we have unlocked ideas (either single list or by timeframe)
-    final hasUnlockedIdeas = _ideas.isNotEmpty || (_ideasByTimeframe != null && _ideasByTimeframe!.values.any((list) => list.isNotEmpty));
-    
     return RefreshIndicator(
       onRefresh: _loadTradeIdeas,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Section A: Unlocked Now
+            // Trade ideas error banner (inline so Bot/Scanner/Congressional remain visible)
+            if (_error != null) _buildTradeIdeasErrorBanner(),
+            // Section A: SPX IC Bot positions
+            _buildBotPositionsSection(),
+            // Section B: Premarket gap scanner
+            _buildScannerSection(),
+            // Section C: Unlocked Now
             _buildUnlockedSection(hasUnlockedIdeas),
-            
-            // Section B: Preview Next Window
+            // Section D: Preview Next Window
             _buildPreviewSection(),
-
-            // Section C: Congressional trades (last 30 days)
+            // Section E: Congressional trades (last 30 days)
             _buildCongressionalSection(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildTradeIdeasErrorBanner() {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF161B22),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.redAccent.withValues(alpha: 0.5)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.error_outline, color: Colors.redAccent, size: 22),
+              const SizedBox(width: 8),
+              const Text(
+                'Trade ideas unavailable',
+                style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold, fontFamily: 'JetBrains Mono'),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _error!,
+            style: const TextStyle(color: Colors.white70, fontSize: 12, fontFamily: 'JetBrains Mono'),
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 36,
+            child: ElevatedButton(
+              onPressed: _loadTradeIdeas,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF58A6FF),
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Retry', style: TextStyle(fontFamily: 'JetBrains Mono')),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBotPositionsSection() {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF161B22),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFF58A6FF).withValues(alpha: 0.3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.smart_toy_outlined, color: Color(0xFF58A6FF), size: 18),
+              const SizedBox(width: 8),
+              const Expanded(
+                child: Text(
+                  'SPX IC Bot — Open Positions',
+                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold, fontFamily: 'JetBrains Mono'),
+                ),
+              ),
+              IconButton(
+                icon: _botPositionsLoading
+                    ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF58A6FF)))
+                    : const Icon(Icons.refresh, color: Color(0xFF58A6FF), size: 20),
+                onPressed: _botPositionsLoading ? null : _loadBotPositions,
+                tooltip: 'Refresh',
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          const Text('Live iron condor positions from the automated SPX bot.', style: TextStyle(color: Colors.white54, fontSize: 11, fontFamily: 'JetBrains Mono')),
+          const SizedBox(height: 12),
+          if (_botPositionsError != null)
+            Text(_botPositionsError!, style: const TextStyle(color: Colors.redAccent, fontSize: 12, fontFamily: 'JetBrains Mono')),
+          if (_botPositionsLoading && _botPositions.isEmpty)
+            const Center(child: Padding(padding: EdgeInsets.symmetric(vertical: 16), child: CircularProgressIndicator(color: Color(0xFF58A6FF))))
+          else if (_botPositions.isEmpty)
+            const Text('No open positions.', style: TextStyle(color: Colors.white54, fontSize: 13, fontFamily: 'JetBrains Mono'))
+          else
+            ...(_botPositions.map((pos) {
+              final configId = pos['config_id'] as String? ?? '';
+              final expiry = pos['expiration'] as String? ?? '';
+              final dte = pos['dte_remaining'] as num?;
+              final kPutS = pos['k_put_short'] as num?;
+              final kPutL = pos['k_put_long'] as num?;
+              final kCallS = pos['k_call_short'] as num?;
+              final kCallL = pos['k_call_long'] as num?;
+              final credit = pos['credit_collected'] as num?;
+              final contracts = pos['n_contracts'] as num?;
+              final pnlPct = pos['pnl_pct'] as num?;
+              final pnlColor = pnlPct == null ? Colors.white54 : (pnlPct >= 0 ? Colors.greenAccent : Colors.redAccent);
+              return Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0D1117),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.white12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(configId.toUpperCase(), style: const TextStyle(color: Color(0xFF58A6FF), fontSize: 13, fontWeight: FontWeight.bold, fontFamily: 'JetBrains Mono')),
+                        const Spacer(),
+                        if (pnlPct != null)
+                          Text('${pnlPct >= 0 ? '+' : ''}${pnlPct.toStringAsFixed(1)}% P&L', style: TextStyle(color: pnlColor, fontSize: 13, fontWeight: FontWeight.bold, fontFamily: 'JetBrains Mono')),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Exp: $expiry  DTE: ${dte?.toStringAsFixed(0) ?? '-'}  Contracts: ${contracts?.toInt() ?? '-'}',
+                      style: const TextStyle(color: Colors.white70, fontSize: 11, fontFamily: 'JetBrains Mono'),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'P${kPutL?.toStringAsFixed(0)}/${kPutS?.toStringAsFixed(0)} IC ${kCallS?.toStringAsFixed(0)}/${kCallL?.toStringAsFixed(0)}  Credit: \$${credit?.toStringAsFixed(2) ?? '-'}',
+                      style: const TextStyle(color: Colors.white54, fontSize: 11, fontFamily: 'JetBrains Mono'),
+                    ),
+                  ],
+                ),
+              );
+            })),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildScannerSection() {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF161B22),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.radar, color: Color(0xFF3FB950), size: 18),
+              const SizedBox(width: 8),
+              const Expanded(
+                child: Text(
+                  'Premarket Gap Scanner',
+                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold, fontFamily: 'JetBrains Mono'),
+                ),
+              ),
+              IconButton(
+                icon: _scannerLoading
+                    ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF3FB950)))
+                    : const Icon(Icons.refresh, color: Color(0xFF3FB950), size: 20),
+                onPressed: _scannerLoading ? null : _loadScannerIdeas,
+                tooltip: 'Refresh',
+              ),
+            ],
+          ),
+          if (_scannerAsOf != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 2, bottom: 8),
+              child: Text('As of: $_scannerAsOf', style: const TextStyle(color: Colors.white38, fontSize: 11, fontFamily: 'JetBrains Mono')),
+            )
+          else
+            const SizedBox(height: 8),
+          if (_scannerError != null)
+            Text(_scannerError!, style: const TextStyle(color: Colors.redAccent, fontSize: 12, fontFamily: 'JetBrains Mono')),
+          if (_scannerLoading && _scannerIdeas.isEmpty)
+            const Center(child: Padding(padding: EdgeInsets.symmetric(vertical: 16), child: CircularProgressIndicator(color: Color(0xFF3FB950))))
+          else if (_scannerIdeas.isEmpty)
+            const Text('No scanner data. Runs premarket on weekdays.', style: TextStyle(color: Colors.white54, fontSize: 13, fontFamily: 'JetBrains Mono'))
+          else
+            ...(_scannerIdeas.take(10).map((idea) {
+              final symbol = idea['symbol'] as String? ?? '';
+              final gapPct = idea['pm_gap_pct'] as num?;
+              final relVol = idea['pm_rel_volume'] as num?;
+              final score = idea['total_score'] as num?;
+              final playbook = idea['playbook'] as String?;
+              final reasons = (idea['reasons'] as List?)?.cast<String>() ?? [];
+              final gapColor = (gapPct ?? 0) >= 0 ? Colors.greenAccent : Colors.redAccent;
+              return Container(
+                margin: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0D1117),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.white12),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(symbol, style: const TextStyle(color: Color(0xFF3FB950), fontSize: 14, fontWeight: FontWeight.bold, fontFamily: 'JetBrains Mono')),
+                              const SizedBox(width: 12),
+                              if (gapPct != null)
+                                Text('${gapPct >= 0 ? '+' : ''}${(gapPct * 100).toStringAsFixed(1)}%', style: TextStyle(color: gapColor, fontSize: 13, fontWeight: FontWeight.bold, fontFamily: 'JetBrains Mono')),
+                              if (relVol != null) ...[
+                                const SizedBox(width: 10),
+                                Text('${relVol.toStringAsFixed(1)}x vol', style: const TextStyle(color: Colors.white54, fontSize: 12, fontFamily: 'JetBrains Mono')),
+                              ],
+                            ],
+                          ),
+                          if (playbook != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 3),
+                              child: Text(playbook, style: const TextStyle(color: Colors.white54, fontSize: 11, fontFamily: 'JetBrains Mono')),
+                            ),
+                          if (reasons.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 2),
+                              child: Text(reasons.take(2).join(' · '), style: const TextStyle(color: Colors.white38, fontSize: 10, fontFamily: 'JetBrains Mono'), maxLines: 1, overflow: TextOverflow.ellipsis),
+                            ),
+                        ],
+                      ),
+                    ),
+                    if (score != null)
+                      Text(score.toStringAsFixed(0), style: const TextStyle(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.bold, fontFamily: 'JetBrains Mono')),
+                  ],
+                ),
+              );
+            })),
+        ],
       ),
     );
   }
@@ -548,6 +850,7 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
   }
   
   int _getTotalIdeasCount() {
+    if (_publishedIdeas.isNotEmpty) return _publishedIdeas.length;
     if (_ideasByTimeframe != null) {
       return _ideasByTimeframe!.values.fold(0, (sum, list) => sum + list.length);
     }
@@ -562,36 +865,31 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
       'thisYear': 'This Year (30-365 DTE)',
     };
     
-    return ListView.builder(
+    final children = <Widget>[];
+    for (var index = 0; index < timeframes.length; index++) {
+      final tf = timeframes[index];
+      final ideas = _ideasByTimeframe![tf] ?? [];
+      if (ideas.isEmpty) continue;
+      children.add(Padding(
+        padding: EdgeInsets.only(bottom: 8, top: index > 0 ? 16.0 : 0.0),
+        child: Text(
+          labels[tf] ?? tf,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'JetBrains Mono',
+          ),
+        ),
+      ));
+      children.addAll(ideas.map((idea) => _buildTradeIdeaCard(idea)));
+    }
+    return Padding(
       padding: const EdgeInsets.all(12),
-      itemCount: timeframes.length,
-      itemBuilder: (context, index) {
-        final tf = timeframes[index];
-        final ideas = _ideasByTimeframe![tf] ?? [];
-        
-        if (ideas.isEmpty) {
-          return const SizedBox.shrink();  // Skip empty timeframes
-        }
-        
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(bottom: 8, top: index > 0 ? 16.0 : 0.0),
-              child: Text(
-                labels[tf] ?? tf,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'JetBrains Mono',
-                ),
-              ),
-            ),
-            ...ideas.map((idea) => _buildTradeIdeaCard(idea)),
-          ],
-        );
-      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      ),
     );
   }
 
@@ -601,7 +899,6 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Header
           const Text(
             'Unlocked Now',
             style: TextStyle(
@@ -612,19 +909,21 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
             ),
           ),
           const SizedBox(height: 4),
-          const Text(
-            'These setups are permitted under current regime and time window.',
-            style: TextStyle(
+          Text(
+            _publishedIdeas.isNotEmpty
+                ? 'Published ideas from Supabase — valid for the date shown.'
+                : 'These setups are permitted under current regime and time window.',
+            style: const TextStyle(
               color: Colors.white70,
               fontSize: 12,
               fontFamily: 'JetBrains Mono',
             ),
           ),
           const SizedBox(height: 16),
-          
-          // Content
           if (!hasUnlockedIdeas)
             _buildEmptyState()
+          else if (_publishedIdeas.isNotEmpty)
+            ..._publishedIdeas.map((p) => _buildTradeIdeaCard(p.idea, validDate: p.validDate, asOfEt: p.asOfEt))
           else if (_ideasByTimeframe != null)
             _buildTimeframeView()
           else
@@ -1665,7 +1964,7 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
     );
   }
 
-  Widget _buildTradeIdeaCard(TradeIdea idea) {
+  Widget _buildTradeIdeaCard(TradeIdea idea, {String? validDate, String? asOfEt}) {
     final isExpanded = _expandedCards[idea.id] ?? false;
     final best = idea.best;
 
@@ -1861,15 +2160,25 @@ class _TradeIdeasScreenState extends State<TradeIdeasScreen> {
                     ),
                   ),
                 const SizedBox(height: 4),
-                // Timestamp
-                Text(
-                  'As of: ${_formatTimestamp(idea.asOf)}',
-                  style: const TextStyle(
-                    color: Colors.white38,
-                    fontSize: 10,
-                    fontFamily: 'JetBrains Mono',
+                // Valid date (published) or timestamp
+                if (validDate != null && validDate.isNotEmpty)
+                  Text(
+                    'Valid: $validDate${asOfEt != null && asOfEt.isNotEmpty ? ' · As of: $asOfEt' : ''}',
+                    style: const TextStyle(
+                      color: Colors.white38,
+                      fontSize: 10,
+                      fontFamily: 'JetBrains Mono',
+                    ),
+                  )
+                else
+                  Text(
+                    'As of: ${_formatTimestamp(idea.asOf)}',
+                    style: const TextStyle(
+                      color: Colors.white38,
+                      fontSize: 10,
+                      fontFamily: 'JetBrains Mono',
+                    ),
                   ),
-                ),
               ],
               
               // Expanded content
