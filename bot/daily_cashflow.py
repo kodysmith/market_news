@@ -508,6 +508,17 @@ def main():
     parser.add_argument("--once", action="store_true", help="Single pass then exit")
     args = parser.parse_args()
 
+    # Safety lock: live mode requires explicit env var
+    if args.mode == "live":
+        import os
+        if os.environ.get("ENABLE_LIVE_TRADING") != "YES":
+            logger.error(
+                "LIVE TRADING BLOCKED. Set ENABLE_LIVE_TRADING=YES to enable. "
+                "This is a safety lock to prevent accidental live execution."
+            )
+            sys.exit(1)
+        logger.warning("!!! LIVE TRADING MODE — REAL MONEY AT RISK !!!")
+
     if args.once:
         run_once(args.mode)
     else:

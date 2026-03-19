@@ -55,6 +55,18 @@ class OrderManager:
         Args:
             mode: 'dry-run' | 'paper' | 'live'
         """
+        # === LIVE TRADING SAFETY LOCK ===
+        # Live mode requires ENABLE_LIVE_TRADING=YES in environment.
+        # This prevents accidental live execution from cron, scripts, or typos.
+        if mode == "live":
+            lock = os.environ.get("ENABLE_LIVE_TRADING", "")
+            if lock != "YES":
+                raise RuntimeError(
+                    "LIVE TRADING BLOCKED. Set ENABLE_LIVE_TRADING=YES to enable. "
+                    "This is a safety lock to prevent accidental live execution."
+                )
+            logger.warning("!!! LIVE TRADING MODE ENABLED — REAL MONEY AT RISK !!!")
+
         self.mode = mode
         self._ib = None  # lazy connect
 
