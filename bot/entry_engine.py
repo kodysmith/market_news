@@ -56,10 +56,16 @@ def should_enter(
     if f.vix_max is not None and snapshot.vix_level > f.vix_max:
         return False, f"VIX {snapshot.vix_level:.1f} > max {f.vix_max}"
 
-    # Trend filter (SPX must be strictly > SMA50)
+    # Trend filter
     if f.trend_sma_period is not None:
-        if snapshot.spx_price <= snapshot.sma50:
-            return False, f"SPX {snapshot.spx_price:.1f} <= SMA50 {snapshot.sma50:.1f}"
+        if getattr(f, 'trend_sma_invert', False):
+            # Bearish: enter only when SPX is BELOW SMA
+            if snapshot.spx_price > snapshot.sma50:
+                return False, f"SPX {snapshot.spx_price:.1f} > SMA50 {snapshot.sma50:.1f} (need below for bearish)"
+        else:
+            # Bullish: enter only when SPX is strictly > SMA50
+            if snapshot.spx_price <= snapshot.sma50:
+                return False, f"SPX {snapshot.spx_price:.1f} <= SMA50 {snapshot.sma50:.1f}"
 
     # RV expansion filter (VD2 only)
     if f.rv_expansion_max is not None and snapshot.rv_ratio > f.rv_expansion_max:
@@ -108,9 +114,9 @@ def build_entry(
     n_contracts: int,
     today: Optional[date] = None,
 ) -> Optional[EntryOrder]:
-    """Compute strikes and credit for a new IC. Returns None if expiration not found."""
+    """Compute strikes and credit for a new position. Returns None if expiration not found."""
     from bot.config import MIN_ENTRY_DTE
-    from bot.pricer import compute_strikes, compute_credit
+    from bot.pricer import compute_strikes, compute_credit, compute_call_spread_credit
 
     if today is None:
         today = date.today()
@@ -136,17 +142,35 @@ def build_entry(
         config.width,
     )
 
-    credit = compute_credit(
-        snapshot.spx_price,
-        snapshot.vix_level,
-        cal_dte,
-        k_ps, k_pl, k_cs, k_cl,
-    )
+    if config.strategy == "call_vertical":
+        # Bear call spread: only use call side, zero out put strikes
+        k_ps, k_pl = 0.0, 0.0
+        credit = compute_call_spread_credit(
+            snapshot.spx_price, snapshot.vix_level, cal_dte, k_cs, k_cl,
+        )
+    elif config.strategy == "put_vertical":
+        # Bull put spread: only use put side, zero out call strikes
+        k_cs, k_cl = 0.0, 0.0
+        credit = compute_credit(
+            snapshot.spx_price, snapshot.vix_level, cal_dte,
+            k_ps, k_pl, k_cs, k_cl,
+        )
+    else:
+        # Iron condor: both sides
+        credit = compute_credit(
+            snapshot.spx_price, snapshot.vix_level, cal_dte,
+            k_ps, k_pl, k_cs, k_cl,
+        )
 
+    if credit <= 0:
+        logger.warning("[%s] Credit <= 0 (%.4f), skipping", config.config_id, credit)
+        return None
+
+    label = config.strategy.replace("_", " ").title()
     logger.info(
-        "[%s] Entry candidate | SPX=%.1f VIX=%.1f DTE=%d | "
-        "Put spread: %.0f/%.0f  Call spread: %.0f/%.0f | credit=%.4f × %d contracts",
-        config.config_id, snapshot.spx_price, snapshot.vix_level, cal_dte,
+        "[%s] %s entry candidate | SPX=%.1f VIX=%.1f DTE=%d | "
+        "Put: %.0f/%.0f  Call: %.0f/%.0f | credit=%.4f × %d cts",
+        config.config_id, label, snapshot.spx_price, snapshot.vix_level, cal_dte,
         k_ps, k_pl, k_cs, k_cl, credit, n_contracts,
     )
 
@@ -176,13 +200,22 @@ def run_entry_checks(
         orders:    EntryOrders to be placed (0, 1, or 2 if both configs qualify)
         decisions: list of (config_id, ok, reason, order_or_None) for publishing
     """
-    from bot.config import SWEET_CONFIG, VD2_CONFIG, SWEET_CONTRACTS
+    from bot.config import (
+        SWEET_CONFIG, SD1_CONFIG, AG2_CONFIG, VD2_CONFIG,
+        BC4_CONFIG, BC2_CONFIG,
+        SWEET_CONTRACTS, SD1_CONTRACTS, AG2_CONTRACTS,
+        BC4_CONTRACTS, BC2_CONTRACTS,
+    )
 
     orders = []
     decisions = []
     for config, n_contracts in [
         (SWEET_CONFIG, SWEET_CONTRACTS),
+        (SD1_CONFIG, SD1_CONTRACTS),
+        (AG2_CONFIG, AG2_CONTRACTS),
         (VD2_CONFIG, vd2_contracts),
+        (BC4_CONFIG, BC4_CONTRACTS),
+        (BC2_CONFIG, BC2_CONTRACTS),
     ]:
         ok, reason = should_enter(config, snapshot, open_positions, mode)
         if ok:

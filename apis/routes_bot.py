@@ -197,6 +197,72 @@ def performance():
 # POST /bot/pause
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# GET /bot/market-regime
+# ---------------------------------------------------------------------------
+
+@bp.route("/market-regime")
+def market_regime():
+    """Market regime snapshot: SPX vs SMA50, VIX, trend status.
+
+    Used by the mobile app to show a prominent trend banner and
+    guide equity/options positioning decisions.
+    """
+    try:
+        from bot.market_data import get_market_snapshot
+        snap = get_market_snapshot()
+        above_sma = snap.spx_price > snap.sma50
+        distance_pct = ((snap.spx_price - snap.sma50) / snap.sma50 * 100) if snap.sma50 else 0
+
+        # VIX zone classification
+        vix = snap.vix_level
+        if vix <= 15:
+            vix_zone = "LOW"
+            vix_label = "Low vol — thin premium"
+        elif vix <= 24:
+            vix_zone = "SWEET"
+            vix_label = "Sweet spot — good premium, controlled risk"
+        elif vix <= 35:
+            vix_zone = "ELEVATED"
+            vix_label = "Elevated — be selective, hedges on"
+        else:
+            vix_zone = "CRISIS"
+            vix_label = "Crisis — no new entries"
+
+        # Actionable guidance
+        if above_sma:
+            stance = "BULLISH"
+            guidance = "Trend is UP. OK to sell premium (ICs), hold equities, buy quality dips."
+        else:
+            stance = "DEFENSIVE"
+            guidance = (
+                "SPX below SMA50 — trend is DOWN. "
+                "Avoid new IC entries. Hedge or reduce equity exposure. "
+                "Short weak names, stay in cash, or buy puts for protection."
+            )
+
+        return jsonify({
+            "spx_price": round(snap.spx_price, 2),
+            "sma50": round(snap.sma50, 2),
+            "above_sma50": above_sma,
+            "distance_pct": round(distance_pct, 2),
+            "vix": round(vix, 2),
+            "vix_zone": vix_zone,
+            "vix_label": vix_label,
+            "rv_ratio": round(snap.rv_ratio, 3) if snap.rv_ratio else None,
+            "stance": stance,
+            "guidance": guidance,
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+        })
+    except Exception as e:
+        logger.error("GET /bot/market-regime error: %s", e)
+        return jsonify({"error": str(e)}), 500
+
+
+# ---------------------------------------------------------------------------
+# POST /bot/pause
+# ---------------------------------------------------------------------------
+
 @bp.route("/pause", methods=["POST"])
 def pause():
     """Manually pause new entries."""

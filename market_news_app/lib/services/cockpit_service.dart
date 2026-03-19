@@ -98,6 +98,23 @@ class CockpitService {
     return null;
   }
 
+  /// Get market regime (SPX vs SMA50, VIX zone, stance).
+  static Future<MarketRegime?> getMarketRegime() async {
+    try {
+      final url = '$apiBaseUrl/bot/market-regime';
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {'x-api-key': apiSecretKey},
+      ).timeout(const Duration(seconds: 10));
+      if (response.statusCode == 200) {
+        return MarketRegime.fromJson(jsonDecode(response.body));
+      }
+    } catch (e) {
+      print('[CockpitService] getMarketRegime error: $e');
+    }
+    return null;
+  }
+
   /// Get FMP stock news for a symbol (for cockpit dashboard).
   static Future<List<Map<String, dynamic>>> getCockpitNews(String symbol, {int limit = 15}) async {
     final t = symbol.toUpperCase();
@@ -582,6 +599,51 @@ class CockpitState {
       maxPain: json['max_pain'] != null ? CockpitMaxPain.fromJson(json['max_pain']) : null,
     );
   }
+}
+
+/// Market regime: SPX vs SMA50, VIX zone, actionable guidance
+class MarketRegime {
+  final double spxPrice;
+  final double sma50;
+  final bool aboveSma50;
+  final double distancePct;
+  final double vix;
+  final String vixZone;
+  final String vixLabel;
+  final double? rvRatio;
+  final String stance;
+  final String guidance;
+
+  MarketRegime({
+    required this.spxPrice,
+    required this.sma50,
+    required this.aboveSma50,
+    required this.distancePct,
+    required this.vix,
+    required this.vixZone,
+    required this.vixLabel,
+    this.rvRatio,
+    required this.stance,
+    required this.guidance,
+  });
+
+  factory MarketRegime.fromJson(Map<String, dynamic> json) {
+    return MarketRegime(
+      spxPrice: (json['spx_price'] as num?)?.toDouble() ?? 0,
+      sma50: (json['sma50'] as num?)?.toDouble() ?? 0,
+      aboveSma50: json['above_sma50'] ?? false,
+      distancePct: (json['distance_pct'] as num?)?.toDouble() ?? 0,
+      vix: (json['vix'] as num?)?.toDouble() ?? 0,
+      vixZone: json['vix_zone'] ?? '',
+      vixLabel: json['vix_label'] ?? '',
+      rvRatio: (json['rv_ratio'] as num?)?.toDouble(),
+      stance: json['stance'] ?? '',
+      guidance: json['guidance'] ?? '',
+    );
+  }
+
+  bool get isBullish => stance == 'BULLISH';
+  bool get isDefensive => stance == 'DEFENSIVE';
 }
 
 /// Regime state (GEX) - Enhanced with transition detection and GEX breakdown

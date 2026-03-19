@@ -21,6 +21,7 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
   CockpitState? _state;
   CockpitEventsData? _events;
   GexCalculation? _gexChartData;
+  MarketRegime? _marketRegime;
   DateTime? _lastCacheUpdate;
   bool _isLoading = true;
   String? _error;
@@ -81,12 +82,14 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
         CockpitService.getCockpitEvents(daysAhead: 14, symbol: _selectedTicker),
         GexService.calculateGex(_selectedTicker),
         CockpitService.getCockpitNews(_selectedTicker, limit: 15),
+        CockpitService.getMarketRegime(),
       ]);
 
       final cockpitResult = results[0] as CockpitStateResult;
       final events = results[1] as CockpitEventsData?;
       final gexResult = results[2] as GexResult;
       final news = results[3] as List<Map<String, dynamic>>;
+      final regime = results[4] as MarketRegime?;
 
       DateTime? lastUpdate;
       if (cockpitResult.updatedAt != null && gexResult.updatedAt != null) {
@@ -101,6 +104,7 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
         _state = cockpitResult.state;
         _events = events;
         _gexChartData = gexResult.calculation;
+        _marketRegime = regime;
         _news = news;
         _lastCacheUpdate = lastUpdate;
         _isLoading = false;
@@ -224,6 +228,8 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            _buildMarketRegimeBanner(),
+            const SizedBox(height: 8),
             _buildCacheStalenessBanner(),
             const SizedBox(height: 8),
             // Compact Header
@@ -268,6 +274,100 @@ class _DecisionCockpitScreenState extends State<DecisionCockpitScreen> {
               showQuickButtons: false,
               onAssetChanged: (_) => _loadData(),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Market Regime Banner — prominent SPX vs SMA50 trend indicator
+  Widget _buildMarketRegimeBanner() {
+    if (_marketRegime == null) return const SizedBox.shrink();
+    final r = _marketRegime!;
+    final isBullish = r.isBullish;
+
+    final bgColor = isBullish ? const Color(0xFF0D2818) : const Color(0xFF3D1111);
+    final borderColor = isBullish ? const Color(0xFF3FB950) : const Color(0xFFF85149);
+    final icon = isBullish ? Icons.trending_up : Icons.shield_outlined;
+    final stanceLabel = isBullish ? 'BULLISH' : 'DEFENSIVE';
+
+    // VIX zone color
+    Color vixColor;
+    switch (r.vixZone) {
+      case 'LOW':
+        vixColor = Colors.white54;
+        break;
+      case 'SWEET':
+        vixColor = const Color(0xFF3FB950);
+        break;
+      case 'ELEVATED':
+        vixColor = const Color(0xFFD29922);
+        break;
+      case 'CRISIS':
+        vixColor = const Color(0xFFF85149);
+        break;
+      default:
+        vixColor = Colors.white70;
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: borderColor, width: 1.5),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Row 1: Stance + VIX zone
+          Row(
+            children: [
+              Icon(icon, color: borderColor, size: 20),
+              const SizedBox(width: 8),
+              Text(
+                stanceLabel,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: borderColor,
+                  fontFamily: 'JetBrains Mono',
+                ),
+              ),
+              const Spacer(),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: vixColor.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  'VIX ${r.vix.toStringAsFixed(1)} (${r.vixZone})',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: vixColor,
+                    fontFamily: 'JetBrains Mono',
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          // Row 2: SPX vs SMA50 numbers
+          Text(
+            'SPX ${r.spxPrice.toStringAsFixed(0)} vs SMA50 ${r.sma50.toStringAsFixed(0)}  (${r.distancePct >= 0 ? '+' : ''}${r.distancePct.toStringAsFixed(1)}%)',
+            style: const TextStyle(
+              fontSize: 13,
+              color: Colors.white70,
+              fontFamily: 'JetBrains Mono',
+            ),
+          ),
+          const SizedBox(height: 6),
+          // Row 3: Guidance
+          Text(
+            r.guidance,
+            style: const TextStyle(fontSize: 12, color: Colors.white60),
           ),
         ],
       ),

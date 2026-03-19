@@ -120,6 +120,19 @@ def compute_credit(
     return price_iron_condor(spx, vix, dte, k_put_short, k_put_long, k_call_short, k_call_long)
 
 
+def compute_call_spread_credit(
+    spx: float,
+    vix: float,
+    dte: int,
+    k_call_short: float,
+    k_call_long: float,
+) -> float:
+    """Entry credit for a bear call spread (call side only)."""
+    sigma = vix / 100.0
+    T = max(dte, 1) / 365.0
+    return price_call_spread(spx, sigma, T, k_call_short, k_call_long)
+
+
 def spread_pnl_pct(current_spread_val: float, entry_credit: float) -> float:
     """Fraction of premium captured (0 = no decay; 1 = full profit; >1 = loss territory).
 

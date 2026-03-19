@@ -35,6 +35,7 @@ class BotRunner:
     def __init__(self, mode: str):
         self.mode = mode
         self._snapshot = None   # cached until next morning_data_refresh
+        self._prev_above_sma = None  # track SMA50 crossovers
 
         from bot.state_manager import StateManager
         from bot.order_manager import OrderManager
@@ -69,6 +70,18 @@ class BotRunner:
             self._snapshot.gap_pct,
             self._snapshot.is_news_day,
         )
+
+        # Detect SMA50 crossover and send FCM alert
+        above_sma = self._snapshot.spx_price > self._snapshot.sma50
+        if self._prev_above_sma is not None and above_sma != self._prev_above_sma:
+            from bot import notifier
+            notifier.trend_break(
+                self._snapshot.spx_price,
+                self._snapshot.sma50,
+                crossed_above=above_sma,
+            )
+            logger.info("SMA50 crossover detected: %s", "above" if above_sma else "below")
+        self._prev_above_sma = above_sma
 
     def run_entry(self) -> None:
         """9:30 AM — evaluate and place new IC entries."""

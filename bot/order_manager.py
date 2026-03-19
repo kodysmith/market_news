@@ -116,26 +116,29 @@ class OrderManager:
             logger.warning("get_option_quote failed (%s %s %s): %s", expiry, strike, right, e)
             return None
 
+    def _has_put_side(self, entry) -> bool:
+        return entry.k_put_short > 0 and entry.k_put_long > 0
+
+    def _has_call_side(self, entry) -> bool:
+        return entry.k_call_short > 0 and entry.k_call_long > 0
+
     def _get_ic_mid(self, entry) -> float:
-        """Compute midpoint credit for all 4 legs. Falls back to BS credit if IBKR unavailable."""
-        from bot.entry_engine import EntryOrder
+        """Compute midpoint credit for active legs. Falls back to BS credit if IBKR unavailable."""
+        quotes = {}
+        if self._has_put_side(entry):
+            quotes["put_short"] = self.get_option_quote(entry.expiration, entry.k_put_short, "P")
+            quotes["put_long"] = self.get_option_quote(entry.expiration, entry.k_put_long, "P")
+        if self._has_call_side(entry):
+            quotes["call_short"] = self.get_option_quote(entry.expiration, entry.k_call_short, "C")
+            quotes["call_long"] = self.get_option_quote(entry.expiration, entry.k_call_long, "C")
 
-        quotes = {
-            "put_short": self.get_option_quote(entry.expiration, entry.k_put_short, "P"),
-            "put_long": self.get_option_quote(entry.expiration, entry.k_put_long, "P"),
-            "call_short": self.get_option_quote(entry.expiration, entry.k_call_short, "C"),
-            "call_long": self.get_option_quote(entry.expiration, entry.k_call_long, "C"),
-        }
-
-        if all(q is not None for q in quotes.values()):
-            # Credit = sell short legs, buy long legs
-            credit = (
-                quotes["put_short"].mid
-                - quotes["put_long"].mid
-                + quotes["call_short"].mid
-                - quotes["call_long"].mid
-            )
-            logger.debug("IBKR IC mid credit: %.4f", credit)
+        if quotes and all(q is not None for q in quotes.values()):
+            credit = 0.0
+            if "put_short" in quotes:
+                credit += quotes["put_short"].mid - quotes["put_long"].mid
+            if "call_short" in quotes:
+                credit += quotes["call_short"].mid - quotes["call_long"].mid
+            logger.debug("IBKR mid credit: %.4f", credit)
             return max(credit, 0)
         else:
             logger.debug("Using BS credit fallback: %.4f", entry.credit)
@@ -150,6 +153,11 @@ class OrderManager:
         from bot.config import FILL_WAIT_SECONDS, FILL_TIMEOUT_SECONDS, IMPROVE_STEP
 
         mid_credit = self._get_ic_mid(entry)
+        # Ensure credit is never NaN — fall back to BS model credit
+        if mid_credit != mid_credit or mid_credit <= 0:  # NaN check
+            mid_credit = entry.credit
+        if mid_credit != mid_credit or mid_credit <= 0:
+            return OrderResult(success=False, fill_price=0, message="Credit is zero or NaN")
 
         log_msg = (
             f"[{self.mode.upper()}] IC order | {entry.config_id} | "
@@ -171,22 +179,27 @@ class OrderManager:
             self._connect()
             import ib_insync as ib_mod
 
-            # Build the 4-leg combo contract
+            # Build combo legs — only include active sides
             expiry_str = entry.expiration.strftime("%Y%m%d")
-            legs = [
-                ib_mod.ComboLeg(action="SELL", ratio=1,
-                                conId=self._get_conid("SPX", expiry_str, entry.k_put_short, "P"),
-                                exchange="CBOE"),
-                ib_mod.ComboLeg(action="BUY", ratio=1,
-                                conId=self._get_conid("SPX", expiry_str, entry.k_put_long, "P"),
-                                exchange="CBOE"),
-                ib_mod.ComboLeg(action="SELL", ratio=1,
-                                conId=self._get_conid("SPX", expiry_str, entry.k_call_short, "C"),
-                                exchange="CBOE"),
-                ib_mod.ComboLeg(action="BUY", ratio=1,
-                                conId=self._get_conid("SPX", expiry_str, entry.k_call_long, "C"),
-                                exchange="CBOE"),
-            ]
+            legs = []
+            if self._has_put_side(entry):
+                legs.extend([
+                    ib_mod.ComboLeg(action="SELL", ratio=1,
+                                    conId=self._get_conid("SPX", expiry_str, entry.k_put_short, "P"),
+                                    exchange="CBOE"),
+                    ib_mod.ComboLeg(action="BUY", ratio=1,
+                                    conId=self._get_conid("SPX", expiry_str, entry.k_put_long, "P"),
+                                    exchange="CBOE"),
+                ])
+            if self._has_call_side(entry):
+                legs.extend([
+                    ib_mod.ComboLeg(action="SELL", ratio=1,
+                                    conId=self._get_conid("SPX", expiry_str, entry.k_call_short, "C"),
+                                    exchange="CBOE"),
+                    ib_mod.ComboLeg(action="BUY", ratio=1,
+                                    conId=self._get_conid("SPX", expiry_str, entry.k_call_long, "C"),
+                                    exchange="CBOE"),
+                ])
             combo = ib_mod.Contract(
                 symbol="SPX", secType="BAG", currency="USD",
                 exchange="CBOE", comboLegs=legs,

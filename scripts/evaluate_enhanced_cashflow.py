@@ -209,6 +209,7 @@ class EntryFilters:
     rv_expansion_max: float | None = None       # skip if rv_5d/rv_10d > this (vol expanding)
     gap_down_no_entry: float | None = None      # skip entry when pre-market gap < this (e.g. -0.5 = skip if gap <= -0.5%)
     skip_news_days: bool = False               # skip entry on high-impact news days (PPI, CPI, NFP, FOMC)
+    trend_sma_invert: bool = False             # if True, enter when SPX is BELOW SMA (bearish strategies)
 
 
 @dataclass
@@ -233,7 +234,7 @@ class ExitRules:
 @dataclass
 class StrategyConfig:
     config_id: str
-    strategy: str            # iron_condor | put_vertical
+    strategy: str            # iron_condor | put_vertical | call_vertical
     dte: int
     short_delta: float
     width: float
@@ -293,21 +294,26 @@ def simulate_enhanced(
     sigma_entry = float(vix_close.get(entry_date, 20.0))
     sigma_entry = sigma_entry / 100.0 if sigma_entry > 3 else sigma_entry
 
-    K_put_short = strike_for_delta(S_entry, T_entry, short_put_delta, sigma_entry, is_put=True)
-    if K_put_short is None:
-        return None
-    K_put_long = K_put_short - width
-    if K_put_long <= 0:
-        return None
-
-    put_short_px = bs_put_price(S_entry, K_put_short, T_entry, sigma_entry)
-    put_long_px = bs_put_price(S_entry, K_put_long, T_entry, sigma_entry)
-    put_credit = put_short_px - put_long_px
-
+    put_credit = 0.0
+    K_put_short = K_put_long = None
     call_credit = 0.0
     K_call_short = K_call_long = None
     n_legs = 4
-    if strategy == "iron_condor":
+
+    if strategy != "call_vertical":
+        # Put side (iron_condor and put_vertical)
+        K_put_short = strike_for_delta(S_entry, T_entry, short_put_delta, sigma_entry, is_put=True)
+        if K_put_short is None:
+            return None
+        K_put_long = K_put_short - width
+        if K_put_long <= 0:
+            return None
+        put_short_px = bs_put_price(S_entry, K_put_short, T_entry, sigma_entry)
+        put_long_px = bs_put_price(S_entry, K_put_long, T_entry, sigma_entry)
+        put_credit = put_short_px - put_long_px
+
+    if strategy in ("iron_condor", "call_vertical"):
+        # Call side (iron_condor and call_vertical)
         K_call_short = strike_for_delta(S_entry, T_entry, short_call_delta, sigma_entry, is_put=False)
         if K_call_short is None:
             return None
@@ -315,7 +321,8 @@ def simulate_enhanced(
         call_short_px = bs_call_price(S_entry, K_call_short, T_entry, sigma_entry)
         call_long_px = bs_call_price(S_entry, K_call_long, T_entry, sigma_entry)
         call_credit = call_short_px - call_long_px
-        n_legs = 8
+        if strategy == "iron_condor":
+            n_legs = 8
 
     total_credit = put_credit + call_credit
     entry_slippage = n_legs * SLIPPAGE_PER_LEG / 2.0
@@ -323,7 +330,12 @@ def simulate_enhanced(
     if credit_adj <= 0:
         return None
 
-    max_loss = max(width - put_credit, width - call_credit) if strategy == "iron_condor" else (width - put_credit)
+    if strategy == "iron_condor":
+        max_loss = max(width - put_credit, width - call_credit)
+    elif strategy == "call_vertical":
+        max_loss = width - call_credit
+    else:
+        max_loss = width - put_credit
     if max_loss <= 0:
         return None
 
@@ -352,10 +364,12 @@ def simulate_enhanced(
         sigma_d = float(vix_close.get(d, sigma_entry * 100.0))
         sigma_d = sigma_d / 100.0 if sigma_d > 3 else sigma_d
 
-        put_short_d = bs_put_price(S_d, K_put_short, T_d, sigma_d)
-        put_long_d = bs_put_price(S_d, K_put_long, T_d, sigma_d)
-        spread_val = put_short_d - put_long_d
-        if strategy == "iron_condor":
+        spread_val = 0.0
+        if K_put_short is not None:
+            put_short_d = bs_put_price(S_d, K_put_short, T_d, sigma_d)
+            put_long_d = bs_put_price(S_d, K_put_long, T_d, sigma_d)
+            spread_val += put_short_d - put_long_d
+        if K_call_short is not None:
             call_short_d = bs_call_price(S_d, K_call_short, T_d, sigma_d)
             call_long_d = bs_call_price(S_d, K_call_long, T_d, sigma_d)
             spread_val += call_short_d - call_long_d
@@ -494,9 +508,11 @@ def simulate_enhanced(
 
     S_exp = float(spx_close[exp_date])
     if exit_reason == "expiry":
-        put_settlement = max(0.0, K_put_short - S_exp) - max(0.0, K_put_long - S_exp)
-        settlement = put_settlement
-        if strategy == "iron_condor":
+        settlement = 0.0
+        if K_put_short is not None:
+            put_settlement = max(0.0, K_put_short - S_exp) - max(0.0, K_put_long - S_exp)
+            settlement += put_settlement
+        if K_call_short is not None:
             call_settlement = max(0.0, S_exp - K_call_short) - max(0.0, S_exp - K_call_long)
             settlement += call_settlement
         commission = (n_legs / 2) * COMMISSION_PER_LEG
@@ -657,8 +673,14 @@ def run_filtered_backtest(
                 if sma is not None and entry_date in sma.index:
                     ma_val = sma.get(entry_date)
                     if ma_val is not None and not np.isnan(ma_val):
-                        if float(spx_close[entry_date]) < float(ma_val):
-                            continue
+                        if cfg.filters.trend_sma_invert:
+                            # Bearish: enter only when SPX is BELOW SMA
+                            if float(spx_close[entry_date]) > float(ma_val):
+                                continue
+                        else:
+                            # Bullish: enter only when SPX is ABOVE SMA
+                            if float(spx_close[entry_date]) <= float(ma_val):
+                                continue
 
             # Max concurrent
             if cfg.filters.max_concurrent is not None:
@@ -2222,6 +2244,60 @@ def build_strategy_configs() -> list[StrategyConfig]:
                                  hedge_on_gap_down=-0.8, hedge_off_gap_threshold=-0.2),
             filters=EntryFilters(vix_max=28, trend_sma_period=50,
                                  gap_down_no_entry=-0.3),
+        ),
+
+        # ===================================================================
+        # BEAR CALL VERTICALS — enter only when SPX < SMA50 (bearish regime)
+        # Sell call credit spreads into downtrends for directional premium.
+        # ===================================================================
+
+        # BC1: 14 DTE bear call, 15-delta, $50 wide, VIX 16-28
+        StrategyConfig(
+            config_id="BC1_BEAR_CALL_14DTE",
+            strategy="call_vertical", dte=14, short_delta=0.15, width=50.0,
+            exit_rules=ExitRules(profit_target_pct=0.50, stop_mult=2.0, time_stop_dte=2),
+            filters=EntryFilters(vix_min=16, vix_max=28, trend_sma_period=50, trend_sma_invert=True),
+        ),
+
+        # BC2: 7 DTE bear call, faster cycle
+        StrategyConfig(
+            config_id="BC2_BEAR_CALL_7DTE",
+            strategy="call_vertical", dte=7, short_delta=0.15, width=50.0,
+            exit_rules=ExitRules(profit_target_pct=0.50, stop_mult=2.0),
+            filters=EntryFilters(vix_min=16, vix_max=28, trend_sma_period=50, trend_sma_invert=True),
+        ),
+
+        # BC3: 21 DTE bear call, 20-delta, $75 wide (more premium, aggressive)
+        StrategyConfig(
+            config_id="BC3_BEAR_CALL_21DTE",
+            strategy="call_vertical", dte=21, short_delta=0.20, width=75.0,
+            exit_rules=ExitRules(profit_target_pct=0.50, stop_mult=2.0),
+            filters=EntryFilters(vix_max=28, trend_sma_period=50, trend_sma_invert=True,
+                                 rv_expansion_max=1.05),
+        ),
+
+        # BC4: 14 DTE bear call, 10-delta (far OTM, conservative)
+        StrategyConfig(
+            config_id="BC4_BEAR_CALL_CONSERVATIVE",
+            strategy="call_vertical", dte=14, short_delta=0.10, width=50.0,
+            exit_rules=ExitRules(profit_target_pct=0.50, stop_mult=2.0, time_stop_dte=2),
+            filters=EntryFilters(vix_max=28, trend_sma_period=50, trend_sma_invert=True),
+        ),
+
+        # BC5: 14 DTE bear call, VIX sweet spot only (16-24)
+        StrategyConfig(
+            config_id="BC5_BEAR_CALL_SWEET",
+            strategy="call_vertical", dte=14, short_delta=0.15, width=50.0,
+            exit_rules=ExitRules(profit_target_pct=0.50, stop_mult=2.0, time_stop_dte=2),
+            filters=EntryFilters(vix_min=16, vix_max=24, trend_sma_period=50, trend_sma_invert=True),
+        ),
+
+        # BC6: 21 DTE bear call, no VIX min (enters even in low vol downtrends)
+        StrategyConfig(
+            config_id="BC6_BEAR_CALL_21DTE_WIDE",
+            strategy="call_vertical", dte=21, short_delta=0.15, width=50.0,
+            exit_rules=ExitRules(profit_target_pct=0.50, stop_mult=2.0, time_stop_dte=3),
+            filters=EntryFilters(vix_max=35, trend_sma_period=50, trend_sma_invert=True),
         ),
 
         # ===================================================================

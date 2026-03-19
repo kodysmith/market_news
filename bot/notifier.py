@@ -132,6 +132,28 @@ def risk_alert(message: str, drawdown_pct: float) -> None:
     })
 
 
+def trend_break(spx_price: float, sma50: float, crossed_above: bool) -> None:
+    """Alert when SPX crosses SMA50 — major regime change."""
+    if crossed_above:
+        title = "TREND: SPX Back Above SMA50"
+        body = (
+            f"SPX {spx_price:,.0f} > SMA50 {sma50:,.0f}. "
+            f"Trend turning bullish — IC entries re-enabled, equities OK."
+        )
+    else:
+        title = "TREND: SPX Broke Below SMA50"
+        body = (
+            f"SPX {spx_price:,.0f} < SMA50 {sma50:,.0f}. "
+            f"Go defensive — no new ICs, hedge equities, short weak names."
+        )
+    _send(title, body, {
+        "type": "trend_break",
+        "spx_price": str(round(spx_price, 2)),
+        "sma50": str(round(sma50, 2)),
+        "crossed_above": str(crossed_above),
+    })
+
+
 def bot_paused(reason: str) -> None:
     _send("Bot Entries PAUSED", reason, {"type": "bot_paused"})
 
