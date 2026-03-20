@@ -337,7 +337,7 @@ def place_order(pos: OpenPosition, mode: str) -> bool:
 
     try:
         from bot.order_manager import OrderManager
-        om = OrderManager(mode=mode)
+        om = OrderManager(mode=mode, client_id=IBKR_CLIENT_ID)
 
         # Build a mock entry order compatible with the order manager
         from bot.entry_engine import EntryOrder

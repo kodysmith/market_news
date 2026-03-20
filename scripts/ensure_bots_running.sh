@@ -10,6 +10,12 @@ log() {
     echo "$(date '+%Y-%m-%d %H:%M:%S')  $1" >> "$LOG"
 }
 
+# --- 0. Prevent Mac from sleeping during market hours ---
+if ! pgrep -f "caffeinate" > /dev/null 2>&1; then
+    caffeinate -d -t 28800 &  # Keep awake for 8 hours
+    log "Started caffeinate (prevent sleep for 8h)"
+fi
+
 # --- 1. Ensure IBKR TWS is running ---
 if ! pgrep -f "jts.jar\|ibgateway\|tws.jar\|Trader Workstation" > /dev/null 2>&1; then
     log "TWS not running — launching..."
