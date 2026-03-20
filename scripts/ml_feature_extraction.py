@@ -25,8 +25,23 @@ def third_friday(year: int, month: int) -> date:
     return first_fri + timedelta(weeks=2)
 
 
-def compute_features(spx_df: pd.DataFrame, vix_df: pd.DataFrame) -> pd.DataFrame:
-    """Compute all features for each trading day."""
+def compute_features(spx_df: pd.DataFrame, vix_df: pd.DataFrame,
+                     extra_dfs: dict | None = None) -> pd.DataFrame:
+    """Compute all features for each trading day.
+
+    CRITICAL TIMING RULE:
+      Decision is at 9:35 AM on day T.
+      All features must use data from day T-1 close or earlier.
+      The ONLY same-day data allowed is: day-of-week, calendar info (known in advance).
+
+      Implementation: we shift all price/vol features by 1 day so that
+      row T contains features computed from T-1 and earlier.
+      This means: feature "ret_1d" on row T = return from T-2 close to T-1 close.
+
+    Args:
+        extra_dfs: optional dict of additional DataFrames keyed by name
+                   (e.g. 'vix3m', 'spy_volume', 'tnx', 'dxy')
+    """
     # Align on common dates
     spx = spx_df[["Open", "High", "Low", "Close"]].copy()
     spx.columns = ["spx_open", "spx_high", "spx_low", "spx_close"]
@@ -34,58 +49,115 @@ def compute_features(spx_df: pd.DataFrame, vix_df: pd.DataFrame) -> pd.DataFrame
     df = spx.join(vix, how="inner").sort_index()
     df = df.dropna(subset=["spx_close", "vix_close"])
 
-    c = df["spx_close"]
+    # Join extra data sources
+    if extra_dfs:
+        for name, edf in extra_dfs.items():
+            if edf is not None and not edf.empty:
+                for col in edf.columns:
+                    df = df.join(edf[[col]], how="left")
 
-    # --- Price features ---
+    # === USE PREVIOUS DAY'S CLOSE for all price-based features ===
+    # c = yesterday's close (available at decision time)
+    c = df["spx_close"].shift(1)
+    h = df["spx_high"].shift(1)
+    l = df["spx_low"].shift(1)
+    o = df["spx_open"].shift(1)
+    v = df["vix_close"].shift(1)
+
+    # =====================================================================
+    # ALL features below use c/h/l/o/v which are SHIFTED by 1 day.
+    # Row T contains features from T-1 close. This prevents look-ahead bias.
+    # Calendar features (dow, month, opex) use day T directly since they're
+    # known in advance — you know what day of the week tomorrow is.
+    # =====================================================================
+
+    # --- Price features (all from T-1 close and earlier) ---
     for n in [1, 3, 5, 10, 20]:
-        df[f"ret_{n}d"] = c.pct_change(n)
+        df[f"ret_{n}d"] = c.pct_change(n)  # c is already shifted, so this is T-2 to T-1
 
     for w in [20, 50, 200]:
         sma = c.rolling(w).mean()
         df[f"dist_sma{w}_pct"] = (c - sma) / sma * 100
         df[f"sma{w}"] = sma
 
-    # Intraday range proxy
-    df["range_pct"] = (df["spx_high"] - df["spx_low"]) / c * 100
-    # Gap %
-    df["gap_pct"] = (df["spx_open"] - c.shift(1)) / c.shift(1) * 100
+    # Intraday range (yesterday's high-low)
+    df["range_pct"] = (h - l) / c * 100
+    # Gap % (yesterday's open vs day-before-yesterday's close)
+    df["gap_pct"] = (o - c.shift(1)) / c.shift(1) * 100
 
-    # --- Volatility features ---
-    df["vix"] = df["vix_close"]
-    df["vix_zscore_252"] = (df["vix"] - df["vix"].rolling(252).mean()) / df["vix"].rolling(252).std()
-    df["vix_chg_1d"] = df["vix"].diff(1)
-    df["vix_chg_5d"] = df["vix"].diff(5)
+    # --- Volatility features (from T-1 VIX close and earlier) ---
+    df["vix"] = v  # T-1 VIX close
+    df["vix_zscore_252"] = (v - v.rolling(252).mean()) / v.rolling(252).std()
+    df["vix_chg_1d"] = v.diff(1)
+    df["vix_chg_5d"] = v.diff(5)
 
     log_ret = np.log(c / c.shift(1))
     for w in [5, 10, 20]:
         df[f"rv_{w}d"] = log_ret.rolling(w).std() * np.sqrt(252) * 100
 
-    df["rv_iv_ratio"] = df["rv_20d"] / df["vix"].replace(0, np.nan)
-    df["iv_rank_252"] = df["vix"].rolling(252).apply(
+    df["rv_iv_ratio"] = df["rv_20d"] / v.replace(0, np.nan)
+    df["iv_rank_252"] = v.rolling(252).apply(
         lambda x: pd.Series(x).rank(pct=True).iloc[-1], raw=False
     )
 
-    # --- Regime features ---
+    # --- NEW: VIX term structure (VIX vs VIX3M) ---
+    if "vix3m_close" in df.columns:
+        vix3m = df["vix3m_close"].shift(1)  # T-1 close
+        df["vix_term_structure"] = v / vix3m.replace(0, np.nan)  # >1 = backwardation (danger)
+        df["vix_contango"] = (vix3m - v) / vix3m.replace(0, np.nan) * 100  # negative = backwardation
+    else:
+        df["vix_term_structure"] = 1.0
+        df["vix_contango"] = 0.0
+
+    # --- NEW: SPY volume (T-1) ---
+    if "spy_volume" in df.columns:
+        spy_vol = df["spy_volume"].shift(1)  # T-1 volume
+        df["volume_raw"] = spy_vol
+        df["volume_vs_20d"] = spy_vol / spy_vol.rolling(20).mean().replace(0, np.nan)
+        df["low_volume"] = (df["volume_vs_20d"] < 0.7).astype(float)
+    else:
+        df["volume_vs_20d"] = 1.0
+        df["low_volume"] = 0.0
+
+    # --- NEW: 10Y Treasury yield (T-1) ---
+    if "tnx_close" in df.columns:
+        tnx = df["tnx_close"].shift(1)
+        df["yield_10y"] = tnx
+        df["yield_chg_5d"] = tnx.diff(5)
+    else:
+        df["yield_10y"] = 0.0
+        df["yield_chg_5d"] = 0.0
+
+    # --- NEW: Dollar index DXY (T-1) ---
+    if "dxy_close" in df.columns:
+        dxy = df["dxy_close"].shift(1)
+        df["dxy"] = dxy
+        df["dxy_chg_5d"] = dxy.pct_change(5) * 100
+    else:
+        df["dxy"] = 0.0
+        df["dxy_chg_5d"] = 0.0
+
+    # --- Regime features (from T-1 close) ---
     df["above_sma50"] = (c > df["sma50"]).astype(int)
     df["above_sma200"] = (c > df["sma200"]).astype(int)
     df["vix_zone"] = pd.cut(
-        df["vix"], bins=[-np.inf, 15, 24, 35, np.inf], labels=[0, 1, 2, 3]
+        v, bins=[-np.inf, 15, 24, 35, np.inf], labels=[0, 1, 2, 3]
     ).astype(float)
-    df["momentum"] = (df["sma20"] - df["sma50"]) / df["sma50"] * 100
+    df["momentum"] = (df["sma20"] - df["sma50"]) / df["sma50"].replace(0, np.nan) * 100
 
-    # Consecutive up/down days (clamped ±5)
+    # Consecutive up/down days (from T-1 and earlier)
     daily_dir = np.sign(c.diff())
     consec = pd.Series(0.0, index=df.index)
-    prev = 0.0
+    prev_val = 0.0
     for i in range(len(daily_dir)):
         d = daily_dir.iloc[i]
-        if d == 0:
-            prev = 0.0
-        elif np.sign(prev) == d:
-            prev += d
+        if pd.isna(d) or d == 0:
+            prev_val = 0.0
+        elif np.sign(prev_val) == d:
+            prev_val += d
         else:
-            prev = d
-        consec.iloc[i] = max(-5, min(5, prev))
+            prev_val = d
+        consec.iloc[i] = max(-5, min(5, prev_val))
     df["consec_days"] = consec
 
     # --- Calendar features ---
@@ -139,82 +211,67 @@ def compute_features(spx_df: pd.DataFrame, vix_df: pd.DataFrame) -> pd.DataFrame
     df["is_opex_week"] = is_opex_week
     df["is_opex_day"] = [1 if dto == 0 else 0 for dto in days_to_opex]
 
-    # --- Microstructure / volume-proxy features ---
-    # True range (captures volatility expansion better than range_pct)
-    prev_close = c.shift(1)
+    # --- Microstructure features (all from T-1 and earlier) ---
+    # True range using shifted h/l/c
+    prev_c = c.shift(1)  # T-2 close
     true_range = pd.concat([
-        df["spx_high"] - df["spx_low"],
-        (df["spx_high"] - prev_close).abs(),
-        (df["spx_low"] - prev_close).abs(),
+        h - l,
+        (h - prev_c).abs(),
+        (l - prev_c).abs(),
     ], axis=1).max(axis=1)
     df["atr_5"] = true_range.rolling(5).mean() / c * 100
     df["atr_10"] = true_range.rolling(10).mean() / c * 100
     df["atr_ratio"] = df["atr_5"] / df["atr_10"].replace(0, np.nan)
 
-    # Bollinger band position (where is price relative to 2σ bands?)
+    # Bollinger band position (T-1 close relative to T-1 bands)
     bb_sma = c.rolling(20).mean()
     bb_std = c.rolling(20).std()
-    df["bb_position"] = (c - bb_sma) / (2 * bb_std).replace(0, np.nan)  # -1 to +1 normally
+    df["bb_position"] = (c - bb_sma) / (2 * bb_std).replace(0, np.nan)
 
-    # RSI-like momentum (14-day)
+    # RSI (14-day, from T-1 close series)
     delta_price = c.diff()
     gain = delta_price.clip(lower=0).rolling(14).mean()
-    loss = (-delta_price.clip(upper=0)).rolling(14).mean()
-    rs = gain / loss.replace(0, np.nan)
+    loss_rs = (-delta_price.clip(upper=0)).rolling(14).mean()
+    rs = gain / loss_rs.replace(0, np.nan)
     df["rsi_14"] = 100 - (100 / (1 + rs))
-    df["rsi_14_norm"] = (df["rsi_14"] - 50) / 50  # normalize to -1 to +1
+    df["rsi_14_norm"] = (df["rsi_14"] - 50) / 50
 
-    # VIX term structure proxy: VIX 5d change / VIX 20d change (acceleration)
+    # VIX acceleration (from T-1 VIX)
     df["vix_acceleration"] = df["vix_chg_5d"] / df["vix_chg_1d"].rolling(5).sum().replace(0, np.nan)
 
-    # Put/call-like proxy: skew from high-low bias
-    df["hl_skew"] = (df["spx_high"] - c) / (c - df["spx_low"]).replace(0, np.nan) - 1
+    # High-low skew (T-1 bar)
+    df["hl_skew"] = (h - c) / (c - l).replace(0, np.nan) - 1
 
-    # Volume of movement: |return| * range (captures conviction)
+    # Move conviction (T-1)
     df["move_conviction"] = df["ret_1d"].abs() * df["range_pct"]
 
-    # Distance from recent high/low (drawdown proxy)
+    # Distance from recent high/low (T-1 close vs rolling high/low of T-1 series)
     df["dist_from_20d_high"] = (c - c.rolling(20).max()) / c.rolling(20).max() * 100
     df["dist_from_20d_low"] = (c - c.rolling(20).min()) / c.rolling(20).min() * 100
 
-    # --- VWAP proxy (typical price as daily VWAP estimate) ---
-    # True VWAP needs intraday volume; daily typical price is a reasonable proxy
-    typical_price = (df["spx_high"] + df["spx_low"] + df["spx_close"]) / 3
-    df["vwap_proxy"] = typical_price.rolling(5).mean()  # 5-day rolling typical price
-    df["dist_from_vwap"] = (c - df["vwap_proxy"]) / df["vwap_proxy"] * 100
+    # VWAP proxy (5-day rolling typical price from T-1 bars)
+    typical_price = (h + l + c) / 3
+    df["vwap_proxy"] = typical_price.rolling(5).mean()
+    df["dist_from_vwap"] = (c - df["vwap_proxy"]) / df["vwap_proxy"].replace(0, np.nan) * 100
 
-    # --- GEX/Options structure proxies (computed from vol & price behavior) ---
-    # We don't have historical GEX/wall data, but we can proxy the EFFECTS:
-
-    # Pin proxy: distance to nearest $25 round strike (where GEX pinning occurs)
+    # GEX/pin proxies (from T-1 close)
     nearest_25 = (c / 25).round() * 25
     df["dist_to_pin_25"] = (c - nearest_25) / c * 100
     df["dist_to_pin_25_abs"] = df["dist_to_pin_25"].abs()
 
-    # Pin proxy: distance to nearest $50 round strike
     nearest_50 = (c / 50).round() * 50
     df["dist_to_pin_50"] = (c - nearest_50) / c * 100
 
-    # Gamma proxy: when realized vol is LOW relative to implied (VIX),
-    # dealers are likely long gamma → market pins. When RV > IV, short gamma → trends.
     df["gamma_regime"] = np.where(
-        df["rv_iv_ratio"] < 0.8, 1,   # long gamma (pinning)
-        np.where(df["rv_iv_ratio"] > 1.2, -1, 0)  # short gamma (trending)
+        df["rv_iv_ratio"] < 0.8, 1,
+        np.where(df["rv_iv_ratio"] > 1.2, -1, 0)
     ).astype(float)
 
-    # Flip line proxy: SMA20 often acts as the gamma flip zone
-    # When price is near SMA20, dealer hedging creates mean-reversion
     df["dist_to_flip_proxy"] = df["dist_sma20_pct"]
     df["near_flip_zone"] = (df["dist_sma20_pct"].abs() < 0.5).astype(float)
-
-    # Put wall proxy: recent 20-day low acts as support (where put OI accumulates)
     df["dist_to_put_wall_proxy"] = df["dist_from_20d_low"]
-
-    # Call wall proxy: recent 20-day high acts as resistance (where call OI accumulates)
     df["dist_to_call_wall_proxy"] = df["dist_from_20d_high"]
-
-    # Skew proxy: VIX vs 10d RV spread indicates put skew demand
-    df["skew_proxy"] = (df["vix"] - df["rv_10d"]) / df["vix"].replace(0, np.nan)
+    df["skew_proxy"] = (v - df["rv_10d"]) / v.replace(0, np.nan)
 
     # --- Normalize ---
     # z-score (252d rolling) for continuous features
@@ -232,6 +289,9 @@ def compute_features(spx_df: pd.DataFrame, vix_df: pd.DataFrame) -> pd.DataFrame
         "dist_from_vwap", "dist_to_pin_25", "dist_to_pin_50",
         "dist_to_flip_proxy", "dist_to_put_wall_proxy", "dist_to_call_wall_proxy",
         "skew_proxy",
+        "vix_term_structure", "vix_contango",
+        "volume_vs_20d", "yield_10y", "yield_chg_5d",
+        "dxy", "dxy_chg_5d",
     ]
     for col in zscore_cols:
         if col in df.columns:
@@ -248,7 +308,7 @@ def compute_features(spx_df: pd.DataFrame, vix_df: pd.DataFrame) -> pd.DataFrame
            "month_sin", "month_cos", "week_of_month",
            "quarter_sin", "quarter_cos", "year_progress",
            "days_to_opex", "is_opex_week", "is_opex_day"]
-        + ["gamma_regime", "near_flip_zone", "dist_to_pin_25_abs"]
+        + ["gamma_regime", "near_flip_zone", "dist_to_pin_25_abs", "low_volume"]
     )
 
     # Also keep raw values needed for trade simulation
@@ -265,12 +325,64 @@ def compute_features(spx_df: pd.DataFrame, vix_df: pd.DataFrame) -> pd.DataFrame
 
 
 def main():
+    import yfinance as yf
+
     print("Loading SPX + VIX data 2014-2025 (extra year for rolling warmup)...")
     spx_df, vix_df = load_spx_vix(date(2014, 1, 1), date(2025, 12, 31))
     print(f"  SPX rows: {len(spx_df)}, VIX rows: {len(vix_df)}")
 
-    print("Computing features...")
-    features = compute_features(spx_df, vix_df)
+    # Fetch additional data sources (all free from yfinance)
+    extra_dfs = {}
+    print("Fetching VIX3M (term structure)...")
+    try:
+        vix3m = yf.download("^VIX3M", start="2014-01-01", end="2025-12-31", progress=False)
+        if not vix3m.empty:
+            vix3m_col = vix3m["Close"].copy()
+            if isinstance(vix3m_col, pd.DataFrame):
+                vix3m_col = vix3m_col.iloc[:, 0]
+            extra_dfs["vix3m"] = pd.DataFrame({"vix3m_close": vix3m_col})
+            print(f"  VIX3M: {len(extra_dfs['vix3m'])} days")
+    except Exception as e:
+        print(f"  VIX3M failed: {e}")
+
+    print("Fetching SPY (volume)...")
+    try:
+        spy = yf.download("SPY", start="2014-01-01", end="2025-12-31", progress=False)
+        if not spy.empty:
+            spy_vol = spy["Volume"].copy()
+            if isinstance(spy_vol, pd.DataFrame):
+                spy_vol = spy_vol.iloc[:, 0]
+            extra_dfs["spy"] = pd.DataFrame({"spy_volume": spy_vol})
+            print(f"  SPY volume: {len(extra_dfs['spy'])} days")
+    except Exception as e:
+        print(f"  SPY volume failed: {e}")
+
+    print("Fetching 10Y Treasury (^TNX)...")
+    try:
+        tnx = yf.download("^TNX", start="2014-01-01", end="2025-12-31", progress=False)
+        if not tnx.empty:
+            tnx_col = tnx["Close"].copy()
+            if isinstance(tnx_col, pd.DataFrame):
+                tnx_col = tnx_col.iloc[:, 0]
+            extra_dfs["tnx"] = pd.DataFrame({"tnx_close": tnx_col})
+            print(f"  10Y yield: {len(extra_dfs['tnx'])} days")
+    except Exception as e:
+        print(f"  10Y yield failed: {e}")
+
+    print("Fetching DXY (Dollar Index)...")
+    try:
+        dxy = yf.download("DX-Y.NYB", start="2014-01-01", end="2025-12-31", progress=False)
+        if not dxy.empty:
+            dxy_col = dxy["Close"].copy()
+            if isinstance(dxy_col, pd.DataFrame):
+                dxy_col = dxy_col.iloc[:, 0]
+            extra_dfs["dxy"] = pd.DataFrame({"dxy_close": dxy_col})
+            print(f"  DXY: {len(extra_dfs['dxy'])} days")
+    except Exception as e:
+        print(f"  DXY failed: {e}")
+
+    print("Computing features (with look-ahead bias protection)...")
+    features = compute_features(spx_df, vix_df, extra_dfs=extra_dfs)
 
     # Trim to 2015+ (after rolling warmup)
     features = features[features.index >= "2015-01-01"]
