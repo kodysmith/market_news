@@ -1,0 +1,6 @@
+# Downloaded books (re-downloaded by ingest script)
+books/
+
+# Generated expert data (rebuilt by ingestion)
+*/trie.json
+*/meta.json

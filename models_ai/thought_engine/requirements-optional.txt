@@ -1,0 +1,4 @@
+# Optional: for reading different file formats
+pymupdf          # PDF support
+ebooklib         # EPUB support
+beautifulsoup4   # EPUB text extraction
