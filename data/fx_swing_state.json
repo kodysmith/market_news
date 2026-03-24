@@ -1,0 +1,14 @@
+[
+  {
+    "pair": "EURUSD",
+    "direction": "SHORT",
+    "entry_price": 1.15174,
+    "entry_date": "2026-03-12 22:02",
+    "qty": 173654,
+    "atr_at_entry": 0.009213728564126151,
+    "stop_loss": 1.1747743214103155,
+    "trailing_stop": null,
+    "high_water": 1.1419435739517212,
+    "entry_reason": "carry=-0.67 trend=-0.15 combined=-0.25 rate=-1.6%"
+  }
+]

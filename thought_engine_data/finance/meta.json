@@ -1,0 +1,25 @@
+{
+  "books_read": [
+    "models_ai/thought_engine_data/books/won_key_chapters.txt",
+    "models_ai/thought_engine_data/books/moc_key_chapters.txt"
+  ],
+  "config": {
+    "ollama_base_url": "http://localhost:11434",
+    "extraction_model": "mistral:latest",
+    "embedding_model": "nomic-embed-text",
+    "philosopher_model": "llama3.1:8b",
+    "activation_decay": 0.05,
+    "spread_factor": 0.5,
+    "activation_threshold": 0.1,
+    "max_spread_depth": 6,
+    "merge_similarity_threshold": 0.85,
+    "branch_similarity_threshold": 0.5,
+    "split_contradiction_threshold": 0.3,
+    "chunk_size": 5000,
+    "chunk_overlap": 500,
+    "storage_path": "./thought_engine_data",
+    "expert_name": "finance",
+    "default_think_cycles": 3,
+    "deep_think_cycles": 8
+  }
+}
