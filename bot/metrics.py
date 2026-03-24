@@ -98,8 +98,14 @@ def start_metrics_server(port: int | None = None) -> None:
         return
     from prometheus_client import start_http_server
     metrics_port = port or int(os.environ.get("BOT_METRICS_PORT", "9101"))
-    start_http_server(metrics_port)
-    logger.info("Prometheus metrics server started on port %d", metrics_port)
+    try:
+        start_http_server(metrics_port)
+        logger.info("Prometheus metrics server started on port %d", metrics_port)
+    except OSError as e:
+        if "Address already in use" in str(e):
+            logger.warning("Metrics port %d already in use — skipping (another bot instance has it)", metrics_port)
+        else:
+            logger.warning("Metrics server failed: %s", e)
 
 
 def _m(name: str):

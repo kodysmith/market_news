@@ -414,10 +414,116 @@ def save_position(pos: OpenPosition):
 
 
 # ---------------------------------------------------------------------------
+# GEX regime check
+# ---------------------------------------------------------------------------
+def check_gex_regime() -> tuple[str, float]:
+    """Check GEX regime via Massive API. Returns (regime, net_gex).
+
+    regime: 'POSITIVE_GAMMA' | 'NEGATIVE_GAMMA' | 'UNKNOWN'
+    """
+    try:
+        import json
+        config_path = ROOT / "data" / "config.json"
+        if not config_path.exists():
+            return "UNKNOWN", 0.0
+        config = json.load(open(config_path))
+        massive_key = config.get("MASSIVE_API_KEY", "")
+        if not massive_key:
+            return "UNKNOWN", 0.0
+
+        from QuantEngine.gex_calculator import (
+            get_option_chain_snapshot, get_spot_price, compute_cockpit_state,
+        )
+        alphavantage_key = config.get("ALPHAVANTAGE_API_KEY", "")
+        fmp_key = config.get("FMP_API_KEY", "")
+
+        spot = get_spot_price("SPX", massive_key, alphavantage_key, fmp_key)
+        if not spot:
+            return "UNKNOWN", 0.0
+
+        snap = get_option_chain_snapshot(massive_key, "SPX", days_out=30,
+                                        spot_price=spot, strike_range=300)
+        if not snap or not snap.get("results"):
+            return "UNKNOWN", 0.0
+
+        state = compute_cockpit_state(snap, spot, ticker="SPX")
+        if not state:
+            return "UNKNOWN", 0.0
+
+        regime = state.get("regime", "UNKNOWN")
+        net_gex = state.get("net_gex", 0.0)
+        return regime, net_gex
+    except Exception as e:
+        logger.warning("GEX check failed: %s", e)
+        return "UNKNOWN", 0.0
+
+
+# ---------------------------------------------------------------------------
+# Bear call spread builder (for negative GEX days)
+# ---------------------------------------------------------------------------
+
+BEAR_CALL_LAYER = LayerConfig(
+    name="BC_14DTE",
+    dte=14,
+    short_delta=0.12,
+    width=50.0,
+    profit_target_pct=0.50,
+    stop_mult=2.0,
+    n_contracts=6,
+    entry_time="10:15",
+)
+
+
+def build_bear_call_entry(layer: LayerConfig, spx: float, vix: float, today: date) -> OpenPosition | None:
+    """Build a bear call spread entry (call side only, no put side)."""
+    expiration = find_expiration(layer.dte, today)
+    if expiration is None:
+        return None
+
+    cal_dte = (expiration - today).days
+    if cal_dte <= 0:
+        return None
+
+    try:
+        _, _, k_cs, k_cl = compute_strikes(spx, vix, cal_dte, layer.short_delta, layer.width)
+    except Exception as e:
+        logger.warning("[%s] Strike computation failed: %s", layer.name, e)
+        return None
+
+    from bot.pricer import compute_call_spread_credit
+    credit = compute_call_spread_credit(spx, vix, cal_dte, k_cs, k_cl)
+    slippage = 4 * 0.10 / 2.0
+    credit_adj = credit - slippage
+
+    if credit_adj <= 0.20:  # require meaningful premium
+        logger.warning("[%s] Credit too low: %.2f", layer.name, credit_adj)
+        return None
+
+    logger.info(
+        "[%s] Bear call entry | SPX=%.0f VIX=%.1f DTE=%d | "
+        "Call %.0f/%.0f | credit=%.2f × %d cts",
+        layer.name, spx, vix, cal_dte,
+        k_cs, k_cl, credit_adj, layer.n_contracts,
+    )
+
+    return OpenPosition(
+        layer_name=layer.name,
+        entry_date=today,
+        expiration=expiration,
+        k_put_short=0,
+        k_put_long=0,
+        k_call_short=k_cs,
+        k_call_long=k_cl,
+        credit=credit_adj,
+        n_contracts=layer.n_contracts,
+    )
+
+
+# ---------------------------------------------------------------------------
 # Main runner
 # ---------------------------------------------------------------------------
 def run_once(mode: str = "dry-run"):
-    """Single pass: check entries, check exits, place orders."""
+    """Single pass: check GEX, check entries, place orders."""
     today = date.today()
     logger.info("=== Daily Cash Flow Bot | mode=%s | %s ===", mode, today)
 
@@ -430,14 +536,26 @@ def run_once(mode: str = "dry-run"):
 
     logger.info("SPX=%.1f  VIX=%.1f", spx, vix)
 
+    # Check GEX regime
+    gex_regime, net_gex = check_gex_regime()
+    is_negative_gex = gex_regime == "NEGATIVE_GAMMA"
+    logger.info("GEX regime: %s (net=%.1fB)", gex_regime, net_gex / 1e9 if net_gex else 0)
+
+    if is_negative_gex:
+        logger.info("NEGATIVE GEX — switching to bear call spreads only (no ICs)")
+
     # Check entries for each layer
     for layer in LAYERS:
-        # Skip butterfly if not the right day (every other Friday)
+        # Skip butterfly if not Friday
         if layer.is_butterfly:
-            # Only enter on Fridays, every 2 weeks
-            if today.weekday() != 4:  # Not Friday
+            if today.weekday() != 4:
                 logger.info("[%s] Skipping — butterfly only enters on Fridays", layer.name)
                 continue
+
+        # In negative GEX: skip all ICs, only do butterfly (if Friday)
+        if is_negative_gex and not layer.is_butterfly:
+            logger.info("[%s] Skipping — negative GEX, ICs disabled", layer.name)
+            continue
 
         # Build entry
         if layer.is_butterfly:
@@ -454,11 +572,26 @@ def run_once(mode: str = "dry-run"):
         if success and mode != "dry-run":
             save_position(pos)
 
+    # In negative GEX: place a bear call spread instead
+    if is_negative_gex:
+        logger.info("Placing bear call spread (negative GEX alternative)...")
+        pos = build_bear_call_entry(BEAR_CALL_LAYER, spx, vix, today)
+        if pos:
+            success = place_order(pos, mode)
+            if success and mode != "dry-run":
+                save_position(pos)
+        else:
+            logger.info("[BC_14DTE] No valid bear call entry today")
+
     logger.info("=== Daily Cash Flow Bot complete ===")
 
 
 def run_scheduled(mode: str = "paper"):
-    """Run on APScheduler with market-hours checks."""
+    """Run on APScheduler with market-hours checks.
+
+    Crash-resilient: all jobs wrapped in try/except so one failure
+    doesn't kill the scheduler. Two entry windows for redundancy.
+    """
     try:
         from apscheduler.schedulers.blocking import BlockingScheduler
         from apscheduler.triggers.cron import CronTrigger
@@ -468,31 +601,56 @@ def run_scheduled(mode: str = "paper"):
 
     scheduler = BlockingScheduler(timezone="US/Eastern")
 
-    # Entry check at 9:35 AM ET
-    scheduler.add_job(
-        lambda: run_once(mode),
-        CronTrigger(hour=9, minute=35, day_of_week="mon-fri"),
-        id="daily_entry",
-        name="Daily Cash Flow Entry",
-    )
+    _entered_today = {"date": None}  # track if we already entered today
 
-    # Exit checks every 15 min during market hours
-    def exit_check():
+    def safe_entry():
+        """Entry with crash protection and dedup."""
+        try:
+            today = date.today()
+            if _entered_today["date"] == today:
+                logger.info("Already entered today, skipping duplicate")
+                return
+            run_once(mode)
+            _entered_today["date"] = today
+        except Exception as e:
+            logger.error("Entry job crashed (non-fatal): %s", e, exc_info=True)
+
+    def safe_exit_check():
+        """Exit check with crash protection."""
         try:
             spx, vix = get_snapshot()
             logger.info("Exit check | SPX=%.1f VIX=%.1f", spx, vix)
-            # TODO: Load open positions from Supabase, check exits, close if needed
         except Exception as e:
-            logger.warning("Exit check failed: %s", e)
+            logger.warning("Exit check failed (non-fatal): %s", e)
 
+    # Primary entry at 10:15 AM ET (after open settles, tighter spreads)
     scheduler.add_job(
-        exit_check,
+        safe_entry,
+        CronTrigger(hour=10, minute=15, day_of_week="mon-fri"),
+        id="daily_entry_primary",
+        name="Daily Cash Flow Entry (Primary 10:15)",
+        misfire_grace_time=1800,  # allow 30 min late execution
+    )
+
+    # Backup entry at 11:00 AM ET (in case primary was missed)
+    scheduler.add_job(
+        safe_entry,
+        CronTrigger(hour=11, minute=0, day_of_week="mon-fri"),
+        id="daily_entry_backup",
+        name="Daily Cash Flow Entry (Backup 11:00)",
+        misfire_grace_time=1800,
+    )
+
+    # Exit checks every 15 min during market hours
+    scheduler.add_job(
+        safe_exit_check,
         CronTrigger(hour="9-15", minute="0,15,30,45", day_of_week="mon-fri"),
         id="exit_check",
         name="Daily Cash Flow Exit Check",
+        misfire_grace_time=600,
     )
 
-    logger.info("Scheduler started. mode=%s. Press Ctrl+C to stop.", mode)
+    logger.info("Scheduler started. mode=%s. Entry at 10:15 AM ET (backup 11:00). Press Ctrl+C to stop.", mode)
     try:
         scheduler.start()
     except (KeyboardInterrupt, SystemExit):
