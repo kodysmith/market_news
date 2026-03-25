@@ -678,10 +678,133 @@ def build_bear_call_entry(layer: LayerConfig, spx: float, vix: float, today: dat
 
 
 # ---------------------------------------------------------------------------
+# Trade quality filters
+# ---------------------------------------------------------------------------
+MAX_RISK_REWARD = 10.0       # Reject trades worse than 10:1 R:R (need >91% wins)
+MIN_CREDIT_PER_CT = 50.0     # Minimum $50/contract credit (real money, not pennies)
+MIN_CUSHION_PCT = 1.5        # Minimum 1.5% distance to short strike
+MAX_CONTRACTS = 6            # Default contract size
+
+
+@dataclass
+class TradeCandidate:
+    """A potential trade with real IBKR pricing and exact math."""
+    name: str
+    strategy: str            # "ic" or "bear_call"
+    expiration: date
+    dte: int
+    short_strike: float
+    long_strike: float
+    right: str               # C, P, or IC
+    width: float
+    credit: float            # real bid/ask credit per unit
+    credit_per_ct: float     # credit × 100
+    max_loss_per_ct: float   # (width - credit) × 100
+    risk_reward: float       # max_loss / credit
+    cushion: float           # distance to short strike (pts)
+    cushion_pct: float
+    p_win: float             # market-implied
+    ev_per_ct: float         # expected value per contract
+    # For ICs:
+    put_short: float = 0
+    put_long: float = 0
+    call_short: float = 0
+    call_long: float = 0
+
+
+def scan_opportunities(spx: float, vix: float, is_negative_gex: bool, today: date) -> list[TradeCandidate]:
+    """Scan multiple strike/DTE combos using REAL IBKR prices. Returns ranked list."""
+    candidates = []
+
+    # DTE targets
+    if is_negative_gex:
+        # Bear calls only at various DTEs
+        dte_targets = [7, 14, 21]
+        # Distances to scan (points above spot)
+        distances = [100, 150, 200, 250, 300]
+    else:
+        # ICs at short DTEs
+        dte_targets = [1, 3, 7]
+        distances = [100, 125, 150, 175, 200]
+
+    width = 50  # $50 wide spreads
+
+    for target_dte in dte_targets:
+        expiration = find_expiration(target_dte, today)
+        if expiration is None:
+            continue
+        exp_str = expiration.strftime('%Y%m%d')
+        dte = (expiration - today).days
+
+        if is_negative_gex:
+            # Scan bear calls at various distances
+            for dist in distances:
+                short_k = round((spx + dist) / 5) * 5
+                long_k = short_k + width
+
+                real_credit = get_real_spread_credit(exp_str, short_k, long_k, 'C')
+                if real_credit is None or real_credit <= 0:
+                    continue
+
+                credit_ct = real_credit * 100
+                max_loss_ct = width * 100 - credit_ct
+                rr = max_loss_ct / credit_ct if credit_ct > 0 else 999
+                cushion = short_k - spx
+                cushion_pct = cushion / spx * 100
+                p_win = 1.0 - (real_credit / width)
+                ev = p_win * credit_ct - (1 - p_win) * max_loss_ct
+
+                candidates.append(TradeCandidate(
+                    name=f"BC_{dte}DTE_{short_k}",
+                    strategy="bear_call", expiration=expiration, dte=dte,
+                    short_strike=short_k, long_strike=long_k, right='C',
+                    width=width, credit=real_credit,
+                    credit_per_ct=credit_ct, max_loss_per_ct=max_loss_ct,
+                    risk_reward=rr, cushion=cushion, cushion_pct=cushion_pct,
+                    p_win=p_win, ev_per_ct=ev,
+                    call_short=short_k, call_long=long_k,
+                ))
+        else:
+            # Scan ICs at various distances
+            for dist in distances:
+                put_short_k = round((spx - dist) / 5) * 5
+                put_long_k = put_short_k - width
+                call_short_k = round((spx + dist) / 5) * 5
+                call_long_k = call_short_k + width
+
+                real_credit = get_real_ic_credit(exp_str, put_short_k, put_long_k,
+                                                 call_short_k, call_long_k)
+                if real_credit is None or real_credit <= 0:
+                    continue
+
+                credit_ct = real_credit * 100
+                max_loss_ct = width * 100 - credit_ct
+                rr = max_loss_ct / credit_ct if credit_ct > 0 else 999
+                cushion = min(spx - put_short_k, call_short_k - spx)
+                cushion_pct = cushion / spx * 100
+                p_win = 1.0 - (real_credit / width)
+                ev = p_win * credit_ct - (1 - p_win) * max_loss_ct
+
+                candidates.append(TradeCandidate(
+                    name=f"IC_{dte}DTE_{put_short_k}_{call_short_k}",
+                    strategy="ic", expiration=expiration, dte=dte,
+                    short_strike=put_short_k, long_strike=call_short_k, right='IC',
+                    width=width, credit=real_credit,
+                    credit_per_ct=credit_ct, max_loss_per_ct=max_loss_ct,
+                    risk_reward=rr, cushion=cushion, cushion_pct=cushion_pct,
+                    p_win=p_win, ev_per_ct=ev,
+                    put_short=put_short_k, put_long=put_long_k,
+                    call_short=call_short_k, call_long=call_long_k,
+                ))
+
+    return candidates
+
+
+# ---------------------------------------------------------------------------
 # Main runner
 # ---------------------------------------------------------------------------
 def run_once(mode: str = "dry-run"):
-    """Single pass: check GEX, check entries, place orders."""
+    """Scan opportunities with real IBKR prices, pick the best, execute."""
     today = date.today()
     logger.info("=== Daily Cash Flow Bot | mode=%s | %s ===", mode, today)
 
@@ -697,49 +820,102 @@ def run_once(mode: str = "dry-run"):
     # Check GEX regime
     gex_regime, net_gex = check_gex_regime()
     is_negative_gex = gex_regime == "NEGATIVE_GAMMA"
-    logger.info("GEX regime: %s (net=%.1fB)", gex_regime, net_gex / 1e9 if net_gex else 0)
+    logger.info("GEX: %s (%.1fB)", gex_regime, net_gex / 1e9 if net_gex else 0)
 
-    if is_negative_gex:
-        logger.info("NEGATIVE GEX — switching to bear call spreads only (no ICs)")
+    # Scan all opportunities with real IBKR prices
+    logger.info("Scanning opportunities with IBKR real prices...")
+    candidates = scan_opportunities(spx, vix, is_negative_gex, today)
 
-    # Check entries for each layer
-    for layer in LAYERS:
-        # Skip butterfly if not Friday
-        if layer.is_butterfly:
-            if today.weekday() != 4:
-                logger.info("[%s] Skipping — butterfly only enters on Fridays", layer.name)
-                continue
+    if not candidates:
+        logger.info("No tradeable opportunities found (no IBKR quotes available)")
 
-        # In negative GEX: skip all ICs, only do butterfly (if Friday)
-        if is_negative_gex and not layer.is_butterfly:
-            logger.info("[%s] Skipping — negative GEX, ICs disabled", layer.name)
-            continue
+        # Fallback: use the old BS-based approach for butterfly on Fridays
+        if today.weekday() == 4:
+            for layer in LAYERS:
+                if layer.is_butterfly:
+                    pos = build_fly_entry(layer, spx, vix, today)
+                    if pos:
+                        success = place_order(pos, mode)
+                        if success and mode != "dry-run":
+                            save_position(pos)
+        logger.info("=== Daily Cash Flow Bot complete ===")
+        return
 
-        # Build entry
-        if layer.is_butterfly:
-            pos = build_fly_entry(layer, spx, vix, today)
-        else:
-            pos = build_ic_entry(layer, spx, vix, today)
+    # Filter by quality
+    filtered = [c for c in candidates
+                if c.risk_reward <= MAX_RISK_REWARD
+                and c.credit_per_ct >= MIN_CREDIT_PER_CT
+                and c.cushion_pct >= MIN_CUSHION_PCT]
 
-        if pos is None:
-            logger.info("[%s] No valid entry today", layer.name)
-            continue
+    # Log all scanned opportunities
+    logger.info("Found %d candidates, %d pass filters (R:R≤%.0f, credit≥$%.0f, cushion≥%.1f%%)",
+                len(candidates), len(filtered), MAX_RISK_REWARD, MIN_CREDIT_PER_CT, MIN_CUSHION_PCT)
 
-        # Place order
-        success = place_order(pos, mode)
-        if success and mode != "dry-run":
-            save_position(pos)
+    for c in sorted(candidates, key=lambda x: x.ev_per_ct, reverse=True)[:10]:
+        passes = "PASS" if c in filtered else "FAIL"
+        logger.info("  %s | %s | credit=$%.0f  R:R=%.1f:1  cush=%.1f%%  EV=$%.0f  [%s]",
+                    c.name, c.strategy, c.credit_per_ct, c.risk_reward,
+                    c.cushion_pct, c.ev_per_ct, passes)
 
-    # In negative GEX: place a bear call spread instead
-    if is_negative_gex:
-        logger.info("Placing bear call spread (negative GEX alternative)...")
-        pos = build_bear_call_entry(BEAR_CALL_LAYER, spx, vix, today)
-        if pos:
-            success = place_order(pos, mode)
-            if success and mode != "dry-run":
-                save_position(pos)
-        else:
-            logger.info("[BC_14DTE] No valid bear call entry today")
+    if not filtered:
+        logger.info("No opportunities pass quality filters today. Sitting out.")
+        logger.info("=== Daily Cash Flow Bot complete ===")
+        return
+
+    # Rank by EV and take the best
+    filtered.sort(key=lambda x: x.ev_per_ct, reverse=True)
+    best = filtered[0]
+
+    logger.info("BEST: %s | credit=$%.0f/ct | R:R=%.1f:1 | cushion=%.0fpts(%.1f%%) | EV=$%.0f/ct",
+                best.name, best.credit_per_ct, best.risk_reward,
+                best.cushion, best.cushion_pct, best.ev_per_ct)
+
+    # Build position from the best candidate
+    pos = OpenPosition(
+        layer_name=best.name,
+        entry_date=today,
+        expiration=best.expiration,
+        k_put_short=best.put_short,
+        k_put_long=best.put_long,
+        k_call_short=best.call_short,
+        k_call_long=best.call_long,
+        credit=best.credit,
+        n_contracts=MAX_CONTRACTS,
+    )
+
+    # Place order
+    success = place_order(pos, mode)
+
+    # Record in trade tracker
+    if success:
+        try:
+            from bot.trade_tracker import record_entry
+            record_entry(
+                strategy=best.name,
+                expiration=str(best.expiration),
+                short_strike=best.short_strike,
+                long_strike=best.long_strike,
+                right=best.right,
+                n_contracts=MAX_CONTRACTS,
+                credit_per_ct=best.credit_per_ct,
+                spx=spx,
+                vix=vix,
+                gex_regime=gex_regime,
+                source="paper" if mode == "paper" else mode,
+            )
+        except Exception as e:
+            logger.warning("Trade tracker failed: %s", e)
+
+    if success and mode != "dry-run":
+        save_position(pos)
+
+    # Also do butterfly on Fridays
+    if today.weekday() == 4:
+        for layer in LAYERS:
+            if layer.is_butterfly:
+                fly_pos = build_fly_entry(layer, spx, vix, today)
+                if fly_pos:
+                    place_order(fly_pos, mode)
 
     logger.info("=== Daily Cash Flow Bot complete ===")
 
