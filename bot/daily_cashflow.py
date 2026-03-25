@@ -164,10 +164,131 @@ def compute_strikes(spx: float, vix: float, dte: int, delta: float, width: float
 
 
 # ---------------------------------------------------------------------------
+# IBKR live pricing
+# ---------------------------------------------------------------------------
+def _get_ibkr_option_quote(exp_str: str, strike: float, right: str) -> tuple[float, float] | None:
+    """Get real bid/ask from IBKR for one SPX option. Returns (bid, ask) or None."""
+    try:
+        import ib_insync as ib
+        client = ib.IB()
+        client.connect('127.0.0.1', IBKR_PAPER_PORT, clientId=IBKR_CLIENT_ID + 5, timeout=8)
+        client.reqMarketDataType(3)
+
+        contract = ib.Option('SPX', exp_str, strike, right, 'CBOE', multiplier='100')
+        qualified = client.qualifyContracts(contract)
+        if not qualified:
+            client.disconnect()
+            return None
+
+        ticker = client.reqMktData(qualified[0], '', False, False)
+        client.sleep(2)
+        bid = float(ticker.bid) if ticker.bid and ticker.bid > 0 else None
+        ask = float(ticker.ask) if ticker.ask and ticker.ask > 0 else None
+        client.cancelMktData(qualified[0])
+        client.disconnect()
+
+        if bid is None or ask is None:
+            return None
+        return (bid, ask)
+    except Exception as e:
+        logger.debug("IBKR quote failed for %s %s %s: %s", exp_str, strike, right, e)
+        return None
+
+
+def get_real_spread_credit(exp_str: str, short_strike: float, long_strike: float, right: str) -> float | None:
+    """Get real credit for a vertical spread from IBKR bid/ask.
+
+    Credit = short_leg_bid - long_leg_ask (worst-case fill).
+    Returns None if quotes unavailable.
+    """
+    try:
+        import ib_insync as ib
+        client = ib.IB()
+        client.connect('127.0.0.1', IBKR_PAPER_PORT, clientId=IBKR_CLIENT_ID + 5, timeout=8)
+        client.reqMarketDataType(3)
+
+        short_c = ib.Option('SPX', exp_str, short_strike, right, 'CBOE', multiplier='100')
+        long_c = ib.Option('SPX', exp_str, long_strike, right, 'CBOE', multiplier='100')
+
+        sq = client.qualifyContracts(short_c)
+        lq = client.qualifyContracts(long_c)
+        if not sq or not lq:
+            client.disconnect()
+            return None
+
+        st = client.reqMktData(sq[0], '', False, False)
+        lt = client.reqMktData(lq[0], '', False, False)
+        client.sleep(2)
+
+        short_bid = float(st.bid) if st.bid and st.bid > 0 else None
+        long_ask = float(lt.ask) if lt.ask and lt.ask > 0 else None
+
+        client.cancelMktData(sq[0])
+        client.cancelMktData(lq[0])
+        client.disconnect()
+
+        if short_bid is None or long_ask is None:
+            return None
+
+        credit = short_bid - long_ask
+        return credit if credit > 0 else None
+    except Exception as e:
+        logger.debug("IBKR spread quote failed: %s", e)
+        return None
+
+
+def get_real_ic_credit(exp_str: str, k_ps: float, k_pl: float, k_cs: float, k_cl: float) -> float | None:
+    """Get real IC credit from IBKR: sum of put spread bid and call spread bid."""
+    try:
+        import ib_insync as ib
+        client = ib.IB()
+        client.connect('127.0.0.1', IBKR_PAPER_PORT, clientId=IBKR_CLIENT_ID + 5, timeout=8)
+        client.reqMarketDataType(3)
+
+        contracts = [
+            (k_ps, 'P', 'short_put'), (k_pl, 'P', 'long_put'),
+            (k_cs, 'C', 'short_call'), (k_cl, 'C', 'long_call'),
+        ]
+        quotes = {}
+        for strike, right, label in contracts:
+            c = ib.Option('SPX', exp_str, strike, right, 'CBOE', multiplier='100')
+            q = client.qualifyContracts(c)
+            if not q:
+                client.disconnect()
+                return None
+            t = client.reqMktData(q[0], '', False, False)
+            client.sleep(1.5)
+            quotes[label] = {
+                'bid': float(t.bid) if t.bid and t.bid > 0 else None,
+                'ask': float(t.ask) if t.ask and t.ask > 0 else None,
+            }
+            client.cancelMktData(q[0])
+
+        client.disconnect()
+
+        # Credit = sell at bid, buy at ask (worst case)
+        sp_bid = quotes['short_put']['bid']
+        lp_ask = quotes['long_put']['ask']
+        sc_bid = quotes['short_call']['bid']
+        lc_ask = quotes['long_call']['ask']
+
+        if any(v is None for v in [sp_bid, lp_ask, sc_bid, lc_ask]):
+            return None
+
+        put_credit = sp_bid - lp_ask
+        call_credit = sc_bid - lc_ask
+        total = put_credit + call_credit
+        return total if total > 0 else None
+    except Exception as e:
+        logger.debug("IBKR IC quote failed: %s", e)
+        return None
+
+
+# ---------------------------------------------------------------------------
 # Entry logic
 # ---------------------------------------------------------------------------
 def build_ic_entry(layer: LayerConfig, spx: float, vix: float, today: date) -> OpenPosition | None:
-    """Build an iron condor entry for the given layer."""
+    """Build an iron condor entry using REAL IBKR prices."""
     expiration = find_expiration(layer.dte, today)
     if expiration is None:
         logger.warning("[%s] No valid expiration found for DTE=%d", layer.name, layer.dte)
@@ -183,19 +304,33 @@ def build_ic_entry(layer: LayerConfig, spx: float, vix: float, today: date) -> O
         logger.warning("[%s] Strike computation failed: %s", layer.name, e)
         return None
 
-    # Compute credit
-    from bot.pricer import compute_credit
-    credit = compute_credit(spx, vix, cal_dte, k_ps, k_pl, k_cs, k_cl)
+    # Get REAL credit from IBKR bid/ask
+    exp_str = expiration.strftime('%Y%m%d')
+    real_credit = get_real_ic_credit(exp_str, k_ps, k_pl, k_cs, k_cl)
 
-    if credit <= 0:
-        logger.warning("[%s] Credit <= 0: %.4f", layer.name, credit)
-        return None
+    if real_credit is not None:
+        credit_adj = real_credit
+        logger.info("[%s] IBKR real credit: $%.2f (bid/ask)", layer.name, real_credit)
+    else:
+        # Fallback to BS model if IBKR unavailable
+        from bot.pricer import compute_credit
+        credit = compute_credit(spx, vix, cal_dte, k_ps, k_pl, k_cs, k_cl)
+        slippage = 8 * 0.10 / 2.0
+        credit_adj = credit - slippage
+        logger.warning("[%s] IBKR quotes unavailable, using BS estimate: $%.2f", layer.name, credit_adj)
 
-    # Apply slippage
-    slippage = 8 * 0.10 / 2.0  # 8 legs (IC), $0.10 per leg, half for entry
-    credit_adj = credit - slippage
     if credit_adj <= 0:
+        logger.warning("[%s] Credit <= 0: %.4f", layer.name, credit_adj)
         return None
+
+    # Compute real max loss and EV
+    width = layer.width
+    max_loss_ct = width * 100 - credit_adj * 100
+    p_win = 1.0 - (credit_adj / width)
+    ev_ct = p_win * credit_adj * 100 - (1 - p_win) * max_loss_ct
+
+    logger.info("[%s] credit=$%.2f  max_loss=$%.0f/ct  P(win)=%.1f%%  EV=$%.0f/ct",
+                layer.name, credit_adj, max_loss_ct, p_win * 100, ev_ct)
 
     logger.info(
         "[%s] IC entry | SPX=%.0f VIX=%.1f DTE=%d | "
@@ -475,7 +610,7 @@ BEAR_CALL_LAYER = LayerConfig(
 
 
 def build_bear_call_entry(layer: LayerConfig, spx: float, vix: float, today: date) -> OpenPosition | None:
-    """Build a bear call spread entry (call side only, no put side)."""
+    """Build a bear call spread entry using REAL IBKR prices."""
     expiration = find_expiration(layer.dte, today)
     if expiration is None:
         return None
@@ -490,21 +625,44 @@ def build_bear_call_entry(layer: LayerConfig, spx: float, vix: float, today: dat
         logger.warning("[%s] Strike computation failed: %s", layer.name, e)
         return None
 
-    from bot.pricer import compute_call_spread_credit
-    credit = compute_call_spread_credit(spx, vix, cal_dte, k_cs, k_cl)
-    slippage = 4 * 0.10 / 2.0
-    credit_adj = credit - slippage
+    # Get REAL credit from IBKR bid/ask
+    exp_str = expiration.strftime('%Y%m%d')
+    real_credit = get_real_spread_credit(exp_str, k_cs, k_cl, 'C')
 
-    if credit_adj <= 0.20:  # require meaningful premium
+    if real_credit is not None:
+        credit_adj = real_credit
+        logger.info("[%s] IBKR real credit: $%.2f (bid/ask)", layer.name, real_credit)
+    else:
+        # Fallback to BS
+        from bot.pricer import compute_call_spread_credit
+        credit = compute_call_spread_credit(spx, vix, cal_dte, k_cs, k_cl)
+        slippage = 4 * 0.10 / 2.0
+        credit_adj = credit - slippage
+        logger.warning("[%s] IBKR quotes unavailable, using BS estimate: $%.2f", layer.name, credit_adj)
+
+    if credit_adj <= 0.20:
         logger.warning("[%s] Credit too low: %.2f", layer.name, credit_adj)
         return None
 
+    # Real math
+    width = layer.width
+    max_loss_ct = width * 100 - credit_adj * 100
+    cushion = k_cs - spx
+    p_win = 1.0 - (credit_adj / width)
+    ev_ct = p_win * credit_adj * 100 - (1 - p_win) * max_loss_ct
+
     logger.info(
-        "[%s] Bear call entry | SPX=%.0f VIX=%.1f DTE=%d | "
-        "Call %.0f/%.0f | credit=%.2f × %d cts",
-        layer.name, spx, vix, cal_dte,
-        k_cs, k_cl, credit_adj, layer.n_contracts,
+        "[%s] Bear call | SPX=%.0f DTE=%d | Call %.0f/%.0f | "
+        "credit=$%.2f  max_loss=$%.0f/ct  cushion=%.0fpts(%.1f%%)  P(win)=%.1f%%  EV=$%.0f/ct × %d cts",
+        layer.name, spx, cal_dte, k_cs, k_cl,
+        credit_adj, max_loss_ct, cushion, cushion/spx*100, p_win*100, ev_ct, layer.n_contracts,
     )
+
+    # Only enter if positive EV or very high probability
+    if ev_ct < 0 and p_win < 0.85:
+        logger.info("[%s] Skipping — negative EV ($%.0f) and P(win) %.1f%% < 85%%",
+                    layer.name, ev_ct, p_win * 100)
+        return None
 
     return OpenPosition(
         layer_name=layer.name,
