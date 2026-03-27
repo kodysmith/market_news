@@ -920,6 +920,192 @@ def run_once(mode: str = "dry-run"):
     logger.info("=== Daily Cash Flow Bot complete ===")
 
 
+# ---------------------------------------------------------------------------
+# Exit engine — scan positions, close when targets hit
+# ---------------------------------------------------------------------------
+
+# Exit rules
+PROFIT_TARGET_PCT = 0.50   # close when 50% of credit captured
+STOP_LOSS_MULT = 2.0       # close when spread value = 2x entry credit
+TIME_STOP_DTE = 1          # close at 1 DTE to avoid gamma risk
+
+
+def scan_and_close_positions(spx: float, vix: float, mode: str):
+    """Scan IBKR positions for SPX spreads and close when targets hit."""
+    try:
+        import ib_insync as ib_mod
+    except ImportError:
+        return
+
+    if mode == "dry-run":
+        return
+
+    try:
+        ib = ib_mod.IB()
+        ib.connect("127.0.0.1", 7497 if mode == "paper" else 7496,
+                   clientId=IBKR_CLIENT_ID + 1, timeout=10)  # +1 to avoid conflict with entry client
+    except Exception as e:
+        logger.warning("Exit scan: IBKR connect failed: %s", e)
+        return
+
+    try:
+        positions = ib.positions()
+
+        # Find SPX option positions and group into spreads
+        spx_opts = []
+        for p in positions:
+            ls = p.contract.localSymbol or ""
+            if "SPX" not in ls:
+                continue
+            spx_opts.append({
+                "local_symbol": ls,
+                "conId": p.contract.conId,
+                "qty": p.position,
+                "avg_cost": p.avgCost,
+                "contract": p.contract,
+                "strike": p.contract.strike,
+                "right": p.contract.right,
+                "expiry": p.contract.lastTradeDateOrContractMonth,
+            })
+
+        if not spx_opts:
+            logger.info("Exit scan: no SPX positions")
+            ib.disconnect()
+            return
+
+        # Group by expiry to find spreads
+        from collections import defaultdict
+        by_expiry = defaultdict(list)
+        for opt in spx_opts:
+            by_expiry[opt["expiry"]].append(opt)
+
+        today = date.today()
+
+        for expiry_str, legs in by_expiry.items():
+            # Parse expiry
+            try:
+                exp_date = datetime.strptime(expiry_str, "%Y%m%d").date()
+            except (ValueError, TypeError):
+                continue
+
+            dte = (exp_date - today).days
+
+            # Find short legs (qty < 0) and their long counterparts
+            short_legs = [l for l in legs if l["qty"] < 0]
+            long_legs = [l for l in legs if l["qty"] > 0]
+
+            for short in short_legs:
+                # Find matching long leg (same right, nearby strike)
+                matching_long = None
+                for lng in long_legs:
+                    if (lng["right"] == short["right"] and
+                        lng["expiry"] == short["expiry"] and
+                        abs(lng["qty"]) == abs(short["qty"])):
+                        # Long leg should be further OTM
+                        if short["right"] == "C" and lng["strike"] > short["strike"]:
+                            matching_long = lng
+                            break
+                        elif short["right"] == "P" and lng["strike"] < short["strike"]:
+                            matching_long = lng
+                            break
+
+                if not matching_long:
+                    continue
+
+                n_contracts = abs(int(short["qty"]))
+                width = abs(matching_long["strike"] - short["strike"])
+
+                # Estimate entry credit from avg costs
+                # short avg_cost = what we received, long avg_cost = what we paid
+                entry_credit_per_unit = (short["avg_cost"] - matching_long["avg_cost"]) / 100.0
+
+                if entry_credit_per_unit <= 0:
+                    continue
+
+                # Price current spread value
+                sigma = vix / 100.0
+                T = max(dte, 0.5) / 365.0
+
+                from scripts.optimize_spx_verticals_historical import bs_call_price, bs_put_price
+
+                if short["right"] == "C":
+                    short_val = bs_call_price(spx, short["strike"], T, sigma)
+                    long_val = bs_call_price(spx, matching_long["strike"], T, sigma)
+                else:
+                    short_val = bs_put_price(spx, short["strike"], T, sigma)
+                    long_val = bs_put_price(spx, matching_long["strike"], T, sigma)
+
+                current_spread = max(short_val - long_val, 0.0)
+
+                # Check exit conditions
+                pnl_pct = (entry_credit_per_unit - current_spread) / entry_credit_per_unit
+                close_reason = None
+
+                if current_spread <= entry_credit_per_unit * (1 - PROFIT_TARGET_PCT):
+                    close_reason = "PROFIT_TARGET"
+                elif current_spread >= entry_credit_per_unit * STOP_LOSS_MULT:
+                    close_reason = "STOP_LOSS"
+                elif dte <= TIME_STOP_DTE:
+                    close_reason = "TIME_STOP"
+
+                spread_label = f"{short['right']} {short['strike']:.0f}/{matching_long['strike']:.0f}"
+                logger.info(
+                    "  %s exp=%s | credit=%.2f spread=%.2f pnl=%.0f%% dte=%d | %s",
+                    spread_label, expiry_str,
+                    entry_credit_per_unit, current_spread,
+                    pnl_pct * 100, dte,
+                    close_reason or "HOLD"
+                )
+
+                if close_reason:
+                    # Close the spread: buy back short, sell long
+                    logger.info("  >>> CLOSING %s: %s (%d contracts)", spread_label, close_reason, n_contracts)
+
+                    for leg_info, action in [(short, "BUY"), (matching_long, "SELL")]:
+                        order = ib_mod.MarketOrder(
+                            action=action,
+                            totalQuantity=n_contracts,
+                            tif="DAY",
+                        )
+                        trade = ib.placeOrder(leg_info["contract"], order)
+                        ib.sleep(3)
+
+                        if trade.orderStatus.status == "Filled":
+                            logger.info("    %s %s filled at %.2f",
+                                       action, leg_info["local_symbol"],
+                                       trade.orderStatus.avgFillPrice)
+                        else:
+                            logger.warning("    %s %s status: %s",
+                                          action, leg_info["local_symbol"],
+                                          trade.orderStatus.status)
+                            ib.sleep(10)  # wait longer for fill
+
+                    # Notify
+                    pnl_dollars = (entry_credit_per_unit - current_spread) * 100 * n_contracts
+                    try:
+                        from bot import notifier
+                        notifier.trade_closed(
+                            config_id=f"DC_{spread_label}",
+                            reason=close_reason,
+                            pnl=pnl_dollars,
+                            cumulative_pnl=0,
+                            n_contracts=n_contracts,
+                        )
+                    except Exception:
+                        pass
+
+                    # Remove matched long from list so we don't double-process
+                    long_legs.remove(matching_long)
+
+    except Exception as e:
+        logger.error("Exit scan error: %s", e, exc_info=True)
+    finally:
+        try:
+            ib.disconnect()
+        except Exception:
+            pass
+
+
 def run_scheduled(mode: str = "paper"):
     """Run on APScheduler with market-hours checks.
 
@@ -950,10 +1136,12 @@ def run_scheduled(mode: str = "paper"):
             logger.error("Entry job crashed (non-fatal): %s", e, exc_info=True)
 
     def safe_exit_check():
-        """Exit check with crash protection."""
+        """Exit check with crash protection. Scans IBKR positions and closes
+        spreads that hit profit target, stop loss, or time stop."""
         try:
             spx, vix = get_snapshot()
             logger.info("Exit check | SPX=%.1f VIX=%.1f", spx, vix)
+            scan_and_close_positions(spx, vix, mode)
         except Exception as e:
             logger.warning("Exit check failed (non-fatal): %s", e)
 
