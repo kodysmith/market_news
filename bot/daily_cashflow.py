@@ -90,6 +90,9 @@ LAYERS = [
 # Safety
 MAX_DAILY_LOSS = 30_000       # Stop all new entries if day P&L < -$30K
 MAX_MARGIN_TOTAL = 60_000     # Max margin across all daily cashflow positions
+MAX_TOTAL_SPX_RISK = 150_000  # Max total SPX short exposure (sum of all max losses)
+MAX_ACCOUNT_RISK_PCT = 0.15   # Never risk more than 15% of account net liq
+MAX_CONCURRENT_SPREADS = 6    # Max number of open spreads at once
 IBKR_PAPER_PORT = 7497
 IBKR_LIVE_PORT = 7496
 IBKR_CLIENT_ID = 30          # Different from main bot (client 10/20)
@@ -803,6 +806,98 @@ def scan_opportunities(spx: float, vix: float, is_negative_gex: bool, today: dat
 # ---------------------------------------------------------------------------
 # Main runner
 # ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# Portfolio risk check
+# ---------------------------------------------------------------------------
+def check_portfolio_risk(mode: str) -> tuple[bool, str, dict]:
+    """Check if we can safely open new positions.
+
+    Returns (can_trade, reason, stats).
+    """
+    stats = {
+        "net_liq": 0, "total_spx_risk": 0, "n_spreads": 0,
+        "unrealized_pnl": 0, "margin_used": 0, "risk_pct": 0,
+    }
+
+    if mode == "dry-run":
+        return True, "dry-run", stats
+
+    try:
+        import ib_insync as ib_mod
+        ib = ib_mod.IB()
+        ib.connect("127.0.0.1", 7497 if mode == "paper" else 7496,
+                   clientId=IBKR_CLIENT_ID + 2, timeout=10)
+
+        # Account summary
+        for item in ib.accountSummary():
+            if item.tag == "NetLiquidation":
+                stats["net_liq"] = float(item.value)
+            elif item.tag == "MaintMarginReq":
+                stats["margin_used"] = float(item.value)
+            elif item.tag == "UnrealizedPnL" and stats["unrealized_pnl"] == 0:
+                stats["unrealized_pnl"] = float(item.value)
+
+        # Count SPX spreads and total risk
+        positions = ib.positions()
+        short_legs = []
+        long_legs = []
+
+        for p in positions:
+            ls = p.contract.localSymbol or ""
+            if "SPX" not in ls:
+                continue
+            if p.position < 0:
+                short_legs.append(p)
+            elif p.position > 0:
+                long_legs.append(p)
+
+        # Match spreads and calculate total max loss
+        matched_spreads = 0
+        total_risk = 0
+
+        for short_p in short_legs:
+            s_strike = short_p.contract.strike
+            s_right = short_p.contract.right
+            s_expiry = short_p.contract.lastTradeDateOrContractMonth
+            n_cts = abs(int(short_p.position))
+
+            for long_p in long_legs:
+                if (long_p.contract.right == s_right and
+                    long_p.contract.lastTradeDateOrContractMonth == s_expiry and
+                    abs(int(long_p.position)) == n_cts):
+                    width = abs(long_p.contract.strike - s_strike)
+                    if width > 0 and width <= 100:
+                        max_loss = width * 100 * n_cts
+                        total_risk += max_loss
+                        matched_spreads += 1
+                        break
+
+        stats["total_spx_risk"] = total_risk
+        stats["n_spreads"] = matched_spreads
+        stats["risk_pct"] = total_risk / stats["net_liq"] * 100 if stats["net_liq"] > 0 else 0
+
+        ib.disconnect()
+
+        # Risk checks
+        if total_risk >= MAX_TOTAL_SPX_RISK:
+            return False, f"Total SPX risk ${total_risk:,.0f} >= limit ${MAX_TOTAL_SPX_RISK:,.0f}", stats
+
+        if stats["net_liq"] > 0 and total_risk / stats["net_liq"] > MAX_ACCOUNT_RISK_PCT:
+            return False, f"Risk {stats['risk_pct']:.1f}% > limit {MAX_ACCOUNT_RISK_PCT*100:.0f}% of account", stats
+
+        if matched_spreads >= MAX_CONCURRENT_SPREADS:
+            return False, f"{matched_spreads} spreads open >= limit {MAX_CONCURRENT_SPREADS}", stats
+
+        if stats["unrealized_pnl"] < -MAX_DAILY_LOSS:
+            return False, f"Unrealized PnL ${stats['unrealized_pnl']:,.0f} < -${MAX_DAILY_LOSS:,.0f} daily loss limit", stats
+
+        return True, "OK", stats
+
+    except Exception as e:
+        logger.warning("Portfolio risk check failed: %s — allowing trade", e)
+        return True, f"check failed: {e}", stats
+
+
 def run_once(mode: str = "dry-run"):
     """Scan opportunities with real IBKR prices, pick the best, execute."""
     today = date.today()
@@ -816,6 +911,28 @@ def run_once(mode: str = "dry-run"):
         return
 
     logger.info("SPX=%.1f  VIX=%.1f", spx, vix)
+
+    # Check portfolio risk before entering
+    can_trade, risk_reason, risk_stats = check_portfolio_risk(mode)
+    logger.info(
+        "RISK CHECK: %s | net_liq=$%s spx_risk=$%s (%s%%) spreads=%s pnl=$%s",
+        risk_reason,
+        f"{risk_stats['net_liq']:,.0f}" if risk_stats['net_liq'] else "?",
+        f"{risk_stats['total_spx_risk']:,.0f}" if risk_stats['total_spx_risk'] else "0",
+        f"{risk_stats['risk_pct']:.1f}" if risk_stats['risk_pct'] else "0",
+        risk_stats['n_spreads'],
+        f"{risk_stats['unrealized_pnl']:,.0f}" if risk_stats['unrealized_pnl'] else "0",
+    )
+
+    if not can_trade:
+        logger.warning("PORTFOLIO RISK LIMIT HIT: %s — NO NEW ENTRIES TODAY", risk_reason)
+        try:
+            from bot import notifier
+            notifier.risk_alert(f"No new entries: {risk_reason}", risk_stats.get('risk_pct', 0))
+        except Exception:
+            pass
+        logger.info("=== Daily Cash Flow Bot complete (risk blocked) ===")
+        return
 
     # Check GEX regime
     gex_regime, net_gex = check_gex_regime()
