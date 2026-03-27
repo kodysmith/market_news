@@ -828,32 +828,39 @@ def check_portfolio_risk(mode: str) -> tuple[bool, str, dict]:
         ib.connect("127.0.0.1", 7497 if mode == "paper" else 7496,
                    clientId=IBKR_CLIENT_ID + 2, timeout=10)
 
-        # Account summary
+        # Account net liquidation (for % risk calculation)
         for item in ib.accountSummary():
             if item.tag == "NetLiquidation":
                 stats["net_liq"] = float(item.value)
-            elif item.tag == "MaintMarginReq":
-                stats["margin_used"] = float(item.value)
-            elif item.tag == "UnrealizedPnL" and stats["unrealized_pnl"] == 0:
-                stats["unrealized_pnl"] = float(item.value)
 
-        # Count SPX spreads and total risk
+        # Only look at SPX option positions (our responsibility)
         positions = ib.positions()
         short_legs = []
         long_legs = []
+        spx_unrealized = 0.0
+
+        # Get portfolio items for SPX-only unrealized P&L
+        portfolio = ib.portfolio()
+        for item in portfolio:
+            ls = item.contract.localSymbol or ""
+            if "SPX" in ls or "SPXW" in ls:
+                spx_unrealized += item.unrealizedPNL
 
         for p in positions:
             ls = p.contract.localSymbol or ""
-            if "SPX" not in ls:
+            if "SPX" not in ls and "SPXW" not in ls:
                 continue
             if p.position < 0:
                 short_legs.append(p)
             elif p.position > 0:
                 long_legs.append(p)
 
+        stats["unrealized_pnl"] = spx_unrealized
+
         # Match spreads and calculate total max loss
         matched_spreads = 0
         total_risk = 0
+        used_longs = set()
 
         for short_p in short_legs:
             s_strike = short_p.contract.strike
@@ -861,7 +868,9 @@ def check_portfolio_risk(mode: str) -> tuple[bool, str, dict]:
             s_expiry = short_p.contract.lastTradeDateOrContractMonth
             n_cts = abs(int(short_p.position))
 
-            for long_p in long_legs:
+            for i, long_p in enumerate(long_legs):
+                if i in used_longs:
+                    continue
                 if (long_p.contract.right == s_right and
                     long_p.contract.lastTradeDateOrContractMonth == s_expiry and
                     abs(int(long_p.position)) == n_cts):
@@ -870,6 +879,7 @@ def check_portfolio_risk(mode: str) -> tuple[bool, str, dict]:
                         max_loss = width * 100 * n_cts
                         total_risk += max_loss
                         matched_spreads += 1
+                        used_longs.add(i)
                         break
 
         stats["total_spx_risk"] = total_risk
@@ -878,18 +888,18 @@ def check_portfolio_risk(mode: str) -> tuple[bool, str, dict]:
 
         ib.disconnect()
 
-        # Risk checks
+        # Risk checks — all SPX-only
         if total_risk >= MAX_TOTAL_SPX_RISK:
-            return False, f"Total SPX risk ${total_risk:,.0f} >= limit ${MAX_TOTAL_SPX_RISK:,.0f}", stats
+            return False, f"SPX risk ${total_risk:,.0f} >= limit ${MAX_TOTAL_SPX_RISK:,.0f}", stats
 
         if stats["net_liq"] > 0 and total_risk / stats["net_liq"] > MAX_ACCOUNT_RISK_PCT:
-            return False, f"Risk {stats['risk_pct']:.1f}% > limit {MAX_ACCOUNT_RISK_PCT*100:.0f}% of account", stats
+            return False, f"SPX risk {stats['risk_pct']:.1f}% > limit {MAX_ACCOUNT_RISK_PCT*100:.0f}% of account", stats
 
         if matched_spreads >= MAX_CONCURRENT_SPREADS:
-            return False, f"{matched_spreads} spreads open >= limit {MAX_CONCURRENT_SPREADS}", stats
+            return False, f"{matched_spreads} SPX spreads open >= limit {MAX_CONCURRENT_SPREADS}", stats
 
-        if stats["unrealized_pnl"] < -MAX_DAILY_LOSS:
-            return False, f"Unrealized PnL ${stats['unrealized_pnl']:,.0f} < -${MAX_DAILY_LOSS:,.0f} daily loss limit", stats
+        if spx_unrealized < -MAX_DAILY_LOSS:
+            return False, f"SPX unrealized ${spx_unrealized:,.0f} < -${MAX_DAILY_LOSS:,.0f} loss limit", stats
 
         return True, "OK", stats
 
@@ -915,7 +925,7 @@ def run_once(mode: str = "dry-run"):
     # Check portfolio risk before entering
     can_trade, risk_reason, risk_stats = check_portfolio_risk(mode)
     logger.info(
-        "RISK CHECK: %s | net_liq=$%s spx_risk=$%s (%s%%) spreads=%s pnl=$%s",
+        "RISK CHECK: %s | acct=$%s | SPX risk=$%s (%s%% of acct) | %s spreads | SPX P&L=$%s",
         risk_reason,
         f"{risk_stats['net_liq']:,.0f}" if risk_stats['net_liq'] else "?",
         f"{risk_stats['total_spx_risk']:,.0f}" if risk_stats['total_spx_risk'] else "0",
