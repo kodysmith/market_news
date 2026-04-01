@@ -121,9 +121,21 @@
 
 ---
 
+## RESEARCH COMPLETED — Box Spread Conversion
+
+**Tested:** Convert winning spreads to box spreads at 50% TP, park freed margin in SGOV/BOXX.
+
+**Result:** Standard close wins by ~$5,850/yr. Box conversion adds ~$170/trade in extra slippage/commission. SGOV yields only ~$33/trade on 9 days of freed margin. Net loss of $137 per conversion.
+
+**Conclusion:** Box conversion is NOT worth it as a systematic exit. Only use tactically:
+- Before weekends with elevated risk
+- When you need margin for a higher-conviction trade
+- When position is at 70%+ profit and you want zero risk of reversal
+
+**The only scenario where box conversion wins:** reinvesting freed margin into NEW TRADES at 50%+ annualized. But that requires a new opportunity at the exact right time — not reliable.
+
 ## NEXT STEPS
-- [ ] Backtest combining IC3 + funded butterfly (daily income + lottery)
-- [ ] Add 0DTE/1DTE strategy to bot for automated execution
 - [ ] Test with actual IBKR paper fills to validate slippage assumptions
 - [ ] Explore GEX-wall butterfly targeting (needs historical options chain data)
-- [ ] Consider layering: IC3 on Mon/Wed/Fri + IC6 on Tue/Thu for max daily coverage
+- [ ] Start daily Massive API collection for real GEX training data
+- [ ] Improve SSAN model with more data (intraday bars, options flow)
