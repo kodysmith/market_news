@@ -19,6 +19,8 @@ from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
+import numpy as np
+
 ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
@@ -944,6 +946,23 @@ def run_once(mode: str = "dry-run"):
         logger.info("=== Daily Cash Flow Bot complete (risk blocked) ===")
         return
 
+    # Run quant signals (GARCH, regime, flow, tail risk)
+    quant = None
+    try:
+        from bot.quant_signals import get_all_quant_signals
+        from scripts.optimize_spx_verticals_historical import load_spx_vix
+        spx_df, _ = load_spx_vix(date.today() - timedelta(days=400), date.today())
+        if not spx_df.empty:
+            quant = get_all_quant_signals(spx_df, vix)
+            if quant['action'] == 'SKIP':
+                logger.warning("QUANT SIGNALS: SKIP (danger=%d/10) — no entries today", quant['danger_score'])
+                logger.info("=== Daily Cash Flow Bot complete (quant blocked) ===")
+                return
+            elif quant['action'] == 'HALF_SIZE':
+                logger.info("QUANT SIGNALS: HALF SIZE (danger=%d/10)", quant['danger_score'])
+    except Exception as e:
+        logger.warning("Quant signals failed (non-fatal, proceeding): %s", e)
+
     # Check GEX regime
     gex_regime, net_gex = check_gex_regime()
     is_negative_gex = gex_regime == "NEGATIVE_GAMMA"
@@ -1168,9 +1187,22 @@ def scan_and_close_positions(spx: float, vix: float, mode: str):
                 pnl_pct = (entry_credit_per_unit - current_spread) / entry_credit_per_unit
                 close_reason = None
 
+                # Dynamic stop loss: use EVT tail risk if available
+                effective_stop = STOP_LOSS_MULT
+                try:
+                    from bot.quant_signals import get_tail_risk_signal
+                    from scripts.optimize_spx_verticals_historical import load_spx_vix
+                    _spx_df, _ = load_spx_vix(date.today() - timedelta(days=400), date.today())
+                    if not _spx_df.empty:
+                        _returns = np.log(_spx_df['Close'] / _spx_df['Close'].shift(1)).dropna()
+                        _tail = get_tail_risk_signal(_returns)
+                        effective_stop = _tail['dynamic_stop_mult']
+                except Exception:
+                    pass  # fall back to fixed stop
+
                 if current_spread <= entry_credit_per_unit * (1 - PROFIT_TARGET_PCT):
                     close_reason = "PROFIT_TARGET"
-                elif current_spread >= entry_credit_per_unit * STOP_LOSS_MULT:
+                elif current_spread >= entry_credit_per_unit * effective_stop:
                     close_reason = "STOP_LOSS"
                 elif dte <= TIME_STOP_DTE:
                     close_reason = "TIME_STOP"
