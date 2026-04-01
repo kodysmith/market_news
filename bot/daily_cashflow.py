@@ -968,8 +968,81 @@ def run_once(mode: str = "dry-run"):
     is_negative_gex = gex_regime == "NEGATIVE_GAMMA"
     logger.info("GEX: %s (%.1fB)", gex_regime, net_gex / 1e9 if net_gex else 0)
 
+    # Regime engine: 4-tier system (BEAR/CAUTION/NEUTRAL/BULL)
+    regime_state = None
+    try:
+        from bot.regime_engine import RegimeState, compute_regime_score, update_regime, get_regime_status
+        import json as _json
+        from scripts.optimize_spx_verticals_historical import load_spx_vix as _load
+
+        _spx_df, _vix_df = _load(date.today() - timedelta(days=400), date.today())
+        if not _spx_df.empty:
+            _close = _spx_df['Close']
+            _sma50 = float(_close.rolling(50).mean().iloc[-1])
+            _sma200 = float(_close.rolling(200).mean().iloc[-1])
+            _sma200_prev = float(_close.rolling(200).mean().iloc[-21]) if len(_close) > 221 else _sma200
+
+            import yfinance as _yf
+            _vix3m_df = _yf.download('^VIX3M', period='5d', progress=False)
+            _vix3m = float(_vix3m_df['Close'].iloc[-1]) if not _vix3m_df.empty else None
+
+            _vix_s = _vix_df['Close']
+            _v20h = float(_vix_s.rolling(20).max().iloc[-1])
+            _v40h = float(_vix_s.rolling(40).max().iloc[-1])
+
+            # Load or create regime state (persist across runs)
+            _state_path = ROOT / "data" / "regime_state.json"
+            try:
+                if _state_path.exists():
+                    _saved = _json.load(open(_state_path))
+                    regime_state = RegimeState(
+                        tier=_saved.get('tier', 'NEUTRAL'),
+                        score=_saved.get('score', 0),
+                        days_in_tier=_saved.get('days_in_tier', 0),
+                        confirmation_days=_saved.get('confirmation_days', 0),
+                        history=_saved.get('history', []),
+                    )
+                else:
+                    regime_state = RegimeState()
+            except Exception:
+                regime_state = RegimeState()
+
+            score = compute_regime_score(spx, _sma50, _sma200, _sma200_prev, vix,
+                                         _vix3m, _v20h, _v40h, not is_negative_gex)
+            regime_state = update_regime(regime_state, score)
+            status = get_regime_status(regime_state)
+
+            # Persist state
+            try:
+                _json.dump({
+                    'tier': regime_state.tier, 'score': regime_state.score,
+                    'days_in_tier': regime_state.days_in_tier,
+                    'confirmation_days': regime_state.confirmation_days,
+                    'history': regime_state.history[-20:],
+                }, open(_state_path, 'w'))
+            except Exception:
+                pass
+
+            logger.info(
+                "REGIME: %s (score=%d, %dd in tier, scale=%.0f%%, trend=%s)",
+                regime_state.tier, regime_state.score,
+                regime_state.days_in_tier, regime_state.position_scale * 100,
+                status.get('trend', '?'),
+            )
+
+            if regime_state.park_in_sgov:
+                logger.info("REGIME BEAR: Park in SGOV. No trades today. Protecting compounding base.")
+                logger.info("=== Daily Cash Flow Bot complete (BEAR → SGOV) ===")
+                return
+
+    except Exception as e:
+        logger.warning("Regime engine failed (non-fatal): %s", e)
+
+    # Determine position scale from regime
+    position_scale = regime_state.position_scale if regime_state else 1.0
+
     # Scan all opportunities with real IBKR prices
-    logger.info("Scanning opportunities with IBKR real prices...")
+    logger.info("Scanning opportunities (scale=%.0f%%)...", position_scale * 100)
     candidates = scan_opportunities(spx, vix, is_negative_gex, today)
 
     if not candidates:
