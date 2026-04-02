@@ -1,0 +1,33 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Full Strategy Comparison</title>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{background:#0D1117;color:#E6EDF3;font-family:-apple-system,sans-serif}.hdr{padding:20px 24px}.hdr h1{font-size:22px}.hdr .sub{font-size:13px;color:#8B949E;margin-top:4px}.cs{padding:8px 24px}.cs h2{font-size:14px;color:#8B949E;margin-bottom:6px}.cc{background:#161B22;border:1px solid #30363D;border-radius:10px;overflow:hidden}.legend{display:flex;gap:16px;padding:6px 24px;flex-wrap:wrap}.legend span{font-size:12px;color:#8B949E;display:flex;align-items:center;gap:6px}.legend .dot{width:14px;height:3px;border-radius:2px}.tbl{padding:12px 24px}.tbl table{width:100%;border-collapse:collapse;font-size:13px;font-family:monospace}.tbl th{text-align:left;color:#8B949E;padding:8px;border-bottom:1px solid #30363D}.tbl td{padding:8px;border-bottom:1px solid #21262D}footer{padding:16px 24px;text-align:center;color:#484F58;font-size:11px}.highlight{background:#1C2128;border-left:3px solid #A371F7;padding:12px 24px;margin:8px 24px;border-radius:4px;font-size:13px}</style></head><body>
+<div class="hdr"><h1>Full Strategy Comparison — IC3 + IC6 Daily</h1>
+<div class="sub">Original vs Skip Filter vs Regime Engine | 2015-2025 Backtest</div></div>
+<div class="highlight">
+<strong style="color:#A371F7">Winner: Regime Engine</strong> — Half the drawdown (-$112K vs -$288K), no losing years, Sharpe 2.15.<br>
+<strong style="color:#58A6FF">Runner-up: Skip≥7 + EVT</strong> — Highest P&L ($437K/yr), best Sharpe (2.93), smallest DD improvement.<br>
+<strong>Best combo: Regime Engine for protection + Skip≥7 for fine-tuning entries.</strong>
+</div>
+<div class="tbl"><table><tr><th>Strategy</th><th>Annual P&L</th><th>Total P&L</th><th>Max Drawdown</th><th>Sharpe</th><th>Worst Year</th><th>Win Days</th></tr><tr style="color:#3FB950"><td>Original</td><td>$433,203</td><td>$4,765,232</td><td>$-288,078</td><td>2.74</td><td>2015 ($+116,391)</td><td>2201/2467 (89%)</td></tr><tr style="color:#58A6FF"><td>Skip≥7 + EVT</td><td>$436,851</td><td>$4,805,361</td><td>$-261,450</td><td>2.93</td><td>2018 ($+79,692)</td><td>2160/2436 (89%)</td></tr><tr style="color:#D29922"><td>Regime Engine</td><td>$215,885</td><td>$2,374,731</td><td>$-111,862</td><td>2.15</td><td>2015 ($-1,378)</td><td>2005/2478 (81%)</td></tr></table></div>
+<div class="cs"><h2>Cumulative P&L</h2>
+<div class="legend"><span><div class="dot" style="background:#3FB950"></div>Original</span><span><div class="dot" style="background:#58A6FF"></div>Skip≥7 + EVT</span><span><div class="dot" style="background:#D29922"></div>Regime Engine</span></div>
+<div class="cc" id="c1" style="height:450px"></div></div>
+<div class="cs"><h2>Drawdown Comparison</h2><div class="cc" id="c2" style="height:220px"></div></div>
+<div class="cs"><h2>Monthly P&L — Regime Engine</h2><div class="cc" id="c3" style="height:200px"></div></div>
+<footer>Regime tiers: BEAR (9%) → CAUTION (15%) → NEUTRAL (53%) → BULL (22%). Fast to protect, slow to expose.</footer>
+<script>
+const D={data_js};
+function fmt$(v){{const a=Math.abs(v);return(v<0?'-':'')+'$'+a.toLocaleString('en-US',{{maximumFractionDigits:0}})}}
+function ts(d){{const[y,m,dd]=d.split('-').map(Number);return Date.UTC(y,m-1,dd)/1000}}
+function co(c){{return{{width:c.clientWidth,height:c.clientHeight,layout:{{background:{{type:'solid',color:'#161B22'}},textColor:'#8B949E',fontSize:11}},grid:{{vertLines:{{color:'#21262D'}},horzLines:{{color:'#21262D'}}}},timeScale:{{borderColor:'#30363D'}},rightPriceScale:{{borderColor:'#30363D'}},handleScale:true,handleScroll:true}}}}
+const e1=document.getElementById('c1'),ch1=LightweightCharts.createChart(e1,co(e1));
+D.forEach(s=>{{ch1.addLineSeries({{color:s.color,lineWidth:2,priceFormat:{{type:'custom',formatter:v=>fmt$(v)}}}}).setData(s.dates.map((d,i)=>({{time:ts(d),value:s.cum[i]}})))}});
+ch1.timeScale().fitContent();
+const e2=document.getElementById('c2'),ch2=LightweightCharts.createChart(e2,co(e2));
+D.forEach(s=>{{const dd=[];let peak=0;s.cum.forEach((v,i)=>{{peak=Math.max(peak,v);dd.push({{time:ts(s.dates[i]),value:peak>0?(v-peak)/peak*100:0}})}});ch2.addLineSeries({{color:s.color,lineWidth:1,priceFormat:{{type:'custom',formatter:v=>v.toFixed(1)+'%'}}}}).setData(dd)}});
+ch2.timeScale().fitContent();
+const re=D.find(s=>s.label.includes('Regime'));
+const e3=document.getElementById('c3'),ch3=LightweightCharts.createChart(e3,co(e3));
+ch3.addHistogramSeries({{priceFormat:{{type:'custom',formatter:v=>fmt$(v)}}}}).setData(re.monthly.map(m=>({{time:ts(m.t),value:m.pnl,color:m.pnl>=0?'rgba(210,153,34,0.8)':'rgba(248,81,73,0.8)'}})));
+ch3.timeScale().fitContent();
+</script></body></html>
