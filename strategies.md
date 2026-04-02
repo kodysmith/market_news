@@ -4,9 +4,44 @@
 
 ---
 
-## BEST COMBINED APPROACH (2015-2025 backtest)
+## FINAL STRATEGY: Regime-Aware Daily Cash Flow (2015-2025 backtest)
 
-### IC3(10cts) + IC6(5cts) + FLY(3cts)
+### 4-Tier Regime Engine + IC3 + IC6 + Quant Signals
+- **Annual P&L: $397K** | Max DD: **-$87K (68% less than unfiltered)**
+- **Sharpe: 3.13** | Zero losing years | 81% positive days
+- **With compounding: BEATS unfiltered strategy over 11 years** (smaller DD preserves compound base)
+
+### Regime Tiers
+| Tier | % of Days | Action | Sizing |
+|---|---|---|---|
+| **BULL** | 22% | Full ICs | 10 IC3 + 5 IC6 |
+| **NEUTRAL** | 53% | Full ICs | 10 IC3 + 5 IC6 |
+| **CAUTION** | 15% | Reduced ICs, wider strikes | 2 IC3 + 1 IC6 |
+| **BEAR** | 9% | Park in SGOV | No trades, protect capital |
+
+### Transition Rules (asymmetric — fast down, slow up)
+- **Drop to BEAR:** immediate on danger signal
+- **Exit BEAR → CAUTION:** 3 consecutive recovery days
+- **Exit CAUTION → NEUTRAL:** 5 consecutive recovery days
+- **Enter BULL:** 20 consecutive strong days
+
+### Regime Score (computed daily from T-1 data)
+- +1: SPX > SMA50 | +1: SPX > SMA200 | +1: SMA200 slope up
+- +1: VIX < 22 | +1: VIX contango | +1: VIX lower highs
+- -1: SPX < SMA50 | -1: SPX < SMA200 | -1: VIX > 28
+- -1: VIX backwardation | -1: GEX negative
+- BEAR: score ≤ -2 | CAUTION: -1 to +1 | NEUTRAL: +2 to +4 | BULL: ≥ +5
+
+### Additional Filters
+- **Quant signals (danger ≥ 7):** Skip entry — GARCH vol expanding + high rv_percentile
+- **Dynamic EVT stop:** Tail risk shapes stop multiplier (1.5x thin tails, 2.5x fat tails)
+- **Portfolio risk:** SPX exposure < $150K, < 15% of account, < 6 concurrent spreads
+
+---
+
+## PREVIOUS APPROACH (superseded by regime engine)
+
+### IC3(10cts) + IC6(5cts) + FLY(3cts) — Unfiltered
 - **Annual P&L: $466,157** | Daily avg: $1,943
 - **ROI on $200K: 233%** | ROI on $700K: 67%
 - **90% positive days** (2362/2635)
