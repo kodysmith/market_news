@@ -1,0 +1,40 @@
+{
+  "ranked_by_savings": [
+    {
+      "signal": "OVERNIGHT_GAP_PROTECTION",
+      "trades_prevented": 80,
+      "total_savings": 190388.21,
+      "avg_savings_per_trade": 2379.85
+    },
+    {
+      "signal": "NEWS_SENTIMENT",
+      "trades_prevented": 57,
+      "total_savings": 130290.18,
+      "avg_savings_per_trade": 2285.79
+    },
+    {
+      "signal": "INTRADAY_PRICE_ACTION",
+      "trades_prevented": 38,
+      "total_savings": 92367.29,
+      "avg_savings_per_trade": 2430.72
+    },
+    {
+      "signal": "VOL_REGIME_SPEED",
+      "trades_prevented": 33,
+      "total_savings": 68103.97,
+      "avg_savings_per_trade": 2063.76
+    },
+    {
+      "signal": "CROSS_ASSET_STRESS",
+      "trades_prevented": 29,
+      "total_savings": 61585.41,
+      "avg_savings_per_trade": 2123.63
+    },
+    {
+      "signal": "ECONOMIC_CALENDAR",
+      "trades_prevented": 25,
+      "total_savings": 57053.24,
+      "avg_savings_per_trade": 2282.13
+    }
+  ]
+}
