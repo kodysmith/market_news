@@ -82,6 +82,11 @@ IBKR_PORT_LIVE = 7496
 IBKR_CLIENT_ID = 20         # separate from IC bot (10) and scalp bot (15)
 
 # ── Data sources ──────────────────────────────────────────────────────
+# Priority: IBKR (free, real-time) → yfinance (free, delayed) → Polygon (paid, historical)
+# IBKR provides: scanner, 1-min bars, pre-market data, quotes, execution — all free
+# Polygon only needed for historical backtests if IBKR historical data isn't enough
+# Massive.com used for OPTIONS data (GEX) — not for equity day trading
+DATA_SOURCE = os.getenv("DT_DATA_SOURCE", "ibkr")  # ibkr | yfinance | polygon
 POLYGON_CACHE_DIR = ROOT / "data" / "polygon_cache"
 DT_DATA_DIR = ROOT / "data" / "daytrader"
 DT_LOG_DIR = ROOT / "logs" / "daytrader"

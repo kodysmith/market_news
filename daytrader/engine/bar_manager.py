@@ -15,11 +15,18 @@ logger = logging.getLogger("daytrader.bars")
 
 
 class BarManager:
-    """Manages 1-min bars for multiple tickers during a trading session."""
+    """Manages 1-min bars for multiple tickers during a trading session.
 
-    def __init__(self):
+    Data source priority:
+      1. IBKR (real-time, free with account, best for live/paper)
+      2. yfinance (delayed, free, good for dry-run/testing)
+      3. Polygon (historical backtests only, requires API key)
+    """
+
+    def __init__(self, ibkr_scanner=None):
         self._bars: dict[str, pd.DataFrame] = {}
         self._last_fetch: dict[str, datetime] = {}
+        self._ibkr = ibkr_scanner  # optional IBKRScanner instance for real-time bars
 
     def get_bars(self, symbol: str, force_refresh: bool = False) -> pd.DataFrame:
         """Get current session 1-min bars for a symbol. Polls if stale."""
@@ -28,15 +35,26 @@ class BarManager:
 
         # Refresh if never fetched or stale (>10 seconds old)
         if force_refresh or last is None or (now - last).total_seconds() > 10:
-            bars = self._fetch_bars(symbol)
+            bars = self._fetch_bars_ibkr(symbol) if self._ibkr else self._fetch_bars(symbol)
             if bars is not None and not bars.empty:
                 self._bars[symbol] = bars
                 self._last_fetch[symbol] = now
 
         return self._bars.get(symbol, pd.DataFrame())
 
+    def _fetch_bars_ibkr(self, symbol: str) -> Optional[pd.DataFrame]:
+        """Fetch today's 1-min bars via IBKR (preferred — real-time, free)."""
+        try:
+            df = self._ibkr.get_1min_bars_df(symbol)
+            if df is not None and not df.empty:
+                logger.debug("Got %d IBKR bars for %s", len(df), symbol)
+                return df
+        except Exception as e:
+            logger.warning("IBKR bars failed for %s: %s, falling back to yfinance", symbol, e)
+        return self._fetch_bars(symbol)
+
     def _fetch_bars(self, symbol: str) -> Optional[pd.DataFrame]:
-        """Fetch today's 1-min bars via yfinance."""
+        """Fetch today's 1-min bars via yfinance (fallback)."""
         try:
             import yfinance as yf
             ticker = yf.Ticker(symbol)
