@@ -201,9 +201,38 @@ An honest account of what is known — and what is not — about profitable day 
 
 ---
 
-## PART VI: FROM MANUAL TO MACHINE
+## PART VI: BACKTEST RESULTS AND RESEARCH
 
-### Chapter 18: Building the Day Trading Scanner
+### Chapter 18: Backtest Results and Strategy Tweaks
+
+- **18.1 The First Backtest** — 42 days of SPY 5-min data, 5 strategies, $100K at 1% risk; ORB = winner ($1,185/trade), VWAP Reject = loser (-$365/trade)
+- **18.2 The Market Context Problem** — Tested during a 9% SPY decline; long trades +$331/trade avg, shorts -$19; structural long bias affects all strategies
+- **18.3 What Worked: ORB** — 87.5% win rate, only 8 trades (extreme selectivity), PF 42.4; small sample caveat
+- **18.4 What Worked: VWAP Bounce** — 50% win rate, 1.8:1 R/R, $421/trade; 50% is expected and sustainable
+- **18.5 What Failed: VWAP Reject** — 23.8% win rate, negative expectancy; triggers too often, shorts into bounces, weak confirmation; kill or rebuild
+- **18.6 What Failed: Trend Day** — 35.7% win rate; "all above VWAP" criterion too loose; false trend day identification
+- **18.7 What Was Marginal: Gap Fade** — 38.5% win rate, $50/trade; gap threshold too wide, fades macro gaps that shouldn't be faded
+- **18.8 The Long vs Short Asymmetry** — Longs won 51% ($331/trade), shorts 32% (-$19); structural market bias, not fixable by strategy alone
+- **18.9 The R-Multiple Distribution** — 57% hit full stop, 29% hit 2R target; bimodal — need fewer triggers, not different stops
+- **18.10 Proposed Portfolio: ORB + VWAP Bounce Only** — 24 trades, 62% win rate, $676/trade, $97K/yr; 49% more profit with 67% fewer trades
+- **18.11 Next Steps** — Extended backtest, regime filter, strategy rebuilds, small cap extension, live paper trading
+
+### Chapter 19: Trade-by-Trade Autopsy
+
+- **19.1 The Pattern in Our Losses** — 79% of losses stopped within 5-10 minutes; stops too tight relative to noise
+- **19.2 VWAP Reject Losses** — 16 trades lost $17K; shorting into counter-trend bounces with $0.20-0.40 stops that can't survive noise
+- **19.3 Trend Day Losses** — 9 trades lost $9.6K; entering "trend days" that are actually range days; EMA pullback in a range = death
+- **19.4 VWAP Bounce Losses** — 8 trades lost $8.7K; stops below ATR, early AM entries before VWAP is meaningful
+- **19.5 Gap Fade Losses** — 8 trades lost $6.4K; fading macro-catalyst gaps; one bar of VWAP confirmation isn't enough
+- **19.6 ORB Loss** — 1 trade lost $229; time stop caught a dead trade at -0.23R; risk management worked perfectly
+- **19.7 The 5-Minute Stop Problem** — Average stop $0.60 vs average 5-min bar range $0.40-0.80; stops within noise guarantee false exits
+- **19.8 Summary of Proposed Changes** — Universal fix: minimum stop = 1x ATR; kill VWAP Reject; add ORB confirmation to Trend Day
+
+---
+
+## PART VII: FROM MANUAL TO MACHINE
+
+### Chapter 20: Building the Day Trading Scanner
 
 - **18.1 Data Sources** — Pre-market data feeds: polygon.io, Alpaca, IEX Cloud, Interactive Brokers; real-time vs delayed; cost vs quality tradeoffs
 - **18.2 The Gap Scanner** — Query all stocks for gap %, relative volume, float, ATR, sector; rank and filter; output top 5 candidates
@@ -212,7 +241,7 @@ An honest account of what is known — and what is not — about profitable day 
 - **18.5 Catalyst Enrichment** — Pull news headlines for each scanner hit; classify catalyst type and severity; no catalyst = lower priority
 - **18.6 The Scanner Output** — A ranked watchlist with: ticker, gap %, relative volume, float, ATR, catalyst summary, key levels, suggested strategy
 
-### Chapter 19: Building the Day Trading Bot
+### Chapter 21: Building the Day Trading Bot
 
 - **19.1 Architecture** — Scanner → signal → entry logic → position manager → exit logic → risk manager → journal
 - **19.2 The Signal Pipeline** — From raw market data to entry trigger: candle formation, volume confirmation, level proximity, pattern match
@@ -222,7 +251,7 @@ An honest account of what is known — and what is not — about profitable day 
 - **19.6 The Paper Trading Phase** — Minimum 3 months of paper trading with real data before any real money; what metrics must be hit to go live
 - **19.7 Live Execution Challenges** — Slippage reality vs backtest assumptions; API latency; broker rejections; halt handling; the live trading premium
 
-### Chapter 20: Backtesting Day Trading Strategies
+### Chapter 22: Backtesting Day Trading Strategies
 
 - **20.1 Why Day Trading Backtests Are Hard** — Requires tick or 1-minute data; look-ahead bias is extreme; slippage modeling is critical
 - **20.2 Data Requirements** — Intraday OHLCV at 1-min resolution; pre-market data; split/dividend adjustment; survivorship bias in ticker lists
@@ -234,9 +263,9 @@ An honest account of what is known — and what is not — about profitable day 
 
 ---
 
-## PART VII: THE BUSINESS OF DAY TRADING
+## PART VIII: THE BUSINESS OF DAY TRADING
 
-### Chapter 21: The Financial Reality
+### Chapter 23: The Financial Reality
 
 - **21.1 Capital Requirements** — PDT rule ($25K minimum); realistic starting capital ($50-100K); why starting with $5K at an offshore broker is a recipe for disaster
 - **21.2 Expected Returns** — Realistic: 20-40% annually for a skilled day trader; unrealistic: "1% per day" (would be 1,200% annually)
@@ -245,7 +274,7 @@ An honest account of what is known — and what is not — about profitable day 
 - **21.5 Opportunity Cost** — If you can earn $150K/year at a job, you need to clear $150K+ trading to justify the switch; most day traders would be better off investing passively
 - **21.6 When Day Trading Makes Sense** — As a supplemental strategy (trading the first hour while working remotely); as a full-time pursuit only after 12+ months of consistent profitability
 
-### Chapter 22: Putting It All Together — The Daily Workflow
+### Chapter 24: Putting It All Together — The Daily Workflow
 
 - **22.1 Pre-Market (7:00-9:15 AM ET)** — Run scanner, build watchlist (3-5 names), research catalysts, mark levels on charts, define entries/stops/targets
 - **22.2 Open Prep (9:15-9:30 AM)** — Final watchlist narrowing (top 2-3), confirm pre-market levels holding, set alerts, size positions pre-calculated
@@ -256,7 +285,7 @@ An honest account of what is known — and what is not — about profitable day 
 - **22.7 Close and Review (3:30-4:30 PM)** — Close all positions (no overnight holds for day trades). Journal every trade. Review P&L, mistakes, lessons. Prep for tomorrow
 - **22.8 The Weekend Review** — Aggregate weekly stats, identify patterns, adjust strategy weights, study missed opportunities
 
-### Chapter 23: What Comes Next
+### Chapter 25: What Comes Next
 
 - **23.1 From Day Trading to Swing Trading** — Extending holding periods to 2-5 days; overnight risk management; the transition from scalps to swings
 - **23.2 Multi-Strategy Portfolios** — Combining day trading (morning), options income (afternoon), and swing positions (multi-day) for diversified returns
