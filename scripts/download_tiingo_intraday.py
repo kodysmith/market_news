@@ -40,9 +40,10 @@ if str(ROOT) not in sys.path:
 DATA_DIR = ROOT / "data" / "intraday"
 TIINGO_BASE = "https://api.tiingo.com/iex"
 
-# Rate limit: free tier = 500 req/hour, 50 symbols/day
-# Be conservative: 1 request per 2 seconds
-RATE_LIMIT_SECONDS = 2.0
+# Rate limit: free tier = 500 req/hour, 50 unique symbols/day
+# At 2s/req we burn through 500 in ~17 min. Spread over the hour instead.
+# 500 req/hour = 1 req per 7.2s. Use 8s for safety.
+RATE_LIMIT_SECONDS = float(os.getenv("TIINGO_RATE_LIMIT", "8.0"))
 
 
 def _get_api_key() -> str:
